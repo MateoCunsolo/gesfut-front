@@ -1,0 +1,40 @@
+<header>
+    <section class="logo">
+        <img src="futbol-americano (1).png" alt="">
+        <a (click)="selectedTabIndex = 0"  [routerLink]="['/']" routerLinkActive="router-link-active">GESFUT</a>
+    </section>
+    <button class="login">LOGIN</button>
+</header>
+
+<mat-tab-group [(selectedIndex)]="selectedTabIndex">
+    
+    <mat-tab label="INICIO">
+        <section>
+            <h1>Crea Y Administra Tu Propio <br> Torneo De Fútbol</h1> 
+            <p>Este sistema te permite crear y gestionar torneos de fútbol de manera sencilla y eficiente. Podrás organizar equipos, programar partidos, llevar el control de resultados y mucho más.</p>
+            <button mat-flat-button>EMPEZAR</button>
+        </section>
+    </mat-tab>
+
+    <mat-tab label="NOSOTROS">
+        <section>
+            <h1>¿Quiénes Somos?</h1>
+            <p>Somos un grupo de desarrolladores de software apasionados por el fútbol. Nuestro objetivo es facilitar la organización de torneos de fútbol a través de una plataforma digital que permita a los usuarios llevar un control eficiente de sus competencias.</p>
+        </section>
+    </mat-tab>
+
+    <mat-tab label="PRECIO">
+        <section>
+            <h1>Planes de Precio</h1>
+            <p>Ofrecemos diferentes planes de precios para que puedas elegir el que mejor se adapte a tus necesidades. Todos nuestros planes incluyen las mismas funcionalidades, la diferencia radica en la cantidad de torneos que puedes crear y el número de equipos que puedes registrar.</p>
+        </section>
+    </mat-tab>
+
+    <mat-tab label="CONTACTO"> 
+        <section>
+            <h1>Contáctanos</h1>
+            <p>Si tienes alguna duda o sugerencia, no dudes en contactarnos. Estamos aquí para ayudarte y mejorar tu experiencia con nuestra plataforma.</p>
+        </section>       
+    </mat-tab>
+
+</mat-tab-group>
