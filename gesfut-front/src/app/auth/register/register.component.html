@@ -1,5 +1,6 @@
 <section>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      @if (error !== undefined || error !== '') {}<mat-error>{{error}}</mat-error>
       <mat-form-field>
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="name" placeholder="Ingresa tu nombre" />
@@ -38,4 +39,3 @@
     </form>
 </section>
   
-

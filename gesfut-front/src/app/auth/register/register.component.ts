@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../core/services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { RegisterRequest } from '../../core/models/registerRequest';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 const materialModules = [
@@ -25,6 +26,8 @@ const materialModules = [
 })
 export class RegisterComponent {
 
+  error:String= '';
+
   registerForm:FormGroup;
 
 
@@ -36,19 +39,22 @@ export class RegisterComponent {
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
-
+  
   onSubmit() {
     const credentials: RegisterRequest = this.registerForm.value; 
-    console.log('Datos enviados al servidor:', credentials)
+    console.log('Datos enviados al servidor:', credentials);
+    
     this.authService.register(credentials).subscribe({
       next: (response) => {
-        alert(response.firstName + ' ' + response.lastName);
+        alert(response); // Si la respuesta es el String "Registro exitoso"
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.log(err);
+        this.error = err.error.error;
       }
     });
   }
+  
   
 
   hide = signal(true);
