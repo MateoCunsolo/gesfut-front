@@ -1,1 +1,41 @@
-<p>register works!</p>
+<section>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="name" placeholder="Ingresa tu nombre" />
+        <mat-hint>Nombre requerido</mat-hint>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="lastName" placeholder="Ingresa tu apellido" />
+        <mat-hint>Apellido requerido</mat-hint>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="Ingresa tu correo" />
+        <mat-hint>Correo electrónico válido</mat-hint>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input matInput formControlName="password" [type]="hide() ? 'password' : 'text'" />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="clickEvent($event)"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide()"
+        >
+          <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+  
+      <button mat-flat-button color="primary" type="submit">
+        REGISTRARTE
+      </button>
+    </form>
+</section>
+  
+
