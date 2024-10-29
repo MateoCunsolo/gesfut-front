@@ -6,6 +6,6 @@ export const routes: Routes = [
 
     
     {
-        path: '', component: LandingComponent
+        path: 'auth', loadChildren : () => import('./auth/auth.routes').then(m =>m.AUTH_ROUTES)
     }
 ];
