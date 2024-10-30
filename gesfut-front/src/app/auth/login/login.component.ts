@@ -44,6 +44,7 @@ export class LoginComponent {
         this.authService.login(loginRequest).subscribe({
         next: (response) => {
           this.sessionService.setUserSession(response);
+          this.router.navigateByUrl('/admin')
         },
         error: (err) => {
         },

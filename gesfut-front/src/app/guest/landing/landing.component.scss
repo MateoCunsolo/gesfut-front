@@ -1,31 +1,4 @@
 
-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #2a6a49;
-    color:  white;
-    height: 80px;
-    font-size: 1.5rem;
-}
-
-.logo
-{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-}
-
-a{
-    text-decoration: none;
-    font-size: 2rem;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-}
 
 section {
     display: flex;
