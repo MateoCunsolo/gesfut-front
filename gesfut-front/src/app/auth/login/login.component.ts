@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { AuthService } from '../../core/services/auth.service';
 import { LoginRequest } from '../../core/models/loginRequest';
+import { SessionService } from '../../core/services/session.service';
+import { Router } from '@angular/router';
 const materialModules = [
   MatFormFieldModule,
   MatIconModule,
@@ -17,15 +19,19 @@ const materialModules = [
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, ...materialModules], // Agrega ReactiveFormsModule aquí
+  imports: [ReactiveFormsModule, ...materialModules], 
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],  // Cambié `styleUrl` a `styleUrls`
+  styleUrls: ['./login.component.scss'],  
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService,
+    private sessionService:SessionService,
+    private router:Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -37,11 +43,9 @@ export class LoginComponent {
       let loginRequest: LoginRequest = this.loginForm.value;
         this.authService.login(loginRequest).subscribe({
         next: (response) => {
-          console.log('Login successful', response);
-          //redirect to home client - dashboard
+          this.sessionService.setUserSession(response);
         },
         error: (err) => {
-          console.error('Login failed', err);
         },
         complete: () => {
           console.log('Login request completed');
@@ -49,5 +53,5 @@ export class LoginComponent {
       });
     }
   }
+}
 
-}  

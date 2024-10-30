@@ -23,7 +23,7 @@ export class AuthService {
   );
   currentUserData: BehaviorSubject<AuthResponse> =
     new BehaviorSubject<AuthResponse>({
-      firstName: '',
+      name: '',
       lastName: '',
       token: '',
       role: '',
@@ -40,7 +40,7 @@ export class AuthService {
       }),
       map((response) => {
         const auth: AuthResponse = {
-          firstName: response.firstName,
+          name: response.name,
           lastName: response.lastName,
           token: response.token,
           role: response.role,
@@ -64,7 +64,7 @@ export class AuthService {
       }),
       map((response)=>{
         const auth : AuthResponse = {
-          firstName: response.firstName,
+          name: response.name,
           lastName: response.lastName,
           token: response.token,
           role: response.role

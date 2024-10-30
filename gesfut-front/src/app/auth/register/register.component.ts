@@ -1,3 +1,4 @@
+
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -5,9 +6,9 @@ import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../core/services/auth.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { RegisterRequest } from '../../core/models/registerRequest';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Route, Router } from '@angular/router';
 
 
 const materialModules = [
@@ -32,7 +33,11 @@ export class RegisterComponent {
   registerForm:FormGroup;
 
 
-  constructor(private fb:FormBuilder, private authService:AuthService, private cdRef:ChangeDetectorRef){
+  constructor(
+    private fb:FormBuilder, 
+    private authService:AuthService, 
+    private route:Router
+  ){
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -47,7 +52,7 @@ export class RegisterComponent {
     
     this.authService.register(credentials).subscribe({
       next: (response) => {
-        alert(response); // Si la respuesta es el String "Registro exitoso"
+        this.route.navigateByUrl('/auth/login')
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
@@ -57,9 +62,6 @@ export class RegisterComponent {
   }
   
   
-
-
-
   hide = signal(true);
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
