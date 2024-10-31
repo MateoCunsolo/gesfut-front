@@ -1,0 +1,42 @@
+
+/* You can add global styles to this file, and also import other style files */
+:root {
+    --primary-color: #2a6a49;
+    --secondary-color: #41cf8a; 
+    --bg-color: #f4f4f4;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    font-family: 'Play', sans-serif;
+
+}
+
+*, *:after, *:before {
+    box-sizing: inherit;
+    margin: 0;
+}
+
+
+.form-generic{
+    display: flex;
+    flex-direction: column;;
+    width: 100%;
+    height: 100vh;
+}
+
+
+.input-form{
+    padding: 5px;
+    border: solid 1px var();
+    border-radius: 5px;
+    
+}
+
+label{
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+}

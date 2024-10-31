@@ -1,0 +1,33 @@
+<section>
+  <h2 color="primary">Iniciar sesión</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        placeholder="Ingresa tu correo"
+      />
+      @if (loginForm.get('email')?.hasError('required')) {
+      } @if (loginForm.get('email')?.hasError('email')) {
+      }
+
+
+      <input
+        matInput
+        formControlName="password"
+        [type]="hide() ? 'password' : 'text'"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="clickEvent($event)"
+        aria-label="Mostrar/Ocultar contraseña"
+      >
+      </button>
+      @if (loginForm.get('password')?.hasError('required')) {
+      }    
+    <button mat-flat-button type="submit" >INICIAR SESION</button>
+  </form>
+</section>
