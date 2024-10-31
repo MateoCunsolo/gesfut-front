@@ -72,4 +72,9 @@ export class SessionService {
     const userdata = this.currentUserData.getValue();
     return userdata.role;
   }
+
+  token(): string{
+    const userdata = this.currentUserData.getValue();
+    return userdata.token;
+  }
 }

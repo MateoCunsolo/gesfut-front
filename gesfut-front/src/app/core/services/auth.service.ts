@@ -20,7 +20,6 @@ export class AuthService {
   url: string = 'http://localhost:8080/api/v1/auth';
 
 
-
   constructor(
     private router: Router, 
     private http: HttpClient,
