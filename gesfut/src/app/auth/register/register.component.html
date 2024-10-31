@@ -1,0 +1,51 @@
+<section>
+  <h2 color="primary">Registro</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    @if (error !== undefined && error !== '') {
+    }
+
+      <input matInput formControlName="name" placeholder="Ingresa tu nombre" />
+      @if (registerForm.get('name')?.hasError('required')) {
+      } @if (registerForm.get('name')?.hasError('minlength')) {
+      } @if (registerForm.get('name')?.hasError('maxlength')) {
+      }
+
+      <input
+        matInput
+        formControlName="lastName"
+        placeholder="Ingresa tu apellido"
+      />
+      @if (registerForm.get('lastName')?.hasError('required')) {
+      } @if (registerForm.get('lastName')?.hasError('minlength')) {
+      } @if (registerForm.get('lastName')?.hasError('maxlength')) {
+      }
+
+
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        placeholder="Ingresa tu correo"
+      />
+      @if (registerForm.get('email')?.hasError('required')) {
+      } @if (registerForm.get('email')?.hasError('email')) {
+      }
+    <input
+        matInput
+        formControlName="password"
+        [type]="hide() ? 'password' : 'text'"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="clickEvent($event)"
+        aria-label="Mostrar/Ocultar contraseña"
+      >
+      </button>
+      @if (registerForm.get('password')?.hasError('required')) {
+      } @if (registerForm.get('password')?.hasError('minlength')) {
+      }
+
+    <button mat-flat-button color="primary" type="submit">REGISTRARTE</button>
+  </form>
+</section>
