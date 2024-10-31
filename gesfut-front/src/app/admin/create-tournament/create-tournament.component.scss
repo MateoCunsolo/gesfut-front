@@ -1,0 +1,50 @@
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 600px;
+    height: auto;
+  }
+  
+  mat-form-field{
+    width: 100%;
+  }
+  
+  mat-icon{
+    font-size: 24px;
+    height: 100%;
+  }
+  
+  button{
+    width: 100%;
+    border-radius: 2px;
+  }
+
+
+  .buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+
+  }
+
+
+  .gray-btn{
+    background-color: #d3d6de;
+    color: #000;
+    width: 33%;
+  }
+
+  .gray-btn:hover{
+    background-color: #b3b6be;
+  }
+
+  .contenedor{
+    display:flex;
+    flex-direction: column;
+    height: calc(100% - 120px);
+    width: calc(100% - 40px);
+    margin: 20px;
+  }

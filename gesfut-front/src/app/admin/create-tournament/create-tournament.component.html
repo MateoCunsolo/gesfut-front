@@ -1,10 +1,13 @@
-<section>
-    <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="fill">
-        <mat-label>Nombre del Torneo</mat-label>
-        <input matInput formControlName="name" placeholder="Ingresa el nombre">
-      </mat-form-field>
-      <button mat-flat-button type="submit" >CREAR TORNEO</button>
-    </form>
-  </section>
-  
+<section class="contenedor">
+  <h2>Creacion del torneo</h2>
+  <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre del Torneo</mat-label>
+      <input matInput formControlName="name" placeholder="Ingresa el nombre">
+    </mat-form-field>
+    <section class="buttons">
+      <button class="gray-btn" mat-flat-button (click)="toBack()">ATRAS</button>
+      <button mat-flat-button type="submit">CREAR TORNEO</button>
+    </section>
+  </form>
+</section>
