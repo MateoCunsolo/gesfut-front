@@ -1,13 +1,35 @@
+
 <section class="contenedor">
-  <h2>Creacion del torneo</h2>
+
+  <section class="img">
+    <h2>CREACION DEL TORNEO</h2>
+    <ul>
+      <li>El nombre es obligatorio</li>
+      <li>El nombre no debe estar vacío</li>
+      <li>Debe tener al menos 3 caracteres</li>
+      <li>Evita nombres muy cortos</li>
+      <li>No puede superar los 50 caracteres</li>
+      <li>Limita el tamaño del nombre</li>
+      <li>Solo se permiten letras, números y espacios</li>
+      <li>Restringe caracteres especiales</li>
+      <li>No debe tener espacios al inicio o al final</li>
+    </ul>
+  </section>
+
   <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
+
     <mat-form-field appearance="fill">
       <mat-label>Nombre del Torneo</mat-label>
       <input matInput formControlName="name" placeholder="Ingresa el nombre">
     </mat-form-field>
+
     <section class="buttons">
       <button class="gray-btn" mat-flat-button (click)="toBack()">ATRAS</button>
       <button mat-flat-button type="submit">CREAR TORNEO</button>
     </section>
+
   </form>
+
+
+
 </section>

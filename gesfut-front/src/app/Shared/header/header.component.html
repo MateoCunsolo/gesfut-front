@@ -1,13 +1,12 @@
 <header>
-    <section class="logo">
-        <img src="futbol-americano (1).png" alt="">
-        <h2>GESFUT</h2>
-    </section>
+  <section class="logo">
+      <img src="futbol-americano (1).png" alt="">
+      <h2>GESFUT</h2>
+  </section>
 
-    @if (!isLoggedIn) {
-        <button mat-raised-button  (click)="onLogin()" class="login">Iniciar sesion</button>
-      } @else {
-        <p>{{name}}</p>
-        <button mat-raised-button (click)="onLogout()" class="logout">Cerrar sesion</button>
-      }
+  @if (!isLoggedIn) {
+      <button mat-raised-button  (click)="onLogin()" class="login">Iniciar sesion</button>
+    } @else {
+      <app-user></app-user>
+    }
 </header>
