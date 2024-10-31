@@ -1,0 +1,14 @@
+<div class="user-container" (click)="toggleMenu()">
+  <mat-icon matPrefix >person</mat-icon>
+  <p>{{name}}</p>
+  <!-- Opciones del Usuario -->
+  @if (isMenuOpen) {
+    <div class="user-menu">
+      <button (click)="profile()">Cambiar contraseña</button>
+      <button (click)="settings()">Cambiar email</button>
+      <button (click)="settings()">Ajustes avanzados</button>
+      <button mat-raised-button (click)="onLogout()" class="logout">Cerrar sesion</button>
+
+    </div>
+  }
+</div>

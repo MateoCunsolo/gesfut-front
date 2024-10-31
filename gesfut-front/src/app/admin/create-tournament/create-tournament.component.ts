@@ -55,5 +55,9 @@ export class CreateTournamentComponent {
       });
     }
   }
+
+  toBack(){
+    this.router.navigate(['/admin']);
+  }
   
 }

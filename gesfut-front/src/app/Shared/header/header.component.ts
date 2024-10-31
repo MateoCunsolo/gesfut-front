@@ -1,39 +1,33 @@
-
 import { Router } from '@angular/router';
 import { SessionService } from './../../core/services/session.service';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
+import { UserComponent } from '../../shared/user/user.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatButton],
+  imports: [MatButton, UserComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']  // Cambiado 'styleUrl' a 'styleUrls'
 })
 export class HeaderComponent {
 
   isLoggedIn: boolean = false;
-  name:String='';
+  name: string = '';
 
-  constructor(private sessionService: SessionService, private route:Router) {}
+  constructor(private sessionService: SessionService, private route: Router) {}
 
   ngOnInit(): void {
     this.sessionService.userLoginOn.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
     });
     this.sessionService.userData.subscribe((userData) => {
-      this.name=userData.name;
-    })
+      this.name = userData.name;
+    });
   }
 
   onLogin(): void {
-    this.route.navigateByUrl('/auth/login')
+    this.route.navigateByUrl('/auth/login');
   }
-
-  onLogout(): void {
-    this.sessionService.clearUserSession();
-    this.route.navigateByUrl('/');
-  }
-
 }
