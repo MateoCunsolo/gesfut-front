@@ -1,33 +1,31 @@
-/* Estilos generales para el formulario */
-section {
-    max-width: 400px; /* Ancho máximo del formulario */
-    margin: 0 auto;   /* Centrar el formulario horizontalmente */
-    padding: 20px;    /* Espaciado interno */
-    border: 1px solid #ccc; /* Borde alrededor del formulario */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para profundidad */
-  }
-  
-  mat-form-field {
-    width: 100%; /* Hacer que los campos ocupen el 100% del ancho */
-    margin-bottom: 16px; /* Espaciado entre campos */
-  }
-  
-  button {
-    width: 100%; /* Botón de ancho completo */
-    padding: 10px; /* Espaciado interno en el botón */
-    font-size: 16px; /* Tamaño de la fuente */
-    border-radius: 4px; /* Bordes redondeados para el botón */
-  }
-  
-  /* Estilos para los hints de los campos */
-  mat-hint {
-    font-size: 12px; /* Tamaño de la fuente del hint */
-    color: #757575; /* Color del hint */
-  }
-  
-  /* Estilos para el botón de visibilidad de la contraseña */
-  mat-icon {
-    cursor: pointer; /* Cambiar el cursor al pasar sobre el icono */
-  }
-  
+section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 600px;
+  height: auto;
+}
+
+mat-form-field{
+  width: 100%;
+}
+
+mat-icon{
+  font-size: 24px;
+  height: 100%;
+}
+
+button{
+  width: 100%;
+  border-radius: 2px;
+}

@@ -1,0 +1,10 @@
+<section>
+    <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre del Torneo</mat-label>
+        <input matInput formControlName="name" placeholder="Ingresa el nombre">
+      </mat-form-field>
+      <button mat-flat-button type="submit" >CREAR TORNEO</button>
+    </form>
+  </section>
+  

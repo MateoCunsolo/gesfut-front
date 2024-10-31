@@ -12,35 +12,28 @@ import { AuthResponse } from '../models/authResponse';
 import { LoginRequest } from '../models/loginRequest';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RegisterRequest } from '../models/registerRequest';
+import { SessionService } from './session.service';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   url: string = 'http://localhost:8080/api/v1/auth';
 
-  currentUserLoginOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
-  currentUserData: BehaviorSubject<AuthResponse> =
-    new BehaviorSubject<AuthResponse>({
-      firstName: '',
-      lastName: '',
-      token: '',
-      role: '',
-    });
 
-  constructor(private router: Router, private http: HttpClient) {}
+
+  constructor(
+    private router: Router, 
+    private http: HttpClient,
+    private sessionService:SessionService) {}
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.url}/login`, credentials).pipe(
       tap((response: AuthResponse) => {
-        //this.sessionService.setUserSession(response);
-        this.currentUserLoginOn.next(true);
-        this.currentUserData.next(response);
+        this.sessionService.setUserSession(response);
       }),
       map((response) => {
         const auth: AuthResponse = {
-          firstName: response.firstName,
+          name: response.name,
           lastName: response.lastName,
           token: response.token,
           role: response.role,
@@ -57,14 +50,9 @@ export class AuthService {
 
   register(credentials:RegisterRequest):Observable<AuthResponse>{
     return this.http.post<AuthResponse>(`${this.url}/sing-up`, credentials).pipe(
-      tap((response:AuthResponse) => {
-        //this.sessionService.setUserSession(response);
-        this.currentUserLoginOn.next(true);
-        this.currentUserData.next(response);
-      }),
       map((response)=>{
         const auth : AuthResponse = {
-          firstName: response.firstName,
+          name: response.name,
           lastName: response.lastName,
           token: response.token,
           role: response.role
