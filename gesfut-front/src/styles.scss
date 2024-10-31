@@ -1,12 +1,25 @@
-
 @use '@angular/material' as mat;
 @use '../src/styles/m3-theme.scss';
 
 @include mat.core();
 
-html{
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+
+html {
     @include mat.all-component-themes(m3-theme.$light-theme);
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root {
+    --primary-color: #1b5d3d --secondary-color: #41cf8a --bg-color: #f5f5f5;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Play", sans-serif;
+    background-color: var(--bg-color);
+}
