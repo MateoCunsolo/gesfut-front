@@ -5,11 +5,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { LoginRequest } from '../../core/models/loginRequest';
 import { SessionService } from '../../core/services/session.service';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule], 
+  imports: [ReactiveFormsModule, RouterModule], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],  
   changeDetection: ChangeDetectionStrategy.OnPush,
