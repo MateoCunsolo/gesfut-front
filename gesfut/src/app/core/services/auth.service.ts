@@ -42,6 +42,8 @@ export class AuthService {
       }),
       catchError((error: HttpErrorResponse) => {
         //this.logout();
+        console.log(error);
+
         return throwError(() => error);
       })
     );
