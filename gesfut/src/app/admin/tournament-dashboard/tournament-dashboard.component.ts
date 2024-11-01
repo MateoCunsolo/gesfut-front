@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { AdminService } from '../../core/services/admin.service';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { NavbarComponent } from "../navbar/navbar.component";
+import { FooterComponent } from "../../shared/footer/footer.component";
 
 @Component({
   selector: 'app-tournament-dashboard',
   standalone: true,
-  imports: [],
+  imports: [NavbarComponent, FooterComponent],
   templateUrl: './tournament-dashboard.component.html',
   styleUrl: './tournament-dashboard.component.scss'
 })

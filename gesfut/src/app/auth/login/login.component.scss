@@ -67,7 +67,7 @@ p {
     display: flex; /* Utiliza flexbox para centrar el contenido */
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente */
-    height: calc(80vh - 80px); /* Altura completa de la ventana */
+    height: calc(100vh - 160px); /* Altura completa de la ventana */
 }
 
 .login {
@@ -114,7 +114,7 @@ h3{
 }
 
 
-@media screen and (max-width: 393px) {
+@media screen and (max-width: 1000px) {
     .login {
         grid-template-columns: 1fr; 
         width: 90%;

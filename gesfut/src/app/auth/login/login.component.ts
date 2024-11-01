@@ -6,11 +6,12 @@ import { LoginRequest } from '../../core/models/loginRequest';
 import { SessionService } from '../../core/services/session.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
+import { FooterComponent } from "../../shared/footer/footer.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule], 
+  imports: [ReactiveFormsModule, RouterModule, FooterComponent], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],  
   changeDetection: ChangeDetectionStrategy.OnPush,
