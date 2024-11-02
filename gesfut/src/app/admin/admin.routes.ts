@@ -5,7 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { CreateTeamComponent } from './create-team/create-team.component';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
 import { TournamentDashboardComponent } from './tournament-dashboard/tournament-dashboard.component';
-
+import { InitializeTournamentComponent } from './initialize-tournament/initialize-tournament.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -19,11 +19,15 @@ export const ADMIN_ROUTES: Routes = [
     },
     {
         path: 'tournaments/:code', component: TournamentDashboardComponent
+    },
+    {
+        path: 'tournaments/:code/initialize', component: InitializeTournamentComponent
     }
     ,
     {
         path: '**', redirectTo:''
     }
+    
 ];
 
 

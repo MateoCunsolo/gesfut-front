@@ -5,11 +5,12 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TournamentRequest } from '../../core/models/tournamentRequest';
 import { AdminService } from '../../core/services/admin.service';
+import { FooterComponent } from "../../shared/footer/footer.component";
 
 @Component({
   selector: 'app-create-tournament',
   standalone: true,
-  imports: [ ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FooterComponent],
   templateUrl: './create-tournament.component.html',
   styleUrl: './create-tournament.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
