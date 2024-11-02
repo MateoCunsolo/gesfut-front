@@ -5,13 +5,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../core/services/auth.service';
 import { RegisterRequest } from '../../core/models/registerRequest';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -50,10 +51,9 @@ export class RegisterComponent {
     });
   }
   
-  
-  hide = signal(true);
-  clickEvent(event: MouseEvent) {
-    this.hide.set(!this.hide());
-    event.stopPropagation();
+  validate(field:string, error:string):void{
+    return this.registerForm.controls[field].getError(error) &&
+      this.registerForm.controls[field].touched;
   }
+  
 }

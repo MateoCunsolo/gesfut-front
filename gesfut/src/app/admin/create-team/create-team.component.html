@@ -1,0 +1,121 @@
+<section>
+ 
+        <h2 class="title">CREAR EQUIPO</h2>
+        <!-- Error general -->
+        <div *ngIf="error" class="error-message">
+            <p class="error">{{ error }}</p>
+        </div>
+        
+
+    <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+      
+    <div class="team-form">
+
+        <!-- Nombre del equipo -->
+        <div class="form-group">
+          <input
+            id="teamName"
+            type="text"
+            formControlName="name"
+            placeholder="Nombre del equipo"
+          />
+        </div>
+        
+
+        <!-- Color del equipo -->
+        <div class="form-group">
+          <input
+            id="teamColor"
+            type="color"
+            formControlName="color"
+            placeholder="Color del equipo"
+          />
+        </div>
+        
+    </div>
+
+        <h3>Jugadores</h3>
+
+
+          <div formArrayName="players" class="players-form">
+            <div
+              *ngFor="let player of players.controls; let i = index"
+              [formGroupName]="i"
+              class="player-row"
+            >
+              <!-- Nombre del jugador -->
+              <div class="form-group input-icon">
+                <input
+                  id="playerName-{{ i }}"
+                  type="text"
+                  formControlName="name"
+                  placeholder="Nombre"
+                />
+                <i class="fas fa-user"></i>
+              </div>
+              
+
+              <!-- Apellido del jugador -->
+              <div class="form-group input-icon">
+                <input
+                  id="playerLastName-{{ i }}"
+                  type="text"
+                  formControlName="lastName"
+                  placeholder="Apellido"
+                />
+                <i class="fas fa-user"></i>
+              </div>
+              
+
+              <!-- Dorsal del jugador -->
+              <div class="form-group input-icon">
+                <input
+                  id="playerNumber-{{ i }}"
+                  type="number"
+                  formControlName="number"
+                  placeholder="Dorsal"
+                />
+              </div>
+              
+
+              <!-- Capitan del equipo -->
+              <label>
+                <input type="checkbox" formControlName="isCaptain" />
+                Capitán
+              </label>
+
+              <!-- Arquero del equipo -->
+              <label>
+                <input type="checkbox" formControlName="isGoalKeeper" />
+                Arquero
+              </label>
+
+              <!-- Botón para eliminar jugador -->
+              <button type="button" (click)="removePlayer(i)" class="btn-minus">
+                <i class="fa-solid fa-circle-minus"></i>
+              </button>
+            </div>
+          </div>
+
+
+          <ng-container *ngIf="players.length === 0">
+            <p>No hay jugadores en el equipo.</p>
+          </ng-container>
+
+
+        <button type="button" (click)="addPlayer()">Añadir Jugador</button>
+      
+
+
+      <!-- Botón de envío -->
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="teamForm.invalid || players.invalid"
+      >
+        CREAR EQUIPO
+      </button>
+    
+    </form>
+
+</section>

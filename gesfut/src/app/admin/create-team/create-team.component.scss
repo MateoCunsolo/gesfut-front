@@ -1,44 +1,116 @@
-section{
+section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 20%;
+  margin: 0 auto;
+  height: calc(100vh - 80px);
+  background-color: var(--bg-color);
+} 
+
+form{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.players-form{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin: 0 auto;
-}
-
-@media (max-width: 600px) {
-    .players-form {
-        grid-template-columns: 1fr;
-    }
 }
 
 .team-form{
     display: flex;
     flex-direction: row;
-    margin: 0 16px;
-    gap: 8px;
 }
+.players-form{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}
+@media (max-width: 900px) {
+    .players-form {
+      grid-template-columns: 1fr;
+    }
+  }
 
-.player-row {
+.player-row{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin: 0 16px;
     gap: 8px;
 }
 
-.small-input{
-    width: 96px;
+
+/* Configuración de íconos de los inputs */
+.input-icon {
+  position: relative;
+  display: flex;
+  align-items: center; /* Centrar verticalmente el ícono */
 }
 
+.input-icon input {
+  padding-left: 36px; /* Espacio para el ícono */
+  padding-right: 10px; /* Espacio a la derecha */
+  height: 24px; /* Ajusta la altura según lo necesites */
+  border: 1px solid #ccc; /* Añade un borde */
+  border-radius: 5px; /* Bordes redondeados (opcional) */
+  width: 128px; /* Asegura que el input ocupe todo el ancho disponible */
+  font-size: 16px;
+}
+
+.input-icon i {
+  position: absolute;
+  left: 12px; /* Espacio desde la izquierda */
+  color: var(--primary-color); /* Color del ícono */
+  font-size: 16px;
+}
+
+.input-icon input:focus {
+  border-color: var(
+    --secondary-color
+  ); /* Cambia el color del borde al enfocar */
+}
+
+.input-icon input:focus + i {
+  color: var(--secondary-color); /* Cambia el color del ícono al enfocar */
+}
+
+label{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Button */
+
+button {
+  font-size: 24px;
+  transition: 0.3s ease-in-out;
+  border: none;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+}
+
+button:focus {
+  background-color: var(--secondary-color);
+}
+
+/* Error */
+.error-message {
+  min-height: 24px; /* Ajusta la altura mínima según el tamaño del texto */
+  margin-top: 5px; /* Espacio entre el input y el mensaje de error */
+}
+
+.error {
+  color: red; /* Color del mensaje de error */
+  font-size: 16px; /* Tamaño del texto */
+  padding-left: 16px;
+}
+
+.btn-minus{
+    background-color: none;
+    color: var(--primary-color);
+    width: 72px;
+}
+
+.btn-minus{
+    color:var(--secondary-color);
+}
 
