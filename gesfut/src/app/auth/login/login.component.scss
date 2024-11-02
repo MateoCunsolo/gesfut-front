@@ -1,25 +1,126 @@
+.img {
+    background-color: var(--primary-color);
+    height: 100%; /* Asegura que la sección de la imagen ocupe toda la altura */
+    display: flex; /* Utiliza flexbox para centrar el contenido */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+}
 
-
-section{
+section {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
     flex-direction: column;
-    height: calc(100vh - 80px);
-    background-color: #f5f5f5;
 }
 
-form{
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
+form {
     display: flex;
+    max-width: 400px;   
     flex-direction: column;
+    width: 100%;
+    border: solid 1px #ccc;
+    padding: 10px;
     gap: 10px;
 }
 
-
-button{
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
+    width: 100%;
+}
+
+input:focus {
+    outline: none;
+}
+
+label {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.input-label {
+    display: flex;
+    flex-direction: column;
+    color: rgb(71, 71, 71);
+    gap: 5px;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #41cf8a;
+    text-decoration: none;
+}
+
+p {
+    font-size: 1.3rem;
+    color: #333;
+}
+
+.container {
+    display: flex; /* Utiliza flexbox para centrar el contenido */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: calc(100vh - 160px); /* Altura completa de la ventana */
+}
+
+.login {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    width: 60%; /* Ancho del grid */
+    align-self: center; /* Alinea el grid en el centro vertical */
+    justify-content: center; /* Centra el contenido del grid */
+}
+
+
+
+.icon{
+   display: flex;
+   flex-direction: row;
+   gap: 10px;
+}
+
+.icon svg{
+    width: 30px;
+    height: 30px;
+}
+
+
+.title{
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.message{
+    color: white;
+    font-size: 1.3rem;
+    text-align: justify;
+    width: 75%;
+}
+
+h3{
+    color: black;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+@media screen and (max-width: 1000px) {
+    .login {
+        grid-template-columns: 1fr; 
+        width: 90%;
+    }
+    
+    .img{
+        display: none;
+    }
 }

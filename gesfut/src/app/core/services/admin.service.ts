@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { TournamentRequest } from '../models/tournamentRequest';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TournamentResponse, TournamentResponseFull } from '../models/tournamentResponse';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from './session.service';
+import { TeamResponse } from '../models/teamResponse';
+import { TeamRequest } from '../models/teamRequest';
+import { InitializeRequest } from '../models/initializeRequest';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
+  
 
 
   url = 'http://localhost:8080/api/v1';
@@ -70,7 +74,51 @@ export class AdminService {
   }
 
   
+  getTeams(): Observable<TeamResponse[]> {
+    const userCurrent = this.sessionService.isAuth();
+    if (!userCurrent) {
+      return new Observable<TeamResponse[]>();
+    }
+    const token = sessionStorage.getItem('token');
+    return this.http.get<TeamResponse[]>(`${this.url}/teams`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }}).pipe(
+        map((response: TeamResponse[]) => {
+          console.log('Equipos antes del filtro:', response);
+          return response.filter(t => t.name.trim().toLowerCase() !== 'free');
+        })
+      );
+  }
   
+
+  initTournament(init: InitializeRequest): Observable<TournamentResponse> {
+    const userCurrent = this.sessionService.isAuth();
+    if (!userCurrent) {
+      return EMPTY;
+    }
+  
+    const token = sessionStorage.getItem('token');
+    
+    // Verificar que init tiene los valores esperados
+    console.log('Contenido de init:', init);
+    
+    return this.http.post<string>(`${this.url}/tournaments/initialize`, init, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      responseType: 'text' as 'json'
+    }).pipe(
+      map((response: string) => {
+        const tournamentResponse: TournamentResponse = {
+          code: response
+        };
+        return tournamentResponse;
+      })
+    );
+  }
   
 
   
