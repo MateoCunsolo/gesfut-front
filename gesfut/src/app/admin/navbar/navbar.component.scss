@@ -20,10 +20,19 @@ nav a:hover{
 
 nav ul{
     display: flex;
+    padding: 0px;
     list-style: none;
     gap: 20px;
 }
 
 nav ul li{
     margin: 0 10px;
+}
+
+
+
+@media screen and ( max-width: 1000px) {
+    nav{
+        display: none;
+    }
 }

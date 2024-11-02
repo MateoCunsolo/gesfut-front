@@ -1,6 +1,6 @@
 <section class="center">
 
-    <h2 class=" title ">
+    <h2 class="title">
         SELECIONAR EQUIPOS PARA EL INICIO DEL TORNEO
     </h2>
     <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px;">
@@ -9,12 +9,19 @@
         <section class="col-1-teams-all">
             <h3 class="title-sec black">EQUIPOS UTILIZADOS ANTERIORMENTE</h3>
             <div class="search">
-                <input class="search-team" type="text" placeholder="BUSCAR EQUIPO">
-                <button class="search-btn">BUSCAR</button>
+                <input 
+                [(ngModel)]="searchTerm" 
+                (ngModelChange)="filterTeams()" 
+                class="search-team" 
+                type="text" 
+                placeholder="BUSCAR EQUIPO">
+                
+                            <button class="search-btn">BUSCAR</button>
             </div>
 
+        <div class="overflox">
             @for (item of teams; track $index) {
-            <div class="team-section">
+                <div class="team-section">
                 <li class="name">{{item.name}}</li>
                 <div class="btn-teams">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg"
@@ -31,11 +38,12 @@
                 </div>
             </div>
             }
-
+        </div>
         </section>
 
         <section class="col-2-teams-tournament">
             <h3 class="title-sec green">EQUIPOS AGREGADOS</h3>
+            <div class="overflox">
             @for (item of teamsTournament; track $index) {
                 <div class="team-section">
                     <li class="name">{{item.name}}</li>
@@ -53,6 +61,7 @@
                     </div>
                 </div>
                 }
+            </div>
         </section>
 
 
