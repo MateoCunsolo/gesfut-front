@@ -4,6 +4,7 @@ import { NavbarComponent } from "../navbar/navbar.component";
 import { AdminService } from '../../core/services/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-initialize-tournament',
@@ -19,11 +20,10 @@ export class InitializeTournamentComponent {
   code: string = '';
   searchTerm: string = '';
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService, private route:Router) { }
 
   ngOnInit(): void {
     this.code = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
-
     this.adminService.getTeams().subscribe({
       next: (response) => {
         this.teams = response.sort((a, b) => a.name.localeCompare(b.name));
@@ -46,15 +46,12 @@ export class InitializeTournamentComponent {
 
   initTournament() {
 
-    if (this.teamsTournament.length > 4) {
+    if (this.teamsTournament.length >= 4) {
       const ids = this.teamsTournament.map(team => team.id);
       const initializeRequest = {
         tournamentCode: this.code,
         teams: ids
       };
-
-      console.log(initializeRequest);
-
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {
           console.log(response);
@@ -64,7 +61,7 @@ export class InitializeTournamentComponent {
         },
         complete: () => {
           console.log('TOURNAMENT INITIALIZED');
-          alert('Torneo inicializado -- redirigir a la página de torneos -- versión 1');
+          this.route.navigateByUrl('/admin/tournaments/' + this.code);
         }
       });
     }else{

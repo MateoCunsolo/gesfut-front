@@ -16,6 +16,7 @@ import { Router, RouterModule } from '@angular/router';
 export class TournamentDashboardComponent {
   title = 'Tournament Dashboard';
   code = '';
+  flag = false;
   tournament: TournamentResponseFull = {
     name: '',
     code: '',
@@ -29,10 +30,8 @@ export class TournamentDashboardComponent {
   constructor(private adminService: AdminService, private router: Router){}
 
   ngOnInit() {
-    //obtener codigo de la url
     const url = window.location.href;
     this.code = url.split('/').pop() || '';
-
     this.adminService.getTournament(this.code).subscribe({
       next: (response) => {
         console.log('Torneo obtenido:', response)

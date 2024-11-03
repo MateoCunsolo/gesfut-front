@@ -10,10 +10,6 @@ import { Component } from '@angular/core';
 export class NavbarComponent {
 
   ngOnInit(): void {
-    const nav = document.querySelector('nav') as HTMLElement;
-    if (window.location.pathname === '/admin' || window.location.pathname === '/admin/tournaments') {
-    
-    }
-
+  
   }
 }
