@@ -13,7 +13,7 @@ import { FooterComponent } from "../../shared/footer/footer.component";
 export class DashboardComponent {
   constructor(private router: Router) {} 
 
-  goToTournaments() {
-    this.router.navigate(['/admin/tournaments']);
+  navigateTo(route:String) {
+    this.router.navigate([`/admin/${route}`]);
   }
 }
