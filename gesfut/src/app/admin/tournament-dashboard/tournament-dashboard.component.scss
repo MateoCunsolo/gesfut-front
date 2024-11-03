@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     gap: 118px;
-    height: calc(100vh - 215px);
+    height: calc(100vh - 160px);
     font-weight: bold;
 }
 
@@ -34,9 +34,9 @@
 @media screen and (max-width: 1000px) {
     .cards {
         gap: 20px;
-        height: auto;
-        margin-top: 10rem;
-
+        height: calc(100vh - 80px);
+        margin: 0px;
+        align-content: center;
     }
 
     .card {
@@ -44,7 +44,7 @@
         padding: 15px 0px;
     }
 
-    .img-cards {
+    .icon {
         width: 80px;
         height: 80px;
     }
@@ -54,4 +54,8 @@
     opacity: 0.5;
     pointer-events: none;
     cursor: not-allowed;
+}
+
+.heigtret{
+    height: calc(100vh - 130px);
 }

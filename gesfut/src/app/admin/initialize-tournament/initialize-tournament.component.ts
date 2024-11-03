@@ -91,4 +91,9 @@ export class InitializeTournamentComponent {
   editTeam(team: TeamRequest) {
     throw new Error('Method not implemented.');
   }
+
+  toBack(){
+    alert("¿Está seguro de que desea salir? Se perderán los cambios realizados");
+    this.route.navigate(['/admin/tournaments/'+this.code]);
+  }
 }
