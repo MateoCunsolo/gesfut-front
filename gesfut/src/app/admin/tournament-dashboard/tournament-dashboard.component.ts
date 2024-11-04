@@ -1,3 +1,4 @@
+import { TournamentCodeService } from './../../core/services/tournament-code.service';
 import { Component } from '@angular/core';
 import { AdminService } from '../../core/services/admin.service';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
@@ -27,11 +28,10 @@ export class TournamentDashboardComponent {
     matchDays: []
   };
 
-  constructor(private adminService: AdminService, private router: Router){}
+  constructor(private adminService: AdminService, private router: Router, private tournamentCodeService:TournamentCodeService){}
 
   ngOnInit() {
-    const url = window.location.href;
-    this.code = url.split('/').pop() || '';
+    this.code=this.tournamentCodeService.getTournamentCode();
     this.adminService.getTournament(this.code).subscribe({
       next: (response) => {
         console.log('Torneo obtenido:', response)
