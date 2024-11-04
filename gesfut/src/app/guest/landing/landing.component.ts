@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
@@ -11,5 +11,9 @@ import { RouterModule } from '@angular/router';
 
 export class LandingComponent {
 
-  
+  constructor(private router: Router) { }
+
+  toRegister() {
+    this.router.navigate(['/auth/singup']);
+  }
 }

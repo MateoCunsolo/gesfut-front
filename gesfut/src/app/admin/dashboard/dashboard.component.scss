@@ -35,9 +35,9 @@
 @media screen and (max-width: 1000px) {
     .cards {
         gap: 20px;
-        height: auto;
-        margin-top: 10rem;
-
+        height: calc(100vh - 80px);
+        margin: 0px;
+        align-content: center;
     }
 
     .card {
