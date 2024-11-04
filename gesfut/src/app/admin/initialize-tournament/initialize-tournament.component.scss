@@ -1,0 +1,192 @@
+.grid-conteiner{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 70vh;
+    width: 100%;
+}
+
+.col-1-teams-all{
+    display: flex;
+    flex-direction: column;
+    border-right: solid rgb(218, 218, 218) 2px;
+    padding: 20px;
+}
+
+.col-2-teams-tournament{
+    display: flex;
+    flex-direction: column;
+    border-left: solid rgb(218, 218, 218) 2px;
+    padding: 20px;
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    height: calc(100vh - 160px);
+    padding: 50px;
+}
+
+.title{
+    font-size: 2rem;
+}
+
+.title-sec{
+    font-size: 1.8rem;
+    padding: 10px 0px;
+}
+
+.black{
+    color: black;
+}
+
+.green{
+    color: var(--secondary-color);
+}
+
+.overflox{
+    overflow: auto;
+    height: 300px;
+}
+
+
+.search{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: solid 1px rgb(218, 218, 218);
+    gap: 5px;
+}
+
+.search-team{
+    padding: 10px;
+    border: solid 1px rgb(218, 218, 218);
+    width: 100%;
+    height: 30px;
+    margin-bottom:15px;
+}
+
+.search-team:focus{
+    outline: none;
+}
+
+.search-btn{
+    border: solid 1px rgb(218, 218, 218);
+    cursor: pointer;
+    height: 30px;
+    width: 15%;
+}
+
+.search-btn:hover{
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+
+.buttons{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding: 20px;
+    width: 100%;
+    gap: 10px;
+}
+
+.btn{
+    padding: 10px 5px;
+    border-radius: 5px;
+    border: solid var(--primary-color) .5px;
+    margin: 10px 0px;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+}
+
+.btn-new-team{
+    background-color: rgb(218, 218, 218);
+    color: rgb(81, 81, 81);
+}
+
+.btn-new-team:hover{
+    background-color: grey;
+    color: white;
+}
+
+.btn-init-tournament{
+    background-color: var(--secondary-color);
+    
+}
+
+.btn-init-tournament:hover{
+    background-color: var(--primary-color);
+    color: white;
+}
+
+
+.team-section{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: solid 1px rgb(218, 218, 218);
+    font-size: 2rem;
+}
+
+
+.team-section > li{
+    text-decoration: none;
+    color: black;
+    list-style: none;
+}
+
+
+.btn-teams{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+}
+
+.icon{
+    width: 30px;
+    height: 30px;
+    border: solid 1px rgb(218, 218, 218);
+    padding: 4px;
+    border-radius: 5px;
+}
+
+.icon:hover{
+    cursor: pointer;
+}
+
+
+.name{
+    width: 90%;
+}
+
+.btn-back {
+    padding: 10px 25px;
+}
+
+
+@media screen and (max-width: 1000px){
+    .grid-conteiner{
+        grid-template-columns: 1fr;
+        height: 100%;
+    }
+
+    .col-1-teams-all{
+        border-right: none;
+    }
+
+    .col-2-teams-tournament{
+        border-left: none;
+    }
+
+    .center{
+        height: auto;
+    }
+}

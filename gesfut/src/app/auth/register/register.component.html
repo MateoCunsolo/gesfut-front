@@ -1,0 +1,103 @@
+<section>
+  <div class="form">
+    <div class="img-container">
+      <img src="/register-image.jpg" />
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <h2 class="title">Registrate!</h2>
+      <div class="error-message">
+        <p class="error">{{ error }}</p>
+      </div>
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <div class="form-group input-icon">
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Nombre"
+        />
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="error-message">
+        @if(registerForm.controls['name'].getError('required') &&
+        registerForm.controls['name'].touched) {
+        <p class="error">El nombre es requerido</p>
+        } @if(registerForm.controls['name'].getError('minlength') &&
+        registerForm.controls['name'].touched) {
+        <p class="error">El nombre debe tener al menos 2 caracteres</p>
+        } @if(registerForm.controls['name'].getError('maxlength') &&
+        registerForm.controls['name'].touched) {
+        <p class="error">El nombre puede tener como máximo 50 caracteres</p>
+        }
+      </div>
+
+      <div class="form-group input-icon">
+        <input
+          id="lastName"
+          type="text"
+          formControlName="lastName"
+          placeholder="Apellido"
+        />
+        <i class="fas fa-user"></i>
+      </div>
+
+      <div class="error-message">
+        @if(registerForm.controls['lastName'].getError('required') &&
+        registerForm.controls['lastName'].touched) {
+        <p class="error">El apellido es requerido</p>
+        } @if(registerForm.controls['lastName'].getError('minlength') &&
+        registerForm.controls['lastName'].touched) {
+        <p class="error">El apellido debe tener al menos 2 caracteres</p>
+        } @if(registerForm.controls['lastName'].getError('maxlength') &&
+        registerForm.controls['lastName'].touched) {
+        <p class="error">El apellido puede tener como máximo 50 caracteres</p>
+        }
+      </div>
+
+      <div class="form-group input-icon">
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Correo electrónico"
+        />
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div class="error-message">
+        @if(registerForm.controls['email'].getError('required') &&
+        registerForm.controls['email'].touched) {
+        <p class="error">El correo electrónico es requerido</p>
+        } @if(registerForm.controls['email'].getError('email') &&
+        registerForm.controls['email'].touched) {
+        <p class="error">Ingrese un correo electrónico válido</p>
+        }
+      </div>
+
+      <div class="form-group input-icon">
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Contraseña"
+        />
+        <i class="fas fa-lock"></i>
+      </div>
+
+      <div class="error-message">
+        @if(registerForm.controls['password'].getError('required') &&
+        registerForm.controls['password'].touched) {
+        <p class="error">La contraseña es requerida</p>
+        } @if(registerForm.controls['password'].getError('minlength') &&
+        registerForm.controls['password'].touched) {
+        <p class="error">La contraseña debe tener al menos 8 caracteres</p>
+        }
+      </div>
+
+      <button type="submit" class="submit-button">ENVIAR</button>
+    </form>
+  </div>
+</section>
