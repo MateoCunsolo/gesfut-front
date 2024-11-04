@@ -29,7 +29,7 @@ export class CreateTeamComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    for(let i = 0; i<6; i++){
+    for(let i = 0; i<2; i++){
       this.addPlayer();
     }
   }
