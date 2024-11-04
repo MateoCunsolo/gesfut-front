@@ -1,29 +1,19 @@
 nav{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
     height: 50px;
+    gap: 50px;
+    font-size: 1.5rem;    
 }
 
 nav a{
-    cursor: pointer;
     text-decoration: none;
-    font-size: 2rem;
+    color: black;
     font-weight: bold;
-    color: rgb(86, 86, 86);
 }
 
 nav a:hover{
-    color: black;
+    color: var(--primary-color);
 }
 
-
-nav ul{
-    display: flex;
-    list-style: none;
-    gap: 20px;
-}
-
-nav ul li{
-    margin: 0 10px;
-}
