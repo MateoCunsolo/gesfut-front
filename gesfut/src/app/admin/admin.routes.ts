@@ -6,6 +6,7 @@ import { CreateTeamComponent } from './create-team/create-team.component';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
 import { TournamentDashboardComponent } from './tournament-dashboard/tournament-dashboard.component';
 import { InitializeTournamentComponent } from './initialize-tournament/initialize-tournament.component';
+import { ListMatchDaysComponent } from './list-match-days/list-match-days.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -25,9 +26,12 @@ export const ADMIN_ROUTES: Routes = [
     }
     ,
     {
+        path: 'tournaments/:code/match-days' , component: ListMatchDaysComponent
+    }
+    ,
+    {
         path: '**', redirectTo:''
     }
-    
 ];
 
 
