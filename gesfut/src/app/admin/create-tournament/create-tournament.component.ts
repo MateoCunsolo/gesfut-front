@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TournamentRequest } from '../../core/models/tournamentRequest';
 import { AdminService } from '../../core/services/admin.service';
 import { FooterComponent } from "../../shared/footer/footer.component";
+import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 
 @Component({
   selector: 'app-create-tournament',
@@ -18,9 +19,9 @@ import { FooterComponent } from "../../shared/footer/footer.component";
 
 export class CreateTournamentComponent {
   createTournamentForm: FormGroup;
-  code: string = '';
 
   constructor(
+    private tournamentCurrent: TouranmentCurrentService,
     private adminService: AdminService,
     private fb: FormBuilder, 
     private router:Router) {
@@ -34,15 +35,14 @@ export class CreateTournamentComponent {
       let tournament: TournamentRequest = { name: this.createTournamentForm.value.name };
       this.adminService.createTournament(tournament).subscribe({
         next: (response) => {
-          console.log('Torneo creado:', response)
-          this.code = response.code;
+          this.tournamentCurrent.setTournamentCurrent(response);
         },
         error: (err) => {
           console.log(err);
         },
         complete: () => {
           console.log('Creacion del torneo completado.');
-          this.router.navigate([`/admin/tournaments/${this.code}`]);
+          this.router.navigate([`/admin/tournaments`]);
         }
       });
     }

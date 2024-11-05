@@ -55,13 +55,13 @@ export class InitializeTournamentComponent {
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {
           console.log(response);
+          this.route.navigateByUrl('/admin/tournaments');
         },
         error: (err) => {
           console.error(err);
         },
         complete: () => {
           console.log('TOURNAMENT INITIALIZED');
-          this.route.navigateByUrl('/admin/tournaments/' + this.code);
         }
       });
     }else{
@@ -94,6 +94,6 @@ export class InitializeTournamentComponent {
 
   toBack(){
     alert("¿Está seguro de que desea salir? Se perderán los cambios realizados");
-    this.route.navigate(['/admin/tournaments/'+this.code]);
+    this.route.navigate(['/admin/tournaments']);
   }
 }
