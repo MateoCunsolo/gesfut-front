@@ -7,7 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { SessionService } from './session.service';
 import { TeamResponse } from '../models/teamResponse';
 import { InitializeRequest } from '../models/initializeRequest';
-import { TournamentCodeService } from './tournament-code.service';
+import { TournamentResponseShort } from '../models/tournamentResponseShort';
+import { TouranmentCurrentService } from './tournamentCurrent';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +16,39 @@ import { TournamentCodeService } from './tournament-code.service';
 export class AdminService {
   private url = 'http://localhost:8080/api/v1';
   
-  private tournamentSubject = new BehaviorSubject<TournamentResponseFull | null>(null);
-  tournamentData$ = this.tournamentSubject.asObservable();
-
   private sessionService = inject(SessionService);
   private http = inject(HttpClient);
-  private codeService = inject(TournamentCodeService);
+  private tournamentCurrent = inject(TouranmentCurrentService);
+
+
+  getTournamentShort(): Observable<TournamentResponseShort[]> {
+    const userCurrent = this.sessionService.isAuth();
+    if (!userCurrent) {
+      return new Observable<TournamentResponseShort[]>();
+    }
+    return this.http.get<TournamentResponseShort[]>(`${this.url}/tournaments/short`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }
+    }).pipe(
+      tap((response) => {
+        console.log('Torneos obtenidos:', response);
+      }),
+      map((response) => {
+        return response.map((tournament: TournamentResponseShort) => ({
+          name: tournament.name,
+          code: tournament.code,
+          startDate: tournament.startDate,
+          isFinished: tournament.isFinished
+        }));
+      })
+    );
+  }
+
+
 
   getTournament(code: string): Observable<TournamentResponseFull> {
-    const currentTournament = this.tournamentSubject.getValue();
-    if (currentTournament && currentTournament.code === code) {
-      return of(currentTournament);
-    }
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
       return new Observable<TournamentResponseFull>();
@@ -41,8 +63,13 @@ export class AdminService {
     }).pipe(
       tap((response) => {
         console.log('Torneo obtenido:', response);
-        this.tournamentSubject.next(response); // Actualizamos el BehaviorSubject con el nuevo valor
-        this.codeService.setTournamentCode(response.code);
+        let tournamentCurrent : TournamentResponseShort = {
+          code: response.code,
+          name: response.name,
+          startDate: response.startDate,
+          isFinished: response.isFinished
+        }
+        this.tournamentCurrent.setTournamentCurrent(tournamentCurrent);
       }),
       map((response: TournamentResponseFull) => ({
         name: response.name,
@@ -56,10 +83,11 @@ export class AdminService {
     );
   }
 
-  createTournament(tournament: TournamentRequest): Observable<TournamentResponse> {
+
+  createTournament(tournament: TournamentRequest): Observable<TournamentResponseShort> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
-      return new Observable<TournamentResponse>();
+      return new Observable<TournamentResponseShort>();
     }
 
     const token = sessionStorage.getItem('token');
@@ -69,11 +97,15 @@ export class AdminService {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      responseType: 'text' as 'json' // Se especifica que la respuesta es texto
+      responseType: 'text' as 'json'
     }).pipe(
       map((response: string) => {
-        const tournamentResponse: TournamentResponse = {
-          code: response
+        let date = new Date();
+        const tournamentResponse: TournamentResponseShort = {
+          code: response,
+          name: tournament.name,
+          startDate: date.toISOString(),
+          isFinished: false
         };
         return tournamentResponse;
       })
@@ -120,10 +152,6 @@ export class AdminService {
         code: response
       }))
     );
-  }
-
-  clearTournamentData(): void {
-    this.tournamentSubject.next(null);
   }
 
 }

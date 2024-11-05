@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     gap: 118px;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 188px);
     font-weight: bold;
 }
 
@@ -25,9 +25,23 @@
     background-color: #f0f0f0;
 }
 
+.back{
+    margin: 20px;
+}
+
 .icon{   
     width: 118px;
     height: 118px;
+
+}
+
+.title{
+    width: 100%;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    background-color: var(--secondary-color);
+    padding: 5px;
 
 }
 
@@ -57,5 +71,5 @@
 }
 
 .heigtret{
-    height: calc(100vh - 130px);
+    height: calc(100vh - 238px);
 }

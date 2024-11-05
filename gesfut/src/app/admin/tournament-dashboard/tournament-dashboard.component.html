@@ -1,6 +1,13 @@
+<h2 class="title"> {{this.name +" - "+this.date }} </h2>
+
 @if (this.tournament.participants.length > 0) {
     <app-navbar></app-navbar>
 }
+
+
+
+
+
 <section class="cards" [class.heigtret]="this.tournament.participants.length > 0">
 
     <article (click)="toInitializeTournament()" class="card" [class.disabled-card]="this.tournament.participants.length > 0">

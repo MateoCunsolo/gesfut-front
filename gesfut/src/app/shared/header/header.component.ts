@@ -15,7 +15,8 @@ export class HeaderComponent {
   isLoggedIn: boolean = false;
   name: string = '';
 
-  constructor(private sessionService: SessionService, private route: Router) {}
+  constructor(private sessionService: SessionService, private route: Router) { }
+
 
   ngOnInit(): void {
     this.sessionService.userLoginOn.subscribe((loggedIn) => {
