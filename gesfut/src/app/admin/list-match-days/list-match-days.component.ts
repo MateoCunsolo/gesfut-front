@@ -18,11 +18,19 @@ export class ListMatchDaysComponent implements OnInit, OnDestroy {
   tournament: TournamentResponseFull | null = null;
   private subscription: Subscription | null = null;
   selectedMatchDay = 0;
-
-  constructor(private adminService: AdminService) {}
+  code: string | null = null;
+  constructor(private adminService: AdminService, private routeActive: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.subscription = this.adminService.getTournament("be3a2687-5291-4617-bb1a-ed03406bc2fd").subscribe({
+    this.routeActive.paramMap.subscribe({
+      next: (paramMap) => {
+        this.code = paramMap.get('code');
+      }
+    });
+    
+    
+    
+    this.subscription = this.adminService.getTournament(this.code).subscribe({
       next: (response) => {
         this.tournament = response;
         this.sortMatchDays(); // Llama a la función para ordenar matchDays

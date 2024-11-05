@@ -22,7 +22,7 @@ export class ListTournamentsComponent {
   constructor(private adminService: AdminService, private route:Router, private tournamentCurrent: TouranmentCurrentService) {}
 
   ngOnInit(): void {``
-    this.adminService.getTournamentShort().subscribe(
+    this.adminService.getTournamentShortList().subscribe(
       data => {
         this.tournaments = data;
         this.applyFilters();

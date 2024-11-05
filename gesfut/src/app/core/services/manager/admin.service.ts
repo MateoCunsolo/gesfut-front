@@ -21,8 +21,7 @@ export class AdminService {
   private http = inject(HttpClient);
   private tournamentCurrent = inject(TouranmentCurrentService);
 
-
-  getTournamentShort(): Observable<TournamentResponseShort[]> {
+  getTournamentShortList(): Observable<TournamentResponseShort[]> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
       return new Observable<TournamentResponseShort[]>();
@@ -41,15 +40,45 @@ export class AdminService {
           name: tournament.name,
           code: tournament.code,
           startDate: tournament.startDate,
-          isFinished: tournament.isFinished
+          isFinished: tournament.isFinished,
+          haveParticipants: tournament.haveParticipants
         }));
       })
     );
   }
 
+  getTournamentShort(code: string): Observable<TournamentResponseShort> {
+    const userCurrent = this.sessionService.isAuth();
+    if (!userCurrent) {
+      return new Observable<TournamentResponseShort>();
+    }
+    return this.http.get<TournamentResponseShort>(`${this.url}/tournaments/short/${code}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }
+    }).pipe(
+      tap((response) => {
+        console.log('Torneos obtenidos:', response);
+      }),
+      map((tournament: TournamentResponseShort) => ({
+        name: tournament.name,
+        code: tournament.code,
+        startDate: tournament.startDate,
+        isFinished: tournament.isFinished,
+        haveParticipants: tournament.haveParticipants
+      }))
+    );
+  }
 
 
-  getTournament(code: string): Observable<TournamentResponseFull> {
+
+
+
+
+
+  getTournament(code: string | null
+  ): Observable<TournamentResponseFull> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
       return new Observable<TournamentResponseFull>();
@@ -62,16 +91,6 @@ export class AdminService {
         'Authorization': `Bearer ${token}`
       }
     }).pipe(
-      tap((response) => {
-        console.log('Torneo obtenido:', response);
-        let tournamentCurrent : TournamentResponseShort = {
-          code: response.code,
-          name: response.name,
-          startDate: response.startDate,
-          isFinished: response.isFinished
-        }
-        this.tournamentCurrent.setTournamentCurrent(tournamentCurrent);
-      }),
       map((response: TournamentResponseFull) => ({
         name: response.name,
         code: response.code,

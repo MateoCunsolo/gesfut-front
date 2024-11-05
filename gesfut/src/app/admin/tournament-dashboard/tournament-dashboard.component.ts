@@ -6,6 +6,7 @@ import { FooterComponent } from "../../shared/footer/footer.component";
 import { routes } from '../../app.routes';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
+import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 
 @Component({
   selector: 'app-tournament-dashboard',
@@ -21,14 +22,12 @@ export class TournamentDashboardComponent {
   name:string = '';
   date:string = '';
 
-  tournament: TournamentResponseFull = {
+  tournament: TournamentResponseShort = {
     name: '',
     code: '',
     startDate: '',
-    manager: '',
     isFinished: false,
-    participants: [],
-    matchDays: []
+    haveParticipants: false,  
   };
 
   constructor(private adminService: AdminService, private router: Router, private activatedRoute:ActivatedRoute) { }
@@ -41,8 +40,11 @@ export class TournamentDashboardComponent {
         }
       }
     })
+
+
+
     if (this.code) {
-      this.adminService.getTournament(this.code).subscribe({
+      this.adminService.getTournamentShort(this.code).subscribe({
         next: (response) => {
           console.log('Torneo obtenido:', response)
           this.tournament = response;
@@ -56,6 +58,9 @@ export class TournamentDashboardComponent {
       });
     }
   }
+
+  
+
 
   toInitializeTournament() {
     console.log('Redirigiendo a inicializar torneo');

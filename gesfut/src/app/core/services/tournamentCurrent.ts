@@ -11,7 +11,8 @@ export class TouranmentCurrentService {
     code: '1',
     name: '1',
     startDate: '1',
-    isFinished: false
+    isFinished: false,
+    haveParticipants: false
   }
 
 
