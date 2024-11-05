@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { TournamentRequest } from '../../core/models/tournamentRequest';
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 

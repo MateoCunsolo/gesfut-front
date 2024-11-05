@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TeamRequest } from '../models/teamRequest';
+import { TeamRequest } from '../../models/teamRequest';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { SessionService } from './session.service';
+import { SessionService } from '../manager/session.service';
 
 @Injectable({
   providedIn: 'root'

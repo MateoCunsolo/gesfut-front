@@ -8,6 +8,7 @@ import { TournamentDashboardComponent } from './tournament-dashboard/tournament-
 import { InitializeTournamentComponent } from './initialize-tournament/initialize-tournament.component';
 import { ListMatchDaysComponent } from './list-match-days/list-match-days.component';
 import { ListTournamentsComponent } from './list-tournaments/list-tournaments.component';
+
 export const ADMIN_ROUTES: Routes = [
     {
         path: '', component: DashboardComponent

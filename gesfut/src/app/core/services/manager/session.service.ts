@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AuthResponse } from '../models/authResponse';
+import { AuthResponse } from '../../models/authResponse';
 import { Router } from '@angular/router';
 
 @Injectable({

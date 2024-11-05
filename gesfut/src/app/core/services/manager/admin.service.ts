@@ -1,20 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { TournamentRequest } from '../models/tournamentRequest';
+import { TournamentRequest } from '../../models/tournamentRequest';
 import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { TournamentResponse, TournamentResponseFull } from '../models/tournamentResponse';
+import { TournamentResponse, TournamentResponseFull } from '../../models/tournamentResponse';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from './session.service';
-import { TeamResponse } from '../models/teamResponse';
-import { InitializeRequest } from '../models/initializeRequest';
-import { TournamentResponseShort } from '../models/tournamentResponseShort';
-import { TouranmentCurrentService } from './tournamentCurrent';
+import { TeamResponse } from '../../models/teamResponse';
+import { InitializeRequest } from '../../models/initializeRequest';
+import { TournamentResponseShort } from '../../models/tournamentResponseShort';
+import { TouranmentCurrentService } from '../tournamentCurrent';
+import { environment } from '../../../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-  private url = 'http://localhost:8080/api/v1';
+  private url = environment.apiUrl;
   
   private sessionService = inject(SessionService);
   private http = inject(HttpClient);

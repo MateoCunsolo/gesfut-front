@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';

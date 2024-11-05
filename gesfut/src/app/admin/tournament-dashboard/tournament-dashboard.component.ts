@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../../shared/footer/footer.component";
@@ -38,6 +38,8 @@ export class TournamentDashboardComponent {
     this.name = this.tournamentCurrent.getTournamentCurrent().name.toUpperCase();
     this.date = this.tournamentCurrent.getTournamentCurrent().startDate.toString().split('T')[0].split('-').reverse().join('/');
 
+
+    //
     if (this.code) {
       this.adminService.getTournament(this.code).subscribe({
         next: (response) => {
