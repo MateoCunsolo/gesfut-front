@@ -1,8 +1,7 @@
 
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/manager/auth.service';
 import { RegisterRequest } from '../../core/models/registerRequest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';

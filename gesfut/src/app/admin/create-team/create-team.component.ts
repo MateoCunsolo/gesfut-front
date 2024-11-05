@@ -2,7 +2,7 @@ import { PlayerRequest, TeamRequest } from './../../core/models/teamRequest';
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TeamService } from '../../core/services/team.service';
+import { TeamService } from '../../core/services/tournament/team.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 

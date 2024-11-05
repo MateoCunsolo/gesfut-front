@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
+<<<<<<< HEAD
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AdminService } from '../../core/services/admin.service';
+=======
+import { Component, OnInit } from '@angular/core';
+import { AdminService } from '../../core/services/manager/admin.service';
+import { TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+>>>>>>> 848f34191997f5be98029c418a71efa75df80dbc
 import { Subscription } from 'rxjs';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 

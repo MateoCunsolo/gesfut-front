@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { SessionService } from './../../core/services/session.service';
+import { SessionService } from '../../core/services/manager/session.service';
 import { Component } from '@angular/core';
 import { UserComponent } from '../../shared/user/user.component';
 
@@ -15,7 +15,8 @@ export class HeaderComponent {
   isLoggedIn: boolean = false;
   name: string = '';
 
-  constructor(private sessionService: SessionService, private route: Router) {}
+  constructor(private sessionService: SessionService, private route: Router) { }
+
 
   ngOnInit(): void {
     this.sessionService.userLoginOn.subscribe((loggedIn) => {

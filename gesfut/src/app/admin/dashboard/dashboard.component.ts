@@ -17,3 +17,4 @@ export class DashboardComponent {
     this.router.navigate([`/admin/${route}`]);
   }
 }
+  

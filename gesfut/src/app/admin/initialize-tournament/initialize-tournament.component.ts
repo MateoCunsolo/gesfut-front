@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TeamRequest } from '../../core/models/teamRequest';
 import { NavbarComponent } from "../navbar/navbar.component";
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -55,13 +55,13 @@ export class InitializeTournamentComponent {
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {
           console.log(response);
+          this.route.navigateByUrl('/admin/tournaments');
         },
         error: (err) => {
           console.error(err);
         },
         complete: () => {
           console.log('TOURNAMENT INITIALIZED');
-          this.route.navigateByUrl('/admin/tournaments/' + this.code);
         }
       });
     }else{
@@ -94,6 +94,6 @@ export class InitializeTournamentComponent {
 
   toBack(){
     alert("¿Está seguro de que desea salir? Se perderán los cambios realizados");
-    this.route.navigate(['/admin/tournaments/'+this.code]);
+    this.route.navigate(['/admin/tournaments']);
   }
 }
