@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
-import { SessionService } from '../../core/services/session.service';
+import { SessionService } from '../../core/services/manager/session.service'
 import { Router } from '@angular/router';
 
 @Component({

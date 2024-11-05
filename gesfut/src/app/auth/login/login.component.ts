@@ -1,9 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ChangeDetectionStrategy } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/manager/auth.service';
 import { LoginRequest } from '../../core/models/loginRequest';
-import { SessionService } from '../../core/services/session.service';
+import { SessionService } from '../../core/services/manager/session.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from "../../shared/footer/footer.component";

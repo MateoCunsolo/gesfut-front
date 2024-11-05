@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { Router } from '@angular/router';
 import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 

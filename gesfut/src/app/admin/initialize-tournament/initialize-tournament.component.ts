@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TeamRequest } from '../../core/models/teamRequest';
 import { NavbarComponent } from "../navbar/navbar.component";
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';

@@ -1,5 +1,5 @@
 import { Router, type CanActivateFn } from '@angular/router';
-import { SessionService } from '../services/session.service';
+import { SessionService } from '../services/manager/session.service';
 import { inject } from '@angular/core';
 
 export const isAuthGuard: CanActivateFn = (route, state) => {
