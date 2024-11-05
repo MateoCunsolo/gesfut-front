@@ -34,14 +34,7 @@ export class ListTournamentsComponent {
   }
 
   toTournament(code:string){
-    let tournament = this.tournaments.find(tournament => tournament.code === code);
-    if (tournament) {
-      this.tournamentCurrent.setTournamentCurrent(tournament);
-    }else{
-      alert('Torneo no encontrado');
-    }
-    this.route.navigate(['/admin/tournaments']);
-
+    this.route.navigate([`/admin/tournaments/${code}`]);
   }
 
   applyFilters(): void {

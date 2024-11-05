@@ -4,7 +4,7 @@ import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { routes } from '../../app.routes';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 
 @Component({
@@ -16,7 +16,7 @@ import { TouranmentCurrentService } from '../../core/services/tournamentCurrent'
 })
 export class TournamentDashboardComponent {
 
-  code:string = '';
+  code: string | null = null;
   flag:boolean = false;
   name:string = '';
   date:string = '';
@@ -31,15 +31,16 @@ export class TournamentDashboardComponent {
     matchDays: []
   };
 
-  constructor(private adminService: AdminService, private router: Router, private tournamentCurrent: TouranmentCurrentService) { }
+  constructor(private adminService: AdminService, private router: Router, private activatedRoute:ActivatedRoute) { }
 
   ngOnInit() {
-    this.code = this.tournamentCurrent.getTournamentCurrent().code;
-    this.name = this.tournamentCurrent.getTournamentCurrent().name.toUpperCase();
-    this.date = this.tournamentCurrent.getTournamentCurrent().startDate.toString().split('T')[0].split('-').reverse().join('/');
-
-
-    //
+    this.activatedRoute.paramMap.subscribe({
+      next: (param) => {
+        if(param.get('code')){
+          this.code = param.get('code');
+        }
+      }
+    })
     if (this.code) {
       this.adminService.getTournament(this.code).subscribe({
         next: (response) => {

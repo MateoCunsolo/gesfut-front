@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CreateTeamComponent } from './create-team/create-team.component';
@@ -8,6 +7,7 @@ import { TournamentDashboardComponent } from './tournament-dashboard/tournament-
 import { InitializeTournamentComponent } from './initialize-tournament/initialize-tournament.component';
 import { ListMatchDaysComponent } from './list-match-days/list-match-days.component';
 import { ListTournamentsComponent } from './list-tournaments/list-tournaments.component';
+import { tournamentExistsGuard } from '../core/guards/tournamentExists.guard'; // Asegúrate de que la ruta es correcta
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -23,17 +23,19 @@ export const ADMIN_ROUTES: Routes = [
         path: 'tournaments/list', component: ListTournamentsComponent
     },
     {
-        path: 'tournaments', component: TournamentDashboardComponent 
+        path: 'tournaments/:code', component: TournamentDashboardComponent , canActivate: [tournamentExistsGuard]
     },
     {
-        path: 'tournaments/:code/initialize', component: InitializeTournamentComponent
+        path: 'tournaments/:code/initialize', 
+        component: InitializeTournamentComponent,
+        canActivate: [tournamentExistsGuard] // Agregamos el guard aquí
     },
     {
-        path: 'tournaments/:code/match-days', component: ListMatchDaysComponent
+        path: 'tournaments/:code/match-days', 
+        component: ListMatchDaysComponent,
+        canActivate: [tournamentExistsGuard] // Agregamos el guard aquí
     },
     {
         path: '**', redirectTo: ''
     }
 ];
-
-

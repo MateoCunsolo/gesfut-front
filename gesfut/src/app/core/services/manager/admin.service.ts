@@ -85,32 +85,21 @@ export class AdminService {
   }
 
 
-  createTournament(tournament: TournamentRequest): Observable<TournamentResponseShort> {
+  createTournament(tournament: TournamentRequest): Observable<TournamentResponse> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
-      return new Observable<TournamentResponseShort>();
+      return new Observable<TournamentResponse>();
     }
 
     const token = sessionStorage.getItem('token');
 
-    return this.http.post<string>(`${this.url}/tournaments`, tournament, {
+    return this.http.post<TournamentResponse>(`${this.url}/tournaments`, tournament, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       responseType: 'text' as 'json'
-    }).pipe(
-      map((response: string) => {
-        let date = new Date();
-        const tournamentResponse: TournamentResponseShort = {
-          code: response,
-          name: tournament.name,
-          startDate: date.toISOString(),
-          isFinished: false
-        };
-        return tournamentResponse;
-      })
-    );
+    });
   }
 
   getTeams(): Observable<TeamResponse[]> {
