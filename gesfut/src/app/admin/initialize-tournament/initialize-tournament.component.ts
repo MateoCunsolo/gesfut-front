@@ -55,7 +55,7 @@ export class InitializeTournamentComponent {
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {
           console.log(response);
-          this.route.navigateByUrl('/admin/tournaments');
+          this.route.navigateByUrl('/admin/tournaments/' + this.code);
         },
         error: (err) => {
           console.error(err);

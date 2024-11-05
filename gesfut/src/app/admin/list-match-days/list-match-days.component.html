@@ -1,11 +1,15 @@
 <section>
     <div class="title-container">
-        <h2 class="title">Fechas</h2>
-        <!--     <div class="match-days">
-                <ng-container>
-        
-                </ng-container>
-            </div> -->
+        <div>
+            <h2 class="title play-bold">Fechas</h2>
+            <div class="matchdays">
+                @for (day of this.tournament?.matchDays; track day.numberOfMatchDay) {
+                    <button class="base-button" (click)="updateMatchDay(day.numberOfMatchDay)">{{day.numberOfMatchDay+1}}</button>
+                  } @empty {
+                    Cargando...
+                  }
+            </div>
+        </div>
         <hr>
     </div>
     <div class="matches">
@@ -14,12 +18,12 @@
                 <ng-container *ngFor="let match of tournament.matchDays[selectedMatchDay].matches">
                     <div class="match">
                         <div class="versus">
-                            <p>{{ match.homeTeam }}</p>
+                            <p>{{ match.homeTeam.toUpperCase()}}</p>
                             <p>{{match.homeGoals}}</p>
                             <p>{{match.awayGoals}}</p>
-                            <p>{{ match.awayTeam }}</p>
+                            <p>{{ match.awayTeam.toUpperCase()}}</p>
                         </div>
-                        <div class="hour"><p>09:12</p></div>
+                        <div class="hour"><p>09:12 HS</p></div>
                         <div class="complex"><p>Complejo</p></div>
                         <button class="base-button"> CARGAR EVENTOS </button>
                     </div>
@@ -34,5 +38,8 @@
                 <p>No hay datos del torneo disponibles.</p>
             </ng-template>
         }
+    </div>
+    <div>
+        <button class="base-button">CERRAR FECHA</button>
     </div>
 </section>

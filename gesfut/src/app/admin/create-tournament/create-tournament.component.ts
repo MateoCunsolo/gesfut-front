@@ -7,6 +7,7 @@ import { TournamentRequest } from '../../core/models/tournamentRequest';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
+import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 
 @Component({
   selector: 'app-create-tournament',
@@ -33,16 +34,15 @@ export class CreateTournamentComponent {
   onSubmit() {
     if (this.createTournamentForm.valid) {
       let tournament: TournamentRequest = { name: this.createTournamentForm.value.name };
+      console.log("torneo antes del llamado: " + tournament);
       this.adminService.createTournament(tournament).subscribe({
         next: (response) => {
-          this.tournamentCurrent.setTournamentCurrent(response);
+          console.log('Creacion del torneo completado.');
+          console.log("torneo response: " + response);
+          this.router.navigate([`/admin/tournaments/${response}`]);
         },
         error: (err) => {
           console.log(err);
-        },
-        complete: () => {
-          console.log('Creacion del torneo completado.');
-          this.router.navigate([`/admin/tournaments`]);
         }
       });
     }

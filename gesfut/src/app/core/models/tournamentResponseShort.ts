@@ -3,4 +3,5 @@ export interface TournamentResponseShort {
     name: string;
     startDate: string;
     isFinished: boolean;
+    haveParticipants: boolean;
 }
