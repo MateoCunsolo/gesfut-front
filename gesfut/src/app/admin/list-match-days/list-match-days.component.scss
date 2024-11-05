@@ -4,27 +4,76 @@ section{
     width: 1280px;
     margin: 0 auto;
     height: calc(100vh - 80px);
+    color: var(--font-color);
+    background-color: var(--bg-color);
 }
+
+@media (max-width: 1280px) {
+    section{
+        width: 100%;
+    }
+}
+
 
 .title-container{
     width: 96%;
     margin: 0 auto;
 }
 
+.title-container div:nth-child(1){
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+@media (max-width: 480px) {
+    .title-container div:nth-child(1){
+        flex-direction: column;
+        align-items: start;
+    }
+}
+
+.matchdays{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+@media (max-width: 480px) {
+    .matchdays{
+        margin-bottom: 8px;
+    }
+}
+
+.matchdays button{
+    font-size: 24px;
+    color: white;
+    height: 32px;
+    width: 32px;
+}
+
 .title {
     font-size: 28px;
     color: var(--primary-color);
-    margin: 24px 0;
+    margin: 8px 0;
+}
+
+
+.match-days button{
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
 }
 
 /* Estilos generales para el <hr> */
 hr {
     border: none; /* Sin borde */
     height: 5px; /* Grosor de la línea */
-    background-color: var(--primary-color); /* Color de la línea */
+    background-color: var(--font-color); /* Color de la línea */
     margin: 0 auto;
 }
-
 
 .matches{
     display: flex;
@@ -34,71 +83,101 @@ hr {
     max-height: 600px;
     min-height: 600px;
     overflow-y: scroll;
+    padding: 8px 0;
     margin: 24px 0;
     width: 100%;
     gap: 8px;
 }
 
-.match, .versus{
+
+.match{
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     align-items: center;
     justify-content: center;
-}
-
-.match{
     gap: 8px;
     width: 96%;
     font-size: 24px;
 }
 
-.versus {
-    grid-column: 1/6;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr); /* Define una cuadrícula de 12 columnas */
-    font-size: 24px;
+@media (max-width: 1280px) {
+    .match{
+        font-size: 20px;
+    }
+    .match button:nth-child(4){
+        grid-column: 7/13;
+    }
+    .match .hour:nth-child(2){
+        grid-column: 1/4;
+    }
+    .match .complex:nth-child(3){
+        grid-column: 4/7;
+    }
+}
+  
+@media (max-width: 480px) {
+    .match{
+        font-size: 12px;
+    }
+    .match button:nth-child(4){
+        grid-column: 1/13;
+    }
+    .match .hour:nth-child(2){
+        grid-column: 1/4;
+    }
+    .match .complex:nth-child(3){
+        grid-column: 4/13;
+    }
 }
 
 .versus {
+    grid-column: 1/6;
     display: grid;
     grid-template-columns: repeat(12, 1fr); /* 12 columnas para la estructura */
-    font-size: 24px;
-    border: 1px solid var(--bg-color); /* Borde externo del contenedor */
+    border: 1px solid black; /* Borde externo del contenedor */
+    font-weight: 500;
+}
+@media (max-width: 1280px) {
+    .versus{
+        grid-column: 1/13;
+    }
 }
 
 /* Estilos para los hijos */
 .versus p:nth-child(1) {
     grid-column: 1 / 6;
     text-align: right;
-    border-right: 1px solid var(--bg-color);  /* Borde derecho */
+    border-right: 1px solid black;  /* Borde derecho */
     padding: 4px;
 }
 
 .versus p:nth-child(2) {
     grid-column: 6 / 7;
     text-align: center;
-    border-left: 1px solid var(--bg-color); ; /* Borde izquierdo que coincide con el borde derecho del anterior */
-    border-right: 1px solid var(--bg-color);  /* Borde derecho para la separación con el siguiente */
+    background-color: white;
+    border-left: 1px solid black; ; /* Borde izquierdo que coincide con el borde derecho del anterior */
+    border-right: 1px solid black;  /* Borde derecho para la separación con el siguiente */
     padding: 4px;
 }
 
 .versus p:nth-child(3) {
     grid-column: 7 / 8;
     text-align: center;
-    border-left: 1px solid var(--bg-color);  /* Borde izquierdo que coincide con el borde derecho del anterior */
-    border-right: 1px solid var(--bg-color);  /* Borde derecho */
+    background-color: white;
+    border-left: 1px solid black;  /* Borde izquierdo que coincide con el borde derecho del anterior */
+    border-right: 1px solid black;  /* Borde derecho */
     padding: 4px;
 }
 
 .versus p:nth-child(4) {
     grid-column: 8 / 13;
     text-align: left;
-    border-left: 1px solid var(--bg-color);  /* Borde izquierdo coincidiendo con el borde derecho del anterior */
+    border-left: 1px solid black;  /* Borde izquierdo coincidiendo con el borde derecho del anterior */
     padding: 4px;
 }
 
 .hour, .complex{
-    border: 1px solid var(--bg-color);
+    border: 1px solid black;
     padding: 4px; 
     text-align: center;
 }
@@ -106,6 +185,13 @@ hr {
 .base-button{
     background-color: var(--primary-color);
     color:black;
-    font-size: 24px;
-    height: 32px
+    font-size: 16px;
+    height: 100%;
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .base-button{
+        height: 36px;
+    }
 }
