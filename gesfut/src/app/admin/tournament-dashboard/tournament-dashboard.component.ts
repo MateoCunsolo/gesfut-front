@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { AdminService } from '../../core/services/manager/admin.service';
-import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../../shared/footer/footer.component";
-import { routes } from '../../app.routes';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 
 @Component({
@@ -19,8 +16,6 @@ export class TournamentDashboardComponent {
 
   code: string | null = null;
   flag:boolean = false;
-  name:string = '';
-  date:string = '';
 
   tournament: TournamentResponseShort = {
     name: '',
@@ -40,8 +35,6 @@ export class TournamentDashboardComponent {
         }
       }
     })
-
-
 
     if (this.code) {
       this.adminService.getTournamentShort(this.code).subscribe({

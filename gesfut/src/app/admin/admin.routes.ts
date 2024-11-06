@@ -8,6 +8,7 @@ import { InitializeTournamentComponent } from './initialize-tournament/initializ
 import { ListMatchDaysComponent } from './list-match-days/list-match-days.component';
 import { ListTournamentsComponent } from './list-tournaments/list-tournaments.component';
 import { tournamentExistsGuard } from '../core/guards/tournamentExists.guard'; // Asegúrate de que la ruta es correcta
+import { ListTeamsComponent } from './list-teams/list-teams.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -33,6 +34,11 @@ export const ADMIN_ROUTES: Routes = [
     {
         path: 'tournaments/:code/match-days', 
         component: ListMatchDaysComponent,
+        canActivate: [tournamentExistsGuard] // Agregamos el guard aquí
+    },
+    {
+        path: 'tournaments/:code/teams',
+        component: ListTeamsComponent,
         canActivate: [tournamentExistsGuard] // Agregamos el guard aquí
     },
     {

@@ -8,7 +8,6 @@ import { SessionService } from './session.service';
 import { TeamResponse } from '../../models/teamResponse';
 import { InitializeRequest } from '../../models/initializeRequest';
 import { TournamentResponseShort } from '../../models/tournamentResponseShort';
-import { TouranmentCurrentService } from '../tournamentCurrent';
 import { environment } from '../../../../enviroments/environment';
 
 @Injectable({
@@ -19,7 +18,6 @@ export class AdminService {
   
   private sessionService = inject(SessionService);
   private http = inject(HttpClient);
-  private tournamentCurrent = inject(TouranmentCurrentService);
 
   getTournamentShortList(): Observable<TournamentResponseShort[]> {
     const userCurrent = this.sessionService.isAuth();
@@ -76,14 +74,12 @@ export class AdminService {
 
 
 
-
-  getTournament(code: string | null
-  ): Observable<TournamentResponseFull> {
+  getTournament(code: string | null): Observable<TournamentResponseFull> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
       return new Observable<TournamentResponseFull>();
     }
-
+  
     const token = sessionStorage.getItem('token');
     return this.http.get<TournamentResponseFull>(`${this.url}/tournaments/${code}`, {
       headers: {
@@ -102,8 +98,7 @@ export class AdminService {
       }))
     );
   }
-
-
+  
   createTournament(tournament: TournamentRequest): Observable<TournamentResponse> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {

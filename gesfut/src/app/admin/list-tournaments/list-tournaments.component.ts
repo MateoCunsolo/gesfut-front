@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { Router } from '@angular/router';
-import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 
 @Component({
   selector: 'app-list-tournaments',
@@ -19,9 +18,9 @@ export class ListTournamentsComponent {
   searchQuery: string = '';
   filter: string = 'all';
 
-  constructor(private adminService: AdminService, private route:Router, private tournamentCurrent: TouranmentCurrentService) {}
+  constructor(private adminService: AdminService, private route: Router) { }
 
-  ngOnInit(): void {``
+  ngOnInit(): void {
     this.adminService.getTournamentShortList().subscribe(
       data => {
         this.tournaments = data;
@@ -33,7 +32,11 @@ export class ListTournamentsComponent {
     );
   }
 
-  toTournament(code:string){
+  toBack() {
+    this.route.navigate(['/admin']);
+  }
+
+  toTournament(code: string) {
     this.route.navigate([`/admin/tournaments/${code}`]);
   }
 
@@ -54,7 +57,7 @@ export class ListTournamentsComponent {
     this.searchQuery = query;
     this.applyFilters();
   }
-  
+
   onFilterChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const filter = select.value || 'all';
@@ -67,7 +70,7 @@ export class ListTournamentsComponent {
     this.filter = 'all';
     this.applyFilters();
   }
-  
+
 
 
 }  
