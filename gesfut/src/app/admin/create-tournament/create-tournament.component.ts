@@ -7,6 +7,7 @@ import { TournamentRequest } from '../../core/models/tournamentRequest';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-create-tournament',
@@ -19,15 +20,9 @@ import { TournamentResponseShort } from '../../core/models/tournamentResponseSho
 
 export class CreateTournamentComponent {
 
-  @Output() activeComponent = new EventEmitter<string>();
-
-  changeComponent(component:string) {
-    this.activeComponent.emit(component);
-  }
-
   createTournamentForm: FormGroup;
-
   constructor(
+    private dashboardService: DashboardService,
     private adminService: AdminService,
     private fb: FormBuilder, 
     private router:Router) {
@@ -53,8 +48,11 @@ export class CreateTournamentComponent {
     }
   }
 
-  toBack(){
-    this.router.navigate(['/admin']);
+    
+  changeComponent(component:string){
+    this.dashboardService.setActiveDashboardAdminComponent(component);
   }
-  
+
+
+
 }

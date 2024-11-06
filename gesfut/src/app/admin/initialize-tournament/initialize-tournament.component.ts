@@ -5,6 +5,7 @@ import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-initialize-tournament',
@@ -20,7 +21,20 @@ export class InitializeTournamentComponent {
   code: string = '';
   searchTerm: string = '';
 
-  constructor(private adminService: AdminService, private route:Router) { }
+  constructor(
+    private adminService: AdminService, 
+    private route:Router,
+    private dashboardService: DashboardService
+  ) { }
+
+
+  
+  changeComponent(component:string){
+    this.dashboardService.setActiveTournamentComponent(component);
+  }
+
+
+
 
   ngOnInit(): void {
     this.code = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];

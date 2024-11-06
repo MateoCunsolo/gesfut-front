@@ -122,3 +122,9 @@ li {
   background-color: #555; /* Color del pulgar cuando se pasa el cursor sobre él */
 }
 
+
+.team-name.active {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}

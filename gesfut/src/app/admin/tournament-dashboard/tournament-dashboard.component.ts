@@ -4,6 +4,7 @@ import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-tournament-dashboard',
@@ -25,7 +26,7 @@ export class TournamentDashboardComponent {
     haveParticipants: false,  
   };
 
-  constructor(private adminService: AdminService, private router: Router, private activatedRoute:ActivatedRoute) { }
+  constructor(private adminService: AdminService, private router: Router, private activatedRoute:ActivatedRoute,private dashboardService:DashboardService) { }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe({
@@ -52,17 +53,16 @@ export class TournamentDashboardComponent {
     }
   }
 
-  
+  changeComponent(component:string){
+    this.dashboardService.setActiveTournamentComponent(component);
+
+  } 
 
 
   toInitializeTournament() {
     console.log('Redirigiendo a inicializar torneo');
     console.log('Codigo del torneo:', this.code);
     this.router.navigate(['/admin/tournaments/' + this.code + '/initialize']);
-  }
-
-  toBack() {
-    this.router.navigate(['/admin']);
   }
 
 }
