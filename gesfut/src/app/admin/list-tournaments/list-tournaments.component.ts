@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { Router } from '@angular/router';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-list-tournaments',
@@ -11,20 +12,17 @@ import { Router } from '@angular/router';
   styleUrl: './list-tournaments.component.scss'
 })
 export class ListTournamentsComponent {
-  @Output() activeComponent = new EventEmitter<string>();
 
-  changeComponent(component:string) {
-    this.activeComponent.emit(component);
-  }
+
 
   tournaments: TournamentResponseShort[] = [];
   filteredTournaments: TournamentResponseShort[] = [];
   searchQuery: string = '';
   filter: string = 'all';
 
-  constructor(private adminService: AdminService, private route: Router) { }
+  constructor(private adminService: AdminService, private route: Router, private dashboardService:DashboardService) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
     this.adminService.getTournamentShortList().subscribe(
       data => {
         this.tournaments = data;
@@ -36,9 +34,11 @@ export class ListTournamentsComponent {
     );
   }
 
-  toBack() {
-    this.route.navigate(['/admin']);
+  changeComponent(component:string){
+    this.dashboardService.setActiveDashboardAdminComponent(component);
   }
+
+
 
   toTournament(code: string) {
     this.route.navigate([`/admin/tournaments/${code}`]);

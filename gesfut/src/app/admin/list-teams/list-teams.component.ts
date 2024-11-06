@@ -57,9 +57,6 @@ export class ListTeamsComponent {
         this.teamsFilters = response;
         this.getTeamByID(this.teamsList[0].idParticipant);
       });
-
-    
-
   }
   
   filterTeams() {
