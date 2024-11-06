@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 import { FooterComponent } from "../../shared/footer/footer.component";
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,16 +13,10 @@ import { FooterComponent } from "../../shared/footer/footer.component";
 })
 export class DashboardComponent {
 
-  @Output() activeComponent = new EventEmitter<string>();
+  constructor(private dashboardService:DashboardService) {} 
 
   changeComponent(component:string) {
-    this.activeComponent.emit(component);
-  }
-
-  constructor(private router: Router) {} 
-
-  navigateTo(route:String) {
-    this.router.navigate([`/admin/${route}`]);
+    this.dashboardService.setActiveDashboardAdminComponent(component);
   }
 }
   

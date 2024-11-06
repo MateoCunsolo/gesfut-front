@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,8 +9,12 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-
-  ngOnInit(): void {
   
+  constructor(private dashboardService:DashboardService){
+
+  }
+
+  changeComponent(component:string){
+    this.dashboardService.setActiveTournamentComponent(component);
   }
 }
