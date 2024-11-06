@@ -8,10 +8,11 @@ import { InitializeTournamentComponent } from './initialize-tournament/initializ
 import { ListMatchDaysComponent } from './list-match-days/list-match-days.component';
 import { ListTournamentsComponent } from './list-tournaments/list-tournaments.component';
 import { tournamentExistsGuard } from '../core/guards/tournamentExists.guard'; // Asegúrate de que la ruta es correcta
+import { AdminPageComponent } from './admin-page/admin-page.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
-        path: '', component: DashboardComponent
+        path: '', component: AdminPageComponent
     },
     {
         path: 'crear-equipo', component: CreateTeamComponent 

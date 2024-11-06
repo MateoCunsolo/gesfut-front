@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { Router } from '@angular/router';
@@ -12,7 +12,11 @@ import { TouranmentCurrentService } from '../../core/services/tournamentCurrent'
   styleUrl: './list-tournaments.component.scss'
 })
 export class ListTournamentsComponent {
+  @Output() activeComponent = new EventEmitter<string>();
 
+  changeComponent(component:string) {
+    this.activeComponent.emit(component);
+  }
 
   tournaments: TournamentResponseShort[] = [];
   filteredTournaments: TournamentResponseShort[] = [];

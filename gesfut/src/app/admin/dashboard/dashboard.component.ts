@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 import { FooterComponent } from "../../shared/footer/footer.component";
 
 @Component({
@@ -11,6 +11,13 @@ import { FooterComponent } from "../../shared/footer/footer.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
+
+  @Output() activeComponent = new EventEmitter<string>();
+
+  changeComponent(component:string) {
+    this.activeComponent.emit(component);
+  }
+
   constructor(private router: Router) {} 
 
   navigateTo(route:String) {

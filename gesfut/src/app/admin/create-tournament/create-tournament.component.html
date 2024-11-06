@@ -30,7 +30,7 @@
       @if (!createTournamentForm.get('name')?.hasError('required')) {<small class="oculto">El nombre es obligatorio.</small>}
       @if (createTournamentForm.get('name')?.hasError('required')) {<small>El nombre es obligatorio.</small>}
       <section class="buttons">
-        <button class="btn-back" (click)="toBack()">ATRAS</button>
+        <button class="btn-back" (click)="changeComponent('dashboard')">ATRAS</button>
         <button class="btn-create" type="submit">CREAR TORNEO</button>
       </section>
     </form>
