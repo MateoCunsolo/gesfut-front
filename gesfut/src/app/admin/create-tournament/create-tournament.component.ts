@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ChangeDetectionStrategy } from '@angular/core';
 
@@ -18,6 +18,13 @@ import { TournamentResponseShort } from '../../core/models/tournamentResponseSho
 })
 
 export class CreateTournamentComponent {
+
+  @Output() activeComponent = new EventEmitter<string>();
+
+  changeComponent(component:string) {
+    this.activeComponent.emit(component);
+  }
+
   createTournamentForm: FormGroup;
 
   constructor(

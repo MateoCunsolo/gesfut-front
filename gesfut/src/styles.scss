@@ -12,7 +12,6 @@ html {
     box-sizing: border-box;
     font-size: 62.5%;
     font-family: 'Play', sans-serif;
-
 }
 
 *, *:after, *:before {
@@ -20,6 +19,9 @@ html {
     margin: 0;
 }
 
+body{
+  background-color: var(--bg-color);
+}
 
 .btn-login{
     background-color: #41cf8a;

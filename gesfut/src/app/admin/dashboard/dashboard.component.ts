@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 import { FooterComponent } from "../../shared/footer/footer.component";
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,10 +12,11 @@ import { FooterComponent } from "../../shared/footer/footer.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
-  constructor(private router: Router) {} 
 
-  navigateTo(route:String) {
-    this.router.navigate([`/admin/${route}`]);
+  constructor(private dashboardService:DashboardService) {} 
+
+  changeComponent(component:string) {
+    this.dashboardService.setActiveDashboardAdminComponent(component);
   }
 }
   
