@@ -1,12 +1,51 @@
-export interface TournamentResponse {
-    code:string;
+export interface EventResponse {
+    id: number;
+    quantity: number;
+    type: string;
+    playerName: string;
 }
+
+export interface MatchResponse {
+    id: number;
+    homeTeam: string;
+    awayTeam: string;
+    numberOfMatchDay: number;
+    homeGoals: number;
+    awayGoals: number;
+    events: EventResponse[];
+}
+
+export interface MatchDayResponse {
+    idMatchDay: number;
+    numberOfMatchDay: number;
+    isFinished: boolean;
+    matches: MatchResponse[];
+}
+
+export interface PlayerResponse {
+    id: number;
+    playerName: string;
+    position: string;
+}
+
+export interface PlayerParticipantResponse {
+    id: number;
+    playerName: string;
+    goals: number;
+    redCards: number;
+    yellowCards: number;
+    isSuspended: boolean;
+    isMvp: number;
+    matchesPlayed: number;
+}
+
 
 export interface ParticipantResponse {
     idParticipant: number;
     idTeam: number;
     name: string;
     isActive: boolean;
+    playerParticipants: PlayerParticipantResponse[];
     statistics: {
         points: number;
         matchesPlayed: number;
@@ -18,34 +57,14 @@ export interface ParticipantResponse {
     };
 }
 
-export interface MatchDayResponse {
-    idMatchDay: number;
-    numberOfMatchDay: number;
-    isFinished: boolean;
-    matches: MatchResponse[]; // Asumiendo que ya tienes una interfaz para los partidos
-}
-
-export interface MatchResponse {
-    id: number;
-    homeTeam: string;
-    awayTeam: string;
-    numberOfMatchDay: number;
-    homeGoals: number;
-    awayGoals: number;
-    events: EventResponse[]; // Asumiendo que ya tienes una interfaz para los eventos
-}
-
-export interface EventResponse {
-    id: number;
-    quantity: number;
-    type: string; // Ej. "GOAL"
-    playerName: string;
+export interface TournamentResponse {
+    code: string;
 }
 
 export interface TournamentResponseFull {
     name: string;
     code: string;
-    startDate: string; // Puedes usar 'string' si la fecha se manejará como una cadena ISO
+    startDate: string;
     manager: string;
     isFinished: boolean;
     participants: ParticipantResponse[];

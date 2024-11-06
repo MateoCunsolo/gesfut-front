@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { TournamentRequest } from '../../core/models/tournamentRequest';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { FooterComponent } from "../../shared/footer/footer.component";
-import { TouranmentCurrentService } from '../../core/services/tournamentCurrent';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 
 @Component({
@@ -29,7 +28,6 @@ export class CreateTournamentComponent {
   createTournamentForm: FormGroup;
 
   constructor(
-    private tournamentCurrent: TouranmentCurrentService,
     private adminService: AdminService,
     private fb: FormBuilder, 
     private router:Router) {

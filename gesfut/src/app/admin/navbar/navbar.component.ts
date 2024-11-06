@@ -9,12 +9,15 @@ import { DashboardService } from '../../core/services/dashboard.service';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  
+
   constructor(private dashboardService:DashboardService){
 
   }
 
   changeComponent(component:string){
     this.dashboardService.setActiveTournamentComponent(component);
+
   }
+
+
 }

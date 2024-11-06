@@ -15,6 +15,9 @@
                   @if (loginForm.get('email')?.hasError('email')) {
                       <small>Formato de correo inválido.</small>
                   }
+                  @if(loginForm.get('email')?.valid) {
+                      <small></small>
+                  }
               </div>
 
               <div class="input-label">
@@ -25,6 +28,8 @@
                 </section>
                   @if (loginForm.get('password')?.hasError('required')) {
                       <small>La contraseña es obligatoria.</small>
+                  }@else{
+                      <small></small> 
                   }
               </div>
 
