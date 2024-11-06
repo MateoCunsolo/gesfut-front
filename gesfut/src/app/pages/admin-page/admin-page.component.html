@@ -1,13 +1,13 @@
 
 @if(activeComponent==='dashboard'){
-    <app-dashboard (activeComponent)="activeComponent = $event"></app-dashboard>
+    <app-dashboard ></app-dashboard>
 }
 @if(activeComponent==='create-tournament'){
-    <app-create-tournament (activeComponent)="activeComponent = $event"></app-create-tournament>
+    <app-create-tournament ></app-create-tournament>
 }
 @if(activeComponent === 'create-team'){
     <app-create-team></app-create-team>
 }
 @if(activeComponent==='list-tournaments'){
-    <app-list-tournaments (activeComponent)="activeComponent = $event"></app-list-tournaments>
+    <app-list-tournaments ></app-list-tournaments>
 }
