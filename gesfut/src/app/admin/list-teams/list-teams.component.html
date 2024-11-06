@@ -1,0 +1,51 @@
+<app-navbar></app-navbar>
+<section class="teams">
+  
+  <div class="section-name">
+    <input [(ngModel)]="searchTerm" (ngModelChange)="filterTeams()" class="search-team" type="text"
+                placeholder="BUSCAR EQUIPO">
+    <div class="team-list">
+      @for (item of teamsList; track $index) {
+        <li class="team-name"
+          (click)="getTeamByID(item.idParticipant)"
+          [class.active]="selectedTeamIndex === $index"
+        >
+          {{ item.name }}
+        </li>
+      }
+    </div>
+  </div>
+
+  <div class="section-table">
+
+    <table class="table">
+      <thead>
+        <tr class="columnas">
+          <th>#</th>
+          <th>JUGADOR</th>
+          <th>G</th>
+          <th>🟨</th>
+          <th>🟥</th>
+          <th>MVP</th>
+          <th>PJ</th>
+          <th>ESTADO</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (player of selectedTeam?.playerParticipants; track $index) {
+          <tr>
+            <td>{{ player.id }}</td>
+            <td>{{ player.playerName }}</td>
+            <td>{{ player.goals }}</td>
+            <td>{{ player.yellowCards }}</td>
+            <td>{{ player.redCards }}</td>
+            <td>{{ player.isMvp }}</td>
+            <td>{{ player.matchesPlayed }}</td>
+            <td>{{ player.isSuspended ? '🟥' : '🟩' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+</div>
+</section>
