@@ -14,11 +14,6 @@ export const ADMIN_ROUTES: Routes = [
         canActivate: [tournamentExistsGuard]
     },
     {
-        path: 'tournaments/:code/teams',
-        component: ListTeamsComponent,
-        canActivate: [tournamentExistsGuard] // Agregamos el guard aquí
-    },
-    {
         path: '**', redirectTo: ''
     }
 ];
