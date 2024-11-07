@@ -5,16 +5,15 @@ import { TournamentDashboardComponent } from "../../admin/tournament-dashboard/t
 import { InitializeTournamentComponent } from "../../admin/initialize-tournament/initialize-tournament.component";
 import { ListMatchDaysComponent } from "../../admin/list-match-days/list-match-days.component";
 import { DashboardService } from '../../core/services/dashboard.service';
-import { combineLatest } from 'rxjs';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { ParticipantResponseShort } from '../../core/models/participantResponse';
 import { ActivatedRoute } from '@angular/router';
+import { ListTeamsComponent } from "../../admin/list-teams/list-teams.component";
 
 
 @Component({
   selector: 'app-admin-tournament-page',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent],
+  imports: [CommonModule, NavbarComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, ListTeamsComponent],
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })
@@ -33,12 +32,22 @@ export class AdminTournamentPageComponent implements AfterViewInit {
 
   ngOnInit() {
 
-    this.dashboardService.haveParticipants$.subscribe((thereAre:boolean)=>{
-      this.flag = thereAre;
-    })
+    this.activedRoute.paramMap.subscribe((paramMap) => {
+      const code = paramMap.get('code');
+      if (code) {
+        this.code = code;
+      }
+    });
 
 
-    console.log('ngOnInit ejecutado');
+    this.tournamentService.getTournamentShort(this.code).subscribe({
+      next: (response) => {
+        this.flag = response.haveParticipants;
+        this.dashboardService.setHaveParticipants(response.haveParticipants);
+      }
+    });
+
+   
     this.dashboardService.activeTournamentComponent$.subscribe((component:string)=>{
       this.activeComponent = component;
       console.log('despues de actualizar: ' + this.activeComponent);

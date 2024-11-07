@@ -29,20 +29,7 @@ export class AdminService {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       }
-    }).pipe(
-      tap((response) => {
-        console.log('Torneos obtenidos:', response);
-      }),
-      map((response) => {
-        return response.map((tournament: TournamentResponseShort) => ({
-          name: tournament.name,
-          code: tournament.code,
-          startDate: tournament.startDate,
-          isFinished: tournament.isFinished,
-          haveParticipants: tournament.haveParticipants
-        }));
-      })
-    );
+    })
   }
 
   getTournamentShort(code: string): Observable<TournamentResponseShort> {

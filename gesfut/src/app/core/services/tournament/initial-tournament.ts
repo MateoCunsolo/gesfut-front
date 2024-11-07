@@ -65,3 +65,13 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
         }
     ]
 };
+
+
+
+export const INITIAL_TOURNAMENT_SHORT = {
+    name: '',
+    code: '',
+    startDate: '',
+    isFinished: false,
+    haveParticipants: false
+}
