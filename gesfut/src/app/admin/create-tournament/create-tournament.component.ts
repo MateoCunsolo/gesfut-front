@@ -40,6 +40,7 @@ export class CreateTournamentComponent {
           console.log('Creacion del torneo completado.');
           console.log("torneo response: " + response);
           this.router.navigate([`/admin/tournaments/${response}`]);
+          this.dashboardService.setHaveParticipants(false);
         },
         error: (err) => {
           console.log(err);

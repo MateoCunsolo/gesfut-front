@@ -29,6 +29,7 @@ export class TournamentDashboardComponent {
   constructor(private adminService: AdminService, private router: Router, private activatedRoute:ActivatedRoute,private dashboardService:DashboardService) { }
 
   ngOnInit() {
+
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if(param.get('code')){
@@ -42,6 +43,9 @@ export class TournamentDashboardComponent {
         next: (response) => {
           console.log('Torneo obtenido:', response)
           this.tournament = response;
+          if(this.tournament.haveParticipants){
+            this.dashboardService.setHaveParticipants(true);
+          }
         },
         error: (err) => {
           console.log(err);
@@ -52,6 +56,9 @@ export class TournamentDashboardComponent {
       });
     }
   }
+
+
+
 
   changeComponent(component:string){
     this.dashboardService.setActiveTournamentComponent(component);
