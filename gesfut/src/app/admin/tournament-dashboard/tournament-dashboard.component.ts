@@ -5,6 +5,9 @@ import { FooterComponent } from "../../shared/footer/footer.component";
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
 
 @Component({
   selector: 'app-tournament-dashboard',
@@ -18,6 +21,8 @@ export class TournamentDashboardComponent {
   code: string | null = null;
   flag:boolean = false;
 
+  tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
+
   tournament: TournamentResponseShort = {
     name: '',
     code: '',
@@ -26,7 +31,13 @@ export class TournamentDashboardComponent {
     haveParticipants: false,  
   };
 
-  constructor(private adminService: AdminService, private router: Router, private activatedRoute:ActivatedRoute,private dashboardService:DashboardService) { }
+  constructor(
+    private adminService: AdminService, 
+    private router: Router, 
+    private activatedRoute:ActivatedRoute,
+    private dashboardService:DashboardService,
+    private tournamentService:TournamentService
+  ) { }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe({
@@ -38,10 +49,10 @@ export class TournamentDashboardComponent {
     })
 
     if (this.code) {
-      this.adminService.getTournamentShort(this.code).subscribe({
-        next: (response) => {
+      this.tournamentService.getTournamentFull(this.code).subscribe({
+        next: (response:TournamentResponseFull) => {
           console.log('Torneo obtenido:', response)
-          this.tournament = response;
+          this.tournamentFull = response;
         },
         error: (err) => {
           console.log(err);
@@ -55,7 +66,6 @@ export class TournamentDashboardComponent {
 
   changeComponent(component:string){
     this.dashboardService.setActiveTournamentComponent(component);
-
   } 
 
 

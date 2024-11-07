@@ -1,7 +1,7 @@
 <section>
     <div class="title-container">
         <div>
-            <h2 class="title play-bold">Fechas</h2>
+            <h2 class="title play-bold">Fecha N° {{selectedMatchDay+1}}</h2>
             <div class="matchdays">
                 @for (day of this.tournament?.matchDays; track day.numberOfMatchDay) {
                     <button class="base-button" (click)="updateMatchDay(day.numberOfMatchDay)">{{day.numberOfMatchDay+1}}</button>
@@ -39,7 +39,8 @@
             </ng-template>
         }
     </div>
-    <div>
-        <button class="base-button">CERRAR FECHA</button>
+    <div class="btn-container">
+        <button class="base-button" (click)="changeComponent('dashboard')">ATRAS</button>
+        <button class="base-button">FINALIZAR FECHA</button>
     </div>
 </section>
