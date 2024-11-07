@@ -9,6 +9,7 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
     startDate: '',
     manager: '',
     isFinished: false,
+    haveParticipants: false,
     participants: [
         {
             idParticipant: 0,

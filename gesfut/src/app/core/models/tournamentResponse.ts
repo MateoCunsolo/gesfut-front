@@ -67,6 +67,7 @@ export interface TournamentResponseFull {
     startDate: string;
     manager: string;
     isFinished: boolean;
+    haveParticipants: boolean;
     participants: ParticipantResponse[];
     matchDays: MatchDayResponse[];
 }
