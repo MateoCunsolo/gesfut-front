@@ -1,0 +1,47 @@
+<section>
+    <div class="title-container">
+        <h2 class="title play-bold">PARTIDO CORRESPONDIENTE A LA FECHA #3 EN EL HORARIO 10:10</h2>
+        <hr>
+    </div>
+    <div class="versus">
+        <p> BOCA JUNIORS <!-- {{ match.homeTeam.toUpperCase()}} --></p>
+        <p> 1<!-- {{match.homeGoals}} --></p>
+        <p> 3<!-- {{match.awayGoals}} --></p>
+        <p> RIVER PLATE<!-- {{ match.awayTeam.toUpperCase()}} --></p>
+    </div>
+    <article>
+        <!-- Form para buscar el jugador y agregar eventos -->
+        <div class="form-container">
+            <div class="input-icon">
+                <input type="search" placeholder="BUSCAR JUGADOR">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="container-box">
+                <p>EQUIPO: RIVER PLATE</p>
+            </div>
+            <div class="container-box">
+                <p>JUGADOR: LUCAS PRATTO</p>
+            </div>
+            <div class="event-type-container">
+                <div class="input-icon small">
+                    <input type="number">
+                    <i class="fa-solid fa-g"></i>
+                </div>
+                <div class="input-icon small">
+                    <input type="number">
+                    <i class="fa-solid fa-square" id="yellow"></i>
+                </div>
+                <div class="input-icon small">
+                    <input type="number">
+                    <i class="fa-solid fa-square" id="red"></i>
+                </div>
+            </div>
+            <button>AGREGAR ESTADISTICAS DEL JUGADOR</button>
+        </div>
+        <!-- Visualizar los eventos agregados -->
+        <div>
+
+        </div>
+    </article>
+
+</section>

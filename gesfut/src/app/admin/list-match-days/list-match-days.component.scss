@@ -71,7 +71,7 @@ section{
 hr {
     border: none; /* Sin borde */
     height: 5px; /* Grosor de la línea */
-    background-color: var(--font-color); /* Color de la línea */
+    background-color: var(--primary-color); /* Color de la línea */
     margin: 0 auto;
 }
 
@@ -80,8 +80,8 @@ hr {
     flex-direction: column;
     align-items: center;
     justify-content: start;
-    max-height: 600px;
-    min-height: 600px;
+    max-height: 500px;
+    min-height: 500px;
     overflow-y: scroll;
     padding: 8px 0;
     margin: 24px 0;
@@ -181,14 +181,23 @@ hr {
     padding: 4px; 
     text-align: center;
 }
+.btn-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
 
 .base-button{
     background-color: var(--primary-color);
     color:black;
     font-size: 16px;
-    height: 100%;
-    width: 100%;
+    height: 36px;
+    width: 276px;
+    font-weight: 600;
 }
+
 
 @media (max-width: 480px) {
     .base-button{
