@@ -1,4 +1,7 @@
-<app-navbar></app-navbar>
+@if(flag){
+    <app-navbar></app-navbar>
+}
+
 @if(activeComponent==='dashboard'){
     <app-tournament-dashboard></app-tournament-dashboard>
 }

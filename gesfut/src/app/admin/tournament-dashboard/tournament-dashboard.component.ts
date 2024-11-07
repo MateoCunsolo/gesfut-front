@@ -40,6 +40,7 @@ export class TournamentDashboardComponent {
   ) { }
 
   ngOnInit() {
+
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if(param.get('code')){
@@ -53,6 +54,9 @@ export class TournamentDashboardComponent {
         next: (response:TournamentResponseFull) => {
           console.log('Torneo obtenido:', response)
           this.tournamentFull = response;
+//           if(this.tournamentFull){
+//             this.dashboardService.setHaveParticipants(true);
+//           }
         },
         error: (err) => {
           console.log(err);
@@ -63,6 +67,9 @@ export class TournamentDashboardComponent {
       });
     }
   }
+
+
+
 
   changeComponent(component:string){
     this.dashboardService.setActiveTournamentComponent(component);

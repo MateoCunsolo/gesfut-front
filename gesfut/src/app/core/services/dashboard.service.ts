@@ -10,6 +10,9 @@ export class DashboardService {
 
   private activeDashboardAdminComponentSubject = new BehaviorSubject<string>('dashboard');
   activeDashboardAdminComponent$ = this.activeDashboardAdminComponentSubject.asObservable();
+  
+  private haveParticipantsSubject = new BehaviorSubject<boolean>(false);
+  haveParticipants$ = this.haveParticipantsSubject.asObservable();
 
   setActiveTournamentComponent(component: string) {
     this.activeTournamentComponentSubject.next(component);
@@ -17,6 +20,10 @@ export class DashboardService {
   
   setActiveDashboardAdminComponent(component: string) {
     this.activeDashboardAdminComponentSubject.next(component);
+  }
+
+  setHaveParticipants(thereAre: boolean) {
+    this.haveParticipantsSubject.next(thereAre);
   }
 
 }
