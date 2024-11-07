@@ -74,31 +74,7 @@ export class AdminService {
 
 
 
-  getTournament(code: string | null): Observable<TournamentResponseFull> {
-    const userCurrent = this.sessionService.isAuth();
-    if (!userCurrent) {
-      return new Observable<TournamentResponseFull>();
-    }
-  
-    const token = sessionStorage.getItem('token');
-    return this.http.get<TournamentResponseFull>(`${this.url}/tournaments/${code}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    }).pipe(
-      map((response: TournamentResponseFull) => ({
-        name: response.name,
-        code: response.code,
-        startDate: response.startDate,
-        manager: response.manager,
-        isFinished: response.isFinished,
-        participants: response.participants,
-        matchDays: response.matchDays,
-      }))
-    );
-  }
-  
+
   createTournament(tournament: TournamentRequest): Observable<TournamentResponse> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {

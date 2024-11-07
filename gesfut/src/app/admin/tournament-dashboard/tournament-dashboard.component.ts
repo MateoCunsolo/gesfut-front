@@ -18,14 +18,14 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 })
 export class TournamentDashboardComponent {
 
-  code: string | null = null;
+  code: string = '';
   flag:boolean = false;
 
   tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
 
-  tournament: TournamentResponseShort = {
+  tournamentShort: TournamentResponseShort = {
     name: '',
-    code: '',
+    code: '' ,
     startDate: '',
     isFinished: false,
     haveParticipants: false,  
@@ -44,19 +44,27 @@ export class TournamentDashboardComponent {
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if(param.get('code')){
-          this.code = param.get('code');
+          this.code = param.get('code')!;
         }
       }
     })
+
+    this.adminService.getTournamentShort(this.code).subscribe({
+      next: (response)=>{
+          this.tournamentShort = response;
+          if(response.haveParticipants){
+            this.dashboardService.setHaveParticipants(true);
+          }
+      }
+    });
+    
+
 
     if (this.code) {
       this.tournamentService.getTournamentFull(this.code).subscribe({
         next: (response:TournamentResponseFull) => {
           console.log('Torneo obtenido:', response)
           this.tournamentFull = response;
-//           if(this.tournamentFull){
-//             this.dashboardService.setHaveParticipants(true);
-//           }
         },
         error: (err) => {
           console.log(err);
