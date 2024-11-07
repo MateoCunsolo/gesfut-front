@@ -11,6 +11,11 @@
 <!-- Clasifiación -->
 <!-- Agregar equipo al torneo -->
 <!-- Listar equipos -->
+@if (activeComponent==='list-teams') {
+    <app-list-teams></app-list-teams>
+}
+
+
 @if(activeComponent==='match-days'){
     <app-list-match-days></app-list-match-days>
 }

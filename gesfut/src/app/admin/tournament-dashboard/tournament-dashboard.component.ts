@@ -7,7 +7,7 @@ import { TournamentResponseShort } from '../../core/models/tournamentResponseSho
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
-import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
+import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from '../../core/services/tournament/initial-tournament';
 
 @Component({
   selector: 'app-tournament-dashboard',
@@ -16,78 +16,63 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
   templateUrl: './tournament-dashboard.component.html',
   styleUrl: './tournament-dashboard.component.scss'
 })
+
 export class TournamentDashboardComponent {
-
   code: string = '';
-  flag:boolean = false;
-
+  flag: boolean = false;
   tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
-
-  tournamentShort: TournamentResponseShort = {
-    name: '',
-    code: '' ,
-    startDate: '',
-    isFinished: false,
-    haveParticipants: false,  
-  };
+  tournamentShort: TournamentResponseShort = INITIAL_TOURNAMENT_SHORT;
+  isLoading: boolean = true;  // Indica que está en modo de carga inicialmente
 
   constructor(
     private adminService: AdminService, 
     private router: Router, 
-    private activatedRoute:ActivatedRoute,
-    private dashboardService:DashboardService,
-    private tournamentService:TournamentService
+    private activatedRoute: ActivatedRoute,
+    private dashboardService: DashboardService,
+    private tournamentService: TournamentService
   ) { }
 
   ngOnInit() {
-
+    
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
-        if(param.get('code')){
+        if (param.get('code')) {
           this.code = param.get('code')!;
         }
       }
-    })
+    });
 
-    this.adminService.getTournamentShort(this.code).subscribe({
-      next: (response)=>{
-          this.tournamentShort = response;
-          if(response.haveParticipants){
-            this.dashboardService.setHaveParticipants(true);
-          }
+    this.dashboardService.haveParticipants$.subscribe({
+      next: (response: boolean) => {
+        this.flag = response;
+        if (this.flag) {
+          this.isLoading = false;
+        }
       }
     });
-    
-
 
     if (this.code) {
       this.tournamentService.getTournamentFull(this.code).subscribe({
-        next: (response:TournamentResponseFull) => {
-          console.log('Torneo obtenido:', response)
+        next: (response: TournamentResponseFull) => {
+          console.log('Torneo obtenido:', response);
           this.tournamentFull = response;
         },
         error: (err) => {
           console.log(err);
         },
         complete: () => {
-          console.log('Obtencion del torneo completado.');
+          this.isLoading = false;
+          console.log('Obtención del torneo completado.');
         }
       });
     }
   }
 
-
-
-
-  changeComponent(component:string){
+  changeComponent(component: string) {
     this.dashboardService.setActiveTournamentComponent(component);
-  } 
-
-
-  toInitializeTournament() {
-    console.log('Redirigiendo a inicializar torneo');
-    console.log('Codigo del torneo:', this.code);
-    this.router.navigate(['/admin/tournaments/' + this.code + '/initialize']);
   }
 
+  toInitializeTournament() {
+    alert('toInitializeTournament');
+  }
 }
