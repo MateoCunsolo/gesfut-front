@@ -1,12 +1,9 @@
-import { DashboardComponent } from './../dashboard/dashboard.component';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AdminService } from '../../core/services/manager/admin.service';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
-import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
 
 
 @Component({
@@ -22,24 +19,17 @@ export class ListMatchDaysComponent implements OnInit, OnDestroy {
   selectedMatchDay = 0;
   code: string | null = null;
   constructor(
-    private adminService: AdminService, 
-    private routeActive: ActivatedRoute,
-    private dashboardService:DashboardService
+    private dashboardService:DashboardService,
+    private tournamentService:TournamentService
   ) {}
 
   ngOnInit(): void {
-    this.routeActive.paramMap.subscribe({
-      next: (paramMap) => {
-        this.code = paramMap.get('code');
-      }
-    });
-    
-    this.subscription = this.adminService.getTournament(this.code).subscribe({
-      next: (response) => {
+    this.tournamentService.currentTournament.subscribe({
+      next: (response:TournamentResponseFull) =>{
         this.tournament = response;
         this.sortMatchDays();
       }
-    });
+    })
   }
 
   ngOnDestroy(): void {

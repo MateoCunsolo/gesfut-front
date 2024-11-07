@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { ParticipantResponseShort } from '../../core/models/participantResponse';
 import { getTestBed } from '@angular/core/testing';
+import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
 
 @Component({
   selector: 'app-list-teams',
@@ -21,6 +22,8 @@ export class ListTeamsComponent {
   private adminService = inject(AdminService);
   private activedRoute = inject(ActivatedRoute)
   
+  tournamentFull:TournamentResponseFull = INITIAL_TOURNAMENT;
+
   participants: ParticipantResponse = {
     idParticipant: 0,
     idTeam: 0,
@@ -52,11 +55,17 @@ export class ListTeamsComponent {
     this.code = this.activedRoute.snapshot.paramMap.get('code') || '';
 
 
+    this.tournamentService.currentTournament.subscribe({
+      next : (response:TournamentResponseFull) => {
+        this.tournamentFull = response;
+      }
+    })
+
     this.tournamentService.getTournamentsParticipantTeamsShort(this.code).subscribe((response) => {
         this.teamsList = response;
         this.teamsFilters = response;
         this.getTeamByID(this.teamsList[0].idParticipant);
-      });
+    });
   }
   
   filterTeams() {
