@@ -1,5 +1,5 @@
 <section class="cards" [class.heigtret]="flag">
-    @if (!isLoading) {
+    <!-- @if (!isLoading) { -->
     <article (click)="changeComponent('initialize')" class="card" [class.disabled-card]="flag">
         <svg class="icon" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
@@ -34,10 +34,10 @@
         <img class="icon" src="versus.png" alt="">
         <h2>CARGAR RESULTADOS</h2>
     </article>
-    } @else if (flag === false){
+    <!-- } @else if (flag === false){
         <div class="loading-container">
             <div class="spinner"></div>
             <p>Cargando datos del torneo...</p>
         </div>
-    }
+    } -->
 </section>

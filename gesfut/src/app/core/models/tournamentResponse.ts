@@ -30,13 +30,16 @@ export interface PlayerResponse {
 
 export interface PlayerParticipantResponse {
     id: number;
+    shirtNumber: number;
     playerName: string;
+    playerLastName: string;
     goals: number;
     redCards: number;
     yellowCards: number;
     isSuspended: boolean;
     isMvp: number;
     matchesPlayed: number;
+    status:boolean;
 }
 
 

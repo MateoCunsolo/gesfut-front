@@ -5,7 +5,6 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class DashboardService {
-  
   private activeTournamentComponentSubject = new BehaviorSubject<string>('dashboard');
   activeTournamentComponent$ = this.activeTournamentComponentSubject.asObservable();
 

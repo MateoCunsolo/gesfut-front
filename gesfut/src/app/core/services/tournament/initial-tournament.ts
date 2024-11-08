@@ -19,13 +19,16 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
             playerParticipants: [
                 {
                     id: 0,
+                    shirtNumber: 0,
                     playerName: '',
+                    playerLastName: '',
                     goals: 0,
                     redCards: 0,
                     yellowCards: 0,
                     isSuspended: false,
                     isMvp: 0,
-                    matchesPlayed: 0
+                    matchesPlayed: 0,
+                    status: false
                 }
             ],
             statistics: {

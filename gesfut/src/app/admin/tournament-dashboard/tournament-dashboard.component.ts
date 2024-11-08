@@ -22,7 +22,7 @@ export class TournamentDashboardComponent {
   flag: boolean = false;
   tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
   tournamentShort: TournamentResponseShort = INITIAL_TOURNAMENT_SHORT;
-  isLoading: boolean = true;  // Indica que está en modo de carga inicialmente
+  isLoading: boolean = true;
 
   constructor(
     private adminService: AdminService, 
@@ -31,7 +31,7 @@ export class TournamentDashboardComponent {
     private dashboardService: DashboardService,
     private tournamentService: TournamentService
   ) { }
-
+  
   ngOnInit() {
     
     this.activatedRoute.paramMap.subscribe({
@@ -44,10 +44,11 @@ export class TournamentDashboardComponent {
 
     this.dashboardService.haveParticipants$.subscribe({
       next: (response: boolean) => {
+        //RECARGAR LA PÁGINA 
         this.flag = response;
         if (this.flag) {
           this.isLoading = false;
-        }
+        } 
       }
     });
 
@@ -61,8 +62,8 @@ export class TournamentDashboardComponent {
           console.log(err);
         },
         complete: () => {
-          this.isLoading = false;
           console.log('Obtención del torneo completado.');
+          this.isLoading = false;
         }
       });
     }

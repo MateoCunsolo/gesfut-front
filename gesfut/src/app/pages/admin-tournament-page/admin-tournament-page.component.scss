@@ -1,3 +1,32 @@
 .show{
     display: block;
 }
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: calc(100vh - 160px);
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #2a6449;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+    font-size: 18px;
+    color: #2a6449;
+    font-weight: bold;
+}
