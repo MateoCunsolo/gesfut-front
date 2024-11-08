@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { AdminService } from '../../core/services/manager/admin.service';
-import { NavbarComponent } from "../navbar/navbar.component";
-import { FooterComponent } from "../../shared/footer/footer.component";
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { DashboardService } from '../../core/services/dashboard.service';
@@ -12,7 +10,7 @@ import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from '../../core/service
 @Component({
   selector: 'app-tournament-dashboard',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, RouterModule],
+  imports: [RouterModule ],
   templateUrl: './tournament-dashboard.component.html',
   styleUrl: './tournament-dashboard.component.scss'
 })
@@ -25,8 +23,6 @@ export class TournamentDashboardComponent {
   isLoading: boolean = true;
 
   constructor(
-    private adminService: AdminService, 
-    private router: Router, 
     private activatedRoute: ActivatedRoute,
     private dashboardService: DashboardService,
     private tournamentService: TournamentService

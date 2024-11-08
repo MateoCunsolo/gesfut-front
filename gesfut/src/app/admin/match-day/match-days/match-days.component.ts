@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ListMatchDaysComponent } from "../list-match-days/list-match-days.component";
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { MatchDaysService } from '../../../core/services/tournament/match-days.service';
-import { LoadResultComponent } from "../../load-result/load-result.component";
+import { LoadResultComponent } from '../load-result/load-result.component';
+
 
 @Component({
   selector: 'app-match-days',

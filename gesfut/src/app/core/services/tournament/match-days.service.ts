@@ -108,6 +108,14 @@ export class MatchDaysService {
           quantity: event.redCard
         });
       }
+
+      if(event.mvp===true){
+        eventRequests.push({
+          playerParticipantId: event.id,
+          type: 'MVP',
+          quantity: 1
+        });
+      }
     });
   
     return {

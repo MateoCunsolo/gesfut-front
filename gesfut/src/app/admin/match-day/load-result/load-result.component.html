@@ -28,15 +28,12 @@
             </select>
           </div>
 
-          <div>
-            <select formControlName="name">
-              <option value="" disabled selected>SELECCIONE UN JUGADOR</option>
-              <option></option>
-              <option *ngFor="let player of filteredPlayers" [ngValue]="player">
-                {{ player.playerName }}
-              </option>
-            </select>
-          </div>
+          <select formControlName="name">
+            <option value="" disabled selected>SELECCIONE UN JUGADOR</option>
+            <option *ngFor="let player of filteredPlayers" [ngValue]="player">
+              {{ player.playerName }}
+            </option>
+          </select>          
         </div>
 
         <div class="container-box">
