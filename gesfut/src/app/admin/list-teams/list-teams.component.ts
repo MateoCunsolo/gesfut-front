@@ -36,6 +36,7 @@ export class ListTeamsComponent {
 
   ngOnInit(): void {
 
+    
     if (this.sessionService.isAuth()) {
       this.isAuth = true;
     }

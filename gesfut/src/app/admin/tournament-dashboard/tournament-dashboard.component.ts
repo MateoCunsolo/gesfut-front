@@ -34,6 +34,8 @@ export class TournamentDashboardComponent {
   
   ngOnInit() {
     
+    
+
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if (param.get('code')) {
