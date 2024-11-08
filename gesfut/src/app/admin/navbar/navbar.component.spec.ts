@@ -1,23 +1,35 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, HostListener } from '@angular/core';
+import { DashboardService } from '../../core/services/dashboard.service';
 
-import { NavbarComponent } from './navbar.component';
+@Component({
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss']
+})
+export class NavbarComponent {
 
-describe('NavbarComponent', () => {
-  let component: NavbarComponent;
-  let fixture: ComponentFixture<NavbarComponent>;
+  isMobile: boolean = false;
+  menuOpen: boolean = false;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [NavbarComponent]
-    })
-    .compileComponents();
+  constructor(private dashboardService: DashboardService) {
+    // Inicializamos la detección de pantalla móvil
+    this.checkScreenSize();
+  }
 
-    fixture = TestBed.createComponent(NavbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenSize();
+  }
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  checkScreenSize() {
+    this.isMobile = window.innerWidth <= 768;
+  }
+
+  changeComponent(component: string) {
+    this.dashboardService.setActiveTournamentComponent(component);
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+}

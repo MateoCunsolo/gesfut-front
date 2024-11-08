@@ -1,17 +1,21 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { environment } from '../../../../enviroments/environment';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ParticipantResponse, TournamentResponseFull } from '../../models/tournamentResponse';
 import { ParticipantResponseShort } from '../../models/participantResponse';
-import { INITIAL_TOURNAMENT } from './initial-tournament';
+import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from './initial-tournament';
+import { TournamentResponseShort } from '../../models/tournamentResponseShort';
+import { DashboardService } from '../dashboard.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TournamentService {
-
+ 
   currentTournament: BehaviorSubject<TournamentResponseFull> = new BehaviorSubject<TournamentResponseFull>(INITIAL_TOURNAMENT);
+  currentListTournaments: BehaviorSubject<TournamentResponseShort[]> = new BehaviorSubject<TournamentResponseShort[]>([]);
+  currentTournamentShort: BehaviorSubject<TournamentResponseShort> = new BehaviorSubject<TournamentResponseShort>(INITIAL_TOURNAMENT_SHORT)
 
   url=environment.apiUrl;
 
@@ -27,6 +31,7 @@ export class TournamentService {
       tap({
         next: (response:TournamentResponseFull) => {
           this.currentTournament.next(response)
+          this
           return response;
         },
         error: (error:HttpErrorResponse) => {
@@ -75,6 +80,51 @@ export class TournamentService {
         'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       }
     });
-
   }
+
+
+  getTournamentShortList():Observable<TournamentResponseShort[]>{
+    return this.http.get<TournamentResponseShort[]>(`${this.url}/tournaments/short`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }}).pipe(
+        tap({
+          next: (response:TournamentResponseShort[]) => {
+            this.currentListTournaments.next(response);
+            return response;
+          },
+          error: (error:HttpErrorResponse) => {
+            return throwError(() => error)
+          }
+        })
+      );
+  }
+
+  getTournamentShort(code:string):Observable<TournamentResponseShort>{
+    return this.http.get<TournamentResponseShort>(`${this.url}/tournaments/short/${code}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }})
+    }
+
+    deleteParticipantPlayer(code:string, idPlayer:number,status:boolean, idTeam?:number):Observable<any>{
+      return this.http.delete(`${this.url}/tournaments/${code}/teams/${idTeam}/${idPlayer}/${status}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        }}).pipe(
+          tap({
+            next: (response:any) => {
+              return response;
+            },
+            error: (error:HttpErrorResponse) => {
+              return throwError(() => error)
+            }
+          })
+        );
+    }
+
+
 }

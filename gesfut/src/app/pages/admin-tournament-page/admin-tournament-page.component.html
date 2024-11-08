@@ -1,20 +1,22 @@
-@if(flag){
-    <app-navbar></app-navbar>
+@if(isLoading) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando datos del torneo...</p>
+    </div>
+} @else {
+    @if(flag) {
+        <app-navbar></app-navbar>
+    }
+    @if(activeComponent === 'dashboard') {
+        <app-tournament-dashboard></app-tournament-dashboard>
+    }
+    @if(activeComponent === 'initialize') {
+        <app-initialize-tournament></app-initialize-tournament>
+    }
+    @if(activeComponent === 'list-teams') {
+        <app-list-teams></app-list-teams>
+    }
+    @if(activeComponent === 'match-days') {
+        <app-match-days></app-match-days>
+    }
 }
-
-@if(activeComponent==='dashboard'){
-    <app-tournament-dashboard></app-tournament-dashboard>
-}
-@if(activeComponent==='initialize'){
-    <app-initialize-tournament></app-initialize-tournament>
-}
-<!-- Clasifiación -->
-<!-- Agregar equipo al torneo -->
-<!-- Listar equipos -->
-@if(activeComponent==='match-days'){
-    <app-match-days></app-match-days>
-}
-
-<!-- Cargar resultados (traer ultima fecha) -->
-<!-- Premios -->
-<!-- Fotos -->

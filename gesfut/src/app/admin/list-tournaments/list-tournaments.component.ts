@@ -3,6 +3,9 @@ import { TournamentResponseShort } from '../../core/models/tournamentResponseSho
 import { AdminService } from '../../core/services/manager/admin.service';
 import { Router } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
 
 @Component({
   selector: 'app-list-tournaments',
@@ -20,18 +23,16 @@ export class ListTournamentsComponent {
   searchQuery: string = '';
   filter: string = 'all';
 
-  constructor(private adminService: AdminService, private route: Router, private dashboardService:DashboardService) { }
+  constructor(private tournamentService: TournamentService, private route: Router, private dashboardService:DashboardService) { }
 
   ngOnInit(): void { 
-    this.adminService.getTournamentShortList().subscribe(
-      data => {
-        this.tournaments = data;
+    this.tournamentService.currentListTournaments.subscribe({
+      next: (response: TournamentResponseShort[]) => {
+        this.tournaments = response;
         this.applyFilters();
-      },
-      error => {
-        console.log(error);
       }
-    );
+    })
+
   }
 
   changeComponent(component:string){
@@ -41,8 +42,10 @@ export class ListTournamentsComponent {
 
 
   toTournament(code: string) {
+    this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);
     this.route.navigate([`/admin/tournaments/${code}`]);
   }
+  
 
   applyFilters(): void {
     this.filteredTournaments = this.tournaments
