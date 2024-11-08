@@ -3,7 +3,7 @@
         <div>
             <h2 class="title play-bold">Fecha N° {{selectedMatchDay+1}}</h2>
             <div class="matchdays">
-                @for (day of this.tournament?.matchDays; track day.numberOfMatchDay) {
+                @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
                     <button class="base-button" (click)="updateMatchDay(day.numberOfMatchDay)">{{day.numberOfMatchDay+1}}</button>
                   } @empty {
                     Cargando...
@@ -25,7 +25,7 @@
                         </div>
                         <div class="hour"><p>09:12 HS</p></div>
                         <div class="complex"><p>Complejo</p></div>
-                        <button class="base-button"> CARGAR EVENTOS </button>
+                        <button class="base-button" (click)="loadResult(match.id)"> CARGAR EVENTOS </button>
                     </div>
                 </ng-container>
             }@else{

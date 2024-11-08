@@ -4,7 +4,7 @@ section{
     flex-direction: column;
     width: 1280px;
     margin: 0 auto;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 210px);
     color: var(--font-color);
     background-color: var(--bg-color);
 }
@@ -83,9 +83,10 @@ article{
     gap: 16px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
     article{
-        grid-template-columns: repeat(1,1fr);
+        display: flex;
+        flex-direction: column;
     }
 }
 
@@ -95,6 +96,35 @@ article{
     align-items: center;
     width: 100%;
     grid-column: 1/3;
+    border-right: 4px solid var(--primary-color);
+    padding: 8px;
+}
+@media (max-width: 900px) {
+    .form-container{
+        border-right: none;
+        border-bottom: 4px solid var(--primary-color);
+    }
+}
+
+
+.form-container form{
+    width: 100%;
+}
+.form-container .select-container{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-container .select-container select{
+    width: 100%;
+    height: auto;
+    font-size: 16px;
+    border: 1px solid var(--primary-color);
+    color: var(--font-color);
+    font-weight: 500;
+    font-family: 'Play', sans-serif;
+    padding: 4px 8px;
 }
 
 
@@ -157,4 +187,56 @@ article{
 
 .event-type-container .input-icon {
     width: 96px;
+}
+
+
+.events-container{
+    grid-column: 3/6;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    width: 100%;
+    padding: 0 8px;
+}
+
+.events-container .container-box h3{
+    font-size: 24px;
+    color: var(--font-color) !important;
+    padding: 8px 4px;
+}
+
+.events-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    color: var(--font-color);
+  } 
+  .events-table th,
+  .events-table td {
+    padding: 8px;
+    border: 1px solid var(--primary-color);
+    text-align: center;
+  }
+  
+  .events-table thead {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    font-weight: bold;
+  }
+  
+@media (max-width: 900px) {
+    .overflow-x{
+        overflow-x: scroll;
+    }
+}
+
+tbody{
+    width: 100%;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+tbody tr{
+    height: 32px;
+    vertical-align: top;
 }
