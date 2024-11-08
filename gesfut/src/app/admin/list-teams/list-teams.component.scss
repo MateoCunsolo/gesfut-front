@@ -1,7 +1,7 @@
 .teams {
   display: grid;
   grid-template-columns: 1fr 4fr;
-  grid-template-areas:  "teams team";
+  grid-template-areas: "teams team";
   grid-gap: 50px;
   padding: 10px;
   align-items: start;
@@ -9,8 +9,29 @@
   margin: 50px;
 }
 
+.buttons {
+  display: flex;
+  width: 100%;
+  justify-content: start;
+  gap: 20px;
+  flex-wrap: wrap; /* Para que los botones se apilen en pantallas más pequeñas */
+}
 
-.section-name{
+.btn {
+  background-color: #bcbcbc;
+  border: solid var(--primary-color) 2px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.section-name {
   grid-area: teams;
   max-width: 300px;
   display: flex;
@@ -18,7 +39,7 @@
   gap: 20px;
 }
 
-.section-name input{
+.section-name input {
   font-size: 1rem;
   border-radius: 5px;
   outline: none;
@@ -26,7 +47,7 @@
   margin: 0;
 }
 
-.section-name input:focus{
+.section-name input:focus {
   outline: none;
 }
 
@@ -37,26 +58,22 @@
 
 .team-list::-webkit-scrollbar {
   width: 3px;
-
 }
 
 .team-list::-webkit-scrollbar-button {
-  display: none; 
+  display: none;
 }
 
-
-
-.section-table
-{
+.section-table {
+  gap: 20px;
   grid-area: team;
   display: flex;
   flex-direction: column;
 }
 
-table{
+table {
   width: 100%;
   border-collapse: collapse;
-  
 }
 
 th, td {
@@ -64,12 +81,19 @@ th, td {
   padding: 8px;
   text-align: center;
   font-size: 1.5rem;
+  height: 4rem;
 }
 
-// .columnas{
-  
-// }
+tr {
+  text-align: center;
+}
 
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: none;
+}
 
 th {
   background-color: #f2f2f2;
@@ -92,39 +116,155 @@ li {
   text-align: center;
 }
 
-
-.search-team{
+.search-team {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
 }
 
-/* Eliminar las flechas en la scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;  /* Controla el ancho de la barra */
-  height: 8px; /* Controla la altura de la barra (para scroll horizontal) */
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-button {
-  display: none; /* Oculta las flechas */
+  display: none;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Color del track (fondo) */
+  background-color: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #888; /* Color del pulgar (thumb) */
+  background-color: #888;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Color del pulgar cuando se pasa el cursor sobre él */
+  background-color: #555;
 }
-
 
 .team-name.active {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--primary-color);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 1200px) {
+  .teams {
+    grid-template-columns: 1fr;
+    grid-template-areas: "teams" "team";
+    margin: 20px;
+  }
+
+  .section-name {
+    max-width: 100%;
+  }
+
+  .section-table {
+    margin-top: 20px;
+  }
+
+  .buttons {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+
+  th, td {
+    font-size: 1.2rem;
+  }
+
+  .team-name.active {
+    font-size: 1.3rem;
+  }
+
+  .team-list {
+    max-height: 300px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .teams {
+    grid-template-columns: 1fr;
+    grid-template-areas: "teams" "team";
+    margin: 10px;
+  }
+
+  .section-name {
+    max-width: 100%;
+  }
+
+  .section-table {
+    margin-top: 10px;
+  }
+
+  .buttons {
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+
+  th, td {
+    font-size: 1rem;
+  }
+
+  .team-list {
+    max-height: 250px;
+  }
+
+  .team-name.active {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .teams {
+    grid-template-columns: 1fr;
+    grid-template-areas: "teams" "team";
+    margin: 5px;
+  }
+
+  .section-name {
+    max-width: 100%;
+  }
+
+  .section-table {
+    margin-top: 5px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    font-size: 0.9rem;
+  }
+
+  .team-list {
+    max-height: 200px;
+  }
+
+  .team-name.active {
+    font-size: 1.1rem;
+  }
 }

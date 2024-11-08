@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { NavbarComponent } from "../../admin/navbar/navbar.component";
 import { TournamentDashboardComponent } from "../../admin/tournament-dashboard/tournament-dashboard.component";
 import { InitializeTournamentComponent } from "../../admin/initialize-tournament/initialize-tournament.component";
@@ -21,14 +21,14 @@ export class AdminTournamentPageComponent implements AfterViewInit {
 
   activeComponent = '';
   flag: boolean = false;
-  code:string = '';
-
+  code: string = '';
+  isLoading: boolean = true;
 
   constructor(
     private dashboardService: DashboardService,
     private tournamentService: TournamentService,
     private activedRoute: ActivatedRoute
-  ){}
+  ) { }
 
   ngOnInit() {
 
@@ -44,21 +44,18 @@ export class AdminTournamentPageComponent implements AfterViewInit {
       next: (response) => {
         this.flag = response.haveParticipants;
         this.dashboardService.setHaveParticipants(response.haveParticipants);
+        this.isLoading = false;
       }
     });
 
-   
-    this.dashboardService.activeTournamentComponent$.subscribe((component:string)=>{
+    this.dashboardService.activeTournamentComponent$.subscribe((component: string) => {
       this.activeComponent = component;
-      console.log('despues de actualizar: ' + this.activeComponent);
     })
   }
 
   ngAfterViewInit() {
-    console.log('ngOnInit ejecutado');
-    this.dashboardService.activeTournamentComponent$.subscribe((component:string)=>{
+    this.dashboardService.activeTournamentComponent$.subscribe((component: string) => {
       this.activeComponent = component;
-      console.log('despues de actualizar: ' + this.activeComponent);
     })
   }
 }

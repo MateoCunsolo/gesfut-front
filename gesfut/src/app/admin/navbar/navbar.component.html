@@ -1,8 +1,26 @@
-<nav>
-    <a (click)="changeComponent('dashboard')">INICIO</a>
-    <a (click)="changeComponent('list-teams')">EQUIPOS</a>
-    <a (click)="changeComponent('clasification')">CLASIFICACION</a>
-    <a (click)="changeComponent('match-days')">FECHAS</a>
-    <a (click)="changeComponent('trophies')">PREMIOS</a>
-    <a (click)="changeComponent('pics')">FOTOS</a>
-</nav>
+<!-- Si la condición isMobile es verdadera, muestra el menú hamburguesa -->
+@if (isMobile) {
+    <div class="menu-hamburguesa">
+      <input type="checkbox" id="btn-menu" (change)="toggleMenu()">
+      <label for="btn-menu" class="icon-menu"></label>
+      <nav class="menu" [class.open]="menuOpen">
+        <a (click)="changeComponent('dashboard')">INICIO</a>
+        <a (click)="changeComponent('list-teams')">EQUIPOS</a>
+        <a (click)="changeComponent('clasification')">CLASIFICACION</a>
+        <a (click)="changeComponent('match-days')">FECHAS</a>
+        <a (click)="changeComponent('trophies')">PREMIOS</a>
+        <a (click)="changeComponent('pics')">FOTOS</a>
+      </nav>
+    </div>
+  } @else {
+    <!-- Si no, muestra el menú normal -->
+    <nav class="nav-bar">
+      <a (click)="changeComponent('dashboard')">INICIO</a>
+      <a (click)="changeComponent('list-teams')">EQUIPOS</a>
+      <a (click)="changeComponent('clasification')">CLASIFICACION</a>
+      <a (click)="changeComponent('match-days')">FECHAS</a>
+      <a (click)="changeComponent('trophies')">PREMIOS</a>
+      <a (click)="changeComponent('pics')">FOTOS</a>
+    </nav>
+  }
+  

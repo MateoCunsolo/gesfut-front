@@ -109,5 +109,22 @@ export class TournamentService {
       }})
     }
 
+    deleteParticipantPlayer(code:string, idPlayer:number,status:boolean, idTeam?:number):Observable<any>{
+      return this.http.delete(`${this.url}/tournaments/${code}/teams/${idTeam}/${idPlayer}/${status}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        }}).pipe(
+          tap({
+            next: (response:any) => {
+              return response;
+            },
+            error: (error:HttpErrorResponse) => {
+              return throwError(() => error)
+            }
+          })
+        );
+    }
+
 
 }

@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { ParticipantResponseShort } from '../../core/models/participantResponse';
 import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
+import { AuthService } from '../../core/services/manager/auth.service';
+import { SessionService } from '../../core/services/manager/session.service';
 
 @Component({
   selector: 'app-list-teams',
@@ -18,11 +20,11 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 export class ListTeamsComponent {
 
   private tournamentService = inject(TournamentService);
-  private adminService = inject(AdminService);
   private activedRoute = inject(ActivatedRoute);
-
+  private sessionService = inject(SessionService);
+  isAuth: boolean = false;
   tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
-
+  size: number [] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   selectedTeamIndex: number | null = null;
   selectedTeam: ParticipantResponse | null = null;
   searchTerm: string = '';
@@ -33,12 +35,18 @@ export class ListTeamsComponent {
   constructor() {}
 
   ngOnInit(): void {
-    this.code = this.activedRoute.snapshot.paramMap.get('code') || '';
 
+    if (this.sessionService.isAuth()) {
+      this.isAuth = true;
+    }
+
+    
+    this.code = this.activedRoute.snapshot.paramMap.get('code') || '';
     this.tournamentService.currentTournament.subscribe({
       next: (response: TournamentResponseFull) => {
         this.tournamentFull = response;
-        this.teamsList = response.participants; 
+        console.log(this.tournamentFull);
+        this.teamsList = response.participants.filter(p => p.name.toLowerCase() !== 'free').sort((a, b) => a.name.localeCompare(b.name));        
         this.teamsFilters = [...this.teamsList];
         if (this.teamsList.length > 0) {
           this.getTeamByID(this.teamsList[0].idParticipant);
@@ -57,4 +65,11 @@ export class ListTeamsComponent {
     const team = this.tournamentFull.participants.find(p => p.idParticipant === id);
     this.selectedTeam = team ? team : null;
   }
+
+
+  deletePlayer(idPlayer: number, idTeam?: number): void {
+
+  }
+  
+
 }
