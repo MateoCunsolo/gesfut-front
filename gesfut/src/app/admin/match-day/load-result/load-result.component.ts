@@ -1,3 +1,4 @@
+import { DashboardService } from './../../../core/services/dashboard.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -27,7 +28,8 @@ export class LoadResultComponent {
 
   constructor(
     private matchDayService: MatchDaysService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private DashboardService:DashboardService
   ) {
     this.statisticsForm = this.fb.group({
       id: [0],
@@ -129,6 +131,6 @@ export class LoadResultComponent {
   }
 
   btnBack(){
-    this.matchDayService.setActiveComponent('list-match-days')
+    this.DashboardService.setActiveTournamentComponent('match-days');
   }
 }

@@ -5,6 +5,7 @@ import { INITIAL_DETAILED_MATCH} from './initial-tournament';
 import { environment } from '../../../../enviroments/environment';
 import { MatchDetailedResponse } from '../../models/matchDetailedRequest';
 import { EventRequest, MatchRequest } from '../../models/matchRequest';
+import { DashboardService } from '../dashboard.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,10 @@ export class MatchDaysService {
 
   url:string=environment.apiUrl;
 
-  currentTournament: BehaviorSubject<string> = new BehaviorSubject<string>('list-match-days');
   currentMatch: BehaviorSubject<MatchDetailedResponse> = new BehaviorSubject<MatchDetailedResponse>(INITIAL_DETAILED_MATCH);
 
 
-  constructor(private HttpClient:HttpClient) { }
+  constructor(private HttpClient:HttpClient, private dashboardService:DashboardService) { }
 
   getMatchDetailed(id: number): Observable<MatchDetailedResponse> {
     return this.HttpClient.get<MatchDetailedResponse>(`${this.url}/matches/detailed/${id}`).pipe(
@@ -50,10 +50,6 @@ export class MatchDaysService {
   }
   
   
-
-  setActiveComponent(component:string){
-    this.currentTournament.next(component);
-  }
 
   setActiveMatch(id:number){
     this.getMatchDetailed(id).subscribe({
@@ -90,7 +86,7 @@ export class MatchDaysService {
     .subscribe({
       next: (response) => {
         console.log('Eventos guardados correctamente:', response);
-        this.setActiveComponent('list-match-days')
+        this.dashboardService.setActiveTournamentComponent('match-days')
       },
       error: (err) => {
         console.error('Error en la solicitud HTTP:', err);

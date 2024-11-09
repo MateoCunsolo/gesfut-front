@@ -53,7 +53,7 @@ export class ListMatchDaysComponent implements OnInit{
 
   loadResult(matchId: number) {
     this.matchDaysService.setActiveMatch(matchId);
-    this.matchDaysService.setActiveComponent('load-result');
+    this.dashboardService.setActiveTournamentComponent('load-result');
   }
 
   closeMatchDay(status:boolean){
