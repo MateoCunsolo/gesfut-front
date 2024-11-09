@@ -31,7 +31,7 @@
           <select formControlName="name">
             <option value="" disabled selected>SELECCIONE UN JUGADOR</option>
             <option *ngFor="let player of filteredPlayers" [ngValue]="player">
-              {{ player.playerName }}
+              {{ player.playerName }} {{player.playerLastName}}
             </option>
           </select>          
         </div>
@@ -67,6 +67,7 @@
               <i class="fa-solid fa-star"></i>
             </label>
           </div>
+          
         </div>
 
         <button type="submit" [disabled]="statisticsForm.invalid">
@@ -103,13 +104,15 @@
               <td>{{ event.goals }}</td>
               <td>{{ event.yellowCard }}</td>
               <td>{{ event.redCard }}</td>
-              <td>{{ event.mvp }}</td>
+              <td>@if(event.mvp){
+                <i class="fa-solid fa-star"></i>
+                }</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="btn-container">
-        <button class="back-btn">ATRAS</button>
+        <button class="back-btn" (click)="btnBack()">ATRAS</button>
         <button class="base-button" (click)="saveEvents()">GUARDAR</button>
       </div>
     </div>

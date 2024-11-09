@@ -54,12 +54,23 @@ export class LoadResultComponent {
           this.selectedTeam = team;
           this.updateFilteredPlayers();
         });
-
+  
         this.statisticsForm.get('name')?.valueChanges.subscribe(player => {
           this.selectedPlayer = player;
         });
+  
+        // Deshabilitar el checkbox MVP si ya existe un MVP marcado
+        this.disableMvpIfNeeded();
       }
     })
+  }
+  
+  disableMvpIfNeeded() {
+    if (this.events.some(event => event.mvp)) {
+      this.statisticsForm.get('mvp')?.disable(); // Deshabilitar el control
+    } else {
+      this.statisticsForm.get('mvp')?.enable(); // Asegurarse de que esté habilitado
+    }
   }
 
   updateFilteredPlayers() {
@@ -91,7 +102,7 @@ export class LoadResultComponent {
       const newEvent = {
         ...this.statisticsForm.value,
         team: this.statisticsForm.get('team')?.value.name,
-        name: selectedPlayer?.playerName,  // Asegúrate de usar el playerName
+        name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,  // Asegúrate de usar el playerName
         id: selectedPlayer?.id  // Y también el id
       };
       this.events.push(newEvent);
@@ -109,8 +120,15 @@ export class LoadResultComponent {
     }
   }
   
-
   saveEvents(){
     this.matchDayService.saveEvents(this.events, this.currentMatch.id);
+  }
+
+  get isMvpSelected() {
+    return this.events.some(event => event.mvp === true);
+  }
+
+  btnBack(){
+    this.matchDayService.setActiveComponent('list-match-days')
   }
 }

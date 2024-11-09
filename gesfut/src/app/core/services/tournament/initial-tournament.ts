@@ -62,7 +62,8 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                           type: '',
                           playerName: ''
                       }
-                  ]
+                  ],
+                  isFinished: false
               }
           ]
       }

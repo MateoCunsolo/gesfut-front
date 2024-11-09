@@ -32,6 +32,23 @@ export class MatchDaysService {
       }
     ));
   }
+
+  closeMatchDay(idMatchDay: number, status: boolean): Observable<void> {
+    const token = sessionStorage.getItem('token');
+    
+    return this.HttpClient.put<void>(`${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`, null, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(error => {
+        console.error('Error closing match day:', error);
+        return throwError(() => new Error('Failed to close match day'));
+      })
+    );
+  }
+  
   
 
   setActiveComponent(component:string){
@@ -65,15 +82,15 @@ export class MatchDaysService {
     })
     .pipe(
       catchError(error => {
-        // Aquí puedes manejar el error
+
         console.error('Error al guardar los eventos:', error);
-        // Devuelves un observable con un valor por defecto (por ejemplo, un string indicando error)
         return of('Error al guardar los eventos');
       })
     )
     .subscribe({
       next: (response) => {
         console.log('Eventos guardados correctamente:', response);
+        this.setActiveComponent('list-match-days')
       },
       error: (err) => {
         console.error('Error en la solicitud HTTP:', err);

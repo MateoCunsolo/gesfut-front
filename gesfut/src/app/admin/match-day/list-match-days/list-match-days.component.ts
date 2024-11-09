@@ -55,4 +55,14 @@ export class ListMatchDaysComponent implements OnInit{
     this.matchDaysService.setActiveMatch(matchId);
     this.matchDaysService.setActiveComponent('load-result');
   }
+
+  closeMatchDay(status:boolean){
+    console.log(this.tournament.matchDays[this.selectedMatchDay].idMatchDay);
+    this.matchDaysService.closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status).subscribe({
+      error:(error) => {
+        console.log(error);
+      }
+    });
+  }
+
 }
