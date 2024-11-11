@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { AdminService } from '../../core/services/manager/admin.service';
+import { Component, inject } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../../shared/footer/footer.component";
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
@@ -18,23 +17,19 @@ import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from '../../core/service
 })
 
 export class TournamentDashboardComponent {
-  code: string = '';
-  flag: boolean = false;
+
+  private dashboardService = inject(DashboardService);
+  private tournamentService = inject(TournamentService);
+  private activatedRoute = inject(ActivatedRoute);
+
   tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
   tournamentShort: TournamentResponseShort = INITIAL_TOURNAMENT_SHORT;
   isLoading: boolean = true;
-
-  constructor(
-    private adminService: AdminService, 
-    private router: Router, 
-    private activatedRoute: ActivatedRoute,
-    private dashboardService: DashboardService,
-    private tournamentService: TournamentService
-  ) { }
+  code: string = '';
+  flag: boolean = false;
+  constructor() { }
   
   ngOnInit() {
-    
-    
 
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
@@ -46,29 +41,22 @@ export class TournamentDashboardComponent {
 
     this.dashboardService.haveParticipants$.subscribe({
       next: (response: boolean) => {
-        //RECARGAR LA PÁGINA 
         this.flag = response;
         if (this.flag) {
           this.isLoading = false;
-        } 
+        }
       }
     });
 
     if (this.code) {
-      this.tournamentService.getTournamentFull(this.code).subscribe({
+      this.tournamentService.currentTournament.subscribe({
         next: (response: TournamentResponseFull) => {
-          console.log('Torneo obtenido:', response);
           this.tournamentFull = response;
-        },
-        error: (err) => {
-          console.log(err);
-        },
-        complete: () => {
-          console.log('Obtención del torneo completado.');
           this.isLoading = false;
-        }
-      });
+        }}
+      );
     }
+
   }
 
   changeComponent(component: string) {

@@ -33,6 +33,9 @@ export class AdminTournamentPageComponent implements AfterViewInit {
   ) { }
 
   ngOnInit() {
+
+    this.dashboardService.setNameTournament(localStorage.getItem('lastTournamentClickedName') || '');
+
     this.activedRoute.paramMap.subscribe((paramMap) => {
       const code = paramMap.get('code');
       if (code) {
@@ -40,12 +43,17 @@ export class AdminTournamentPageComponent implements AfterViewInit {
       }
     });
 
-
     this.tournamentService.getTournamentShort(this.code).subscribe({
       next: (response) => {
         this.flag = response.haveParticipants;
         this.dashboardService.setHaveParticipants(response.haveParticipants);
         this.isLoading = false;
+      }
+    });
+
+    this.tournamentService.getTournamentFull(this.code).subscribe({
+      next: (response) => {
+        this.tournamentService.currentTournament.next(response);
       }
     });
 

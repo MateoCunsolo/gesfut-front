@@ -28,7 +28,10 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                   isSuspended: false,
                   isMvp: 0,
                   matchesPlayed: 0,
-                  status: false
+                  status: false,
+                  isActive: true,
+                  isCaptain: false,
+                  isGoalKeeper: false
               }
           ],
           statistics: {

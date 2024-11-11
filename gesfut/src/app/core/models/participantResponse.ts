@@ -16,9 +16,3 @@ export interface ParticipantResponse {
         goalsAgainst: number;
     };
 }
-
-
-export interface ParticipantResponseShort {
-    idParticipant: number;
-    name: string
-}

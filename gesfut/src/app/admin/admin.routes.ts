@@ -3,6 +3,7 @@ import { tournamentExistsGuard } from '../core/guards/tournamentExists.guard'; /
 import { AdminPageComponent } from '../pages/admin-page/admin-page.component';
 import { AdminTournamentPageComponent } from '../pages/admin-tournament-page/admin-tournament-page.component';
 import { LoadResultComponent } from './load-result/load-result.component';
+import { ListTeamsComponent } from './list-teams/list-teams.component';
 
 
 export const ADMIN_ROUTES: Routes = [
@@ -11,6 +12,9 @@ export const ADMIN_ROUTES: Routes = [
     },
     {
         path: 'prueba', component:LoadResultComponent
+    },
+    {
+        path: 'teams', component: ListTeamsComponent
     },
     {
         path: 'tournaments/:code', 
