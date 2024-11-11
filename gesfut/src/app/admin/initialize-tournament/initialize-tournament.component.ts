@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { TeamRequest } from '../../core/models/teamRequest';
 import { NavbarComponent } from "../navbar/navbar.component";
-import { AdminService } from '../../core/services/admin.service';
+import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
 
 @Component({
   selector: 'app-initialize-tournament',
   standalone: true,
-  imports: [NavbarComponent, FormsModule],
+  imports: [FormsModule],
   templateUrl: './initialize-tournament.component.html',
   styleUrl: './initialize-tournament.component.scss'
 })
@@ -20,13 +22,40 @@ export class InitializeTournamentComponent {
   code: string = '';
   searchTerm: string = '';
 
-  constructor(private adminService: AdminService, private route:Router) { }
+
+  constructor(
+    private adminService: AdminService,
+    private route: Router,
+    private dashboardService: DashboardService,
+    private activatedRoute: ActivatedRoute,
+    private tournamentService: TournamentService
+  ) { }
+
+
+
+  changeComponent(component: string) {
+    this.dashboardService.setActiveTournamentComponent(component);
+  }
+
+
+
 
   ngOnInit(): void {
-    this.code = window.location.pathname.split('/')[window.location.pathname.split('/').length - 2];
+
+    this.activatedRoute.paramMap.subscribe({
+      next: (param) => {
+        if (param.get('code')) {
+          this.code = param.get('code')!;
+        }
+      }
+    });
+
     this.adminService.getTeams().subscribe({
       next: (response) => {
-        this.teams = response.sort((a, b) => a.name.localeCompare(b.name));
+        this.teams = response.map(team => ({
+          ...team,
+          name: team.name.toUpperCase()
+        })).sort((a, b) => a.name.localeCompare(b.name));
         this.teamsFilters = [...this.teams];
       },
       error: (err) => {
@@ -53,18 +82,18 @@ export class InitializeTournamentComponent {
         teams: ids
       };
       this.adminService.initTournament(initializeRequest).subscribe({
-        next: (response) => {
-          console.log(response);
+        next: () => {
+          this.changeComponent('dashboard');
+          this.route.navigate(['/admin']);
         },
         error: (err) => {
           console.error(err);
         },
         complete: () => {
           console.log('TOURNAMENT INITIALIZED');
-          this.route.navigateByUrl('/admin/tournaments/' + this.code);
         }
       });
-    }else{
+    } else {
       alert("INGRESE EQUIPOS POR FAVOR { MIN : 4 }")
     }
 
@@ -92,8 +121,8 @@ export class InitializeTournamentComponent {
     throw new Error('Method not implemented.');
   }
 
-  toBack(){
+  toBack() {
     alert("¿Está seguro de que desea salir? Se perderán los cambios realizados");
-    this.route.navigate(['/admin/tournaments/'+this.code]);
+    this.route.navigate(['/admin/tournaments/' + this.code]);
   }
 }

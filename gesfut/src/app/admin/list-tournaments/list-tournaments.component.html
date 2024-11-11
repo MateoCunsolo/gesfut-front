@@ -1,0 +1,33 @@
+<section class="flex">
+    <button class="btn btn-back" (click)="changeComponent('dashboard')">ATRAS</button>
+    <h2 class="title">MIS TORNEOS</h2>
+    <hr class="line">
+    <div class="input">
+        <input 
+          type="text" 
+          placeholder="BUSCAR TORNEO" 
+          (input)="onSearchChange($event)" 
+          [value]="searchQuery">
+        <select name="filter" id="filter" (change)="onFilterChange($event)" [value]="filter">
+            <option value="all">TODOS</option>
+            <option value="finished">FINALIZADOS</option>
+            <option value="inProgress">EN CURSO</option>
+        </select>
+        @if (filter !== "all") {
+            <svg class="svg-icon" (click)="resetFilters()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#2a6a49" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>
+        }
+    </div>
+    <section class="cards">
+        @for (item of filteredTournaments; track $index) {
+            <article class="tournament" (click)="toTournament(item.code)">
+                <h2>{{item.name}}</h2>
+                @if (item.isFinished) {
+                    <p>FINALIZADO</p>
+                } @else {
+                    <p>EN CURSO</p>
+                }
+                <p>{{item.startDate}}</p>
+            </article>
+        }
+    </section>
+</section>

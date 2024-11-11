@@ -1,24 +1,26 @@
-
 <section class="cards">
 
-    <article (click)="navigateTo('tournaments')" class="card">
+    <article (click)="changeComponent('create-tournament')" class="card">
         <img class="img-cards" src="crear-torneo.png" alt="">
         <h2>CREAR TORNEO</h2>
     </article>
 
-    <article (click)="navigateTo('crear-equipo')" class="card">
+    <article (click)="changeComponent('create-team')" class="card">
         <img class="img-cards" src="shield-1024.webp" alt="">
         <h2>CREAR EQUIPO</h2>
     </article>
 
-    <article (click)="navigateTo('dashboard')" class="card">
+    <article (click)="changeComponent('list-tournaments')" class="card">
         <img class="img-cards" src="trophy.png" alt="">
         <h2>VER TORNEOS</h2>
     </article>
 
-    <article (click)="navigateTo('dashboard')" class="card">
+    <article (click)="changeComponent('list-teams')" class="card">
         <img class="img-cards" src="equipo-de-futbol.png" alt="">
         <h2>VER EQUIPOS</h2>
     </article>
-
+    @if (lastTournamentClicked !== "") {
+        <button class="btn" (click)="toTournament(lastTournamentClicked)" >ULTIMO TORNEO VISUALIZADO : {{lastTournamentClickedName}}</button>
+    }
 </section>
+

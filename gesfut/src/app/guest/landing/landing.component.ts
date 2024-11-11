@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
+import { ListTeamsComponent } from "../../admin/list-teams/list-teams.component";
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, ListTeamsComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss'
 })

@@ -1,8 +1,13 @@
 <header>
   <section class="logo">
-      <img src="BUSCAR ICONS LIBRERIA" alt="">
-      <h2>GESFUT</h2>
+      <h2 (click)="changeComponent('dashboard')">GESFUT</h2>
+      @if (routeActive()) {
+        <p class="p-panel" (click)="changeComponent('dashboard-principal')" >Volver al panel central</p>
+      }
   </section>
+  @if(isRouteTorunament) {
+    <p class="title-torunament">{{lastTournamentClickedName}}</p>
+  }
 
   @if (!isLoggedIn) {
       <button class="btn-login" (click)="onLogin()">INICIAR SESION</button>

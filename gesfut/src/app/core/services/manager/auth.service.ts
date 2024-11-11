@@ -8,10 +8,11 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { AuthResponse } from '../models/authResponse';
-import { LoginRequest } from '../models/loginRequest';
+
+import { AuthResponse } from '../../models/authResponse';
+import { LoginRequest } from '../../models/loginRequest';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { RegisterRequest } from '../models/registerRequest';
+import { RegisterRequest } from '../../models/registerRequest';
 import { SessionService } from './session.service';
 @Injectable({
   providedIn: 'root',
@@ -21,9 +22,9 @@ export class AuthService {
 
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private http: HttpClient,
-    private sessionService:SessionService) {}
+    private sessionService: SessionService) { }
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.url}/login`, credentials).pipe(
@@ -49,10 +50,10 @@ export class AuthService {
     );
   }
 
-  register(credentials:RegisterRequest):Observable<AuthResponse>{
+  register(credentials: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.url}/sing-up`, credentials).pipe(
-      map((response)=>{
-        const auth : AuthResponse = {
+      map((response) => {
+        const auth: AuthResponse = {
           name: response.name,
           lastName: response.lastName,
           token: response.token,
