@@ -33,7 +33,7 @@
                                     <button class="base-button" (click)="loadResult(match.id)"> CARGAR EVENTOS </button>
                                 }
                             }@else {
-                                <button>EDITAR EVENTOS</button>
+                                <button (click)="editResult(match.id)">EDITAR EVENTOS</button>
                             }
                         }
                     </div>

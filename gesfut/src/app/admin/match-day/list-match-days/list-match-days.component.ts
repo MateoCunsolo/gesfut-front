@@ -65,4 +65,9 @@ export class ListMatchDaysComponent implements OnInit{
     });
   }
 
+  editResult(id: number) {
+    this.matchDaysService.setEditResult(true);
+    this.matchDaysService.setActiveMatch(id);
+    this.dashboardService.setActiveTournamentComponent('load-result');
+  }
 }

@@ -129,12 +129,12 @@ export const INITIAL_DETAILED_MATCH: MatchDetailedResponse = {
   numberOfMatchDay: 1,
   homeGoals: 0,
   awayGoals: 0,
-  events: {
+  events: [{
       id: 0,
       quantity: 0,
       type: "Goal",
       playerName: "Player 1"
-  } as EventResponse,
+  } as EventResponse],
   isFinished: false
 };
 

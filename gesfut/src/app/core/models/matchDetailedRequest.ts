@@ -7,6 +7,6 @@ export interface MatchDetailedResponse {
     numberOfMatchDay: number;
     homeGoals: number;
     awayGoals: number;
-    events: EventResponse;  // Puedes reemplazar `any` con el tipo adecuado si tienes la estructura de los eventos.
+    events: EventResponse[];  // Puedes reemplazar `any` con el tipo adecuado si tienes la estructura de los eventos.
     isFinished: boolean;
   }
