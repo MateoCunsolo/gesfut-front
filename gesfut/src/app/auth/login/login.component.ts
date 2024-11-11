@@ -6,7 +6,6 @@ import { LoginRequest } from '../../core/models/loginRequest';
 import { SessionService } from '../../core/services/manager/session.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { FooterComponent } from "../../shared/footer/footer.component";
 
 @Component({
   selector: 'app-login',

@@ -5,7 +5,7 @@
       <label for="btn-menu" class="icon-menu"></label>
       <nav class="menu" [class.open]="menuOpen">
         <a (click)="changeComponent('dashboard')">INICIO</a>
-        <a (click)="changeComponent('list-teams')">EQUIPOS</a>
+        <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
         <a (click)="changeComponent('clasification')">CLASIFICACION</a>
         <a (click)="changeComponent('match-days')">FECHAS</a>
         <a (click)="changeComponent('trophies')">PREMIOS</a>
@@ -16,7 +16,7 @@
     <!-- Si no, muestra el menú normal -->
     <nav class="nav-bar">
       <a (click)="changeComponent('dashboard')">INICIO</a>
-      <a (click)="changeComponent('list-teams')">EQUIPOS</a>
+      <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
       <a (click)="changeComponent('clasification')">CLASIFICACION</a>
       <a (click)="changeComponent('match-days')">FECHAS</a>
       <a (click)="changeComponent('trophies')">PREMIOS</a>

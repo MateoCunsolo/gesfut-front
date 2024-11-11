@@ -9,13 +9,13 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 import { ActivatedRoute } from '@angular/router';
 import { MatchDaysComponent } from "../../admin/match-day/match-days/match-days.component";
 import { ListTeamsComponent } from "../../admin/list-teams/list-teams.component";
-
+import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments/list-teams-tournaments.component";
 
 
 @Component({
   selector: 'app-admin-tournament-page',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, MatchDaysComponent, ListTeamsComponent],
+  imports: [CommonModule, NavbarComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, MatchDaysComponent, ListTeamsTournamentsComponent],
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })

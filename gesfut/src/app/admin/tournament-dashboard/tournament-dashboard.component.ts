@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
@@ -11,7 +10,7 @@ import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from '../../core/service
 @Component({
   selector: 'app-tournament-dashboard',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, RouterModule],
+  imports: [RouterModule],
   templateUrl: './tournament-dashboard.component.html',
   styleUrl: './tournament-dashboard.component.scss'
 })

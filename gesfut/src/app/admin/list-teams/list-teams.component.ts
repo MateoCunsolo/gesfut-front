@@ -112,6 +112,26 @@ export class ListTeamsComponent {
           this.clicked = false;
           this.selectedTournamentIndex = null;
           this.playersParticipants = [];
+          this.teamsGlobal.forEach(team => {
+            if(team.id === id) {
+            team.players.forEach(player => {
+              this.playersParticipants.push({
+                id : 0,
+                shirtNumber : player.number,
+                playerName : player.name,
+                playerLastName : player.lastName,
+                goals : 0,
+                redCards : 0,
+                yellowCards : 0,
+                isSuspended : false,
+                isMvp : 0,
+                matchesPlayed : 0,
+                status : true,
+                isActive : true,
+                isCaptain : player.isCaptain,
+                isGoalKeeper : player.isGoalKeeper
+              })
+          })}});
         }
       }
     });
@@ -145,6 +165,14 @@ export class ListTeamsComponent {
     this.teamsGlobal = this.teamsFilters.filter(team =>
       team.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
+
+    this.teamsGlobal.forEach((team, index) => {
+      if (team.name === this.selectedTeam.name) {
+        this.nameClicked = true;
+        this.indexName = index;
+      }
+    });
+
   }
 
   deletePlayerFromTeamGlobal(firstName: string, lastName: string): void {
@@ -221,6 +249,7 @@ export class ListTeamsComponent {
     this.clicked = false
     this.selectedTournamentIndex = null;
     let playerParticipantsAux: PlayerParticipantResponse[] = [];
+    console.log(this.particpantsShortAll);
     this.particpantsShortAll.forEach(participant => {
       participant.playerParticipants.forEach(player => {
         let playerFound = playerParticipantsAux.find(playerAux => playerAux.playerName === player.playerName && playerAux.playerLastName === player.playerLastName);
@@ -230,8 +259,8 @@ export class ListTeamsComponent {
           playerFound.redCards += player.redCards;
           playerFound.matchesPlayed += player.matchesPlayed;
           playerFound.isMvp += player.isMvp;
-          playerFound.isGoalKeeper = player.isGoalKeeper;
-          playerFound.isCaptain = player.isCaptain;
+          playerFound.isGoalKeeper = this.playersParticipants.find(playerParticipant => player.playerName === playerParticipant.playerName && player.playerLastName === playerParticipant.playerLastName)?.isGoalKeeper || false;
+          playerFound.isCaptain = this.playersParticipants.find(playerParticipant => player.playerName === playerParticipant.playerName && player.playerLastName === playerParticipant.playerLastName)?.isCaptain || false;
           playerFound.shirtNumber = player.shirtNumber;
 
         } else {
