@@ -5,6 +5,8 @@ import { INITIAL_DETAILED_MATCH} from './initial-tournament';
 import { environment } from '../../../../enviroments/environment';
 import { MatchDetailedResponse } from '../../models/matchDetailedRequest';
 import { EventRequest, MatchRequest } from '../../models/matchRequest';
+import { DashboardService } from '../dashboard.service';
+import { TournamentService } from './tournament.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +15,10 @@ export class MatchDaysService {
 
   url:string=environment.apiUrl;
 
-  currentTournament: BehaviorSubject<string> = new BehaviorSubject<string>('list-match-days');
   currentMatch: BehaviorSubject<MatchDetailedResponse> = new BehaviorSubject<MatchDetailedResponse>(INITIAL_DETAILED_MATCH);
 
 
-  constructor(private HttpClient:HttpClient) { }
+  constructor(private HttpClient:HttpClient, private dashboardService:DashboardService, private tournamentService:TournamentService) { }
 
   getMatchDetailed(id: number): Observable<MatchDetailedResponse> {
     return this.HttpClient.get<MatchDetailedResponse>(`${this.url}/matches/detailed/${id}`).pipe(
@@ -32,11 +33,32 @@ export class MatchDaysService {
       }
     ));
   }
-  
 
-  setActiveComponent(component:string){
-    this.currentTournament.next(component);
+  closeMatchDay(idMatchDay: number, status: boolean): Observable<void> {
+    const token = sessionStorage.getItem('token');
+  
+    return this.HttpClient.put<void>(`${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`, null, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(error => {
+        console.error('Error closing match day:', error);
+        return throwError(() => new Error('Failed to close match day'));
+      }),
+      tap(() => { // tap no suscribe, sólo permite ejecutar código adicional
+        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
+          next: () => {
+            this.dashboardService.setActiveTournamentComponent('match-days');
+          }
+        });
+      })
+    );
   }
+  
+  
+  
 
   setActiveMatch(id:number){
     this.getMatchDetailed(id).subscribe({
@@ -65,15 +87,18 @@ export class MatchDaysService {
     })
     .pipe(
       catchError(error => {
-        // Aquí puedes manejar el error
         console.error('Error al guardar los eventos:', error);
-        // Devuelves un observable con un valor por defecto (por ejemplo, un string indicando error)
         return of('Error al guardar los eventos');
       })
     )
     .subscribe({
       next: (response) => {
         console.log('Eventos guardados correctamente:', response);
+        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
+          next:() => {
+            this.dashboardService.setActiveTournamentComponent('match-days');
+          }
+        });
       },
       error: (err) => {
         console.error('Error en la solicitud HTTP:', err);
@@ -106,6 +131,14 @@ export class MatchDaysService {
           playerParticipantId: event.id,
           type: 'RED_CARD',
           quantity: event.redCard
+        });
+      }
+
+      if(event.mvp===true){
+        eventRequests.push({
+          playerParticipantId: event.id,
+          type: 'MVP',
+          quantity: 1
         });
       }
     });

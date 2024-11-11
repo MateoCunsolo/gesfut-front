@@ -13,6 +13,7 @@ export interface MatchResponse {
     homeGoals: number;
     awayGoals: number;
     events: EventResponse[];
+    isFinished: boolean;
 }
 
 export interface MatchDayResponse {

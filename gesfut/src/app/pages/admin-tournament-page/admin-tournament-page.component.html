@@ -19,7 +19,11 @@
     @if(activeComponent === 'list-teams-tournament') {
         <app-list-team-tournaments></app-list-team-tournaments>
     }
-    @if(activeComponent === 'match-days') {
-        <app-match-days></app-match-days>
+    @if(activeComponent==='match-days'){
+        <app-list-match-days></app-list-match-days>
     }
+    @if(activeComponent==='load-result'){
+        <app-load-result></app-load-result>
+    }
+    
 }

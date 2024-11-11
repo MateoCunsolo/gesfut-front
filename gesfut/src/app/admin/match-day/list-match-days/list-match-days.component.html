@@ -25,7 +25,17 @@
                         </div>
                         <div class="hour"><p>09:12 HS</p></div>
                         <div class="complex"><p>Complejo</p></div>
-                        <button class="base-button" (click)="loadResult(match.id)"> CARGAR EVENTOS </button>
+                        @if(!tournament.matchDays[selectedMatchDay].isFinished){
+                            @if(!match.isFinished){
+                                @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
+                                    <button disabled>FECHA LIBRE</button>
+                                }@else {
+                                    <button class="base-button" (click)="loadResult(match.id)"> CARGAR EVENTOS </button>
+                                }
+                            }@else {
+                                <button>EDITAR EVENTOS</button>
+                            }
+                        }
                     </div>
                 </ng-container>
             }@else{
@@ -41,6 +51,10 @@
     </div>
     <div class="btn-container">
         <button class="base-button" (click)="changeComponent('dashboard')">ATRAS</button>
-        <button class="base-button">FINALIZAR FECHA</button>
+        @if(tournament.matchDays[selectedMatchDay].isFinished){
+            <button class="base-button" (click)="closeMatchDay(false)">REABRIR FECHA</button>
+        }@else{
+            <button class="base-button" (click)="closeMatchDay(true)">FINALIZAR FECHA</button>
+        }
     </div>
 </section>

@@ -1,10 +1,11 @@
+import { DashboardService } from './../../../core/services/dashboard.service';
 import { Component } from '@angular/core';
-import { MatchDaysService } from '../../core/services/tournament/match-days.service';
-import { INITIAL_DETAILED_MATCH } from '../../core/services/tournament/initial-tournament';
-import { MatchDetailedResponse } from '../../core/models/matchDetailedRequest';
-import { ParticipantResponse, PlayerParticipantResponse } from '../../core/models/tournamentResponse';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatchDaysService } from '../../../core/services/tournament/match-days.service';
+import { INITIAL_DETAILED_MATCH } from '../../../core/services/tournament/initial-tournament';
+import { MatchDetailedResponse } from '../../../core/models/matchDetailedRequest';
+import { ParticipantResponse, PlayerParticipantResponse } from '../../../core/models/tournamentResponse';
 
 @Component({
   selector: 'app-load-result',
@@ -27,7 +28,8 @@ export class LoadResultComponent {
 
   constructor(
     private matchDayService: MatchDaysService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private DashboardService:DashboardService
   ) {
     this.statisticsForm = this.fb.group({
       id: [0],
@@ -54,12 +56,23 @@ export class LoadResultComponent {
           this.selectedTeam = team;
           this.updateFilteredPlayers();
         });
-
+  
         this.statisticsForm.get('name')?.valueChanges.subscribe(player => {
           this.selectedPlayer = player;
         });
+  
+        // Deshabilitar el checkbox MVP si ya existe un MVP marcado
+        this.disableMvpIfNeeded();
       }
     })
+  }
+  
+  disableMvpIfNeeded() {
+    if (this.events.some(event => event.mvp)) {
+      this.statisticsForm.get('mvp')?.disable(); // Deshabilitar el control
+    } else {
+      this.statisticsForm.get('mvp')?.enable(); // Asegurarse de que esté habilitado
+    }
   }
 
   updateFilteredPlayers() {
@@ -87,13 +100,15 @@ export class LoadResultComponent {
 
   loadStatistics() {
     if (this.statisticsForm.valid) {
+      const selectedPlayer = this.statisticsForm.get('name')?.value;  // Aquí obtienes el objeto completo del jugador
       const newEvent = {
         ...this.statisticsForm.value,
-        team: this.statisticsForm.get('team')?.value.name, 
-        name: this.statisticsForm.get('name')?.value.playerName
+        team: this.statisticsForm.get('team')?.value.name,
+        name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,  // Asegúrate de usar el playerName
+        id: selectedPlayer?.id  // Y también el id
       };
       this.events.push(newEvent);
-      console.log(this.events);
+      console.log(newEvent);  // Verifica que se están recogiendo correctamente id y playerName
       this.statisticsForm.reset({
         id: 0,
         name: '',
@@ -106,8 +121,16 @@ export class LoadResultComponent {
       });
     }
   }
-
+  
   saveEvents(){
     this.matchDayService.saveEvents(this.events, this.currentMatch.id);
+  }
+
+  get isMvpSelected() {
+    return this.events.some(event => event.mvp === true);
+  }
+
+  btnBack(){
+    this.DashboardService.setActiveTournamentComponent('match-days');
   }
 }

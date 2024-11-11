@@ -3,19 +3,17 @@ import { AfterViewInit, Component } from '@angular/core';
 import { NavbarComponent } from "../../admin/navbar/navbar.component";
 import { TournamentDashboardComponent } from "../../admin/tournament-dashboard/tournament-dashboard.component";
 import { InitializeTournamentComponent } from "../../admin/initialize-tournament/initialize-tournament.component";
-import { ListMatchDaysComponent } from "../../admin/match-day/list-match-days/list-match-days.component";
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { ActivatedRoute } from '@angular/router';
-import { MatchDaysComponent } from "../../admin/match-day/match-days/match-days.component";
-import { ListTeamsComponent } from "../../admin/list-teams/list-teams.component";
+import { ListMatchDaysComponent } from "../../admin/match-day/list-match-days/list-match-days.component";
+import { LoadResultComponent } from "../../admin/match-day/load-result/load-result.component";
 import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments/list-teams-tournaments.component";
-
 
 @Component({
   selector: 'app-admin-tournament-page',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, MatchDaysComponent, ListTeamsTournamentsComponent],
+  imports: [CommonModule, NavbarComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListTeamsTournamentsComponent, ListMatchDaysComponent, LoadResultComponent],
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })

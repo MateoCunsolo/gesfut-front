@@ -1,6 +1,6 @@
+import { AdminService } from '../../core/services/manager/admin.service';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Component, inject } from '@angular/core';
-import { FooterComponent } from "../../shared/footer/footer.component";
-import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
@@ -24,10 +24,12 @@ export class TournamentDashboardComponent {
   tournamentFull: TournamentResponseFull = INITIAL_TOURNAMENT;
   tournamentShort: TournamentResponseShort = INITIAL_TOURNAMENT_SHORT;
   isLoading: boolean = true;
-  code: string = '';
-  flag: boolean = false;
+
   constructor() { }
   
+  code: string = '';
+  flag: boolean = false;
+
   ngOnInit() {
 
     this.activatedRoute.paramMap.subscribe({
