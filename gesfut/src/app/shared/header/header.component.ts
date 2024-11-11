@@ -12,8 +12,9 @@ import { DashboardService } from '../../core/services/dashboard.service';
   styleUrls: ['./header.component.scss']  // Cambiado 'styleUrl' a 'styleUrls'
 })
 export class HeaderComponent {
-
+  lastTournamentClickedName: string = '';
   isLoggedIn: boolean = false;
+  isRouteTorunament: boolean = false;
   name: string = '';
 
   constructor(private sessionService: SessionService, private route: Router, private dashboardService:DashboardService){
@@ -24,7 +25,9 @@ export class HeaderComponent {
     if(component === 'dashboard-principal'){
       component = 'dashboard';
       this.dashboardService.setActiveDashboardAdminComponent(component);
+      this.isRouteTorunament = false;
       this.route.navigateByUrl('/admin');
+      
     }
     this.dashboardService.setActiveDashboardAdminComponent(component);
     this.dashboardService.setActiveTournamentComponent(component);
@@ -39,8 +42,23 @@ export class HeaderComponent {
     return flag;
   }
 
-
+  
   ngOnInit(): void {
+
+    if(this.route.url.includes('admin') && !this.route.url.includes('tournaments')){
+      this.isRouteTorunament = false;
+    }else{
+      this.dashboardService.getNameTournament$.subscribe({
+        next: (response: string) => {
+            this.lastTournamentClickedName = response;
+            this.isRouteTorunament = true
+        }
+      });
+    }
+
+
+    
+
     this.sessionService.userLoginOn.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
     });
