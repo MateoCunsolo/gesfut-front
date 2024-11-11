@@ -22,12 +22,6 @@ export interface MatchDayResponse {
     matches: MatchResponse[];
 }
 
-export interface PlayerResponse {
-    id: number;
-    playerName: string;
-    position: string;
-}
-
 export interface PlayerParticipantResponse {
     id: number;
     shirtNumber: number;
@@ -40,6 +34,9 @@ export interface PlayerParticipantResponse {
     isMvp: number;
     matchesPlayed: number;
     status:boolean;
+    isActive:boolean;
+    isCaptain:boolean;
+    isGoalKeeper:boolean;
 }
 
 

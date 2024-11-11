@@ -1,9 +1,7 @@
-import { Router } from '@angular/router';
-import {ChangeDetectionStrategy, Component, EventEmitter, inject, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { DashboardService } from '../../core/services/dashboard.service';
-import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,25 +14,26 @@ import { TournamentResponseShort } from '../../core/models/tournamentResponseSho
 export class DashboardComponent {
 
   private dashboardService = inject(DashboardService);
-  private tournamentService = inject(TournamentService);
-
-  listTournaments: TournamentResponseShort [] = [];
-
-
+  private router = inject(Router);
+  lastTournamentClicked: string = '';
+  lastTournamentClickedName: string = '';
   constructor() {} 
+
+  ngOnInit() {
+    this.lastTournamentClicked = localStorage.getItem('lastTournamentClicked') || '';
+    this.lastTournamentClickedName = localStorage.getItem('lastTournamentClickedName') || '';
+
+  }
 
   changeComponent(component:string) {
     this.dashboardService.setActiveDashboardAdminComponent(component);
   }
 
-  ngOnInit() {
-    this.tournamentService.getTournamentShortList().subscribe({
-      next: (response) => {
-        this.listTournaments = response;
-      }
-    })
+  toTournament(code: string) {
+    localStorage.setItem('lastTournamentClicked', code);
+    this.router.navigate([`/admin/tournaments/${code}`]);
+    this.dashboardService.setNameTournament(this.lastTournamentClickedName);
   }
-
 
 }
   

@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
-import { AdminService } from '../../core/services/manager/admin.service';
 import { Router } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
 
 @Component({
@@ -16,7 +14,7 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 })
 export class ListTournamentsComponent {
 
-
+  
 
   tournaments: TournamentResponseShort[] = [];
   filteredTournaments: TournamentResponseShort[] = [];
@@ -43,6 +41,9 @@ export class ListTournamentsComponent {
 
   toTournament(code: string) {
     this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);
+    localStorage.setItem('lastTournamentClicked', code);
+    localStorage.setItem('lastTournamentClickedName', this.tournaments.find(tournament => tournament.code === code)?.name || '');
+    this.dashboardService.setNameTournament(this.tournaments.find(tournament => tournament.code === code)?.name || '');
     this.route.navigate([`/admin/tournaments/${code}`]);
   }
   
