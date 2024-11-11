@@ -1,4 +1,3 @@
-
 <section class="cards">
 
     <article (click)="changeComponent('create-tournament')" class="card">
@@ -20,5 +19,8 @@
         <img class="img-cards" src="equipo-de-futbol.png" alt="">
         <h2>VER EQUIPOS</h2>
     </article>
-
+    @if (lastTournamentClicked !== "") {
+        <button class="btn" (click)="toTournament(lastTournamentClicked)" >ULTIMO TORNEO VISUALIZADO : {{lastTournamentClickedName}}</button>
+    }
 </section>
+

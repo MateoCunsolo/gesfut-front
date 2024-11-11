@@ -19,49 +19,6 @@ export class AdminService {
   private sessionService = inject(SessionService);
   private http = inject(HttpClient);
 
-  getTournamentShortList(): Observable<TournamentResponseShort[]> {
-    const userCurrent = this.sessionService.isAuth();
-    if (!userCurrent) {
-      return new Observable<TournamentResponseShort[]>();
-    }
-    return this.http.get<TournamentResponseShort[]>(`${this.url}/tournaments/short`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      }
-    })
-  }
-
-  getTournamentShort(code: string): Observable<TournamentResponseShort> {
-    const userCurrent = this.sessionService.isAuth();
-    if (!userCurrent) {
-      return new Observable<TournamentResponseShort>();
-    }
-    return this.http.get<TournamentResponseShort>(`${this.url}/tournaments/short/${code}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      }
-    }).pipe(
-      tap((response) => {
-        console.log('Torneos obtenidos:', response);
-      }),
-      map((tournament: TournamentResponseShort) => ({
-        name: tournament.name,
-        code: tournament.code,
-        startDate: tournament.startDate,
-        isFinished: tournament.isFinished,
-        haveParticipants: tournament.haveParticipants
-      }))
-    );
-  }
-
-
-
-
-
-
-
   createTournament(tournament: TournamentRequest): Observable<TournamentResponse> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {
@@ -93,7 +50,6 @@ export class AdminService {
       }
     }).pipe(
       map((response) => {
-        console.log('Equipos antes del filtro:', response);
         return response.filter(team => team.name.trim().toLowerCase() !== 'free');
       })
     );

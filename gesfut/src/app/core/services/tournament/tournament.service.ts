@@ -1,12 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../../../enviroments/environment';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
 import { ParticipantResponse, TournamentResponseFull } from '../../models/tournamentResponse';
-import { ParticipantResponseShort } from '../../models/participantResponse';
 import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from './initial-tournament';
 import { TournamentResponseShort } from '../../models/tournamentResponseShort';
-import { DashboardService } from '../dashboard.service';
+import { ParticipantShortResponse } from '../../models/participantShortResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -42,19 +41,13 @@ export class TournamentService {
   }
 
   
+  
+
+
+
 
   tournamentExists(code:String):Observable<boolean>{
     return this.http.get<boolean>(`${this.url}/tournaments/exist/${code}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      }
-    });
-  }
-
-
-  getTournamentsParticipantTeamsShort(code:string):Observable<ParticipantResponseShort[]>{
-    return this.http.get<ParticipantResponseShort[]>(`${this.url}/tournaments/${code}/teams-short`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionStorage.getItem('token')}`
@@ -67,7 +60,6 @@ export class TournamentService {
     return this.http.get<ParticipantResponse[]>(`${this.url}/tournaments/${code}/teams`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       }
     });
   }
@@ -109,22 +101,15 @@ export class TournamentService {
       }})
     }
 
-    deleteParticipantPlayer(code:string, idPlayer:number,status:boolean, idTeam?:number):Observable<any>{
-      return this.http.delete(`${this.url}/tournaments/${code}/teams/${idTeam}/${idPlayer}/${status}`, {
+    
+    changeStatusPlayer(code: string, idParticipant: number, status: boolean) {
+      const url = `http://localhost:8080/api/v1/tournaments/change-status/${code}/${idParticipant}/${status}`;
+      return this.http.put<void>(`${url}`, {}, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-        }}).pipe(
-          tap({
-            next: (response:any) => {
-              return response;
-            },
-            error: (error:HttpErrorResponse) => {
-              return throwError(() => error)
-            }
-          })
-        );
+        }
+      });
     }
-
 
 }

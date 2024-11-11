@@ -1,4 +1,5 @@
 @if(isLoading) {
+    <!-- Muestra un componente o mensaje de carga -->
     <div class="loading-container">
         <div class="spinner"></div>
         <p>Cargando datos del torneo...</p>
@@ -7,14 +8,16 @@
     @if(flag) {
         <app-navbar></app-navbar>
     }
+
+    <!-- Componentes principales basados en el valor de activeComponent -->
     @if(activeComponent === 'dashboard') {
         <app-tournament-dashboard></app-tournament-dashboard>
     }
     @if(activeComponent === 'initialize') {
         <app-initialize-tournament></app-initialize-tournament>
     }
-    @if(activeComponent === 'list-teams') {
-        <app-list-teams></app-list-teams>
+    @if(activeComponent === 'list-teams-tournament') {
+        <app-list-team-tournaments></app-list-team-tournaments>
     }
     @if(activeComponent==='match-days'){
         <app-list-match-days></app-list-match-days>

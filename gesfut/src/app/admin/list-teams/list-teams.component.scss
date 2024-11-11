@@ -5,7 +5,6 @@
   grid-gap: 50px;
   padding: 10px;
   align-items: start;
-  height: calc(100vh - 310px);
   margin: 50px;
 }
 
@@ -69,11 +68,16 @@
   grid-area: team;
   display: flex;
   flex-direction: column;
+  width: 100vh;
+  height: calc(100vh - 280px);
 }
 
-table {
-  width: 100%;
+
+//si la tabla tiene más de 10 filas, se muestra el scroll
+
+.table{
   border-collapse: collapse;
+  width: 100%;
 }
 
 th, td {
@@ -82,6 +86,12 @@ th, td {
   text-align: center;
   font-size: 1.5rem;
   height: 4rem;
+}
+
+.hmx
+{
+  max-height: 370px !important;
+  overflow-y: scroll !important;
 }
 
 tr {
@@ -267,4 +277,87 @@ li {
   .team-name.active {
     font-size: 1.1rem;
   }
+}
+
+
+
+.tournaments-names {
+  display: flex;
+  align-items: center; 
+  justify-content: start;
+  flex-direction: row;
+  text-align: center;
+  max-width: 100%;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 0;
+  scrollbar-color: var(--primary-color) #ffffff;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+} 
+
+p {
+  border: solid var(--primary-color) 2px;
+  background-color: white;
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 5px;
+  height: auto;
+  min-width: 200px;
+  text-align: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+
+}
+
+p:hover {
+  color: #fff;
+  background-color: var(--primary-color);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); 
+}
+
+
+.tournamentClicked{
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.nameClicked{
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+
+.listTeamsAll{
+  width: 100%;
+  text-align: center ;
+  border: solid var(--primary-color) 2px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.listTeamsAll:hover{
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.nameTeamUP{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 20px;
+}
+
+.nameTeamUP > p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  height: auto;
+  width: auto;
 }

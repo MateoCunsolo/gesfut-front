@@ -12,4 +12,6 @@ export interface PlayerResponse {
     isCaptain: boolean;
     isGoalKeeper: boolean;
     number: number;
+    status: boolean;
+    id: number;
 }

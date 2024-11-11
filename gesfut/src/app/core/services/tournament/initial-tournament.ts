@@ -28,7 +28,10 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                   isSuspended: false,
                   isMvp: 0,
                   matchesPlayed: 0,
-                  status: false
+                  status: false,
+                  isActive: true,
+                  isCaptain: false,
+                  isGoalKeeper: false
               }
           ],
           statistics: {
@@ -146,4 +149,39 @@ export const INITIAL_TOURNAMENT_SHORT = {
     startDate: '',
     isFinished: false,
     haveParticipants: false
+}
+
+
+export const INITIAL_PARTICIPANT : ParticipantResponse = {
+    idParticipant: 0,
+    idTeam: 0,
+    name: '',
+    isActive: false,
+    playerParticipants: [
+        {
+            id: 0,
+            shirtNumber: 0,
+            playerName: '',
+            playerLastName: '',
+            goals: 0,
+            redCards: 0,
+            yellowCards: 0,
+            isSuspended: false,
+            isMvp: 0,
+            matchesPlayed: 0,
+            status: false,
+            isActive: true,
+            isCaptain: false,
+            isGoalKeeper: false
+        }
+    ],
+    statistics: {
+        points: 0,
+        matchesPlayed: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0
+    }
 }

@@ -5,7 +5,10 @@
         <p class="p-panel" (click)="changeComponent('dashboard-principal')" >Volver al panel central</p>
       }
   </section>
-  
+  @if(isRouteTorunament) {
+    <p class="title-torunament">{{lastTournamentClickedName}}</p>
+  }
+
   @if (!isLoggedIn) {
       <button class="btn-login" (click)="onLogin()">INICIAR SESION</button>
     } @else {

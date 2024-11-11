@@ -11,7 +11,7 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 @Component({
   selector: 'app-initialize-tournament',
   standalone: true,
-  imports: [NavbarComponent, FormsModule],
+  imports: [FormsModule],
   templateUrl: './initialize-tournament.component.html',
   styleUrl: './initialize-tournament.component.scss'
 })
