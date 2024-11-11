@@ -16,7 +16,7 @@ export class MatchDaysService {
   url:string=environment.apiUrl;
 
   currentMatch: BehaviorSubject<MatchDetailedResponse> = new BehaviorSubject<MatchDetailedResponse>(INITIAL_DETAILED_MATCH);
-
+  editResult:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private HttpClient:HttpClient, private dashboardService:DashboardService, private tournamentService:TournamentService) { }
 
@@ -57,7 +57,9 @@ export class MatchDaysService {
     );
   }
   
-  
+  setEditResult(status:boolean){
+    this.editResult.next(status);
+  }
   
 
   setActiveMatch(id:number){
@@ -97,6 +99,7 @@ export class MatchDaysService {
         this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
           next:() => {
             this.dashboardService.setActiveTournamentComponent('match-days');
+            this.setEditResult(false);
           }
         });
       },
