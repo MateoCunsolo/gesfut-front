@@ -50,3 +50,28 @@ a{
     cursor: pointer;
 }
 
+
+
+//responsive del boton login
+@media screen and (max-width: 393px) {
+    .btn-login{
+        padding: 5px 10px;
+        font-size: 1.5rem;
+        width: auto;
+    }
+
+    header{
+        height: 60px;
+        font-size: 1.2rem;
+        gap: 2px;
+    }
+
+    .logo{
+        width: auto;
+        gap: 5px;
+    }
+
+    .name{
+        font-size: 1.2rem;
+    }
+}

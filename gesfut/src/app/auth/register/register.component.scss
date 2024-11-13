@@ -4,19 +4,23 @@ section{
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: calc(100vh - 80px);
-  background-color: var(--bg-color);
+  height: calc(100vh - 160px);
+  //poner de fondo imagen local gesfut/public/register-image.jpg
+  background-image: url('../../../../public/register-image.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
 
 .form{
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 896px;
+  width: 448px;
   height: 448px;
-  border: 1px solid var(--bg-color-dark);
   gap: 24px;
+  background-color: rgba(255, 255, 255, 0.815);
+  border-radius: 10px;
 }
 
 .img-container {
@@ -32,93 +36,18 @@ img {
 }
 
 .title{
-  font-size: 32px;
+  color: var(--primary-color);
+  font-size: var(--font-size-subtitle);
 }
 
 form{
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  height: auto;
+  height: inherit;
   width: 100%;
-  border: 1px solid;
-}
-
-.form-group {
-  display: flex;
-  align-items: start; /* Alinea verticalmente los elementos al centro */
-  width: 100%;
-}
-
-input {
-  height: 36px;
-  width: 176px;
-}
-
-/* Configuración de íconos de los inputs */
-.input-icon {
-  position: relative;
-  display: flex;
-  align-items: center; /* Centrar verticalmente el ícono */
-}
-
-.input-icon input {
-  padding-left: 72px; /* Espacio para el ícono */
-  padding-right: 10px; /* Espacio a la derecha */
-  height: 40px; /* Ajusta la altura según lo necesites */
-  border: 1px solid #ccc; /* Añade un borde */
-  border-radius: 5px; /* Bordes redondeados (opcional) */
-  width: 100%; /* Asegura que el input ocupe todo el ancho disponible */
-  font-size: 24px;
-}
-
-.input-icon i {
-  position: absolute;
-  left: 24px; /* Espacio desde la izquierda */
-  color: var(--primary-color); /* Color del ícono */
-  font-size: 24px;
-}
-
-.input-icon input:focus {
-  border-color: var(--secondary-color); /* Cambia el color del borde al enfocar */
-}
-
-.input-icon input:focus + i {
-  color: var(--secondary-color); /* Cambia el color del ícono al enfocar */
+  padding: 20px;
 }
 
 
-/* Button */
-
-button{
-  width: 100%;
-  margin: 0 auto;
-  height: 36px;
-  font-size: 24px;
-  transition: 0.3s ease-in-out;
-  border: none;
-  background-color: var(--primary-color);
-  color: white;
-}
-
-
-button:hover{
-  background-color: var(--secondary-color);
-}
-
-button:focus{
-  background-color: var(--secondary-color);
-}
-
-/* Error */
-.error-message {
-  min-height: 24px; /* Ajusta la altura mínima según el tamaño del texto */
-  margin-top: 5px; /* Espacio entre el input y el mensaje de error */
-}
-
-.error {
-  color: red; /* Color del mensaje de error */
-  font-size: 16px; /* Tamaño del texto */
-  padding-left: 16px;
-}

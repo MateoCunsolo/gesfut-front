@@ -28,75 +28,21 @@
 form {
   display: flex;
   max-width: 400px;
+  min-height: 200px;
   flex-direction: column;
   width: 100%;
   padding: 10px;
-  gap: 10px;
+  gap: 5px;
 }
 
-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
 
-  &:focus {
-    outline: none;
-  }
-}
 
 label {
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: var(--font-size-text);
 }
 
-.icon {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
 
-  svg {
-    width: 30px;
-    height: 30px;
-  }
-}
-
-.btn-back,
-.btn-create {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  border: none;
-
-  &.btn-back {
-    background-color: gray;
-    color: white;
-
-    &:hover {
-      background-color: rgb(55, 55, 55);
-    }
-  }
-
-  &.btn-create {
-    background-color: var(--primary-color);
-    color: white;
-    width: 100%;
-
-    &:hover {
-      background-color: var(--secondary-color);
-    }
-  }
-}
-
-.buttons {
-  display: flex;
-  width: 100%;
-  gap: 10px;
-}
 
 .grid-container {
   display: grid;
@@ -119,12 +65,13 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 160px);
+  min-height: calc(100vh - 160px) !important;
+  max-height: calc(100vh - 160px) !important;
   gap: 10px;
 }
 
 .oculto {
-  color: white;
+  color: #f4f4f4  ;
 }
 
 small {
@@ -156,4 +103,30 @@ small {
   .column-2 {
     max-width: 100%;
   }
+}
+
+.position{
+  position: absolute;
+  top: 100px;
+  left: 15px;
+}
+
+.btn-create{
+  width: 100%;
+  padding: 10px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-create:hover{
+  background-color: var(--secondary-color);
+}
+
+.oculto{
+  display: flex;
+  min-height: 25px;
 }

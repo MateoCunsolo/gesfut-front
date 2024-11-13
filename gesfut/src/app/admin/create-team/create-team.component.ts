@@ -1,9 +1,10 @@
 import { PlayerRequest, TeamRequest } from './../../core/models/teamRequest';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TeamService } from '../../core/services/tournament/team.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class CreateTeamComponent {
   error:String='';
   teamForm: FormGroup;
   displayedColumns: string[] = ['name', 'lastName', 'number', 'isCaptain', 'isGoalKeeper', 'remove'];
-
+  private dashboardService = inject(DashboardService);
   constructor(private fb: FormBuilder, private teamService:TeamService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
@@ -35,6 +36,10 @@ export class CreateTeamComponent {
   }
   get players() {
     return this.teamForm.get('players') as FormArray;
+  }
+
+  changeComponent(component:string){
+    this.dashboardService.setActiveDashboardAdminComponent(component);
   }
 
   addPlayer() {

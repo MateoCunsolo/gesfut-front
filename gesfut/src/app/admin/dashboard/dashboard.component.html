@@ -20,7 +20,7 @@
         <h2>VER EQUIPOS</h2>
     </article>
     @if (lastTournamentClicked !== "") {
-        <button class="btn" (click)="toTournament(lastTournamentClicked)" >ULTIMO TORNEO VISUALIZADO : {{lastTournamentClickedName}}</button>
+        <button class="btn" (click)="toTournament(lastTournamentClicked)" >ULTIMO TORNEO VISUALIZADO : {{lastTournamentClickedName.toUpperCase()}}</button>
     }
 </section>
 

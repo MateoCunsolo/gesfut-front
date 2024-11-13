@@ -12,48 +12,52 @@ import { DashboardService } from '../../core/services/dashboard.service';
 @Component({
   selector: 'app-create-tournament',
   standalone: true,
-  imports: [ReactiveFormsModule, FooterComponent],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-tournament.component.html',
   styleUrl: './create-tournament.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class CreateTournamentComponent {
-
   createTournamentForm: FormGroup;
+
   constructor(
     private dashboardService: DashboardService,
     private adminService: AdminService,
     private fb: FormBuilder, 
-    private router:Router) {
+    private router: Router
+  ) {
     this.createTournamentForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     });
+  }
+
+  get name() {
+    return this.createTournamentForm.get('name');
   }
 
   onSubmit() {
     if (this.createTournamentForm.valid) {
-      let tournament: TournamentRequest = { name: this.createTournamentForm.value.name };
+      const tournament: TournamentRequest = { name: this.name?.value };
       console.log("torneo antes del llamado: " + tournament);
       this.adminService.createTournament(tournament).subscribe({
         next: (response) => {
-          console.log('Creacion del torneo completado.');
-          console.log("torneo response: " + response);
+          localStorage.setItem('lastTournamentClicked', response.toString());
+          localStorage.setItem('lastTournamentClickedName', this.name?.value);
           this.router.navigate([`/admin/tournaments/${response}`]);
           this.dashboardService.setHaveParticipants(false);
         },
         error: (err) => {
-          console.log(err);
+          console.error('Error al crear el torneo:', err);
         }
       });
+    } else {
+      this.createTournamentForm.markAllAsTouched();
     }
   }
-
     
   changeComponent(component:string){
     this.dashboardService.setActiveDashboardAdminComponent(component);
   }
-
-
-
+  
 }

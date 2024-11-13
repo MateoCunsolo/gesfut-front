@@ -1,9 +1,16 @@
-
 /* You can add global styles to this file, and also import other style files */
 :root {
     --primary-color: #2a6a49;
-    --secondary-color: #41cf8a; 
+    --secondary-color: #41cf8a;
     --bg-color: #f4f4f4;
+    --error-color: #ff0000;
+    --font-type-primary: 'Play', sans-serif;
+    --font-color-ligth: #f4f4f4;
+    --font-color-dark: #333;
+    --font-size-title: 32px;
+    --font-size-subtitle: 24px;
+    --font-size-text: 16px;
+    --font-size-small: 14px;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
@@ -14,16 +21,18 @@ html {
     font-family: 'Play', sans-serif;
 }
 
-*, *:after, *:before {
+*,
+*:after,
+*:before {
     box-sizing: inherit;
     margin: 0;
 }
 
-body{
-  background-color: var(--bg-color);
+body {
+    background-color: var(--bg-color);
 }
 
-.btn-login{
+.btn-login {
     background-color: #41cf8a;
     color: white;
     font-weight: bold;
@@ -33,13 +42,13 @@ body{
     cursor: pointer;
 }
 
-svg{
+svg {
     width: 20px;
     height: 20px;
 }
 
 
-small{
+small {
     position: relative;
     font-size: 1.3rem;
 }
@@ -57,112 +66,256 @@ small{
 
 
 
-/* BUTTON */
+// /* BUTTON */
 
-/* Botón de añadir jugador */
-/* Base Button Styles */
-.base-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    color: var(--primary-color);
-    border: none;
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-  }
-  
-  /* Estilos para el botón pequeño */
-  .button-small {
-    width: 40px; /* Ancho para botones de acción pequeños */
-    height: 40px; /* Altura para botones de acción pequeños */
-    font-size: 24px; /* Tamaño del icono */
-  }
-  
-  /* Estilos para el botón grande */
-  .button-large {
-    background-color: var(--primary-color);
-    color: white;
-    width: 80%; /* Ancho completo para el botón de enviar */
-    height: 40px; /* Altura para el botón de enviar */
-    font-size: 16px; /* Tamaño de texto para el botón de enviar */
-    margin: 8px auto;
-  }
-  
-  /* Hover: cambio de color y fondo */
-  .base-button:hover:not(:disabled) {
-    background-color: var(--secondary-color); /* Fondo al hacer hover */
-    color: #fff; /* Ícono en blanco */
-    transform: scale(1.1); /* Efecto de crecimiento ligero */
-  }
-  
-  /* Al hacer foco */
-  .base-button:focus {
-    outline: none;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Sombra sutil */
-  }
-  
-  /* Estilo para el botón deshabilitado */
-  .base-button:disabled {
-    background-color: var(--disabled-color, #e0e0e0); /* Color de fondo para deshabilitado */
-    color: #a0a0a0; /* Color de texto para deshabilitado */
-    cursor: not-allowed; /* Cambiar el cursor para indicar que no se puede interactuar */
-    opacity: 0.7; /* Opacidad para indicar que está deshabilitado */
-  }
-  
-  /* Asegúrate de que el hover no afecte el botón deshabilitado */
-  .base-button:disabled:hover {
-    background-color: var(--disabled-color, #e0e0e0); /* Mantener el mismo fondo */
-    transform: none; /* No aplicar transformación de escala */
-  }
-  
-  .checkbox-icon {
+// /* Botón de añadir jugador */
+// /* Base Button Styles */
+// .base-button {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background-color: transparent;
+//     color: var(--primary-color);
+//     border: none;
+//     border-radius: 5px;
+//     /* Bordes redondeados */
+//     cursor: pointer;
+//     transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+// }
+
+// /* Estilos para el botón pequeño */
+// .button-small {
+//     width: 40px;
+//     /* Ancho para botones de acción pequeños */
+//     height: 40px;
+//     /* Altura para botones de acción pequeños */
+//     font-size: 24px;
+//     /* Tamaño del icono */
+// }
+
+// /* Estilos para el botón grande */
+// .button-large {
+//     background-color: var(--primary-color);
+//     color: white;
+//     width: 80%;
+//     /* Ancho completo para el botón de enviar */
+//     height: 40px;
+//     /* Altura para el botón de enviar */
+//     font-size: 16px;
+//     /* Tamaño de texto para el botón de enviar */
+//     margin: 8px auto;
+// }
+
+// /* Hover: cambio de color y fondo */
+// .base-button:hover:not(:disabled) {
+//     background-color: var(--secondary-color);
+//     /* Fondo al hacer hover */
+//     color: #fff;
+//     /* Ícono en blanco */
+//     transform: scale(1.1);
+//     /* Efecto de crecimiento ligero */
+// }
+
+// /* Al hacer foco */
+// .base-button:focus {
+//     outline: none;
+//     box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+//     /* Sombra sutil */
+// }
+
+// /* Estilo para el botón deshabilitado */
+// .base-button:disabled {
+//     background-color: var(--disabled-color, #e0e0e0);
+//     /* Color de fondo para deshabilitado */
+//     color: #a0a0a0;
+//     /* Color de texto para deshabilitado */
+//     cursor: not-allowed;
+//     /* Cambiar el cursor para indicar que no se puede interactuar */
+//     opacity: 0.7;
+//     /* Opacidad para indicar que está deshabilitado */
+// }
+
+// /* Asegúrate de que el hover no afecte el botón deshabilitado */
+// .base-button:disabled:hover {
+//     background-color: var(--disabled-color, #e0e0e0);
+//     /* Mantener el mismo fondo */
+//     transform: none;
+//     /* No aplicar transformación de escala */
+// }
+
+.checkbox-icon {
     position: relative;
     display: flex;
     align-items: center;
-    width: 36px; /* Ajusta el tamaño según lo necesites */
+    width: 36px;
+    /* Ajusta el tamaño según lo necesites */
     height: 36px;
-    border: 1px solid #ccc; /* Borde similar a los inputs */
-    border-radius: 5px; /* Bordes redondeados */
-    background-color: #fff; /* Fondo blanco por defecto */
+    border: 1px solid #ccc;
+    /* Borde similar a los inputs */
+    border-radius: 5px;
+    /* Bordes redondeados */
+    background-color: #fff;
+    /* Fondo blanco por defecto */
     cursor: pointer;
     transition: border-color 0.3s, background-color 0.3s;
-  }
-  
-  .checkbox-icon input[type="checkbox"] {
-    opacity: 0; /* Oculta el checkbox original */
+}
+
+.checkbox-icon input[type="checkbox"] {
+    opacity: 0;
+    /* Oculta el checkbox original */
     width: 100%;
     height: 100%;
     margin: 0;
     cursor: pointer;
-  }
-  
-  .checkbox-icon i {
-    position: absolute;
-    color: var(--primary-color); /* Color del ícono */
-    font-size: 20px;
-    display: none; /* Oculta el icono inicialmente */
-  }
-  
-  /* Muestra el icono cuando el checkbox está marcado */
-  .checkbox-icon input[type="checkbox"]:checked + i {
-    display: block;
-  }
-  
-  /* Al hacer foco, cambia el color del borde */
-  .checkbox-icon input[type="checkbox"]:focus + i {
-    border-color: var(--secondary-color);
-  }
-  
-  /* Efecto al hacer hover */
-  .checkbox-icon:hover {
-    border-color: var(--secondary-color); /* Cambia el color del borde */
-    background-color: var(--secondary-color); /* Fondo de hover */
-  }
+}
 
-  label{
+.checkbox-icon i {
+    position: absolute;
+    color: var(--primary-color);
+    /* Color del ícono */
+    font-size: 20px;
+    display: none;
+    /* Oculta el icono inicialmente */
+}
+
+/* Muestra el icono cuando el checkbox está marcado */
+.checkbox-icon input[type="checkbox"]:checked+i {
+    display: block;
+}
+
+/* Al hacer foco, cambia el color del borde */
+.checkbox-icon input[type="checkbox"]:focus+i {
+    border-color: var(--secondary-color);
+}
+
+/* Efecto al hacer hover */
+.checkbox-icon:hover {
+    border-color: var(--secondary-color);
+    /* Cambia el color del borde */
+    background-color: var(--secondary-color);
+    /* Fondo de hover */
+}
+
+label {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+}
+
+
+// Responsive for 392px by 852px
+@media screen and (max-width: 393px) {
+    html {
+        font-size: 50%;
+    }
+}
+
+
+
+
+
+
+/* ==================================== INPUT CON ICON ==================================== */
+.form-group {
+    display: flex;
+    align-items: start;
+    width: 100%;
+}
+
+.input-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+}
+
+.input-icon input {
+    padding-left: 72px;
+    padding-right: 10px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    font-size: var(--font-size-text);
+    outline: none;
+    color: var(--secondary-color);
+    font-family: Play;
+    width: 100%;
+}
+
+.input-icon input::placeholder {
+    color: var(--primary-color);
+}
+
+.input-icon i {
+    position: absolute;
+    left: 24px;
+    color: var(--primary-color);
+    font-size: 24px;
+}
+
+.input-icon input:focus {
+    border-color: var(--secondary-color);
+}
+
+.input-icon input:focus+i {
+    color: var(--secondary-color);
+}
+
+
+/* ==================================== Button ====================================*/
+
+.base-button {
+    width: 100%;
+    background-color: var(--primary-color);
+    padding: 10px 0px;
+    color: var(--font-color-ligth);
+    font-weight: bold;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-text);
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+.base-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.base-button:focus {
+    background-color: var(--secondary-color);
+}
+
+.back-button{
+    padding: 10px;
+    width: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: var(--font-color-ligth);
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* ==================================== Error ====================================*/
+.error-message {
+    min-height: 24px;
+    margin-top: 5px;
+}
+
+.error {
+    color: var(--error-color);
+    font-size: var(--font-size-small);
+    padding-left: 16px;
+}
+
+.link {
+    border-bottom: 1px solid var(--primary-color);
+    font-size: var(--font-size-text);
+    color: var(--primary-color);
+    text-decoration: none;
+    margin-top: 24px;
+    cursor: pointer;
+}

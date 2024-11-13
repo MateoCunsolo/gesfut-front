@@ -54,5 +54,9 @@ export class RegisterComponent {
     return this.registerForm.controls[field].getError(error) &&
       this.registerForm.controls[field].touched;
   }
+
+  toLogin() {
+    this.route.navigate(['auth/login']);
+  }
   
 }
