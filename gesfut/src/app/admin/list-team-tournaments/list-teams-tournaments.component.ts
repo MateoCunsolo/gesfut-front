@@ -51,6 +51,7 @@ export class ListTeamsTournamentsComponent {
           name: participant.name,
           idTeam: participant.idTeam
         }));
+        this.teamsNameFilter = this.teamsNameFilter.filter((team => team.name.toLowerCase() !== 'free'));
         this.teamNameClicked = this.teamsNameFilter[0].name;
         this.nameClicked = true;
         this.indexName = 0;

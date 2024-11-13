@@ -1,11 +1,16 @@
 .teams {
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 3fr;
   grid-template-areas: "teams team";
   grid-gap: 50px;
   padding: 10px;
   align-items: start;
-  margin: 50px;
+  margin: 75px 50px 25px 50px;
+  width: 1280px;
+  background-color: red;
+  width: 1280px;
+  margin: 0 auto;
+  
 }
 
 .buttons {
@@ -13,7 +18,7 @@
   width: 100%;
   justify-content: start;
   gap: 20px;
-  flex-wrap: wrap; /* Para que los botones se apilen en pantallas más pequeñas */
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -68,7 +73,6 @@
   grid-area: team;
   display: flex;
   flex-direction: column;
-  width: 100vh;
   height: calc(100vh - 280px);
 }
 
@@ -360,4 +364,12 @@ p:hover {
   font-weight: bold;
   height: auto;
   width: auto;
+}
+
+
+.position{
+  position: absolute !important;
+  top: 100px !important;
+  left: 15px !important;
+  margin-bottom: 50px;
 }

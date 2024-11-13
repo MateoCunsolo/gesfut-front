@@ -44,23 +44,7 @@ export class AdminPageComponent {
     });
 
 
-    this.adminService.getTeams().subscribe({
-      next: (response) => {
-        this.teamsGlobal = response;
-        this.id = this.teamsGlobal[0].id;
-        this.teamService.getParticipantsShortAllTournamemts(this.id).subscribe({
-          next: (response) => {
-            sessionStorage.setItem('participantsALL', JSON.stringify(response));
-          }
-        });
-      }
-    });
-
-
     
-
-
-
   }
 
 }

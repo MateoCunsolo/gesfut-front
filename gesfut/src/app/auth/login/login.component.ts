@@ -1,57 +1,61 @@
-import { Component, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/manager/auth.service';
-import { LoginRequest } from '../../core/models/loginRequest';
 import { SessionService } from '../../core/services/manager/session.service';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule], 
+  imports: [RouterModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],  
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./login.component.scss'],
 })
+
 export class LoginComponent {
   loginForm: FormGroup;
-  error:String= '';
-  hide = signal(true);
-
+  error: string = '';
+  redActive = false;
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private authService: AuthService,
-    private sessionService:SessionService,
-    private router:Router) {
+    private sessionService: SessionService,
+    private dashboardService: DashboardService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
     });
-  }
-
-  clickEvent(event: MouseEvent) {
-    this.hide.set(!this.hide());
-    event.stopPropagation();
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
-      let loginRequest: LoginRequest = this.loginForm.value;
-        this.authService.login(loginRequest).subscribe({
-        next: (response) => {
+      this.authService.login(this.loginForm.value).subscribe(
+        (response) => {
           this.sessionService.setUserSession(response);
-          this.router.navigateByUrl('/admin')
+          this.dashboardService.setActiveDashboardAdminComponent('dashboard');
+          this.router.navigate(['/admin']);
         },
-        error: (err) => {
-        },
-        complete: () => {
-          console.log('Login request completed');
-        },
-      });
+        (error) => {
+          this.error = error.error.error;
+          this.redActive = true;
+        }
+      );
+    }else{
+      this.error = 'Campos inválidos';
     }
   }
+
+  toRegister() {
+    this.router.navigate(['auth/singup']);
+  }
+
+
+
+
 }
+
 

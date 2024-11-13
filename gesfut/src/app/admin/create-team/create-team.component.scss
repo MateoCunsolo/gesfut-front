@@ -4,7 +4,7 @@ section{
   align-items: center;
   width: 1280px;
   margin: 0 auto;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 160px);
 }
 
 @media (max-width: 1280px) {
@@ -89,7 +89,7 @@ form{
   flex-direction: column;
   max-height: 400px;
   min-height: 400px;
-  overflow: scroll;
+  overflow-y: auto;
   margin: 24px 0;  
 }
 
@@ -325,3 +325,8 @@ label{
   transform: none; /* No aplicar transformación de escala */
 }
 
+.position{
+  position: absolute !important;
+  top: 100px !important;
+  left: 15px !important;
+}

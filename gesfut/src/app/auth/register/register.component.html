@@ -1,11 +1,7 @@
 <section>
   <div class="form">
-    <div class="img-container">
-      <img src="/register-image.jpg" />
-    </div>
-
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <h2 class="title">Registrate!</h2>
+      <h2 class="title">REGISTRATE</h2>
       <div class="error-message">
         <p class="error">{{ error }}</p>
       </div>
@@ -97,7 +93,8 @@
         }
       </div>
 
-      <button type="submit" class="submit-button">ENVIAR</button>
+      <button type="submit" class="base-button">ENVIAR</button>
+      <a class="link" (click)="toLogin()" >Ya tenes cuenta? Inicia sesion aca!</a>
     </form>
   </div>
 </section>

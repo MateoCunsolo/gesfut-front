@@ -10,6 +10,7 @@ import { TeamService } from '../../core/services/tournament/team.service';
 import { ParticipantShortResponse } from '../../core/models/participantShortResponse';
 import { NgClass } from '@angular/common';
 import { find } from 'rxjs';
+import { DashboardService } from '../../core/services/dashboard.service';
 @Component({
   selector: 'app-list-teams',
   standalone: true,
@@ -24,6 +25,7 @@ export class ListTeamsComponent {
   private sessionService = inject(SessionService);
   private adminService = inject(AdminService);
   private teamService = inject(TeamService);
+  private dashboardService = inject(DashboardService);
 
   // Autenticación del usuario
   isAuth: boolean = false;
@@ -137,6 +139,11 @@ export class ListTeamsComponent {
     });
 
   }
+
+  changeComponent(component:string){
+    this.dashboardService.setActiveDashboardAdminComponent(component);
+  }
+
 
   showPlayersParticipants(playerParticipantsAux: PlayerParticipantResponse[], index: number) {
     this.teamsGlobal.forEach(team => {
