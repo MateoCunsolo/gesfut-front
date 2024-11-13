@@ -1,6 +1,6 @@
 
 .footer {
-    position: fixed;
+    position:fixed;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -30,9 +30,7 @@
     justify-content: center;
     gap: 20px;
 }
-
-
-@media(max-width: 576px) {
+@media(max-width: 768px) {
 
     .footer{
         position: relative;
