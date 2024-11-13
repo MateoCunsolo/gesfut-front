@@ -8,11 +8,13 @@ section{
     background-color: var(--bg-color);
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 768px) {
     section{
         width: 100%;
+        height: auto;
     }
 }
+
 
 
 .title-container{

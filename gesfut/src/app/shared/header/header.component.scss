@@ -14,7 +14,7 @@ header {
 
 
 .name{
-    font-size: 1.5rem;
+    font-size: var(--font-size-text);
     color: white;
 }
 
@@ -61,8 +61,7 @@ a{
     }
 
     header{
-        height: 60px;
-        font-size: 1.2rem;
+        font-size: var(--font-size-text);
         gap: 2px;
     }
 
