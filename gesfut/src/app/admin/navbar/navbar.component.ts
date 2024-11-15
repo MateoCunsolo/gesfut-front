@@ -31,8 +31,9 @@ export class NavbarComponent {
 
   changeComponent(component: string) {
     this.dashboardService.setActiveTournamentComponent(component);
+    this.menuOpen = false;
   }
-
+  
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }

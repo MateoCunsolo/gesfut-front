@@ -1,53 +1,43 @@
 <button class="back-button position" (click)="changeComponent('dashboard')">ATRAS</button>
 
 <div class="center">
-  <div class="grid-container">
-    <section class="column-2">
-      <img src="imagen-de-destaque-que-es-el-futbol.-jugadores-y-balon.webp" alt="" />
-    </section>
 
-    <section class="column-1">
-      <h2>CREACION DEL TORNEO</h2>
-      <p>Requesitos y validaciones del nombre:</p>
-      <ul>
-        <li>El nombre del torneo es obligatorio</li>
-        <li>Debe tener entre 3 y 50 caracteres</li>
-        <li>Solo puede contener letras, números y espacios</li>
-        <li>No puede tener palabras ofensivas</li>
-      </ul>
+  <section class="form-section">
+    <h2>CREACION DEL TORNEO</h2>
+    <p>Requesitos y validaciones del nombre</p>
+    <ul>
+      <li>El nombre del torneo es obligatorio</li>
+      <li>Debe tener entre 3 y 50 caracteres</li>
+      <li>Solo puede contener letras, números y espacios</li>
+      <li>No puede tener palabras ofensivas</li>
+    </ul>
 
-      <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
-        <label for="name">Nombre del torneo</label>
-        
-        <div class="form-group input-icon">
-          <input
-          formControlName="name"
-          type="text"
-          placeholder="Ingrese nombre del torneo"
-          />
-          <i class="fa-solid fa-trophy"></i>
-        </div>
-        
-        @if (createTournamentForm.get('name')?.hasError('required')) {
-          <small>El nombre es obligatorio.</small>
-        }
+    <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
 
-        @if (createTournamentForm.get('name')?.hasError('minlength')) {
-          <small>El nombre debe tener al menos 3 caracteres.</small>
-        } 
+      <div class="form-group input-icon">
+        <input formControlName="name" type="text" placeholder="Ingrese nombre del torneo" />
+        <i class="fa-solid fa-trophy"></i>
+      </div>
 
-        @if (createTournamentForm.get('name')?.hasError('maxlength')) {
-          <small>El nombre debe tener menos de 50 caracteres.</small>
-        } 
+      @if (createTournamentForm.get('name')?.hasError('required')) {
+      <small>El nombre es obligatorio.</small>
+      }
 
-        @if (createTournamentForm.get('name')?.valid) {
-          <div class="oculto"></div>
-        }
+      @if (createTournamentForm.get('name')?.hasError('minlength')) {
+      <small>El nombre debe tener al menos 3 caracteres.</small>
+      }
 
-        <section class="buttons">
-          <button class="btn-create" type="submit">CREAR TORNEO</button>
-        </section>
-      </form>
-    </section>
-  </div>
+      @if (createTournamentForm.get('name')?.hasError('maxlength')) {
+      <small>El nombre debe tener menos de 50 caracteres.</small>
+      }
+
+      @if (createTournamentForm.get('name')?.valid) {
+      <div class="oculto"></div>
+      }
+
+      <section class="buttons">
+        <button class="btn-create" type="submit">CREAR TORNEO</button>
+      </section>
+    </form>
+  </section>
 </div>

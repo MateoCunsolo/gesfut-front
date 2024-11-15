@@ -1,17 +1,16 @@
-section{
+section {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: calc(100vh - 160px);
-  //poner de fondo imagen local gesfut/public/register-image.jpg
   background-image: url('../../../../public/register-image.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.form{
+.form {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,27 +19,18 @@ section{
   gap: 24px;
   background-color: rgba(255, 255, 255, 0.815);
   border-radius: 10px;
-}
 
-@media screen and (max-width: 576px) {
-  .form{
+  @media screen and (max-width: 768px) {
     width: auto;
   }
-  
 }
 
-
-// PUNTO DE CORTE MOBILE 576px
-// PUNTO DE CORTE TABLET 768px
-// SETEAR EL WIDTH EN TODOS LOS COMPONENTES DE 1280px
-
-
-.title{
+.title {
   color: var(--primary-color);
   font-size: var(--font-size-subtitle);
 }
 
-form{
+form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,4 +39,3 @@ form{
   width: 100%;
   padding: 20px;
 }
-
