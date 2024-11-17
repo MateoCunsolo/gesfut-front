@@ -143,26 +143,24 @@ small {
 //     /* No aplicar transformación de escala */
 // }
 
+
+/* ==================================== CHECKBOX ==================================== */
+
 .checkbox-icon {
     position: relative;
     display: flex;
     align-items: center;
-    width: 36px;
-    /* Ajusta el tamaño según lo necesites */
-    height: 36px;
-    border: 1px solid #ccc;
-    /* Borde similar a los inputs */
+    width: 40px;
+    height: 40px;
+    border: none;
     border-radius: 5px;
-    /* Bordes redondeados */
     background-color: #fff;
-    /* Fondo blanco por defecto */
     cursor: pointer;
     transition: border-color 0.3s, background-color 0.3s;
 }
 
 .checkbox-icon input[type="checkbox"] {
     opacity: 0;
-    /* Oculta el checkbox original */
     width: 100%;
     height: 100%;
     margin: 0;
@@ -172,28 +170,21 @@ small {
 .checkbox-icon i {
     position: absolute;
     color: var(--primary-color);
-    /* Color del ícono */
     font-size: 20px;
     display: none;
-    /* Oculta el icono inicialmente */
 }
 
-/* Muestra el icono cuando el checkbox está marcado */
 .checkbox-icon input[type="checkbox"]:checked+i {
     display: block;
 }
 
-/* Al hacer foco, cambia el color del borde */
 .checkbox-icon input[type="checkbox"]:focus+i {
     border-color: var(--secondary-color);
 }
 
-/* Efecto al hacer hover */
 .checkbox-icon:hover {
     border-color: var(--secondary-color);
-    /* Cambia el color del borde */
     background-color: var(--secondary-color);
-    /* Fondo de hover */
 }
 
 label {
