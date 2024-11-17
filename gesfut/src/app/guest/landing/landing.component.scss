@@ -3,25 +3,37 @@ section {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: calc(100vh - 160px  );
+    height: calc(100vh - 160px);
     gap: 20px;
     background-color: var(--bg-color);
     color: var(--text-color);
     text-align: center;
 }
 
-.title{
+.title {
     font-size: 5rem;
     font-weight: bold;
     color: gray;
+
+    @media screen and (max-width: 768px) {
+        font-size: 3rem;
+        text-wrap: wrap;
+        width: 80%;
+    }
+
 }
 
-.description{
+.description {
     font-size: 2rem;
     max-width: 600px;
+
+    @media screen and (max-width: 768px) {
+        font-size: 1.8rem;
+        width: 80%;
+    }
 }
 
-.start{
+.start {
     background-color: var(--primary-color);
     color: var(--bg-color);
     font-weight: bold;
@@ -29,48 +41,8 @@ section {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
 
-.nav{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 10px;
-    color: var(--bg-color);
-    font-size: 1.6rem;
-    height: 40px;
-
-}
-
-.nav a{
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-}
-
-@media screen and (max-width: 768px) {
-    
-    .title{
-        font-size: 3rem;
-        width: 80%;
-    }
-
-    .description{
-        font-size: 1.5rem;
-        width: 80%;
-    }
-
-    .start{
+    @media screen and (max-width: 768px) {
         font-size: 1.5rem;
     }
-
-    .nav{
-        font-size: 1.2rem;
-    }
-    
-    section {
-        width: auto;
-        height: calc(100vh - 140px);
-    }
-    
 }
