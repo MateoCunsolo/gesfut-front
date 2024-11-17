@@ -299,6 +299,13 @@ label {
     cursor: pointer;
 }
 
+
+.back-button:hover {
+    background-color: var(--secondary-color);
+    transition: 0.3s ease-in-out;
+}
+
+
 /* ==================================== Error ====================================*/
 .error-message {
     min-height: 24px;
@@ -319,3 +326,28 @@ label {
     margin-top: 24px;
     cursor: pointer;
 }
+
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color);
+    opacity: 0.8; /* Opcional: para añadir un efecto visual al hover */
+  }
+  
