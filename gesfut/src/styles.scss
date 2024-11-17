@@ -299,6 +299,13 @@ label {
     cursor: pointer;
 }
 
+
+.back-button:hover {
+    background-color: var(--secondary-color);
+    transition: 0.3s ease-in-out;
+}
+
+
 /* ==================================== Error ====================================*/
 .error-message {
     min-height: 24px;

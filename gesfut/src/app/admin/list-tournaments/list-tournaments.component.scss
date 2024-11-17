@@ -1,7 +1,7 @@
 .flex{
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 200px);
+    height:calc(100vh - 160px);
     margin: 20px;
     gap: 20px;
     color: #626262;
@@ -9,9 +9,10 @@
 
 .cards{
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    overflow-y:auto;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    height: auto;
 }
 
 .input{
@@ -50,26 +51,49 @@ input:focus{
 .tournament
 {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
+    border-bottom: solid 1px #ccc;
+    padding: 10px;
+    width: 100%;
+}
+
+.info{
+    display: flex;
+    justify-content: center;
+    align-items: start;
     flex-direction: column;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 5px 0;
+    gap: 10px;
+    width: 50%;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.green{
-    background-color: #4CAF50;
-    color: white;
-}
+.buttons{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 10px;
+    width: 50%;
+    cursor: pointer;
 
+    button{
+        font-size: 12px;
+        padding: 10px 15px;
+        width: auto;
+    }
+
+}
 
 .tournament:hover
 {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--bg-color);
+    color: black;
+
+    h2{
+        color: var(--secondary-color);
+    }
 }
 
 
