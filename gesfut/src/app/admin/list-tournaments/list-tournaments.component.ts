@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
@@ -9,7 +9,7 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 @Component({
   selector: 'app-list-tournaments',
   standalone: true,
-  imports: [DatePipe, CommonModule, RouterLink],
+  imports: [DatePipe, CommonModule],
   templateUrl: './list-tournaments.component.html',
   styleUrl: './list-tournaments.component.scss'
 })
