@@ -42,22 +42,29 @@ export class ListTeamsTournamentsComponent {
   ngOnInit(): void {
     if (this.sessionService.isAuth()) { this.isAuth = true; } else { this.isAuth = false; }
     if (this.activedRoute.snapshot.paramMap.get('code')) { this.code = this.activedRoute.snapshot.paramMap.get('code') || ''; }
+
     this.torunameService.currentTournament.subscribe({
       next: (response: TournamentResponseFull) => {
         this.tournament = response;
-        console.log(this.tournament);
+        this.tournament.participants = this.tournament.participants.filter(participant => participant.name.toLowerCase() !== 'free');
+        this.tournament.participants.sort((a, b) => a.name.localeCompare(b.name));
+        this.tournament.participants.forEach(participant => {
+          participant.playerParticipants.sort((a, b) => a.shirtNumber - b.shirtNumber);
+        });
+
         this.firstParticipant = this.tournament.participants[0];
         this.teamsNameFilter = this.tournament.participants.map(participant => ({
           name: participant.name,
           idTeam: participant.idTeam
         }));
-        this.teamsNameFilter = this.teamsNameFilter.filter((team => team.name.toLowerCase() !== 'free'));
-        this.teamNameClicked = this.teamsNameFilter[0].name;
+
+        this.teamNameClicked = this.firstParticipant.name;
         this.nameClicked = true;
-        this.indexName = 0;
+        this.indexName = this.teamsNameFilter.findIndex(team => team.name === this.teamNameClicked);
       }
     });
   }
+
 
 
 
@@ -77,7 +84,7 @@ export class ListTeamsTournamentsComponent {
       .map(participant => ({
         name: participant.name,
         idTeam: participant.idTeam
-      }));
+      }))
 
     this.teamsNameFilter.forEach((team, index) => {
       if (team.name === this.teamNameClicked) {
@@ -93,7 +100,7 @@ export class ListTeamsTournamentsComponent {
     if (nameTeam) {
       alert("¿Estás seguro de que quieres eliminar el equipo " + nameTeam + " del torneo?");
     }
-    alert("El equipo con id " + idTeam + " h");
+    alert("El equipo con id " + idTeam + " ha sido eliminado del torneo \n FALTA IMPLEMENTACION.");
   }
 
   deletePlayerParticipantFromTeam(idPlayer: number) {
@@ -124,17 +131,16 @@ export class ListTeamsTournamentsComponent {
     let player = this.firstParticipant.playerParticipants.find(player => player.id === idPlayer);
     alert(player?.isCaptain);
     alert(player?.isGoalKeeper);
-    //   if(player?.isCaptain){
-    //     alert("No puedes eliminar a un capitán");
-    //     return true;
-    //   }
-    //   if(player?.isGoalKeeper){
-    //     alert("No puedes eliminar a un portero");
-    //     return true;
-    //   }
-    //   return false;
-    // }
-    return true;
+    if (player?.isCaptain) {
+      alert("No puedes eliminar a un capitán");
+      return true;
+    }
+    if (player?.isGoalKeeper) {
+      alert("No puedes eliminar a un portero");
+      return true;
+    }
+    return false;
   }
 
 }
+

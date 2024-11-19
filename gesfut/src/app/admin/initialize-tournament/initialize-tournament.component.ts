@@ -74,7 +74,6 @@ export class InitializeTournamentComponent {
   }
 
   initTournament() {
-
     if (this.teamsTournament.length >= 4) {
       const ids = this.teamsTournament.map(team => team.id);
       const initializeRequest = {
@@ -82,9 +81,8 @@ export class InitializeTournamentComponent {
         teams: ids
       };
       this.adminService.initTournament(initializeRequest).subscribe({
-        next: () => {
-          this.changeComponent('dashboard');
-          this.route.navigate(['/admin']);
+        next: () => {          
+          window.location.reload();        
         },
         error: (err) => {
           console.error(err);
@@ -96,8 +94,6 @@ export class InitializeTournamentComponent {
     } else {
       alert("INGRESE EQUIPOS POR FAVOR { MIN : 4 }")
     }
-
-
   }
 
   addTeam(team: TeamResponse) {

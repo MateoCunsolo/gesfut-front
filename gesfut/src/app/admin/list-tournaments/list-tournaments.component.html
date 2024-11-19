@@ -20,6 +20,7 @@
         }
     </div>
 
+    @if (haveTournaments) {
     <section class="cards">
         @for (item of filteredTournaments; track $index) {
         <article class="tournament">
@@ -51,5 +52,10 @@
         </article>
         }
     </section>
-
+    }@else {
+        <div class="haveTournaments">
+            <p class="no-tournaments">NO HAY TORNEOS</p>
+            <button (click)="changeComponent('create-tournament')" class="base-button btn"> CREAR TORNEO </button>
+        </div>
+    }
 </section>

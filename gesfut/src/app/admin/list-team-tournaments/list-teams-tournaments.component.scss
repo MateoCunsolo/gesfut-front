@@ -1,358 +1,294 @@
 .teams {
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    grid-template-areas: "teams team";
-    grid-gap: 50px;
-    padding: 10px;
-    align-items: start;
-    margin: 50px;
-  }
-  
-  .buttons {
-    display: flex;
-    width: 100%;
-    justify-content: start;
-    gap: 20px;
-    flex-wrap: wrap; /* Para que los botones se apilen en pantallas más pequeñas */
-  }
-  
-  .btn {
-    background-color: #bcbcbc;
-    border: solid var(--primary-color) 2px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn:hover {
-    background-color: var(--primary-color);
-    color: white;
-  }
-  
-  .section-name {
-    grid-area: teams;
-    max-width: 300px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .section-name input {
-    font-size: 1rem;
-    border-radius: 5px;
-    outline: none;
-    border: 1px solid #ccc;
-    margin: 0;
-  }
-  
-  .section-name input:focus {
-    outline: none;
-  }
-  
-  .team-list {
-    max-height: 400px;
-    overflow-y: scroll;
-  }
-  
-  .team-list::-webkit-scrollbar {
-    width: 3px;
-  }
-  
-  .team-list::-webkit-scrollbar-button {
-    display: none;
-  }
-  
-  .section-table {
-    gap: 20px;
-    grid-area: team;
-    display: flex;
-    flex-direction: column;
-    width: 100vh;
-    height: calc(100vh - 330px);
-  }
-  
-  
-  //si la tabla tiene más de 10 filas, se muestra el scroll
-  
-  .table{
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  th, td {
-    border: solid var(--primary-color) 2px;
-    padding: 8px;
-    text-align: center;
-    font-size: 1.5rem;
-    height: 4rem;
-  }
-  
-  .hmx
-  {
-    max-height: 370px !important;
-    overflow-y: scroll !important;
-  }
-  
-  tr {
-    text-align: center;
-  }
-  
-  .icon {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    border: none;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  tr:hover {
-    background-color: #f5f5f5;
-  }
-  
-  li {
-    list-style-type: none;
-    margin: 5px 0;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 2rem;
-    text-align: center;
-  }
-  
-  .search-team {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-  }
-  
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  
-  ::-webkit-scrollbar-button {
-    display: none;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-  }
-  
-  .team-name.active {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
-  }
-  
-  /* Responsive adjustments */
-  @media screen and (max-width: 1200px) {
-    .teams {
-      grid-template-columns: 1fr;
-      grid-template-areas: "teams" "team";
-      margin: 20px;
-    }
-  
-    .section-name {
-      max-width: 100%;
-    }
-  
-    .section-table {
-      margin-top: 20px;
-    }
-  
-    .buttons {
-      justify-content: center;
-      gap: 15px;
-    }
-  
-    .btn {
-      padding: 8px 16px;
-      font-size: 1rem;
-    }
-  
-    th, td {
-      font-size: 1.2rem;
-    }
-  
-    .team-name.active {
-      font-size: 1.3rem;
-    }
-  
-    .team-list {
-      max-height: 300px;
-    }
-  }
-  
-  @media screen and (max-width: 768px) {
-    .teams {
-      grid-template-columns: 1fr;
-      grid-template-areas: "teams" "team";
-      margin: 10px;
-    }
-  
-    .section-name {
-      max-width: 100%;
-    }
-  
-    .section-table {
-      margin-top: 10px;
-    }
-  
-    .buttons {
-      justify-content: center;
-      gap: 10px;
-      flex-direction: column;
-    }
-  
-    .btn {
-      width: 100%;
-      padding: 8px 16px;
-      font-size: 1rem;
-    }
-  
-    th, td {
-      font-size: 1rem;
-    }
-  
-    .team-list {
-      max-height: 250px;
-    }
-  
-    .team-name.active {
-      font-size: 1.2rem;
-    }
-  }
-  
-  @media screen and (max-width: 480px) {
-    .teams {
-      grid-template-columns: 1fr;
-      grid-template-areas: "teams" "team";
-      margin: 5px;
-    }
-  
-    .section-name {
-      max-width: 100%;
-    }
-  
-    .section-table {
-      margin-top: 5px;
-    }
-  
-    .buttons {
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-  
-    .btn {
-      width: 100%;
-      padding: 8px 16px;
-      font-size: 0.9rem;
-    }
-  
-    th, td {
-      font-size: 0.9rem;
-    }
-  
-    .team-list {
-      max-height: 200px;
-    }
-  
-    .team-name.active {
-      font-size: 1.1rem;
-    }
-  }
-  
-  
-  
-  .tournaments-names {
-    display: flex;
-    align-items: center; 
-    justify-content: start;
-    flex-direction: row;
-    text-align: center;
-    max-width: 100%;
-    overflow-x: auto;
-    gap: 15px;
-    padding: 10px 0;
-    scrollbar-color: var(--primary-color) #ffffff;
-  
-    &::-webkit-scrollbar {
-      height: 4px;
-    }
-  } 
-  
-  p {
-    border: solid var(--primary-color) 2px;
-    background-color: white;
-    color: var(--primary-color);
-    font-weight: bold;
-    padding: 5px;
-    height: auto;
-    min-width: 200px;
-    text-align: center;
-    font-size: 1.5rem;
-    transition: background-color 0.3s ease;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-  
-  }
-  
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas: "teams team";
+  padding: 10px;
+  margin: 50px;
+  justify-content: start;
+  justify-items: end;
+  gap: 20px;
 
-  
-  
-  .tournamentClicked{
-    background-color: var(--primary-color) !important;
-    color: white !important;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: "teams" "team";
+    margin: 20px;
+    padding: 0;
+    min-height: auto;
   }
-  
-  .nameClicked{
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: bold;
-  }
-  
-  
-  .listTeamsAll{
-    width: 100%;
-    text-align: center ;
-    border: solid var(--primary-color) 2px;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .listTeamsAll:hover{
-    background-color: var(--primary-color);
-    color: white;
-  }
-  
-  .nameTeamUP{
+
+  @media screen and (max-width: 576px) {
+    min-height: calc(100vh - 250px);
     display: flex;
     align-items: center;
     justify-content: start;
-    gap: 20px;
+    flex-direction: column;
   }
-  
-  .nameTeamUP > p {
-    font-size: 1.5rem;
-    font-weight: bold;
-    height: auto;
-    width: auto;
+
+}
+
+.buttons {
+  display: flex;
+  width: auto;
+  justify-content: start;
+  gap: 20px;
+  flex-wrap: wrap;
+  @media screen and (max-width: 576px) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
   }
+}
+
+.btn {
+  background-color: #bcbcbc;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+}
+
+.btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.section-name {
+  grid-area: teams;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 576px) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+  }
+
+}
+
+.section-name input {
+  font-size: 1rem;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #ccc;
+  margin: 0;
+}
+
+.section-name input:focus {
+  outline: none;
+}
+
+.team-list {
+  max-height: 400px;
+  overflow-y: scroll;
+    @media screen and (max-width: 576px) {
+      display: flex;
+      flex-direction: row;
+      gap: 0px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 500px;
+    }
+}
+
+.team-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.team-list::-webkit-scrollbar-button {
+  display: none;
+}
+
+.section-table {
+  gap: 20px;
+  grid-area: team;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+
+//si la tabla tiene más de 10 filas, se muestra el scroll
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: solid var(--primary-color) 2px;
+  padding: 8px;
+  text-align: center;
+  font-size: 1.5rem;
+  height: 4rem;
+}
+
+.player {
+  white-space: nowrap;
+  text-align: start;
+  width: 250px;
+}
+
+
+
+.hmx {
+  max-height: 370px !important;
+  overflow-y: scroll !important;
+}
+
+tr {
+  text-align: center;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: none;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+li {
+  list-style-type: none;
+  margin: 5px 0;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.search-team {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.team-name.active {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.tournaments-names {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  flex-direction: row;
+  text-align: center;
+  max-width: 100%;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 0;
+  scrollbar-color: var(--primary-color) #ffffff;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+
+p {
+  border: solid var(--primary-color) 2px;
+  background-color: white;
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 5px;
+  height: auto;
+  min-width: 200px;
+  text-align: center;
+  font-size: 1.5rem;
+  transition: background-color 0.3s ease;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+
+}
+
+
+
+
+.tournamentClicked {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.nameClicked {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+
+.listTeamsAll {
+  width: 100%;
+  text-align: center;
+  border: solid var(--primary-color) 2px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.listTeamsAll:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.nameTeamUP {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 20px;
+}
+
+.nameTeamUP>p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  height: auto;
+  width: auto;
+}

@@ -16,7 +16,7 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 export class ListTournamentsComponent {
 
   
-
+  haveTournaments: boolean = false;
   tournaments: TournamentResponseShort[] = [];
   filteredTournaments: TournamentResponseShort[] = [];
   searchQuery: string = '';
@@ -28,6 +28,9 @@ export class ListTournamentsComponent {
     this.tournamentService.currentListTournaments.subscribe({
       next: (response: TournamentResponseShort[]) => {
         this.tournaments = response;
+        if (this.tournaments.length > 0) {
+          this.haveTournaments = true;
+        }
         this.applyFilters();
       }
     })
