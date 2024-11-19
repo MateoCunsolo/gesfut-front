@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
@@ -9,14 +9,14 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 @Component({
   selector: 'app-list-tournaments',
   standalone: true,
-  imports: [DatePipe, CommonModule],
+  imports: [DatePipe, CommonModule, RouterLink],
   templateUrl: './list-tournaments.component.html',
   styleUrl: './list-tournaments.component.scss'
 })
 export class ListTournamentsComponent {
 
   
-
+  haveTournaments: boolean = false;
   tournaments: TournamentResponseShort[] = [];
   filteredTournaments: TournamentResponseShort[] = [];
   searchQuery: string = '';
@@ -28,6 +28,9 @@ export class ListTournamentsComponent {
     this.tournamentService.currentListTournaments.subscribe({
       next: (response: TournamentResponseShort[]) => {
         this.tournaments = response;
+        if (this.tournaments.length > 0) {
+          this.haveTournaments = true;
+        }
         this.applyFilters();
       }
     })
