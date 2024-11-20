@@ -6,7 +6,7 @@
   padding: 10px;
   align-items: start;
   margin: 75px 50px 25px 50px;
- 
+
 }
 
 .buttons {
@@ -72,12 +72,13 @@
   width: 100vh;
 }
 
-.table{
+.table {
   border-collapse: collapse;
   width: 100%;
 }
 
-th, td {
+th,
+td {
   border: solid var(--primary-color) 2px;
   padding: 8px;
   text-align: center;
@@ -85,8 +86,7 @@ th, td {
   height: 4rem;
 }
 
-.hmx
-{
+.hmx {
   max-height: 370px !important;
   overflow-y: scroll !important;
 }
@@ -138,7 +138,7 @@ li {
 
 .tournaments-names {
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: start;
   flex-direction: row;
   text-align: center;
@@ -151,7 +151,7 @@ li {
   &::-webkit-scrollbar {
     height: 4px;
   }
-} 
+}
 
 p {
   border: solid var(--primary-color) 2px;
@@ -173,44 +173,44 @@ p {
 p:hover {
   color: #fff;
   background-color: var(--primary-color);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 
-.tournamentClicked{
+.tournamentClicked {
   background-color: var(--primary-color) !important;
   color: white !important;
 }
 
-.nameClicked{
+.nameClicked {
   background-color: var(--primary-color);
   color: white;
   font-weight: bold;
 }
 
 
-.listTeamsAll{
+.listTeamsAll {
   width: 100%;
-  text-align: center ;
+  text-align: center;
   border: solid var(--primary-color) 2px;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.listTeamsAll:hover{
+.listTeamsAll:hover {
   background-color: var(--primary-color);
   color: white;
 }
 
-.nameTeamUP{
+.nameTeamUP {
   display: flex;
   align-items: center;
   justify-content: start;
   gap: 20px;
 }
 
-.nameTeamUP > p {
+.nameTeamUP>p {
   font-size: 1.5rem;
   font-weight: bold;
   height: auto;
@@ -218,7 +218,7 @@ p:hover {
 }
 
 
-.position{
+.position {
   position: absolute !important;
   top: 100px !important;
   left: 15px !important;
@@ -244,8 +244,13 @@ p:hover {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-container p {
@@ -254,7 +259,7 @@ p:hover {
   font-weight: bold;
 }
 
-#load{
+#load {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -266,6 +271,6 @@ p:hover {
   box-shadow: none;
 }
 
-#load:hover{
+#load:hover {
   background-color: inherit;
 }
