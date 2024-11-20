@@ -1,5 +1,5 @@
 <section class="teams">
-  
+
   <div class="section-name">
     <button class="back-button position" (click)="changeComponent('dashboard')">ATRAS</button>
     @if (listTeamsAll) {
@@ -28,10 +28,12 @@
     </div>
   </div>
 
+  @if (loadInfo) {
   <div class="section-table">
     <div class="nameTeamUP">
-      <h2 >{{selectedTeam.name}} - {{selectedTeam.status ? '🟩':'🟥'}}</h2>
-      <p (click)="showStatisticsAllTournaments()" [ngClass]="{tournamentClicked: (selectedTournamentIndex === null)}">ESTADISTICAS GLOBALES</p>
+      <h2>{{selectedTeam.name}} - {{selectedTeam.status ? '🟩':'🟥'}}</h2>
+      <p (click)="showStatisticsAllTournaments()" [ngClass]="{tournamentClicked: (selectedTournamentIndex === null)}">
+        ESTADISTICAS GLOBALES</p>
     </div>
     <div class="tournaments-names">
       @for (tournament of particpantsShortAll; track $index) {
@@ -99,5 +101,10 @@
     </div>
     }
   </div>
-
+  }@else {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p id="load" >CARGANDO DATOS DE {{ teamsGlobal[indexTeamClicked].name}}...</p>
+    </div>
+  }
 </section>
