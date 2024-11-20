@@ -157,8 +157,7 @@ export class CreateTeamComponent {
       case 'LAVENDER MIST': return '#E6E6FA';
       default:
         return '#FFFFFF';
-    }
-  }
+    }}
   
 
   loadTeamData(data: any[]) {

@@ -12,7 +12,7 @@
 
       <!-- Opción de cargar Excel -->
   <div class="excel-upload-container">
-    <app-excel-upload (dataLoaded)="loadTeamData($event)"></app-excel-upload>
+    <app-excel-upload></app-excel-upload>
   </div>
 
   </div>
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Botón de crear equipo -->
-  <button type="submit" class="base-button create-btn" [disabled]="teamForm.invalid">
+  <button type="submit" class="base-button create-btn" [disabled]="teamForm.invalid || !teamForm.dirty">
     CREAR EQUIPO
   </button>
 
