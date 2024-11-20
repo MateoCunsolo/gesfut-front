@@ -10,9 +10,8 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./excel-upload.component.scss']
 })
 export class ExcelUploadComponent {
-  @Output() dataLoaded = new EventEmitter<any>(); // Emite datos al componente padre
+  @Output() dataLoaded = new EventEmitter<any>();
 
-  // Generar un archivo Excel de ejemplo para descargar
   showFormatExcel() {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([
@@ -21,14 +20,10 @@ export class ExcelUploadComponent {
       ['RONALDO', 'NAZZARIO', 9, 'FALSE', 'FALSE', 'RIVER', 'ROJO'],
       ['DIBU', 'MARTINEZ', 24, 'FALSE', 'TRUE', 'RIVER', 'ROJO']
     ]);
-
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Formato');
-
-    // Descargar el archivo
     XLSX.writeFile(workbook, 'formato_jugadores.xlsx');
   }
 
-  // Manejo del archivo de Excel subido
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
@@ -57,7 +52,6 @@ export class ExcelUploadComponent {
           };
         }
 
-        // Convertir los valores booleanos correctamente
         teams[teamName].players.push({
           name: player['NOMBRE'],
           lastName: player['APELLIDO'],
@@ -67,10 +61,9 @@ export class ExcelUploadComponent {
         });
       });
 
-      const jsonData = Object.values(teams); // Convertir a lista para el JSON final
-      this.dataLoaded.emit(jsonData); // Emitir datos al componente padre
+      const jsonData = Object.values(teams);
+      this.dataLoaded.emit(jsonData);
     };
-
     reader.readAsArrayBuffer(file);
   }
 }
