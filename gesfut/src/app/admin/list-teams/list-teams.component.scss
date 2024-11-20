@@ -6,7 +6,7 @@
   padding: 10px;
   align-items: start;
   margin: 75px 50px 25px 50px;
- 
+
 }
 
 .buttons {
@@ -69,18 +69,16 @@
   grid-area: team;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 280px);
+  width: 100vh;
 }
 
-
-//si la tabla tiene más de 10 filas, se muestra el scroll
-
-.table{
+.table {
   border-collapse: collapse;
   width: 100%;
 }
 
-th, td {
+th,
+td {
   border: solid var(--primary-color) 2px;
   padding: 8px;
   text-align: center;
@@ -88,8 +86,7 @@ th, td {
   height: 4rem;
 }
 
-.hmx
-{
+.hmx {
   max-height: 370px !important;
   overflow-y: scroll !important;
 }
@@ -132,27 +129,6 @@ li {
   margin: 10px 0;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-button {
-  display: none;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-}
 
 .team-name.active {
   font-size: 1.5rem;
@@ -160,130 +136,9 @@ li {
   color: var(--primary-color);
 }
 
-/* Responsive adjustments */
-@media screen and (max-width: 1200px) {
-  .teams {
-    grid-template-columns: 1fr;
-    grid-template-areas: "teams" "team";
-    margin: 20px;
-  }
-
-  .section-name {
-    max-width: 100%;
-  }
-
-  .section-table {
-    margin-top: 20px;
-  }
-
-  .buttons {
-    justify-content: center;
-    gap: 15px;
-  }
-
-  .btn {
-    padding: 8px 16px;
-    font-size: 1rem;
-  }
-
-  th, td {
-    font-size: 1.2rem;
-  }
-
-  .team-name.active {
-    font-size: 1.3rem;
-  }
-
-  .team-list {
-    max-height: 300px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .teams {
-    grid-template-columns: 1fr;
-    grid-template-areas: "teams" "team";
-    margin: 10px;
-  }
-
-  .section-name {
-    max-width: 100%;
-  }
-
-  .section-table {
-    margin-top: 10px;
-  }
-
-  .buttons {
-    justify-content: center;
-    gap: 10px;
-    flex-direction: column;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 8px 16px;
-    font-size: 1rem;
-  }
-
-  th, td {
-    font-size: 1rem;
-  }
-
-  .team-list {
-    max-height: 250px;
-  }
-
-  .team-name.active {
-    font-size: 1.2rem;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .teams {
-    grid-template-columns: 1fr;
-    grid-template-areas: "teams" "team";
-    margin: 5px;
-  }
-
-  .section-name {
-    max-width: 100%;
-  }
-
-  .section-table {
-    margin-top: 5px;
-  }
-
-  .buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-
-  th, td {
-    font-size: 0.9rem;
-  }
-
-  .team-list {
-    max-height: 200px;
-  }
-
-  .team-name.active {
-    font-size: 1.1rem;
-  }
-}
-
-
-
 .tournaments-names {
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: start;
   flex-direction: row;
   text-align: center;
@@ -296,7 +151,7 @@ li {
   &::-webkit-scrollbar {
     height: 4px;
   }
-} 
+}
 
 p {
   border: solid var(--primary-color) 2px;
@@ -318,44 +173,44 @@ p {
 p:hover {
   color: #fff;
   background-color: var(--primary-color);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 
-.tournamentClicked{
+.tournamentClicked {
   background-color: var(--primary-color) !important;
   color: white !important;
 }
 
-.nameClicked{
+.nameClicked {
   background-color: var(--primary-color);
   color: white;
   font-weight: bold;
 }
 
 
-.listTeamsAll{
+.listTeamsAll {
   width: 100%;
-  text-align: center ;
+  text-align: center;
   border: solid var(--primary-color) 2px;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.listTeamsAll:hover{
+.listTeamsAll:hover {
   background-color: var(--primary-color);
   color: white;
 }
 
-.nameTeamUP{
+.nameTeamUP {
   display: flex;
   align-items: center;
   justify-content: start;
   gap: 20px;
 }
 
-.nameTeamUP > p {
+.nameTeamUP>p {
   font-size: 1.5rem;
   font-weight: bold;
   height: auto;
@@ -363,7 +218,7 @@ p:hover {
 }
 
 
-.position{
+.position {
   position: absolute !important;
   top: 100px !important;
   left: 15px !important;

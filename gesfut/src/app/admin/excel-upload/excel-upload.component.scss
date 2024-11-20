@@ -1,0 +1,25 @@
+button{
+    font-size: 1.2rem;
+    max-width: auto;
+    padding: 5px;
+}
+
+input[type="file"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--secondary-color); 
+    gap: 10px;
+    border-radius: 5px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    border: solid var(--secondary-color) 2px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px var(--secondary-color);
+    padding: 5px;
+    gap: 10px;
+}

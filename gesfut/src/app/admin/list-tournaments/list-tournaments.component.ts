@@ -15,16 +15,16 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 })
 export class ListTournamentsComponent {
 
-  
+
   haveTournaments: boolean = false;
   tournaments: TournamentResponseShort[] = [];
   filteredTournaments: TournamentResponseShort[] = [];
   searchQuery: string = '';
   filter: string = 'all';
 
-  constructor(private tournamentService: TournamentService, private route: Router, private dashboardService:DashboardService) { }
+  constructor(private tournamentService: TournamentService, private route: Router, private dashboardService: DashboardService) { }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.tournamentService.currentListTournaments.subscribe({
       next: (response: TournamentResponseShort[]) => {
         this.tournaments = response;
@@ -37,11 +37,47 @@ export class ListTournamentsComponent {
 
   }
 
-  changeComponent(component:string){
+  changeComponent(component: string) {
     this.dashboardService.setActiveDashboardAdminComponent(component);
   }
 
+  changeNameTournament(code: string) {
+    let name = window.prompt('Introduce el nuevo nombre del torneo');
+    if (name === null) {
+      console.log('Operación del cambio de nombre cancelada');
+    } else if (name === '') {
+      alert('El nombre introducido no es válido');
+    } else if (name === this.tournaments.find(tournament => tournament.code === code)!.name) {
+      alert('El nombre introducido es igual al actual');
+    } else if (name.length > 50 || name.length < 3) {
+      alert('El nombre debe tener entre 3 y 50 caracteres');
+    } else {
 
+      let flag = false;
+      this.tournaments.forEach(tournament => {
+        if (tournament.name === name) {
+          flag = true;
+        }
+      });
+      if (flag) {
+        alert('Ya existe un torneo con ese nombre');
+      } else {
+        this.tournaments.forEach(tournament => {
+          if (tournament.code === code) {
+            tournament.name = 'cambiando nombre. . .';
+          }
+        });
+        this.tournamentService.changeNameTournament(code, name).subscribe({
+          next: (response) => {
+            if (response) {
+              this.tournaments.find(tournament => tournament.code === code)!.name = name;
+              this.applyFilters();
+            }
+          }
+        });
+      }
+    }
+  }
 
   toTournament(code: string) {
     this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);
@@ -50,7 +86,7 @@ export class ListTournamentsComponent {
     this.dashboardService.setNameTournament(this.tournaments.find(tournament => tournament.code === code)?.name || '');
     this.route.navigate([`/admin/tournaments/${code}`]);
   }
-  
+
 
   applyFilters(): void {
     this.filteredTournaments = this.tournaments
