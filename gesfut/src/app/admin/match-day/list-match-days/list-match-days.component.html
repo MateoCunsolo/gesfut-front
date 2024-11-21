@@ -3,11 +3,11 @@
         <div>
             <h2 class="title play-bold">Fecha N° {{selectedMatchDay+1}}</h2>
             <div class="matchdays">
-                @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
-                    <button class="base-button" (click)="updateMatchDay(day.numberOfMatchDay)">{{day.numberOfMatchDay+1}}</button>
-                  } @empty {
-                    Cargando...
-                  }
+                <button *ngFor="let i of [].constructor(50); let index = index" 
+        class="base-button match-day-button" 
+        (click)="updateMatchDay(index + 1)">
+  {{index + 1}}
+</button>
             </div>
         </div>
         <hr>

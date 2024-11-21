@@ -8,14 +8,21 @@ section{
     background-color: var(--bg-color);
 }
 
-@media (max-width: 768px) {
-    section{
-        width: 100%;
-        height: auto;
+@media (max-width: 1280px) {
+    section {
+      width: 768px; 
+      height: calc(100vh - 80px); 
+      padding: 20px; 
+    }
+  }
+  
+  @media (max-width: 768px) {
+    section {
+      width: 100%; 
+      height: calc(100vh - 100px); 
+      padding: 10px; 
     }
 }
-
-
 
 .title-container{
     width: 96%;
@@ -41,32 +48,28 @@ section{
     display: flex;
     flex-direction: row;
     gap: 8px;
+    margin: 0;
+    height: auto;
+    overflow-x: scroll;
+    max-width: 70%;
 }
 
-@media (max-width: 480px) {
-    .matchdays{
-        margin-bottom: 8px;
-    }
-}
 
 .matchdays button{
-    font-size: 24px;
-    color: white;
-    height: 32px;
-    width: 32px;
+    font-size: var(--font-size-subtitle);
+    color: var(--primary-color);
+    background-color: transparent;
+    transition: 0.3s ease-in-out;
+    padding: 0;
+}
+.matchdays button:hover{
+    color: var(--secondary-color);
 }
 
 .title {
     font-size: 28px;
     color: var(--primary-color);
     margin: 8px 0;
-}
-
-
-.match-days button{
-    font-size: 24px;
-    width: 48px;
-    height: 48px;
 }
 
 /* Estilos generales para el <hr> */
@@ -194,10 +197,9 @@ hr {
 .base-button{
     background-color: var(--primary-color);
     color:black;
-    font-size: 16px;
-    height: 36px;
-    width: 276px;
-    font-weight: 600;
+    font-size: var(--font-size-text);
+    width: auto;
+    padding: 8px
 }
 
 
