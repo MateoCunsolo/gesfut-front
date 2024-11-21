@@ -1,99 +1,67 @@
-<section class="container-all">
+<section>
 
-  <!-- Sub-header -->
-  <div class="sub-header">
-    <!-- Botón de atrás -->
-    <button class="back-button" (click)="changeComponent('dashboard')">ATRÁS</button>
+  <h2 class="title">CREAR EQUIPO</h2>
+  <button (click)="toggleExcelUpload()" class="base-button add-player-button">
+    <i class="fa-solid fa-file-excel"></i> 
+    {{ showExcelUpload ? 'OCULTAR EXCEL' : 'CARGAR DESDE EXCEL' }}
+  </button>
+    <!-- <app-excel-upload *ngIf="showExcelUpload"></app-excel-upload> -->
 
-    <!-- Título principal -->
-    <div class="title-div">
-      <h2 class="title">CREAR EQUIPO</h2>
-    </div>
+  <div *ngIf="error" class="error-message"><p class="error">{{ error }}</p></div>
 
-      <!-- Opción de cargar Excel -->
-  <div class="excel-upload-container">
-    <app-excel-upload></app-excel-upload>
-  </div>
-
-  </div>
-
-
-  <h2>CARGA MANUAL DE JUGADORES</h2>
-
-  <!-- Formulario de creación de equipo -->
-  <form [formGroup]="teamForm" (ngSubmit)="onSubmit()" class="team-form-container">
-    <!-- Campos del formulario -->
-    <div class="form-fields">
-      <div class="form-group">
+  <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+    
+    <div class="team-form">
+      <div class="form-group input-icon input-large">
         <input id="teamName" type="text" formControlName="name" placeholder="Nombre del equipo" />
         <i class="fa-solid fa-shield"></i>
       </div>
-
-      <div class="color-form">
+      <div class="form-group input-icon input-large">
         <input id="teamColor" type="color" formControlName="color" placeholder="Color del equipo" />
         <i class="fa-solid fa-palette"></i>
       </div>
     </div>
 
-    <!-- Sección de jugadores -->
     <div class="player-form-header">
       <h3>Jugadores</h3>
-      <button type="button" class="base-button button-small" (click)="addPlayer()">
-        <i class="fa-solid fa-user-plus"></i> Añadir Jugador
+      <button type="button" class="base-button add-player-button" (click)="addPlayer()">
+        <i class="fa-solid fa-user-plus"></i><p>AGREGAR JUGADOR</p> 
       </button>
     </div>
-
+    
     <div formArrayName="players" class="players-form">
       <div class="players-list">
-        <ng-container *ngIf="players.length === 0">
-          <p>No hay jugadores en el equipo.</p>
-        </ng-container>
+        <ng-container *ngIf="players.length === 0"><p>No hay jugadores en el equipo.</p></ng-container>
         <div *ngFor="let player of players.controls; let i = index" [formGroupName]="i" class="player-row">
-          <div class="form-group">
+          <div class="form-group input-icon">
             <input id="playerName-{{ i }}" type="text" formControlName="name" placeholder="Nombre" />
             <i class="fas fa-user"></i>
           </div>
-
-          <div class="form-group">
+          <div class="form-group input-icon">
             <input id="playerLastName-{{ i }}" type="text" formControlName="lastName" placeholder="Apellido" />
             <i class="fas fa-user"></i>
           </div>
-
-          <div class="form-group">
+          <div class="form-group input-icon">
             <input id="playerNumber-{{ i }}" type="number" formControlName="number" placeholder="Dorsal" />
             <i class="fa-solid fa-hashtag"></i>
           </div>
-
           <div class="mini-group">
             <div class="check-group">
-              <div class="form-group">
-                <label class="checkbox-icon">
-                  <input type="checkbox" formControlName="isCaptain" />
-                  <i class="fa-solid fa-c"></i>
-                </label>
-              </div>
-              <div class="form-group">
-                <label class="checkbox-icon">
-                  <input type="checkbox" formControlName="isGoalKeeper" />
-                  <i class="fa-solid fa-hand"></i>
-                </label>
-              </div>
+              <div class="form-group"><label class="checkbox-icon"><input type="checkbox" formControlName="isCaptain" /><i class="fa-solid fa-c"></i></label></div>
+              <div class="form-group"><label class="checkbox-icon"><input type="checkbox" formControlName="isGoalKeeper" /><i class="fa-solid fa-hand"></i></label></div>
             </div>
-            <button type="button" (click)="removePlayer(i)" class="base-button button-small">
+            <button type="button" (click)="removePlayer(i)" class="base-button button-small" >
               <i class="fa-solid fa-circle-minus"></i>
             </button>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Botón de crear equipo -->
-  <button type="submit" class="base-button create-btn" [disabled]="teamForm.invalid || !teamForm.dirty">
-    CREAR EQUIPO
-  </button>
-
+    <div class="btn-container">
+      <button class="back-button" type="button" (click)="changeComponent('dashboard')">ATRAS</button>
+      <button type="submit" class="base-button" [disabled]="teamForm.invalid || !teamForm.dirty">
+        CREAR EQUIPO
+      </button>
+    </div>
   </form>
-
-  
-
 </section>

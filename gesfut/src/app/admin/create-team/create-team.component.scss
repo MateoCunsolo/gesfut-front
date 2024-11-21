@@ -1,225 +1,286 @@
-/* Contenedor principal */
-.sub-header {
+section{
   display: flex;
-  justify-content: space-between;
-  align-items: start;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  width: 1280px;
+  margin: 0 auto;
+  height: calc(100vh - 160px);
+}
 
-  button{
-    margin-left: 10px;
+@media (max-width: 1280px) {
+  section {
+    width: 768px; /* Ancho para tablets */
+    height: calc(100vh - 80px); /* Ajuste de altura */
+    padding: 20px; /* Espaciado interior */
   }
-
 }
 
-.title-div {
-  text-align: center;
-  margin-left:250px;  
+@media (max-width: 768px) {
+  section {
+    width: 100%; /* Ancho completo en móviles */
+    height: calc(100vh - 100px); /* Ajuste de altura para móviles */
+    padding: 10px; /* Espaciado interior */
+  }
 }
+
 
 .title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
+  font-size: var(--font-size-title);
+  color: var(--primary-color);
+  text-align: center;
+  padding: 20px 0;
+}
+
+.player-form-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  @media (max-width:1280px) {
+    width: 90%;
+    margin: 0 auto;
+  }
+  @media (max-width: 576px) {
+    flex-direction: column;
+  }
 }
 
 
-app-excel-upload {
-  margin-left: 20px;
+
+
+/* Subtitle (Jugadores) */
+h3 {
+  font-size: var(--font-size-subtitle);
+  color: var(--secondary-color);
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-/* Mensaje de error */
-.error-message {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-/* Formulario */
-.team-form-container {
+form{
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  display: grid;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  max-height: 500px;
+  padding: 0 24px;
+}
+
+@media (max-width: 1280px) {
+  form {
+    padding: 12px; 
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    width: 100%; /* Ancho completo en móviles */
+    padding: 6px; /* Espaciado interior */
+  }
+}
+
+.team-form{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 40%;
+  gap: 8px;
+  @media (max-width:1280px) {
+    width: 60%;
+    margin: 0 auto;
+  }
+  @media (max-width:768px){
+    width: 90%;
+  }
+  @media (max-width:576px) {
+    width: 80%;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .team-form {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.players-form{
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  min-height: 400px;
   overflow-y: auto;
+  margin: 24px 0;  
 }
 
-.form-fields {
+.players-list{
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: start;
+  justify-content: start;
+  padding-top: 8px;
+  gap: 8px;
+}
+.players-form > div:nth-child(odd) {
+  justify-content: start;
+}
+.players-form > div:nth-child(even) {
+  justify-content: end;
 }
 
-.form-group {
+@media (max-width: 1280px) {
+  .players-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .players-list > div:nth-child(odd) {
+    justify-content: center;
+  }
+  
+  .players-list > div:nth-child(even) {
+    justify-content: center;
+  }
+}
+
+.player-row{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  margin: 0 auto;
+  gap: 8px;
+}
+
+
+
+.mini-group{
+  display: flex;
+  flex-direction: row !important; 
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.check-group{
+  display: flex;
+  flex-direction: row !important; 
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (max-width: 576px) {
+  .player-row{
+    flex-direction: column;
+    justify-content: center;
+  }
+  .check-group{
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mini-group{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+
+/* Configuración de íconos de los inputs */
+
+.input-icon {
   position: relative;
+  display: flex;
+  align-items: center; /* Centrar verticalmente el ícono */
+
+  @media (max-width: 576px){
+    width: 80%;
+    margin: 0 auto;
+  }
 }
 
-input[type="text"],
-input[type="number"],
-input[type="color"] {
-  width: 100%;
-  padding: 10px 15px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.input-icon input {
+  padding-left: 36px; /* Espacio para el ícono */
+  padding-right: 10px; /* Espacio a la derecha */
+  font-size: var(--font-size-text);
+  margin: 0 auto;
+}
+
+
+.input-icon i {
+  left: 12px; 
   font-size: 16px;
-  background-color: #fff;
 }
 
-.color-form{
+.input-icon input:focus {
+  border-color: var(
+    --secondary-color
+  ); 
+}
+
+.input-icon input:focus + i {
+  color: var(--secondary-color); 
+}
+
+label{
   display: flex;
   align-items: center;
-  justify-items: center;
-  gap: 5px;
-
-  i{
-    font-size: 20px;
-    color: #aaa;
-  }
-
-  input{
-    padding: 5px;
-    width: 50px;
-    height: 100%;
-  }
-
+  justify-content: center;
 }
 
-
-input:focus {
-  border-color: var(--primary-color);
-  outline: none;
+.btn-container{
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  width: 100%;
+  justify-content: space-between;
 }
 
-/* Iconos */
-input[type="text"]:focus + i,
-input[type="number"]:focus + i,
-input[type="color"]:focus + i {
+.base-button{
+  width: 256px;
+}
+
+/* Estilos para el botón pequeño */
+.button-small {
+  width: 40px; /* Ancho para botones de acción pequeños */
+  height: 40px; /* Altura para botones de acción pequeños */
+  font-size: 24px; /* Tamaño del icono */
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--primary-color);
 }
 
-.form-group i {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: #aaa;
-}
-
-/* Sección de jugadores */
-.player-form-header {
+.add-player-button{
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  margin-bottom: 20px;
-}
-
-button.base-button {
-  background-color: #28a745;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button.base-button:hover {
-  background-color: #218838;
-}
-
-.players-form {
-  margin-bottom: 30px;
-}
-
-.players-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.player-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  align-items: center;
-  background-color: #f0f0f0;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.mini-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.check-group {
-  display: flex;
-  gap: 15px;
-}
-
-.checkbox-icon {
-  display: flex;
-  align-items: center;
-}
-
-.checkbox-icon input {
-  margin-right: 5px;
-}
-
-button.base-button.button-small {
-  background-color: var(--primary-color);
-  width: auto;
-}
-
-button.base-button.button-small:hover {
-  background-color: var(--secondary-color);
-}
-
-button[type="submit"] {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 12px 20px;
-  font-size: 18px;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button[type="submit"]:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-button[type="submit"]:hover {
-  background-color: var(--primary-color);
-}
-
-
-.create-btn{
-  max-width: 200px;
-}
-
-
-.container-all{
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  padding: 15px;
-  height: calc(100vh - 160px);
-  gap: 10px;
-}
-
-
-.excel-upload-container {
-  margin-bottom: 20px;
-  display: flex;
   justify-content: center;
+  font-size: var(--font-size-text);
+  width: auto;
+  padding: 8px;
+  gap: 8px;
+}
+
+.base-button:hover:not(:disabled) {
+  background-color: var(--secondary-color);
+  color: #fff; 
+}
+
+.base-button:focus {
+  outline: none;
+}
+
+.base-button:disabled {
+  background-color: var(--disabled-color, #e0e0e0); 
+  color: #a0a0a0; 
+  cursor: not-allowed; 
+  opacity: 0.7; 
+}
+
+.base-button:disabled:hover {
+  background-color: var(--disabled-color, #e0e0e0);
+  transform: none; 
 }

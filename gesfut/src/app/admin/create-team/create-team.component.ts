@@ -16,6 +16,7 @@ import { ExcelUploadComponent } from '../excel-upload/excel-upload.component';
 export class CreateTeamComponent {
   error: String = '';
   teamForm: FormGroup;
+  showExcelUpload = false; 
   private dashboardService = inject(DashboardService);
 
   constructor(private fb: FormBuilder, private teamService: TeamService) {
@@ -32,12 +33,18 @@ export class CreateTeamComponent {
     }
   }
 
+  
+
   get players(): FormArray {
     return this.teamForm.get('players') as FormArray;
   }
 
   changeComponent(component: string) {
     this.dashboardService.setActiveDashboardAdminComponent(component);
+  }
+
+  toggleExcelUpload(): void {
+    this.showExcelUpload = !this.showExcelUpload; // Alterna el estado de visibilidad
   }
 
   addPlayer() {
@@ -159,7 +166,6 @@ export class CreateTeamComponent {
         return '#FFFFFF';
     }}
   
-
   loadTeamData(data: any[]) {
     if (data.length > 0) {
       const team = data[0];
@@ -197,4 +203,6 @@ export class CreateTeamComponent {
       }
     });
   }
+
+
 }
