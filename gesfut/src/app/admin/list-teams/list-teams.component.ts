@@ -29,7 +29,7 @@ export class ListTeamsComponent {
 
   // Autenticación del usuario
   isAuth: boolean = false;
-
+  loadInfo: boolean = false;
   // Filtro de búsqueda
   teamsFilters: TeamResponse[] = [];
   searchTerm: string = '';
@@ -97,12 +97,14 @@ export class ListTeamsComponent {
   }
 
   getParticipantsAllByIdTeam(id: number, indexName: number) {
+    this.loadInfo = false;
     this.indexTeamClicked = indexName;
     this.nameClicked = true;
     this.indexName = indexName;
     this.teamService.getParticipantsShortAllTournamemts(id).subscribe({
       next: (response: ParticipantShortResponse[]) => {
         console.log(response);
+        this.loadInfo = true;
         this.particpantsShortAll = response;
         this.selectedTeam.name = this.teamsGlobal.find(team => team.id === id)?.name || '';
         this.selectedTeam.status = this.teamsGlobal[indexName].status;

@@ -20,6 +20,7 @@
         }
     </div>
 
+    @if (haveTournaments) {
     <section class="cards">
         @for (item of filteredTournaments; track $index) {
         <article class="tournament">
@@ -41,7 +42,7 @@
                     </svg>
 
                 </button>
-                <button class="base-button">
+                <button (click)="changeNameTournament(item.code)" class="base-button">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                         <path fill="#2a6a49"
@@ -51,5 +52,10 @@
         </article>
         }
     </section>
-
+    }@else {
+        <div class="haveTournaments">
+            <p class="no-tournaments">NO HAY TORNEOS</p>
+            <button (click)="changeComponent('create-tournament')" class="base-button btn"> CREAR TORNEO </button>
+        </div>
+    }
 </section>

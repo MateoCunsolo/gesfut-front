@@ -33,6 +33,7 @@ section{
 
 .player-form-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -40,7 +41,11 @@ section{
     width: 90%;
     margin: 0 auto;
   }
+  @media (max-width: 576px) {
+    flex-direction: column;
+  }
 }
+
 
 
 
@@ -234,7 +239,6 @@ label{
 
 .base-button{
   width: 256px;
-  
 }
 
 /* Estilos para el botón pequeño */
@@ -247,6 +251,17 @@ label{
   align-items: center;
   justify-content: center;
   color: var(--primary-color);
+}
+
+.add-player-button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-text);
+  width: auto;
+  padding: 8px;
+  gap: 8px;
 }
 
 .base-button:hover:not(:disabled) {
