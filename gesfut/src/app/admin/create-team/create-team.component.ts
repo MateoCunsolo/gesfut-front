@@ -5,6 +5,7 @@ import { TeamService } from '../../core/services/tournament/team.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ExcelUploadComponent } from '../excel-upload/excel-upload.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-team',
@@ -164,9 +165,10 @@ export class CreateTeamComponent {
       case 'LAVENDER MIST': return '#E6E6FA';
       default:
         return '#FFFFFF';
-    }}
+    }
+  }
 
-    loadTeamData(data: any[]) {
+  loadTeamData(data: any[]) {
       if (data.length > 0) {
         const team = data[0]; // Asumiendo que el primer equipo es el que quieres cargar
         let colorHex = this.returnColorHex(team.color);
@@ -188,23 +190,50 @@ export class CreateTeamComponent {
         });
         this.showExcelUpload=false;
       }
-    }
+  }
     
-
   onSubmit() {
     const teamData = this.teamForm.value;
     this.teamService.createTeam(teamData).subscribe({
       next: () => {
         this.error = '';
-        alert('Equipo creado exitosamente!');
+        this.successAlert();
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
-        this.error = err.error.error;
+        /* this.error = err.error.error; */
+        this.errorAlert(err.error.error);
       }
     });
   }
 
+  successAlert(){
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Equipo creado!",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
 
+  errorAlert(err: string) {
+    Swal.fire({
+      toast: true, 
+      icon: 'error', 
+      title: err, 
+      position: 'bottom', 
+      showConfirmButton: false, 
+      timer: 3000, 
+      timerProgressBar: true, 
+      customClass: {
+        container: 'container-toast', 
+        icon: 'toast-icon', 
+        title: 'toast-title'
+      },
+    });
+  }
+  
+  
 }

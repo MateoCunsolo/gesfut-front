@@ -373,3 +373,21 @@ label {
     font-weight: bold;
 }
 
+
+
+  // ==================================== TOASTS ====================================
+
+.container-toast{
+    margin-bottom: 80px !important;
+}
+
+/* Estilo del título del mensaje */
+.toast-title {
+    font-family: var(--font-type-primary) !important;
+    font-size: var(--font-size-text) !important;
+    color: var(--font-color-dark) !important;
+}
+
+.toast-icon {
+    font-size: var(--font-size-text) !important;
+}
