@@ -165,29 +165,31 @@ export class CreateTeamComponent {
       default:
         return '#FFFFFF';
     }}
-  
-  loadTeamData(data: any[]) {
-    if (data.length > 0) {
-      const team = data[0];
-      let colorHex = this.returnColorHex(team.color);
-      this.teamForm.patchValue({
-        name: team.name,
-        color: colorHex
-      });
 
-      this.players.clear();
-      team.players.forEach((player: any) => {
-        const playerForm = this.fb.group({
-          name: [player.name, Validators.required],
-          lastName: [player.lastName, Validators.required],
-          number: [player.number, Validators.required],
-          isCaptain: [player.isCaptain],
-          isGoalKeeper: [player.isGoalKeeper]
+    loadTeamData(data: any[]) {
+      if (data.length > 0) {
+        const team = data[0]; // Asumiendo que el primer equipo es el que quieres cargar
+        let colorHex = this.returnColorHex(team.color);
+        this.teamForm.patchValue({
+          name: team.name,
+          color: colorHex
         });
-        this.players.push(playerForm);
-      });
+    
+        this.players.clear();
+        team.players.forEach((player: any) => {
+          const playerForm = this.fb.group({
+            name: [player.name, Validators.required],
+            lastName: [player.lastName, Validators.required],
+            number: [player.number, Validators.required],
+            isCaptain: [player.isCaptain],
+            isGoalKeeper: [player.isGoalKeeper]
+          });
+          this.players.push(playerForm);
+        });
+        this.showExcelUpload=false;
+      }
     }
-  }
+    
 
   onSubmit() {
     const teamData = this.teamForm.value;
