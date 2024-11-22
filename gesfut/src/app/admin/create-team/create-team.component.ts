@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ExcelUploadComponent } from '../excel-upload/excel-upload.component';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
   selector: 'app-create-team',
@@ -20,7 +21,7 @@ export class CreateTeamComponent {
   showExcelUpload = false; 
   private dashboardService = inject(DashboardService);
 
-  constructor(private fb: FormBuilder, private teamService: TeamService) {
+  constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
       color: ['', Validators.required],
@@ -33,8 +34,6 @@ export class CreateTeamComponent {
       this.addPlayer();
     }
   }
-
-  
 
   get players(): FormArray {
     return this.teamForm.get('players') as FormArray;
@@ -197,20 +196,18 @@ export class CreateTeamComponent {
     this.teamService.createTeam(teamData).subscribe({
       next: () => {
         this.error = '';
-        this.successAlert();
+        this.alertService.successAlert("Equipo creado!");
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
-        /* this.error = err.error.error; */
-        this.errorAlert(err.error.error);
+        this.alertService.errorAlert(err.error.error);
       }
     });
   }
 
-  successAlert(){
+ /*  successAlert(){
     Swal.fire({
-      position: "top-end",
       icon: "success",
       title: "Equipo creado!",
       showConfirmButton: false,
@@ -223,7 +220,7 @@ export class CreateTeamComponent {
       toast: true, 
       icon: 'error', 
       title: err, 
-      position: 'bottom', 
+      position: 'top-end', 
       showConfirmButton: false, 
       timer: 3000, 
       timerProgressBar: true, 
@@ -233,7 +230,7 @@ export class CreateTeamComponent {
         title: 'toast-title'
       },
     });
-  }
+  } */
   
   
 }

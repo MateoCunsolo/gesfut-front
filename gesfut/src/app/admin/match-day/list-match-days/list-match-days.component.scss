@@ -51,7 +51,11 @@ section{
     margin: 0;
     height: auto;
     overflow-x: scroll;
-    max-width: 70%;
+    max-width: 50%;
+    @media (max-width: 576px){
+        max-width: 100%;
+        margin-bottom: 16px;
+    }
 }
 
 
@@ -98,11 +102,10 @@ hr {
 .match{
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    align-items: center;
     justify-content: center;
     gap: 8px;
     width: 96%;
-    font-size: 24px;
+    font-size: var(--font-size-text);
 }
 
 @media (max-width: 1280px) {
@@ -186,6 +189,26 @@ hr {
     padding: 4px; 
     text-align: center;
 }
+
+.match button{
+    font-size: var(--font-size-text);
+}
+
+.edit-button{
+    background-color: var(--terciary-color);
+    color: var(--font-color-dark);
+    font-size: var(--font-size-text);
+    padding: 0;
+    font-weight: bold;
+    width: auto;
+    transition: 0.3s ease-in-out;
+}
+
+.edit-button:hover{
+    background-color: #FFB41F;
+}
+
+
 .btn-container{
     display: flex;
     flex-direction: row;
@@ -194,7 +217,8 @@ hr {
     padding: 16px;
 }
 
-.base-button{
+
+/* .base-button{
     background-color: var(--primary-color);
     color:black;
     font-size: var(--font-size-text);
@@ -207,4 +231,4 @@ hr {
     .base-button{
         height: 36px;
     }
-}
+} */
