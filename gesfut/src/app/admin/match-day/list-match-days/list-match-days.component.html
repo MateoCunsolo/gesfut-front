@@ -17,23 +17,27 @@
             @if(tournament.matchDays[selectedMatchDay].matches && tournament.matchDays[selectedMatchDay].matches.length > 0){
                 <ng-container *ngFor="let match of tournament.matchDays[selectedMatchDay].matches">
                     <div class="match">
-                        <div class="versus">
-                            <p>{{ match.homeTeam.toUpperCase()}}</p>
-                            <p>{{match.homeGoals}}</p>
-                            <p>{{match.awayGoals}}</p>
-                            <p>{{ match.awayTeam.toUpperCase()}}</p>
-                        </div>
-                        <div class="hour"><p>09:12 HS</p></div>
-                        <div class="complex"><p>Complejo</p></div>
-                        @if(!tournament.matchDays[selectedMatchDay].isFinished){
-                            @if(!match.isFinished){
-                                @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
-                                    <button disabled>FECHA LIBRE</button>
+                        @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
+                            @if(match.homeTeam === 'Free'){
+                                <p>{{match.awayTeam.toUpperCase()}} TIENE FECHA LIBRE </p>
+                            }@else{
+                                <p>{{match.homeTeam.toUpperCase()}} TIENE FECHA LIBRE </p>
+                            }
+                        }@else{
+                            <div class="versus">
+                                <p>{{ match.homeTeam.toUpperCase()}}</p>
+                                <p>{{match.homeGoals}}</p>
+                                <p>{{match.awayGoals}}</p>
+                                <p>{{ match.awayTeam.toUpperCase()}}</p>
+                            </div>
+                            <div class="hour"><p>09:12 HS</p></div>
+                            <div class="complex"><p>Complejo</p></div>
+                            @if(!tournament.matchDays[selectedMatchDay].isFinished){
+                                @if(!match.isFinished){
+                                    <button class="base-button" (click)="loadResult(match.id)">CARGAR EVENTOS</button>
                                 }@else {
-                                    <button class="base-button" (click)="loadResult(match.id)"> CARGAR EVENTOS </button>
+                                    <button (click)="editResult(match.id)" class="base-button edit-button">EDITAR</button>
                                 }
-                            }@else {
-                                <button (click)="editResult(match.id)">EDITAR EVENTOS</button>
                             }
                         }
                     </div>

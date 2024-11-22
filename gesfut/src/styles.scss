@@ -2,6 +2,7 @@
 :root {
     --primary-color: #2a6a49;
     --secondary-color: #41cf8a;
+    --terciary-color: #F77F00;
     --bg-color: #f4f4f4;
     --error-color: #ff0000;
     --font-type-primary: 'Play', sans-serif;
@@ -53,96 +54,11 @@ small {
     font-size: 1.3rem;
 }
 
-
-
-// Responsive for 392px by 852px
 @media screen and (max-width: 393px) {
     html {
         font-size: 50%;
     }
 }
-
-
-
-
-
-// /* BUTTON */
-
-// /* Botón de añadir jugador */
-// /* Base Button Styles */
-// .base-button {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     background-color: transparent;
-//     color: var(--primary-color);
-//     border: none;
-//     border-radius: 5px;
-//     /* Bordes redondeados */
-//     cursor: pointer;
-//     transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-// }
-
-// /* Estilos para el botón pequeño */
-// .button-small {
-//     width: 40px;
-//     /* Ancho para botones de acción pequeños */
-//     height: 40px;
-//     /* Altura para botones de acción pequeños */
-//     font-size: 24px;
-//     /* Tamaño del icono */
-// }
-
-// /* Estilos para el botón grande */
-// .button-large {
-//     background-color: var(--primary-color);
-//     color: white;
-//     width: 80%;
-//     /* Ancho completo para el botón de enviar */
-//     height: 40px;
-//     /* Altura para el botón de enviar */
-//     font-size: 16px;
-//     /* Tamaño de texto para el botón de enviar */
-//     margin: 8px auto;
-// }
-
-// /* Hover: cambio de color y fondo */
-// .base-button:hover:not(:disabled) {
-//     background-color: var(--secondary-color);
-//     /* Fondo al hacer hover */
-//     color: #fff;
-//     /* Ícono en blanco */
-//     transform: scale(1.1);
-//     /* Efecto de crecimiento ligero */
-// }
-
-// /* Al hacer foco */
-// .base-button:focus {
-//     outline: none;
-//     box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-//     /* Sombra sutil */
-// }
-
-// /* Estilo para el botón deshabilitado */
-// .base-button:disabled {
-//     background-color: var(--disabled-color, #e0e0e0);
-//     /* Color de fondo para deshabilitado */
-//     color: #a0a0a0;
-//     /* Color de texto para deshabilitado */
-//     cursor: not-allowed;
-//     /* Cambiar el cursor para indicar que no se puede interactuar */
-//     opacity: 0.7;
-//     /* Opacidad para indicar que está deshabilitado */
-// }
-
-// /* Asegúrate de que el hover no afecte el botón deshabilitado */
-// .base-button:disabled:hover {
-//     background-color: var(--disabled-color, #e0e0e0);
-//     /* Mantener el mismo fondo */
-//     transform: none;
-//     /* No aplicar transformación de escala */
-// }
-
 
 /* ==================================== CHECKBOX ==================================== */
 
@@ -202,10 +118,6 @@ label {
 }
 
 
-
-
-
-
 /* ==================================== INPUT CON ICON ==================================== */
 .form-group {
     display: flex;
@@ -254,7 +166,6 @@ label {
 
 
 /* ==================================== Button ====================================*/
-
 .base-button {
     width: 100%;
     background-color: var(--primary-color);
@@ -373,3 +284,21 @@ label {
     font-weight: bold;
 }
 
+
+
+  // ==================================== TOASTS ====================================
+
+.container-toast{
+    margin-top: 80px !important;
+}
+
+/* Estilo del título del mensaje */
+.toast-title {
+    font-family: var(--font-type-primary) !important;
+    font-size: var(--font-size-text) !important;
+    color: var(--font-color-dark) !important;
+}
+
+.toast-icon {
+    font-size: var(--font-size-text) !important;
+}

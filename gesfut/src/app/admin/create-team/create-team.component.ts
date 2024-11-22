@@ -5,6 +5,8 @@ import { TeamService } from '../../core/services/tournament/team.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ExcelUploadComponent } from '../excel-upload/excel-upload.component';
+import Swal from 'sweetalert2';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
   selector: 'app-create-team',
@@ -19,7 +21,7 @@ export class CreateTeamComponent {
   showExcelUpload = false; 
   private dashboardService = inject(DashboardService);
 
-  constructor(private fb: FormBuilder, private teamService: TeamService) {
+  constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
       color: ['', Validators.required],
@@ -32,8 +34,6 @@ export class CreateTeamComponent {
       this.addPlayer();
     }
   }
-
-  
 
   get players(): FormArray {
     return this.teamForm.get('players') as FormArray;
@@ -164,45 +164,73 @@ export class CreateTeamComponent {
       case 'LAVENDER MIST': return '#E6E6FA';
       default:
         return '#FFFFFF';
-    }}
-  
-  loadTeamData(data: any[]) {
-    if (data.length > 0) {
-      const team = data[0];
-      let colorHex = this.returnColorHex(team.color);
-      this.teamForm.patchValue({
-        name: team.name,
-        color: colorHex
-      });
-
-      this.players.clear();
-      team.players.forEach((player: any) => {
-        const playerForm = this.fb.group({
-          name: [player.name, Validators.required],
-          lastName: [player.lastName, Validators.required],
-          number: [player.number, Validators.required],
-          isCaptain: [player.isCaptain],
-          isGoalKeeper: [player.isGoalKeeper]
-        });
-        this.players.push(playerForm);
-      });
     }
   }
 
+  loadTeamData(data: any[]) {
+      if (data.length > 0) {
+        const team = data[0]; // Asumiendo que el primer equipo es el que quieres cargar
+        let colorHex = this.returnColorHex(team.color);
+        this.teamForm.patchValue({
+          name: team.name,
+          color: colorHex
+        });
+    
+        this.players.clear();
+        team.players.forEach((player: any) => {
+          const playerForm = this.fb.group({
+            name: [player.name, Validators.required],
+            lastName: [player.lastName, Validators.required],
+            number: [player.number, Validators.required],
+            isCaptain: [player.isCaptain],
+            isGoalKeeper: [player.isGoalKeeper]
+          });
+          this.players.push(playerForm);
+        });
+        this.showExcelUpload=false;
+      }
+  }
+    
   onSubmit() {
     const teamData = this.teamForm.value;
     this.teamService.createTeam(teamData).subscribe({
       next: () => {
         this.error = '';
-        alert('Equipo creado exitosamente!');
+        this.alertService.successAlert("Equipo creado!");
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
-        this.error = err.error.error;
+        this.alertService.errorAlert(err.error.error);
       }
     });
   }
 
+ /*  successAlert(){
+    Swal.fire({
+      icon: "success",
+      title: "Equipo creado!",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
 
+  errorAlert(err: string) {
+    Swal.fire({
+      toast: true, 
+      icon: 'error', 
+      title: err, 
+      position: 'top-end', 
+      showConfirmButton: false, 
+      timer: 3000, 
+      timerProgressBar: true, 
+      customClass: {
+        container: 'container-toast', 
+        icon: 'toast-icon', 
+        title: 'toast-title'
+      },
+    });
+  } */
+  
+  
 }
