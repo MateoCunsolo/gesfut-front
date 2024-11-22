@@ -19,9 +19,9 @@
                     <div class="match">
                         @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
                             @if(match.homeTeam === 'Free'){
-                                <p>{{match.awayTeam.toUpperCase()}} TIENE FECHA LIBRE </p>
+                                <p class="free-match" >{{match.awayTeam.toUpperCase()}} TIENE FECHA LIBRE </p>
                             }@else{
-                                <p>{{match.homeTeam.toUpperCase()}} TIENE FECHA LIBRE </p>
+                                <p class="free-match">{{match.homeTeam.toUpperCase()}} TIENE FECHA LIBRE </p>
                             }
                         }@else{
                             <div class="versus">
@@ -54,9 +54,8 @@
         }
     </div>
     <div class="btn-container">
-        <button class="base-button" (click)="changeComponent('dashboard')">ATRAS</button>
-        @if(tournament.matchDays[selectedMatchDay].isFinished){
-            <button class="base-button" (click)="closeMatchDay(false)">REABRIR FECHA</button>
+        @if(this.matchDayStatus){
+            <button class="base-button edit-button" (click)="toggleMatchDayStatus(false)">REABRIR FECHA</button>
         }@else{
             <button class="base-button" (click)="closeMatchDay(true)">FINALIZAR FECHA</button>
         }

@@ -44,8 +44,7 @@ export class MatchDaysService {
       }
     }).pipe(
       catchError(error => {
-        console.error('Error closing match day:', error);
-        return throwError(() => new Error('Failed to close match day'));
+        return throwError(() => error);
       }),
       tap(() => { // tap no suscribe, sólo permite ejecutar código adicional
         this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
@@ -73,7 +72,6 @@ export class MatchDaysService {
     })
   }
 
- 
   saveEvents(events: any[], matchId: number): void {
     console.log('Array de eventos recibidos en el servicio:', events);
     const request = this.generateMatchRequest(events, matchId);
