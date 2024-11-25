@@ -11,7 +11,7 @@ section{
 @media (max-width: 1280px) {
     section {
       width: 768px; 
-      height: calc(100vh - 80px); 
+      height: calc(100vh - 160px); 
       padding: 20px; 
     }
   }
@@ -19,7 +19,7 @@ section{
   @media (max-width: 768px) {
     section {
       width: 100%; 
-      height: calc(100vh - 100px); 
+      height: calc(100vh - 80px); 
       padding: 10px; 
     }
 }
@@ -37,7 +37,7 @@ section{
     gap: 8px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .title-container div:nth-child(1){
         flex-direction: column;
         align-items: start;
@@ -76,11 +76,10 @@ section{
     margin: 8px 0;
 }
 
-/* Estilos generales para el <hr> */
 hr {
-    border: none; /* Sin borde */
-    height: 5px; /* Grosor de la línea */
-    background-color: var(--primary-color); /* Color de la línea */
+    border: none; 
+    height: 5px; 
+    background-color: var(--primary-color); 
     margin: 0 auto;
 }
 
@@ -89,13 +88,15 @@ hr {
     flex-direction: column;
     align-items: center;
     justify-content: start;
-    max-height: 500px;
-    min-height: 500px;
+    height: 500px;
     overflow-y: scroll;
     padding: 8px 0;
     margin: 24px 0;
     width: 100%;
     gap: 8px;
+    @media (max-width: 1280px) {
+        height: 400px;
+    }
 }
 
 
@@ -109,9 +110,6 @@ hr {
 }
 
 @media (max-width: 1280px) {
-    .match{
-        font-size: 20px;
-    }
     .match button:nth-child(4){
         grid-column: 7/13;
     }
@@ -123,7 +121,7 @@ hr {
     }
 }
   
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .match{
         font-size: 12px;
     }
@@ -141,8 +139,8 @@ hr {
 .versus {
     grid-column: 1/6;
     display: grid;
-    grid-template-columns: repeat(12, 1fr); /* 12 columnas para la estructura */
-    border: 1px solid black; /* Borde externo del contenedor */
+    grid-template-columns: repeat(12, 1fr); 
+    border: 1px solid black; 
     font-weight: 500;
 }
 @media (max-width: 1280px) {
@@ -151,11 +149,11 @@ hr {
     }
 }
 
-/* Estilos para los hijos */
+
 .versus p:nth-child(1) {
     grid-column: 1 / 6;
     text-align: right;
-    border-right: 1px solid black;  /* Borde derecho */
+    border-right: 1px solid black;  
     padding: 4px;
 }
 
@@ -163,8 +161,8 @@ hr {
     grid-column: 6 / 7;
     text-align: center;
     background-color: white;
-    border-left: 1px solid black; ; /* Borde izquierdo que coincide con el borde derecho del anterior */
-    border-right: 1px solid black;  /* Borde derecho para la separación con el siguiente */
+    border-left: 1px solid black; ; 
+    border-right: 1px solid black;  
     padding: 4px;
 }
 
@@ -172,16 +170,28 @@ hr {
     grid-column: 7 / 8;
     text-align: center;
     background-color: white;
-    border-left: 1px solid black;  /* Borde izquierdo que coincide con el borde derecho del anterior */
-    border-right: 1px solid black;  /* Borde derecho */
+    border-left: 1px solid black;  
+    border-right: 1px solid black; 
     padding: 4px;
 }
 
 .versus p:nth-child(4) {
     grid-column: 8 / 13;
     text-align: left;
-    border-left: 1px solid black;  /* Borde izquierdo coincidiendo con el borde derecho del anterior */
+    border-left: 1px solid black;  
     padding: 4px;
+}
+
+.free-match{
+    grid-column: 1/6;
+    text-align: center;
+    font-size: var(--font-size-text);
+    font-weight: bold;
+    border: 1px solid black;
+    padding:4px;
+    @media(max-width: 1280px){
+        grid-column: 1/13;
+    }
 }
 
 .hour, .complex{
@@ -192,20 +202,19 @@ hr {
 
 .match button{
     font-size: var(--font-size-text);
+    padding: 0;
+    @media(max-width: 576px){
+        height: 24px;
+        width: 50%;
+    }
 }
+
 
 .edit-button{
     background-color: var(--terciary-color);
-    color: var(--font-color-dark);
-    font-size: var(--font-size-text);
-    padding: 0;
+    color: black;
     font-weight: bold;
     width: auto;
-    transition: 0.3s ease-in-out;
-}
-
-.edit-button:hover{
-    background-color: #FFB41F;
 }
 
 
@@ -213,10 +222,16 @@ hr {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 16px;
 }
 
+.btn-container button{
+    width: 30%;
+    @media (max-width: 576px) {
+        width: 100%;
+    }
+}
 
 /* .base-button{
     background-color: var(--primary-color);
@@ -224,11 +239,6 @@ hr {
     font-size: var(--font-size-text);
     width: auto;
     padding: 8px
-}
-
-
-@media (max-width: 480px) {
-    .base-button{
-        height: 36px;
-    }
 } */
+
+

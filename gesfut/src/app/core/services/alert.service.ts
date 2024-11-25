@@ -33,4 +33,17 @@ export class AlertService {
       },
     });
   }
+
+  confirmAlert(title: string): Promise<boolean> {
+    return Swal.fire({
+      title: title,
+      showCancelButton: true,
+      confirmButtonColor: "var(--primary-color)",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si!"
+    }).then((result) => {
+      return result.isConfirmed;  // Devolvemos el valor (true o false)
+    });
+  }
+  
 }
