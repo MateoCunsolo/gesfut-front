@@ -31,6 +31,10 @@
       <small>El nombre debe tener menos de 50 caracteres.</small>
       }
 
+      @if (createTournamentForm.get('name')?.hasError('pattern')) {
+      <small>El nombre no puede contener espacios</small>
+      }
+
       @if (createTournamentForm.get('name')?.valid) {
       <div class="oculto"></div>
       }
