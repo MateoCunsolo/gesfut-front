@@ -139,6 +139,24 @@ export class TournamentService {
     );
   }
 
+  changeIsActive(code: string, isActive: boolean): Observable<boolean> {
+    const url = `${this.url}/tournaments/change-isActive/${code}/${isActive}`;
+    return this.http.put<boolean>(`${url}`, {}, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }
+    }).pipe(
+      tap({
+        next: () => {
+          return;
+        },
+        error: (error: HttpErrorResponse) => {
+          return throwError(() => error)
+        }
+      })
+    );
+  }
 
 
 }
