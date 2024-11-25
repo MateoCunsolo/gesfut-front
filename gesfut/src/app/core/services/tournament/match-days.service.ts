@@ -7,6 +7,7 @@ import { MatchDetailedResponse } from '../../models/matchDetailedRequest';
 import { EventRequest, MatchRequest } from '../../models/matchRequest';
 import { DashboardService } from '../dashboard.service';
 import { TournamentService } from './tournament.service';
+import { AlertService } from '../alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class MatchDaysService {
   currentMatch: BehaviorSubject<MatchDetailedResponse> = new BehaviorSubject<MatchDetailedResponse>(INITIAL_DETAILED_MATCH);
   editResult:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private HttpClient:HttpClient, private dashboardService:DashboardService, private tournamentService:TournamentService) { }
+  constructor(private HttpClient:HttpClient, private dashboardService:DashboardService, private tournamentService:TournamentService, private alertService:AlertService) { }
 
   getMatchDetailed(id: number): Observable<MatchDetailedResponse> {
     return this.HttpClient.get<MatchDetailedResponse>(`${this.url}/matches/detailed/${id}`).pipe(
@@ -96,6 +97,7 @@ export class MatchDaysService {
         console.log('Eventos guardados correctamente:', response);
         this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
           next:() => {
+            this.alertService.successAlert('Partido guardado!')
             this.dashboardService.setActiveTournamentComponent('match-days');
             this.setEditResult(false);
           }
@@ -103,6 +105,7 @@ export class MatchDaysService {
       },
       error: (err) => {
         console.error('Error en la solicitud HTTP:', err);
+        this.alertService.errorAlert(err.error.error);
       }
     });
   }

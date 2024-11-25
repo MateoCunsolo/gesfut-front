@@ -61,7 +61,6 @@ export class LoadResultComponent {
           this.selectedPlayer = player;
         });
   
-        // Deshabilitar el checkbox MVP si ya existe un MVP marcado
         this.disableMvpIfNeeded();
       }
     })
@@ -69,9 +68,9 @@ export class LoadResultComponent {
   
   disableMvpIfNeeded() {
     if (this.events.some(event => event.mvp)) {
-      this.statisticsForm.get('mvp')?.disable(); // Deshabilitar el control
+      this.statisticsForm.get('mvp')?.disable(); 
     } else {
-      this.statisticsForm.get('mvp')?.enable(); // Asegurarse de que esté habilitado
+      this.statisticsForm.get('mvp')?.enable(); 
     }
   }
 
@@ -100,15 +99,15 @@ export class LoadResultComponent {
 
   loadStatistics() {
     if (this.statisticsForm.valid) {
-      const selectedPlayer = this.statisticsForm.get('name')?.value;  // Aquí obtienes el objeto completo del jugador
+      const selectedPlayer = this.statisticsForm.get('name')?.value;  
       const newEvent = {
         ...this.statisticsForm.value,
         team: this.statisticsForm.get('team')?.value.name,
-        name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,  // Asegúrate de usar el playerName
-        id: selectedPlayer?.id  // Y también el id
+        name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,  
+        id: selectedPlayer?.id  
       };
       this.events.push(newEvent);
-      console.log(newEvent);  // Verifica que se están recogiendo correctamente id y playerName
+      console.log(newEvent);  
       this.statisticsForm.reset({
         id: 0,
         name: '',
