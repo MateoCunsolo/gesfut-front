@@ -33,7 +33,7 @@ export class AlertService {
       },
     });
   }
-
+  
   loadingAlert(title: string) {
     Swal.fire({
       title: title,
@@ -54,6 +54,5 @@ export class AlertService {
       confirmButtonText: confirmButtonText
     });
   }
-
 
 }
