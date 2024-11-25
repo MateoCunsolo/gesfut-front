@@ -10,6 +10,7 @@
             <option value="all">TODOS</option>
             <option value="finished">FINALIZADOS</option>
             <option value="inProgress">EN CURSO</option>
+            <option value="trash">ELIMINADOS</option>
         </select>
         @if (filter !== "all") {
         <svg class="svg-icon" (click)="resetFilters()" xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +35,7 @@
                 <p>FECHA DE INICIO: {{item.startDate | date:'dd MMM yyyy'}}</p>
             </div>
             <div class="buttons">
-                <button class="base-button">
+                <button (click)="deleteTournament(item.code)" class="base-button">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                         <path fill="#2a6a49"
@@ -50,12 +51,13 @@
                     </svg> </button>
             </div>
         </article>
-        }
+        
+    }
     </section>
     }@else {
-        <div class="haveTournaments">
-            <p class="no-tournaments">NO HAY TORNEOS</p>
-            <button (click)="changeComponent('create-tournament')" class="base-button btn"> CREAR TORNEO </button>
-        </div>
+    <div class="haveTournaments">
+        <p class="no-tournaments">NO HAY TORNEOS</p>
+        <button (click)="changeComponent('create-tournament')" class="base-button btn"> CREAR TORNEO </button>
+    </div>
     }
 </section>
