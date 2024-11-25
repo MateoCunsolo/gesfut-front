@@ -23,6 +23,8 @@
         [ngClass]="{nameClicked: nameClicked && ( $index === indexName )}">
         {{ item.name }}
       </li>
+      }@else {
+        <li>NO HAY EQUPIOS EIMINADOS</li>
       }
       }
     </div>
@@ -101,10 +103,15 @@
     </div>
     }
   </div>
-  }@else {
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p id="load" >CARGANDO DATOS DE {{ teamsGlobal[indexTeamClicked].name}}...</p>
-    </div>
-  }
+  }@else{
+  <div class="loading-container">
+    @if (teamsGlobal.length > 0) {
+    <div class="spinner"></div>
+    <p class="load">CARGANDO DATOS DE {{ teamsGlobal[indexTeamClicked].name}}...</p>
+    }@else {
+    <p class="load">NO HAY EQUIPOS</p>
+    <button class="btn" (click)="changeComponent('create-team')">CREAR EQUIPO</button>
+    }
+  </div>
+}
 </section>

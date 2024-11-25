@@ -170,6 +170,8 @@ p {
 
 }
 
+
+
 p:hover {
   color: #fff;
   background-color: var(--primary-color);
@@ -223,4 +225,23 @@ p:hover {
   top: 100px !important;
   left: 15px !important;
   margin-bottom: 50px;
+}
+
+
+.loading-container{
+  height: 50vh;
+  gap: 20px;
+
+  p{
+    font-weight: bold;
+    background-color: white;
+    box-shadow: none;
+    cursor: default;
+  }
+
+  p:hover{
+    box-shadow: none;
+    color: var(--primary-color);
+  }
+
 }

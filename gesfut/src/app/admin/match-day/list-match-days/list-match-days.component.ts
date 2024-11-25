@@ -62,9 +62,11 @@ export class ListMatchDaysComponent implements OnInit{
   }
 
   async toggleMatchDayStatus(status: boolean) {
-    const result = await this.alertService.confirmAlert("¿Seguro que quieres volver a abrir la fecha?");
-    if (result === true) this.closeMatchDay(status); 
-    
+    this.alertService.confirmAlert('¿Estás seguro?', 'Esta acción no se puede deshacer', 'Confirmar').then((result) => {
+      if (result.isConfirmed) {
+        this.closeMatchDay(status);
+      }
+    });    
   }
 
   closeMatchDay(status: boolean){

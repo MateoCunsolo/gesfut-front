@@ -8,42 +8,51 @@ export class AlertService {
 
   constructor() { }
 
-  successAlert(title:string){
+  successAlert(title: string) {
     Swal.fire({
       icon: "success",
       title: title,
       showConfirmButton: false,
-      timer: 1500
+      timer: 1600
     });
   }
 
   errorAlert(err: string) {
     Swal.fire({
-      toast: true, 
-      icon: 'error', 
-      title: err, 
-      position: 'top-end', 
-      showConfirmButton: false, 
-      timer: 3000, 
-      timerProgressBar: true, 
+      toast: true,
+      icon: 'error',
+      title: err,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
       customClass: {
-        container: 'container-toast', 
-        icon: 'toast-icon', 
+        container: 'container-toast',
+        icon: 'toast-icon',
         title: 'toast-title'
       },
     });
   }
-
-  confirmAlert(title: string): Promise<boolean> {
-    return Swal.fire({
+  
+  loadingAlert(title: string) {
+    Swal.fire({
       title: title,
-      showCancelButton: true,
-      confirmButtonColor: "var(--primary-color)",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si!"
-    }).then((result) => {
-      return result.isConfirmed;  // Devolvemos el valor (true o false)
+      didOpen: () => {
+        Swal.showLoading();
+      }
     });
   }
-  
+
+  confirmAlert(title: string, text: string, confirmButtonText: string) {
+    return Swal.fire({
+      title: title,
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: confirmButtonText
+    });
+  }
+
 }
