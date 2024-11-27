@@ -25,12 +25,13 @@
 }
 
 .match-teams {
+    display:  grid;
+    grid-template-columns: 1fr 0fr 0fr 0fr 1fr;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     max-height: 100%;
     gap: 10px;
+    align-items: center;
+    justify-self: center;
     width: 100%;
 }
 
@@ -44,6 +45,7 @@
     justify-content: center;
     font-weight: bold;
     color: var(--primary-color);
+    position: relative;
 }
 
 .no-events{
@@ -88,8 +90,20 @@
 span{
     color: var(--font-color-dark);
     font-weight: bold;
+    text-align: center;
 }
-  
+
+.name-team-home{
+    text-wrap: nowrap;
+    text-align: end;
+}
+
+.name-team-away{
+    text-wrap: nowrap;
+    text-align: start;
+}
+
+
 .match-date{
     min-width: 100px;
     text-wrap: nowrap;

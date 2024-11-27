@@ -11,12 +11,12 @@
                 @if (item.homeTeam.toLocaleLowerCase() == 'free'|| item.awayTeam.toLocaleLowerCase() == 'free') {
                 {{teamName}}@if(item.isFinished){ TUVO DESCANSO}@else{ TIENE DESCANSO}
                 }@else{
-                <span [ngClass]="{ 'highlight': teamName === item.homeTeam }">
+                <span class="name-team-home" [ngClass]="{ 'highlight': teamName === item.homeTeam }">
                     {{ item.homeTeam }}
                 </span>
                 <span class="score">{{ item.homeGoals }}</span>-
                 <span class="score">{{ item.awayGoals }}</span>
-                <span [ngClass]="{ 'highlight': teamName === item.awayTeam }">
+                <span  span class="name-team-away" [ngClass]="{ 'highlight': teamName === item.awayTeam }">
                     {{ item.awayTeam }}
                 </span>
                 }
