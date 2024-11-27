@@ -24,8 +24,6 @@
         [ngClass]="{nameClicked: nameClicked && ( $index === indexName )}">
         {{ item.name }}
       </li>
-      }@else {
-        <li>NO HAY EQUPIOS EIMINADOS</li>
       }
       }
     </div>
@@ -114,8 +112,8 @@
     <button class="btn" (click)="changeComponent('create-team')">CREAR EQUIPO</button>
     }
   </div>
-}
+  }
 </section>
 }@else{
- <app-lasts-matches></app-lasts-matches>
+<app-lasts-matches></app-lasts-matches>
 }
