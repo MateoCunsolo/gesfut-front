@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ParticipantResponse, PlayerParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { MatchResponse, ParticipantResponse, PlayerParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { SessionService } from '../../core/services/manager/session.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { AdminService } from '../../core/services/manager/admin.service';
@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
+import { AlertService } from '../../core/services/alert.service';
+import { DashboardService } from '../../core/services/dashboard.service';
 @Component({
   selector: 'app-list-team-tournaments',
   standalone: true,
@@ -24,7 +26,9 @@ export class ListTeamsTournamentsComponent {
   private activedRoute = inject(ActivatedRoute);
   private sessionService = inject(SessionService);
   private torunameService = inject(TournamentService);
-  private adminService = inject(AdminService);
+  private dashboardService = inject(DashboardService);
+  private tournamentService = inject(TournamentService);
+  private alertService = inject(AlertService);
 
   // nuevas variables
   tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
@@ -64,6 +68,28 @@ export class ListTeamsTournamentsComponent {
       }
     });
   }
+
+
+  toLastMatchs() {
+    this.alertService.loadingAlert('OBTENIENDO PARTIDOS DEL EQUIPO ' + this.teamNameClicked);
+    let idParticipant = this.tournament.participants.find(participant => participant.name === this.teamNameClicked);
+    if (!idParticipant) {
+      return;
+    } else {
+      console.log(idParticipant);
+      this.tournamentService.getMatchesAllForParticipant(this.tournament.code, idParticipant.idParticipant).subscribe({
+        next: (response: MatchResponse[]) => {
+          this.alertService.successAlert('PARTIDOS OBTENIDOS CON ÉXITO');
+          sessionStorage.setItem('teamNameMatches', this.teamNameClicked);
+          sessionStorage.setItem('matches', JSON.stringify(response));
+          localStorage.removeItem('lastTournamentClickedName');
+          localStorage.removeItem('lastTournamentClicked');
+          this.dashboardService.setActiveTournamentComponent('lasts-matches');
+        }
+      });
+    }
+  }
+
 
 
 

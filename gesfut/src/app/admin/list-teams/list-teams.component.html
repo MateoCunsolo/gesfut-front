@@ -1,3 +1,4 @@
+@if (!lastsMatches) {
 <section class="teams">
 
   <div class="section-name">
@@ -98,7 +99,7 @@
     @if (isAuth &&!listTeamsAll) {
     <div class="buttons">
       <button class="btn">AGREGAR JUGADOR</button>
-      <button class="btn">ULTIMOS PARTIDOS</button>
+      <button (click)="toLastMatchs()" class="btn">VER PARTIDOS</button>
       <button (click)="deleteTeamGlobal()" class="btn">ELIMINAR</button>
     </div>
     }
@@ -115,3 +116,6 @@
   </div>
 }
 </section>
+}@else{
+ <app-lasts-matches></app-lasts-matches>
+}

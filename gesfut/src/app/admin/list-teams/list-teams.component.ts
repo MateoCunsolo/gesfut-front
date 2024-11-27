@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ParticipantResponse, PlayerParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { MatchResponse, PlayerParticipantResponse } from '../../core/models/tournamentResponse';
 import { FormsModule } from '@angular/forms';
 import { SessionService } from '../../core/services/manager/session.service';
 import { TeamResponse } from '../../core/models/teamResponse';
@@ -9,14 +8,17 @@ import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamService } from '../../core/services/tournament/team.service';
 import { ParticipantShortResponse } from '../../core/models/participantShortResponse';
 import { NgClass } from '@angular/common';
-import { find } from 'rxjs';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { AlertService } from '../../core/services/alert.service';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { LastsMatchesComponent } from '../lasts-matches/lasts-matches.component';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-list-teams',
   standalone: true,
   templateUrl: './list-teams.component.html',
   styleUrls: ['./list-teams.component.scss'],
-  imports: [FormsModule, NgClass]
+  imports: [FormsModule, NgClass, LastsMatchesComponent]
 })
 export class ListTeamsComponent {
 
@@ -26,10 +28,13 @@ export class ListTeamsComponent {
   private adminService = inject(AdminService);
   private teamService = inject(TeamService);
   private dashboardService = inject(DashboardService);
-
+  private alertService = inject(AlertService);
+  private tournamentService = inject(TournamentService);
+  private router = inject(Router);
   // Autenticación del usuario
   isAuth: boolean = false;
   loadInfo: boolean = false;
+  lastsMatches: boolean = false;
   // Filtro de búsqueda
   teamsFilters: TeamResponse[] = [];
   searchTerm: string = '';
@@ -52,12 +57,39 @@ export class ListTeamsComponent {
   indexName: number = 0;
   indexTeamClicked: number = 0;
   listTeamsAll: boolean = false;
+  
   constructor() { }
 
   ngOnInit(): void {
     if (!this.activedRoute.snapshot.paramMap.get('code') && this.sessionService.isAuth()) {
       this.fetchTeamsGlobal();
       this.isAuth = true;
+    }
+  }
+
+  toLastMatchs() {
+    if (this.selectedTournamentIndex == null) {
+      this.alertService.errorAlert('Selecciona un torneo para ver sus partidos');
+    } else {
+      this.alertService.loadingAlert('OBTENIENDO PARTIDOS DEL TORNEO ' + this.particpantsShortAll[this.selectedTournamentIndex].nameTournament + "...");
+      this.tournamentService.getMatchesAllForParticipant(this.particpantsShortAll[this.indexName].codeTournament, this.particpantsShortAll[this.indexName].idParticipant).subscribe({
+        next: (response: MatchResponse[]) => {
+          this.alertService.successAlert('PARTIDOS OBTENIDOS CON ÉXITO');
+          sessionStorage.setItem('teamNameMatches', this.selectedTeam.name);
+          sessionStorage.setItem('matches', JSON.stringify(response));
+          localStorage.removeItem('lastTournamentClickedName');
+          localStorage.removeItem('lastTournamentClicked');
+          if (this.selectedTournamentIndex !== null) {
+            localStorage.setItem('lastTournamentClickedName', this.particpantsShortAll[this.selectedTournamentIndex].nameTournament);
+            localStorage.setItem('lastTournamentClicked', this.particpantsShortAll[this.selectedTournamentIndex].codeTournament);
+            this.router.navigate(['/admin/tournaments/'+ this.particpantsShortAll[this.indexName].codeTournament]);
+            this.dashboardService.setActiveTournamentComponent('lasts-matches');
+          }else{
+            this.alertService.errorAlert('Selecciona un torneo para ver sus partidos');
+          }
+
+        } 
+      });
     }
   }
 
@@ -117,32 +149,34 @@ export class ListTeamsComponent {
           this.selectedTournamentIndex = null;
           this.playersParticipants = [];
           this.teamsGlobal.forEach(team => {
-            if(team.id === id) {
-            team.players.forEach(player => {
-              this.playersParticipants.push({
-                id : 0,
-                shirtNumber : player.number,
-                playerName : player.name,
-                playerLastName : player.lastName,
-                goals : 0,
-                redCards : 0,
-                yellowCards : 0,
-                isSuspended : false,
-                isMvp : 0,
-                matchesPlayed : 0,
-                status : true,
-                isActive : true,
-                isCaptain : player.isCaptain,
-                isGoalKeeper : player.isGoalKeeper
+            if (team.id === id) {
+              team.players.forEach(player => {
+                this.playersParticipants.push({
+                  id: 0,
+                  shirtNumber: player.number,
+                  playerName: player.name,
+                  playerLastName: player.lastName,
+                  goals: 0,
+                  redCards: 0,
+                  yellowCards: 0,
+                  isSuspended: false,
+                  isMvp: 0,
+                  matchesPlayed: 0,
+                  status: true,
+                  isActive: true,
+                  isCaptain: player.isCaptain,
+                  isGoalKeeper: player.isGoalKeeper
+                })
               })
-          })}});
+            }
+          });
         }
       }
     });
 
   }
 
-  changeComponent(component:string){
+  changeComponent(component: string) {
     this.dashboardService.setActiveDashboardAdminComponent(component);
   }
 

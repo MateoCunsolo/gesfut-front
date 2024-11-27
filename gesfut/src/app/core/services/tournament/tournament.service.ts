@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../enviroments/environment';
 import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
-import { ParticipantResponse, TournamentResponseFull } from '../../models/tournamentResponse';
+import { MatchResponse, ParticipantResponse, TournamentResponseFull } from '../../models/tournamentResponse';
 import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from './initial-tournament';
 import { TournamentResponseShort } from '../../models/tournamentResponseShort';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
@@ -42,6 +42,24 @@ export class TournamentService {
   }
 
 
+  getMatchesAllForParticipant(code: string, idParticipant: number): Observable<MatchResponse[]> {
+    let url = `${this.url}/tournaments/${code}/matches/${idParticipant}`;
+    return this.http.get<MatchResponse[]>(`${url}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }
+    }).pipe(
+      tap({
+        next: (response: MatchResponse[]) => {
+          return response;
+        },
+        error: (error: HttpErrorResponse) => {
+          return throwError(() => error)
+        }
+      })
+    );
+  }
 
 
 
