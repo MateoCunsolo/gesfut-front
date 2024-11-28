@@ -7,6 +7,7 @@ import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from './initial-tourname
 import { TournamentResponseShort } from '../../models/tournamentResponseShort';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
 import { SessionService } from '../manager/session.service';
+import { PlayerRequest } from '../../models/teamRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -174,6 +175,26 @@ export class TournamentService {
         }
       })
     );
+  }
+
+
+  addPlayerToParticipant(code: string, teamIdParticipant: number, player: PlayerRequest): Observable<ParticipantResponse> {
+    const url = `${this.url}/tournaments/${code}/add-player/${teamIdParticipant}`;
+    return this.http.put<ParticipantResponse>(`${url}`, player, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }
+    }).pipe(
+      tap({
+        next: () => {
+          return;
+        },
+        error: (error: HttpErrorResponse) => {
+          return throwError(() => error)
+        }
+
+      }))
   }
 
 

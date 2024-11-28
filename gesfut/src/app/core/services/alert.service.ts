@@ -49,10 +49,34 @@ export class AlertService {
       text: text,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: confirmButtonText
+      confirmButtonColor: 'var(--primary-color)',
+      cancelButtonColor: 'var(--error-color)',
+      cancelButtonText: 'CANCELAR',
+      confirmButtonText: confirmButtonText.toLocaleUpperCase()
     });
   }
+
+  twoOptionsAlert(title: string, text: string, firstOption: string, secondOption: string) {
+    return Swal.fire({
+      title: title,
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: 'var(--primary-color)',
+      cancelButtonColor: 'var(--primary-color)',
+      confirmButtonText: firstOption.toLocaleUpperCase(),
+      cancelButtonText: secondOption.toLocaleUpperCase()
+    });
+
+  }
+
+  infoAlert(title: string, text: string) {
+    Swal.fire({
+      icon: 'info',
+      title: title,
+      text: text
+    });
+  }
+
 
 }

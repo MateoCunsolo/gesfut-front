@@ -1,0 +1,56 @@
+.container-add-player {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+
+    gap: 20px;
+
+    input{
+        font-size: 1.3rem;
+        padding: 0px 0px 0px 50px;
+    }
+
+    i{
+        font-size: 1.8rem;
+    }
+}
+
+.form-group{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.check-group{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.checkbox-icon{
+    width: 100%;
+}
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.cancel{
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border: solid 1px var(--primary-color);
+    width: 25%;
+    position: relative;
+    left: 75%;
+}
+
+.cancel:hover{
+    background-color: gray;
+    color: var(--bg-color);
+}
