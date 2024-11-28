@@ -56,7 +56,7 @@ export class AddPlayerComponent {
     });
   }
 
-  validateExistPlayerGlobal(playerData: PlayerResponse) {
+  validateExistPlayerGlobal(playerData: PlayerResponse): Boolean {
     const duplicate = this.selectTeam.players.some(
       (player) => player.number === playerData.number
     );
@@ -68,16 +68,18 @@ export class AddPlayerComponent {
     );
     if (nameDuplicate) {
       this.alertService.errorAlert('Ya existe un jugador con ese nombre y apellido en el equipo.');
-      return;
+      return false;
     }
     if (playerData.isCaptain && captain) {
       this.alertService.errorAlert('Ya existe un capitán en el equipo.');
-      return;
+      return false;
     }
     if (duplicate) {
       this.alertService.errorAlert(`Ya existe un jugador con el dorsal ${playerData.number}.`);
-      return;
+      return false;
     }
+
+    return true;
   }
 
 
@@ -87,17 +89,24 @@ export class AddPlayerComponent {
       this.alertService.errorAlert('Por favor, llena todos los campos correctamente.');
       return;
     }
-    this.validateExistPlayerGlobal(playerData);
-    this.alertService.loadingAlert('Agregando jugador...');
-    if (this.isGlobalTeam) {
-      this.addToGlobalTeam(playerData);
-    } else {
-      this.addToTournamentParticipant(playerData);
-    }
+    if (this.validateExistPlayerGlobal(playerData)) {
 
+      if (this.isGlobalTeam) {
+        this.alertService.loadingAlert('Agregando jugador...');
+        this.selectTeam.players.push(playerData);
+        this.addToGlobalTeam(playerData);
+      } else {
+        this.alertService.loadingAlert('Agregando jugador...');
+        this.addToTournamentParticipant(playerData);
+      }
+    }
   }
 
   addToTournamentParticipant(playerData: PlayerResponse) {
+    if (this.validateIfExistInTourament(playerData)) {
+      this.alertService.errorAlert('Ese jugador ya está jugando en el torneo.');
+      return;
+    }
     this.tournamentService.addPlayerToParticipant(this.participantTournament.codeTournament, this.participantTournament.idParticipant, playerData).subscribe({
       next: (response: ParticipantResponse) => {
         console.log('Evento emitido:', response);
@@ -105,12 +114,23 @@ export class AddPlayerComponent {
         this.participantRefresh.emit(response);
         this.playerForm.reset();
       },
-      error: () => {
-        this.alertService.errorAlert('Error al agregar jugador.');
+      error: (error) => {
+        this.alertService.errorAlert(error.error.error);
       },
     });
   }
-  
+
+  validateIfExistInTourament(playerData: PlayerResponse): Boolean {
+    let flag = false;
+    this.participantTournament.playerParticipants.forEach((player) => {
+      if (player.shirtNumber === playerData.number) {
+        flag = true;
+      }
+    });
+    return flag;
+  }
+
+
 
   addToGlobalTeam(playerData: PlayerResponse) {
     this.teamService.addPlayerToTeam(this.selectTeam.id, playerData).subscribe({
@@ -118,8 +138,8 @@ export class AddPlayerComponent {
         this.alertService.successAlert('Jugador agregado correctamente.');
         this.playerForm.reset();
       },
-      error: () => {
-        this.alertService.errorAlert('Error al agregar jugador.');
+      error: (error) => {
+        this.alertService.errorAlert(error.error.error);
       },
     });
   }

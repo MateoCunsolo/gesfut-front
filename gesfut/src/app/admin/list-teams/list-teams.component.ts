@@ -73,18 +73,15 @@ export class ListTeamsComponent {
       this.isAuth = true;
     }
   }
-  
-  handleParticipantRefresh($event: ParticipantResponse) {
-    console.log('Evento recibido:', $event);
-  
+
+  handleParticipantRefresh($event: ParticipantResponse) {  
     if (this.selectedTournamentIndex !== null) {
       this.particpantsShortAll[this.selectedTournamentIndex].playerParticipants = $event.playerParticipants;
       this.showPlayersParticipants(this.particpantsShortAll[this.selectedTournamentIndex].playerParticipants, this.selectedTournamentIndex);
-      console.log('Jugador añadido');
+      this.addPlayerClicked = false;
     }
   }
   
-
   addPlayer() {
     this.alertService.twoOptionsAlert(
       '¿Dónde quieres añadir el jugador?',
@@ -191,11 +188,7 @@ export class ListTeamsComponent {
         console.log(response);
         this.loadInfo = true;
         this.particpantsShortAll = response;
-        this.selectedTeam.name = this.teamsGlobal.find(team => team.id === id)?.name || '';
-        this.selectedTeam.status = this.teamsGlobal[indexName].status;
-        this.selectedTeam.id = this.teamsGlobal[indexName].id;
-        this.selectedTeam.players = this.teamsGlobal[indexName].players;
-        this.selectedTeam.color = this.teamsGlobal[indexName].color;
+        this.selectedTeam = this.teamsGlobal.find(team => team.id === id) || this.selectedTeam;
         if (this.particpantsShortAll.length > 0) {
           this.isAuth = true;
           this.showPlayersParticipants(this.particpantsShortAll[0].playerParticipants, 0);
