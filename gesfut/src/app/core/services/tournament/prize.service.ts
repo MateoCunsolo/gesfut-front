@@ -4,6 +4,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { PrizesRequest } from '../../models/PrizesRequest';
 import { environment } from '../../../../enviroments/environment';
 import { AlertService } from '../alert.service';
+import { SessionService } from '../manager/session.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,6 @@ import { AlertService } from '../alert.service';
 export class PrizeService {
 
   constructor(private Http:HttpClient, private alertService:AlertService, private session: SessionService) { }
-
 
   sendPrizes(request: PrizesRequest): Observable<void> {
     if (!this.session.isAuth()) {
