@@ -1,0 +1,110 @@
+section {
+  display: flex;
+  flex-direction: column;
+  width: 1280px;
+  margin: 0 auto;
+  height: calc(100vh - 160px);
+}
+
+@media (max-width: 1280px) {
+  section {
+    width: 768px;
+    height: auto;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  section {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+  }
+}
+
+.title {
+  font-size: var(--font-size-title);
+  color: var(--primary-color);
+  padding: 0;
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+}
+
+.prizes-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+}
+.prize-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+}
+
+select {
+  width: 160px;
+  height: auto;
+  font-size: 16px;
+  border: 1px solid var(--primary-color);
+  color: var(--font-color);
+  font-weight: 500;
+  font-family: "Play", sans-serif;
+  padding: 4px 8px;
+}
+
+.prize-position{
+    width: 160px;
+}
+
+/* Estilos para el botón pequeño */
+.button-small {
+  width: 40px; /* Ancho para botones de acción pequeños */
+  height: 40px; /* Altura para botones de acción pequeños */
+  font-size: 24px; /* Tamaño del icono */
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.add-player-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-text);
+  width: auto;
+  padding: 8px;
+  gap: 8px;
+}
+
+.base-button:hover:not(:disabled) {
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+
+.base-button:focus {
+  outline: none;
+}
+
+.base-button:disabled {
+  background-color: var(--disabled-color, #e0e0e0);
+  color: #a0a0a0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.base-button:disabled:hover {
+  background-color: var(--disabled-color, #e0e0e0);
+  transform: none;
+}

@@ -72,7 +72,7 @@ export class AlertService {
     Swal.fire({
       title: title,
       didOpen: () => {
-        Swal.showLoading();
+        /* Swal.showLoading(); */
       }
     });
   }
