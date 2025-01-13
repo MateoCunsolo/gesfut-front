@@ -9,7 +9,6 @@ import { FooterComponent } from "../../shared/footer/footer.component";
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
-import { verify } from 'jsonwebtoken';
 @Component({
   selector: 'app-create-tournament',
   standalone: true,

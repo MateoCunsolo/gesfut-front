@@ -58,7 +58,9 @@ export class InitializeTournamentComponent {
           ...team,
           name: team.name.toUpperCase()
         })).sort((a, b) => a.name.localeCompare(b.name));
+        this.teams = this.teams.filter(team => team.status === true);
         this.teamsFilters = [...this.teams];
+
       },
       error: (err) => {
         console.error(err);

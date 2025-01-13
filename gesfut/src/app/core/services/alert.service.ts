@@ -17,11 +17,45 @@ export class AlertService {
     });
   }
 
+  successAlertTop(title: string) {
+    Swal.fire({
+      toast: true,
+      icon: 'success',
+      title: title,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        container: 'container-toast',
+        icon: 'toast-icon',
+        title: 'toast-title'
+      },
+    });
+  }
+
   errorAlert(err: string) {
     Swal.fire({
       toast: true,
       icon: 'error',
       title: err,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        container: 'container-toast',
+        icon: 'toast-icon',
+        title: 'toast-title'
+      },
+    });
+  }
+
+  infoAlertTop(title: string) {
+    Swal.fire({
+      toast: true,
+      icon: 'info',
+      title: title,
       position: 'top-end',
       showConfirmButton: false,
       timer: 3000,
@@ -48,6 +82,7 @@ export class AlertService {
       title: title,
       text: text,
       icon: 'warning',
+      width: 'auto',
       showCancelButton: true,
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--error-color)',
@@ -61,6 +96,7 @@ export class AlertService {
       title: title,
       text: text,
       icon: 'warning',
+      showConfirmButton: true,
       showCancelButton: true,
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--primary-color)',

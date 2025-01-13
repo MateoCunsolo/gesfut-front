@@ -24,7 +24,6 @@ import { AddPlayerComponent } from "../add-player/add-player.component";
 
 export class ListTeamsComponent {
 
-  @Output() addPLayer: boolean = true;
   // Inyección de servicios
   private activedRoute = inject(ActivatedRoute);
   private sessionService = inject(SessionService);
@@ -42,7 +41,7 @@ export class ListTeamsComponent {
   // Filtro de búsqueda
   teamsFilters: TeamResponse[] = [];
   searchTerm: string = '';
-  addPlayerClicked: boolean = false;
+  addPlayerClicked: Boolean = false;
   // Equipos
   teamsGlobal: TeamResponse[] = [];
   selectedTeam: TeamResponse = {
@@ -74,14 +73,48 @@ export class ListTeamsComponent {
     }
   }
 
-  handleParticipantRefresh($event: ParticipantResponse) {  
+  handleParticipantRefresh($event: ParticipantResponse) {
     if (this.selectedTournamentIndex !== null) {
       this.particpantsShortAll[this.selectedTournamentIndex].playerParticipants = $event.playerParticipants;
       this.showPlayersParticipants(this.particpantsShortAll[this.selectedTournamentIndex].playerParticipants, this.selectedTournamentIndex);
       this.addPlayerClicked = false;
     }
   }
-  
+
+  formHandler($event: Boolean) {
+    this.addPlayerClicked = $event
+  }
+
+  showAlertTeamGlobal() {
+    this.alertService.infoAlert('Añadir jugador a equipo global', 'No veras los cambios en los torneos actuales, sino en los proximos torneos que agregues este equipo.');
+    this.alertService.confirmAlert('AÑADIR UN JUGADOR A ' + this.selectedTeam.name, 'Veras al jugador en los proximos torneos que se inscriba este equipo.', 'Añadir').then((result) => {
+      if (result.isConfirmed) {
+        this.addPlayerClicked = true;
+        this.isOptionGlobal = true;
+      } else {
+        this.addPlayerClicked = false;
+      }
+    });
+  }
+
+  showAlertTournament() {
+    if (this.selectedTournamentIndex == null) {
+      this.alertService.errorAlert('Selecciona un torneo para añadir un jugador');
+    } else {
+      let title = 'AÑADIR UN JUGADOR A ' + this.particpantsShortAll[this.selectedTournamentIndex].nameTournament;
+      this.alertService.confirmAlert(title, 'Solamente lo agrega al equipo en este torneo especifico. ', 'Añadir').then((result) => {
+        if (result.isConfirmed && this.selectedTournamentIndex !== null) {
+          this.addPlayerClicked = true;
+          this.isOptionGlobal = false;
+        }
+        else {
+          this.addPlayerClicked = false;
+        }
+      });
+    }
+  }
+
+
   addPlayer() {
     this.alertService.twoOptionsAlert(
       '¿Dónde quieres añadir el jugador?',
@@ -90,30 +123,11 @@ export class ListTeamsComponent {
       'Torneo Actual'
     ).then((result) => {
       if (result.isConfirmed) {
-        this.alertService.infoAlert('Añadir jugador a equipo global', 'No veras los cambios en los torneos actuales, sino en los proximos torneos que agregues este equipo.');
-        this.alertService.confirmAlert('AÑADIR UN JUGADOR A ' + this.selectedTeam.name, 'Veras al jugador en los proximos torneos que se inscriba este equipo.', 'Añadir').then((result) => {
-          if (result.isConfirmed) {
-            this.addPlayerClicked = true;
-            this.isOptionGlobal = true;
-          } else {
-            this.addPlayerClicked = false;
-          }
-        });
-      } else {
-        if (this.selectedTournamentIndex == null) {
-          this.alertService.errorAlert('Selecciona un torneo para añadir un jugador');
-        } else {
-          let title = 'AÑADIR UN JUGADOR A ' + this.particpantsShortAll[this.selectedTournamentIndex].nameTournament;
-          this.alertService.confirmAlert(title, 'Solamente lo agrega al equipo en este torneo especifico. ', 'Añadir').then((result) => {
-            if (result.isConfirmed && this.selectedTournamentIndex !== null) {
-              this.addPlayerClicked = true;
-              this.isOptionGlobal = false;
-            }
-            else {
-              this.addPlayerClicked = false;
-            }
-          });
-        }
+        this.showAlertTeamGlobal();
+      } else if (result.dismiss?.toLocaleString() === 'cancel') {
+        this.showAlertTournament();
+      } else{
+        return;
       }
     });
   }
@@ -144,20 +158,18 @@ export class ListTeamsComponent {
   }
 
   changeList() {
+    this.alertService.infoAlertTop(this.listTeamsAll ? 'Equipos Activos' : 'Equipos Eliminados');
     this.listTeamsAll = !this.listTeamsAll;
     if (this.listTeamsAll) {
       const teamFound = this.teamsGlobal.find(team => team.status === false);
       if (teamFound) {
         this.teamsFilters = [...this.teamsGlobal];
-        this.selectedTeam.name = teamFound.name;
-        this.selectedTeam.status = teamFound.status;
-        this.selectedTeam.id = teamFound.id;
+        this.selectedTeam = teamFound;
         this.selectedTournamentIndex = this.teamsGlobal.indexOf(teamFound);
         this.getParticipantsAllByIdTeam(teamFound.id, this.selectedTournamentIndex);
       }
     } else {
       this.fetchTeamsGlobal();
-
     }
   }
 

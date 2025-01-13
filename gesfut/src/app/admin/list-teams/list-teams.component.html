@@ -94,6 +94,7 @@
       </table>
     </div>
     @if (isAuth &&!listTeamsAll) {
+      <!-- ESTOY ACA, PENSANDO COMO HACER PARA QUE EL EQUIPO QUE NO ESTA EN NINGUN TORNEO SE PUEDA VER ESTOS BOTONES IGUAL!!!!-->
       <div class="buttons">
         <button (click)="addPlayer()" class="btn">AGREGAR JUGADOR</button>
         <button (click)="toLastMatchs()" class="btn">VER PARTIDOS</button>
@@ -105,6 +106,7 @@
       [isGlobalTeam]="isOptionGlobal"
       [participantTournament]="this.particpantsShortAll[selectedTournamentIndex ?? 0]"
       (participantRefresh)="handleParticipantRefresh($event)"
+      (closeForm)="formHandler($event)"
       ></app-add-player>
       }
     }

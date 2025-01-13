@@ -142,27 +142,34 @@ export class ListTeamsTournamentsComponent {
     let nameTournament = this.tournament.name;
 
     if (nameTeam) {
-      alert("¿Estás seguro de que quieres eliminar el jugador [ " + nameParticipant + lastNameParticipant + " ] del equipo [ " + nameTeam + " ] del torneo [ " + nameTournament + " ]?");
+      this.alertService.confirmAlert("ELIMINAR JUGADOR DE " + nameTeam, "¿Estás seguro de que quieres eliminar el jugador " + nameParticipant + lastNameParticipant, "Eliminar").then((result) => {
+        if (result.isConfirmed) {
+          this.alertService.loadingAlert("ELIMINANDO A " + nameParticipant?.toLocaleUpperCase() + " " + lastNameParticipant?.toLocaleUpperCase() + "...");
+          this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
+            next: () => {
+              this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
+              this.alertService.successAlertTop("JUGADOR ELIMINADO");
+            },
+            error: (err) => {
+              this.alertService.errorAlert(err.error);
+            }
+          });
+        }
+      });
+
     }
 
-    this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
-    this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
-      next: (response) => {
-        console.log(response);
-      }
-    });
+
   }
 
   validations(idPlayer: number): boolean {
     let player = this.firstParticipant.playerParticipants.find(player => player.id === idPlayer);
-    alert(player?.isCaptain);
-    alert(player?.isGoalKeeper);
     if (player?.isCaptain) {
-      alert("No puedes eliminar a un capitán");
+      this.alertService.errorAlert("No puedes eliminar a un capitán");
       return true;
     }
     if (player?.isGoalKeeper) {
-      alert("No puedes eliminar a un portero");
+      this.alertService.errorAlert("No puedes eliminar a un portero");
       return true;
     }
     return false;

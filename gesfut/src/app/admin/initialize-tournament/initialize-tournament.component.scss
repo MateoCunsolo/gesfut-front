@@ -1,7 +1,6 @@
 .grid-conteiner{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    height: 70vh;
     width: 100%;
 }
 
@@ -24,8 +23,9 @@
     justify-content: center;
     align-items: start;
     flex-direction: column;
-    height: calc(100vh - 160px);
-    padding: 50px;
+    min-height: calc(100vh - 160px);
+    padding: 10px;
+    gap: 20px;
 }
 
 .title{
@@ -64,7 +64,6 @@
     border: solid 1px rgb(218, 218, 218);
     width: 100%;
     height: 30px;
-    margin-bottom:15px;
 }
 
 .search-team:focus{
@@ -86,41 +85,31 @@
 
 .buttons{
     display: flex;
-    align-items: center;
     justify-content: end;
-    padding: 20px;
+    align-items: center;
     width: 100%;
     gap: 10px;
+
+    @media screen and (max-width: 576px){
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
 }
 
-.btn{
-    padding: 10px 5px;
-    border-radius: 5px;
-    border: solid var(--primary-color) .5px;
-    margin: 10px 0px;
-    cursor: pointer;
-    color: black;
-    font-weight: bold;
+.init-btn{
+    max-width: 400px;
+    @media screen and (max-width: 576px){
+        width: 100%;
+    }
 }
 
-.btn-new-team{
-    background-color: rgb(218, 218, 218);
-    color: rgb(81, 81, 81);
-}
-
-.btn-new-team:hover{
-    background-color: grey;
-    color: white;
-}
-
-.btn-init-tournament{
-    background-color: var(--secondary-color);
-    
-}
-
-.btn-init-tournament:hover{
-    background-color: var(--primary-color);
-    color: white;
+.create-btn{
+    max-width: 400px;
+    @media screen and (max-width: 576px){
+        width: 100%;
+    }
 }
 
 
@@ -165,10 +154,6 @@
 
 .name{
     width: 90%;
-}
-
-.btn-back {
-    padding: 10px 25px;
 }
 
 

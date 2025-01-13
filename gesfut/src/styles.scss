@@ -197,22 +197,23 @@ label {
 }
 
 .back-button{
-    padding: 10px;
-    width: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--primary-color);
+    padding: 10px 10px;
     color: var(--font-color-ligth);
-    border-radius: 8px;
+    font-weight: bold;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-text);
     border: none;
     cursor: pointer;
+    transition: 0.3s ease-in-out;
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border: solid 1px var(--primary-color);
 }
 
-
-.back-button:hover {
-    background-color: var(--secondary-color);
-    transition: 0.3s ease-in-out;
+.back-button:hover{
+    background-color: gray;
+    color: var(--bg-color);
 }
 
 
@@ -310,3 +311,5 @@ label {
 .toast-icon {
     font-size: var(--font-size-text) !important;
 }
+
+

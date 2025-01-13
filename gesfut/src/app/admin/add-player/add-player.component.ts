@@ -37,7 +37,7 @@ export class AddPlayerComponent {
   //EVNIAR A COMPONENTE PADRE
   // Outputs hacia el componente padre
   @Output() participantRefresh = new EventEmitter<ParticipantResponse>();
-
+  @Output() closeForm = new EventEmitter<Boolean>();
   // Inyectar servicios
   private alertService = inject(AlertService);
   private tournamentService = inject(TournamentService);
@@ -81,7 +81,6 @@ export class AddPlayerComponent {
 
     return true;
   }
-
 
   addPlayerToTeam() {
     const playerData = this.playerForm.value;
@@ -148,6 +147,7 @@ export class AddPlayerComponent {
   cancel() {
     this.playerForm.reset();
     this.alertService.infoAlert('Acción cancelada', 'No se ha agregado ningún jugador.');
+    this.closeForm.emit(false);
   }
 }
 
