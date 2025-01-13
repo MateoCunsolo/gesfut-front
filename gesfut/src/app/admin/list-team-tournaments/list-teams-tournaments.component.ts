@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ParticipantResponse, PlayerParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { MatchResponse, ParticipantResponse, PlayerParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { SessionService } from '../../core/services/manager/session.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { AdminService } from '../../core/services/manager/admin.service';
@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
+import { AlertService } from '../../core/services/alert.service';
+import { DashboardService } from '../../core/services/dashboard.service';
 @Component({
   selector: 'app-list-team-tournaments',
   standalone: true,
@@ -24,7 +26,9 @@ export class ListTeamsTournamentsComponent {
   private activedRoute = inject(ActivatedRoute);
   private sessionService = inject(SessionService);
   private torunameService = inject(TournamentService);
-  private adminService = inject(AdminService);
+  private dashboardService = inject(DashboardService);
+  private tournamentService = inject(TournamentService);
+  private alertService = inject(AlertService);
 
   // nuevas variables
   tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
@@ -64,6 +68,28 @@ export class ListTeamsTournamentsComponent {
       }
     });
   }
+
+
+  toLastMatchs() {
+    this.alertService.loadingAlert('OBTENIENDO PARTIDOS DEL EQUIPO ' + this.teamNameClicked);
+    let idParticipant = this.tournament.participants.find(participant => participant.name === this.teamNameClicked);
+    if (!idParticipant) {
+      return;
+    } else {
+      console.log(idParticipant);
+      this.tournamentService.getMatchesAllForParticipant(this.tournament.code, idParticipant.idParticipant).subscribe({
+        next: (response: MatchResponse[]) => {
+          this.alertService.successAlert('PARTIDOS OBTENIDOS CON ÉXITO');
+          sessionStorage.setItem('teamNameMatches', this.teamNameClicked);
+          sessionStorage.setItem('matches', JSON.stringify(response));
+          localStorage.removeItem('lastTournamentClickedName');
+          localStorage.removeItem('lastTournamentClicked');
+          this.dashboardService.setActiveTournamentComponent('lasts-matches');
+        }
+      });
+    }
+  }
+
 
 
 
@@ -116,27 +142,34 @@ export class ListTeamsTournamentsComponent {
     let nameTournament = this.tournament.name;
 
     if (nameTeam) {
-      alert("¿Estás seguro de que quieres eliminar el jugador [ " + nameParticipant + lastNameParticipant + " ] del equipo [ " + nameTeam + " ] del torneo [ " + nameTournament + " ]?");
+      this.alertService.confirmAlert("ELIMINAR JUGADOR DE " + nameTeam, "¿Estás seguro de que quieres eliminar el jugador " + nameParticipant + lastNameParticipant, "Eliminar").then((result) => {
+        if (result.isConfirmed) {
+          this.alertService.loadingAlert("ELIMINANDO A " + nameParticipant?.toLocaleUpperCase() + " " + lastNameParticipant?.toLocaleUpperCase() + "...");
+          this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
+            next: () => {
+              this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
+              this.alertService.successAlertTop("JUGADOR ELIMINADO");
+            },
+            error: (err) => {
+              this.alertService.errorAlert(err.error);
+            }
+          });
+        }
+      });
+
     }
 
-    this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
-    this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
-      next: (response) => {
-        console.log(response);
-      }
-    });
+
   }
 
   validations(idPlayer: number): boolean {
     let player = this.firstParticipant.playerParticipants.find(player => player.id === idPlayer);
-    alert(player?.isCaptain);
-    alert(player?.isGoalKeeper);
     if (player?.isCaptain) {
-      alert("No puedes eliminar a un capitán");
+      this.alertService.errorAlert("No puedes eliminar a un capitán");
       return true;
     }
     if (player?.isGoalKeeper) {
-      alert("No puedes eliminar a un portero");
+      this.alertService.errorAlert("No puedes eliminar a un portero");
       return true;
     }
     return false;

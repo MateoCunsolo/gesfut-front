@@ -54,6 +54,7 @@ export class SessionService {
         token: '',
         role: ''
       });
+      window.location.reload();
       this.router.navigateByUrl("/home");
   }
 

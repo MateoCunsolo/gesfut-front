@@ -23,8 +23,6 @@
         [ngClass]="{nameClicked: nameClicked && ( $index === indexName )}">
         {{ item.name }}
       </li>
-      }@else {
-        <li>NO HAY EQUPIOS EIMINADOS</li>
       }
       }
     </div>
@@ -96,22 +94,33 @@
       </table>
     </div>
     @if (isAuth &&!listTeamsAll) {
-    <div class="buttons">
-      <button class="btn">AGREGAR JUGADOR</button>
-      <button class="btn">ULTIMOS PARTIDOS</button>
-      <button (click)="deleteTeamGlobal()" class="btn">ELIMINAR</button>
-    </div>
+      <!-- ESTOY ACA, PENSANDO COMO HACER PARA QUE EL EQUIPO QUE NO ESTA EN NINGUN TORNEO SE PUEDA VER ESTOS BOTONES IGUAL!!!!-->
+      <div class="buttons">
+        <button (click)="addPlayer()" class="btn">AGREGAR JUGADOR</button>
+        <button (click)="toLastMatchs()" class="btn">VER PARTIDOS</button>
+        <button (click)="deleteTeamGlobal()" class="btn">ELIMINAR</button>
+      </div>
+      @if (addPlayerClicked) {
+      <app-add-player 
+      [selectTeam]="selectedTeam" 
+      [isGlobalTeam]="isOptionGlobal"
+      [participantTournament]="this.particpantsShortAll[selectedTournamentIndex ?? 0]"
+      (participantRefresh)="handleParticipantRefresh($event)"
+      (closeForm)="formHandler($event)"
+      ></app-add-player>
+      }
     }
   </div>
   }@else{
-  <div class="loading-container">
-    @if (teamsGlobal.length > 0) {
-    <div class="spinner"></div>
-    <p class="load">CARGANDO DATOS DE {{ teamsGlobal[indexTeamClicked].name}}...</p>
-    }@else {
-    <p class="load">NO HAY EQUIPOS</p>
-    <button class="btn" (click)="changeComponent('create-team')">CREAR EQUIPO</button>
-    }
-  </div>
-}
+    <div class="loading-container">
+      @if (teamsGlobal.length > 0) {
+        <div class="spinner"></div>
+        <p class="load">CARGANDO DATOS DE {{ teamsGlobal[indexTeamClicked].name}}...</p>
+      }@else {
+        <p class="load">NO HAY EQUIPOS</p>
+        <button class="btn" (click)="changeComponent('create-team')">CREAR EQUIPO</button>
+      }
+    </div>
+  }
+  
 </section>
