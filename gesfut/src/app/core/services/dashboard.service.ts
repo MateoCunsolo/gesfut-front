@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { MatchResponse } from '../models/tournamentResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
+
   private activeTournamentComponentSubject = new BehaviorSubject<string>('dashboard');
   activeTournamentComponent$ = this.activeTournamentComponentSubject.asObservable();
 

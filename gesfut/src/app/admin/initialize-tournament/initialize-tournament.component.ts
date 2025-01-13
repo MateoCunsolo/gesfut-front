@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
   selector: 'app-initialize-tournament',
@@ -28,7 +29,8 @@ export class InitializeTournamentComponent {
     private route: Router,
     private dashboardService: DashboardService,
     private activatedRoute: ActivatedRoute,
-    private tournamentService: TournamentService
+    private tournamentService: TournamentService,
+    private alertService: AlertService
   ) { }
 
 
@@ -56,7 +58,9 @@ export class InitializeTournamentComponent {
           ...team,
           name: team.name.toUpperCase()
         })).sort((a, b) => a.name.localeCompare(b.name));
+        this.teams = this.teams.filter(team => team.status === true);
         this.teamsFilters = [...this.teams];
+
       },
       error: (err) => {
         console.error(err);
@@ -73,8 +77,10 @@ export class InitializeTournamentComponent {
     );
   }
 
-  initTournament() {
+  
 
+  initTournament() {
+    this.alertService.loadingAlert('Inicializando torneo...');
     if (this.teamsTournament.length >= 4) {
       const ids = this.teamsTournament.map(team => team.id);
       const initializeRequest = {
@@ -82,11 +88,15 @@ export class InitializeTournamentComponent {
         teams: ids
       };
       this.adminService.initTournament(initializeRequest).subscribe({
-        next: () => {
-          this.changeComponent('dashboard');
-          this.route.navigate(['/admin']);
+        next: (response) => {          
+          this.alertService.successAlert('Torneo inicializado');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+
         },
         error: (err) => {
+          this.alertService.errorAlert(err.error.error);
           console.error(err);
         },
         complete: () => {
@@ -94,10 +104,8 @@ export class InitializeTournamentComponent {
         }
       });
     } else {
-      alert("INGRESE EQUIPOS POR FAVOR { MIN : 4 }")
+      this.alertService.errorAlert('El torneo debe tener al menos 4 equipos');
     }
-
-
   }
 
   addTeam(team: TeamResponse) {

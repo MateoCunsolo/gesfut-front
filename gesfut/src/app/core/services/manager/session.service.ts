@@ -45,6 +45,8 @@ export class SessionService {
       sessionStorage.removeItem('name');
       sessionStorage.removeItem('lastName');
       sessionStorage.removeItem('role');
+      localStorage.removeItem('lastTournamentClicked');
+      localStorage.removeItem('lastTournamentClickedName');
       this.currentUserLoginOn.next(false);
       this.currentUserData.next({
         name: '',
@@ -52,6 +54,7 @@ export class SessionService {
         token: '',
         role: ''
       });
+      window.location.reload();
       this.router.navigateByUrl("/home");
   }
 

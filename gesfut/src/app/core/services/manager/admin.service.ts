@@ -77,4 +77,23 @@ export class AdminService {
     );
   }
 
+
+  getTournament(code: string): Observable<TournamentResponseFull> {
+    const userCurrent = this.sessionService.isAuth();
+    if (!userCurrent) {
+      return EMPTY;
+    }
+
+    const token = sessionStorage.getItem('token');
+    return this.http.get<TournamentResponseFull>(`${this.url}/tournaments/${code}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+
+
 }
+

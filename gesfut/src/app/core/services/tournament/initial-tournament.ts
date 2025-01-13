@@ -148,6 +148,7 @@ export const INITIAL_TOURNAMENT_SHORT = {
     code: '',
     startDate: '',
     isFinished: false,
+    isActive: false,
     haveParticipants: false
 }
 

@@ -1,0 +1,36 @@
+<section class="conteiner">
+    <button class="back-button btn" (click)="back()">ATRAS</button>
+
+    <h1 class="title">PARTIDOS DE {{teamName}}</h1>
+    <hr>
+    @for (item of matches; track $index) {
+    <div class="match-container">
+        <div class="match-summary">
+            <p class="match-date">FECHA {{item.numberOfMatchDay + 1 }}</p>
+            <p class="match-teams">
+                @if (item.homeTeam.toLocaleLowerCase() == 'free'|| item.awayTeam.toLocaleLowerCase() == 'free') {
+                {{teamName}}@if(item.isFinished){ TUVO DESCANSO}@else{ TIENE DESCANSO}
+                }@else{
+                <span class="name-team-home" [ngClass]="{ 'highlight': teamName === item.homeTeam }">
+                    {{ item.homeTeam }}
+                </span>
+                <span class="score">{{ item.homeGoals }}</span>-
+                <span class="score">{{ item.awayGoals }}</span>
+                <span  span class="name-team-away" [ngClass]="{ 'highlight': teamName === item.awayTeam }">
+                    {{ item.awayTeam }}
+                </span>
+                }
+            </p>
+
+            @if (item.isFinished) {
+            <button class="view-events-btn" (click)="viewEvents($index)">VER EVENTOS</button>
+            }@else if (!(item.homeTeam.toLocaleLowerCase() == 'free' || item.awayTeam.toLocaleLowerCase() == 'free')){
+            <button class="no-events" (click)="viewEvents($index)">PARTIDO NO JUGADO</button>
+            }@else {
+                <div class="no-events"></div>
+            }
+
+        </div>
+    </div>
+    }
+</section>

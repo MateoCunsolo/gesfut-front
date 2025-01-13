@@ -9,11 +9,20 @@ section{
 }
 
 @media (max-width: 1280px) {
-    section{
-        width: 100%;
+    section {
+      width: 768px; 
+      height: calc(100vh - 160px); 
+      padding: 20px; 
+    }
+  }
+  
+  @media (max-width: 768px) {
+    section {
+      width: 100%; 
+      height: calc(100vh - 80px); 
+      padding: 10px; 
     }
 }
-
 
 .title-container{
     width: 96%;
@@ -28,7 +37,7 @@ section{
     gap: 8px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .title-container div:nth-child(1){
         flex-direction: column;
         align-items: start;
@@ -39,19 +48,26 @@ section{
     display: flex;
     flex-direction: row;
     gap: 8px;
-}
-
-@media (max-width: 480px) {
-    .matchdays{
-        margin-bottom: 8px;
+    margin: 0;
+    height: auto;
+    overflow-x: scroll;
+    max-width: 50%;
+    @media (max-width: 576px){
+        max-width: 100%;
+        margin-bottom: 16px;
     }
 }
 
+
 .matchdays button{
-    font-size: 24px;
-    color: white;
-    height: 32px;
-    width: 32px;
+    font-size: var(--font-size-subtitle);
+    color: var(--primary-color);
+    background-color: transparent;
+    transition: 0.3s ease-in-out;
+    padding: 0;
+}
+.matchdays button:hover{
+    color: var(--secondary-color);
 }
 
 .title {
@@ -60,18 +76,10 @@ section{
     margin: 8px 0;
 }
 
-
-.match-days button{
-    font-size: 24px;
-    width: 48px;
-    height: 48px;
-}
-
-/* Estilos generales para el <hr> */
 hr {
-    border: none; /* Sin borde */
-    height: 5px; /* Grosor de la línea */
-    background-color: var(--primary-color); /* Color de la línea */
+    border: none; 
+    height: 5px; 
+    background-color: var(--primary-color); 
     margin: 0 auto;
 }
 
@@ -80,30 +88,28 @@ hr {
     flex-direction: column;
     align-items: center;
     justify-content: start;
-    max-height: 500px;
-    min-height: 500px;
+    height: 500px;
     overflow-y: scroll;
     padding: 8px 0;
     margin: 24px 0;
     width: 100%;
     gap: 8px;
+    @media (max-width: 1280px) {
+        height: 400px;
+    }
 }
 
 
 .match{
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    align-items: center;
     justify-content: center;
     gap: 8px;
     width: 96%;
-    font-size: 24px;
+    font-size: var(--font-size-text);
 }
 
 @media (max-width: 1280px) {
-    .match{
-        font-size: 20px;
-    }
     .match button:nth-child(4){
         grid-column: 7/13;
     }
@@ -115,7 +121,7 @@ hr {
     }
 }
   
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .match{
         font-size: 12px;
     }
@@ -133,8 +139,8 @@ hr {
 .versus {
     grid-column: 1/6;
     display: grid;
-    grid-template-columns: repeat(12, 1fr); /* 12 columnas para la estructura */
-    border: 1px solid black; /* Borde externo del contenedor */
+    grid-template-columns: repeat(12, 1fr); 
+    border: 1px solid black; 
     font-weight: 500;
 }
 @media (max-width: 1280px) {
@@ -143,11 +149,11 @@ hr {
     }
 }
 
-/* Estilos para los hijos */
+
 .versus p:nth-child(1) {
     grid-column: 1 / 6;
     text-align: right;
-    border-right: 1px solid black;  /* Borde derecho */
+    border-right: 1px solid black;  
     padding: 4px;
 }
 
@@ -155,8 +161,8 @@ hr {
     grid-column: 6 / 7;
     text-align: center;
     background-color: white;
-    border-left: 1px solid black; ; /* Borde izquierdo que coincide con el borde derecho del anterior */
-    border-right: 1px solid black;  /* Borde derecho para la separación con el siguiente */
+    border-left: 1px solid black; ; 
+    border-right: 1px solid black;  
     padding: 4px;
 }
 
@@ -164,16 +170,28 @@ hr {
     grid-column: 7 / 8;
     text-align: center;
     background-color: white;
-    border-left: 1px solid black;  /* Borde izquierdo que coincide con el borde derecho del anterior */
-    border-right: 1px solid black;  /* Borde derecho */
+    border-left: 1px solid black;  
+    border-right: 1px solid black; 
     padding: 4px;
 }
 
 .versus p:nth-child(4) {
     grid-column: 8 / 13;
     text-align: left;
-    border-left: 1px solid black;  /* Borde izquierdo coincidiendo con el borde derecho del anterior */
+    border-left: 1px solid black;  
     padding: 4px;
+}
+
+.free-match{
+    grid-column: 1/6;
+    text-align: center;
+    font-size: var(--font-size-text);
+    font-weight: bold;
+    border: 1px solid black;
+    padding:4px;
+    @media(max-width: 1280px){
+        grid-column: 1/13;
+    }
 }
 
 .hour, .complex{
@@ -181,26 +199,46 @@ hr {
     padding: 4px; 
     text-align: center;
 }
+
+.match button{
+    font-size: var(--font-size-text);
+    padding: 0;
+    @media(max-width: 576px){
+        height: 24px;
+        width: 50%;
+    }
+}
+
+
+.edit-button{
+    background-color: var(--terciary-color);
+    color: black;
+    font-weight: bold;
+    width: auto;
+}
+
+
 .btn-container{
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 16px;
 }
 
-.base-button{
-    background-color: var(--primary-color);
-    color:black;
-    font-size: 16px;
-    height: 36px;
-    width: 276px;
-    font-weight: 600;
-}
-
-
-@media (max-width: 480px) {
-    .base-button{
-        height: 36px;
+.btn-container button{
+    width: 30%;
+    @media (max-width: 576px) {
+        width: 100%;
     }
 }
+
+/* .base-button{
+    background-color: var(--primary-color);
+    color:black;
+    font-size: var(--font-size-text);
+    width: auto;
+    padding: 8px
+} */
+
+

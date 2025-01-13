@@ -46,22 +46,23 @@
         </div>
 
         <div class="event-type-container">
-          <div class="input-icon small">
-            <input formControlName="goals" type="number" />
+          <div class="input-icon ">
+            <input formControlName="goals" type="number" min="0" />
             <i class="fa-solid fa-g"></i>
           </div>
 
-          <div class="input-icon small">
-            <input formControlName="yellowCard" type="number" />
+          <div class="input-icon ">
+            <input formControlName="yellowCard" type="number" min="0" max="2"/>
             <i class="fa-solid fa-square" id="yellow"></i>
           </div>
 
-          <div class="input-icon small">
-            <input formControlName="redCard" type="number" />
+          <div class="input-icon ">
+            <input formControlName="redCard" type="number" min="0" max="1"/>
             <i class="fa-solid fa-square" id="red"></i>
           </div>
 
           <div class="form-group">
+            <p>MVP</p>
             <label class="checkbox-icon">
               <input type="checkbox" formControlName="mvp" />
               <i class="fa-solid fa-star"></i>
@@ -70,8 +71,8 @@
           
         </div>
 
-        <button type="submit" [disabled]="statisticsForm.invalid">
-          AGREGAR ESTADISTICAS DEL JUGADOR
+        <button type="submit" class="base-button" [disabled]="statisticsForm.invalid">
+          AGREGAR ESTADISTICAS
         </button>
       </form>
     </div>
@@ -80,7 +81,7 @@
     <!-- Visualizar los eventos agregados -->
     <div class="events-container">
       <div class="container-box">
-        <h3>EVENTOS INGRESADOS</h3>
+        <h3>ESTADISTICAS INGRESADAS</h3>
       </div>
 
       <div class="overflow-x">
@@ -89,10 +90,10 @@
             <tr>
               <th>EQUIPO</th>
               <th>#</th>
-              <th>JUGADORES</th>
+              <th>JUGADOR</th>
               <th>G</th>
-              <th>AMARILLAS</th>
-              <th>ROJAS</th>
+              <th>🟨</th>
+              <th>🟥</th>
               <th>MVP</th>
             </tr>
           </thead>
@@ -112,7 +113,7 @@
         </table>
       </div>
       <div class="btn-container">
-        <button class="back-btn" (click)="btnBack()">ATRAS</button>
+        <button class="back-button" (click)="btnBack()">ATRAS</button>
         <button class="base-button" (click)="saveEvents()">GUARDAR</button>
       </div>
     </div>

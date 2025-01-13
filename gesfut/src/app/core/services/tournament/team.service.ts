@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TeamRequest } from '../../models/teamRequest';
+import { PlayerRequest, TeamRequest } from '../../models/teamRequest';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { SessionService } from '../manager/session.service';
-import { ParticipantResponse } from '../../models/tournamentResponse';
+import { ParticipantResponse, PlayerParticipantResponse } from '../../models/tournamentResponse';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
 
 @Injectable({
@@ -122,6 +122,29 @@ export class TeamService {
     );
   }
 
+
+  addPlayerToTeam(idTeam: number, playerRequest: PlayerRequest): Observable<string> {
+    if (!this.session.isAuth()) {
+      return throwError(() => new Error('Usuario no autenticado'));
+    }
+
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.put<string>(
+      `${this.url}/add-player/${idTeam}`,
+      playerRequest,
+      { headers }
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al agregar el jugador al equipo', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
 
 

@@ -1,0 +1,114 @@
+.conteiner {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+    min-height: calc(100vh - 210px);
+}
+
+.match-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.match-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: solid var(--dark-color) 1px;
+    font-size: var(--font-size-text);
+    font-weight: bold;
+    padding: 10px;
+}
+
+.match-teams {
+    display:  grid;
+    grid-template-columns: 1fr 0fr 0fr 0fr 1fr;
+    font-weight: bold;
+    max-height: 100%;
+    gap: 10px;
+    align-items: center;
+    justify-self: center;
+    width: 100%;
+}
+
+.score {
+    border-left: solid var(--dark-color) 1px;
+    border-right: solid var(--dark-color) 1px;
+    height: 100%;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary-color);
+    position: relative;
+}
+
+.no-events{
+    color: var(--dark-color);
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 200px;
+    border: none;
+    text-wrap: nowrap;
+    font-weight: bold;
+    cursor: not-allowed;
+}
+
+.view-events-btn {
+    background-color: var(--primary-color);
+    text-wrap: nowrap;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 200px;
+    color: var(--font-color-ligth);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.view-events-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+.free{
+    width: 100%;
+}
+
+.title {
+    font-size: var(--font-size-subtitle);
+    font-weight: bold;
+    color: var(--dark-color);
+}
+
+.highlight {
+    color: green;
+    font-weight: bold;
+  }
+
+span{
+    color: var(--font-color-dark);
+    font-weight: bold;
+    text-align: center;
+}
+
+.name-team-home{
+    text-wrap: nowrap;
+    text-align: end;
+}
+
+.name-team-away{
+    text-wrap: nowrap;
+    text-align: start;
+}
+
+
+.match-date{
+    min-width: 100px;
+    text-wrap: nowrap;
+}
+

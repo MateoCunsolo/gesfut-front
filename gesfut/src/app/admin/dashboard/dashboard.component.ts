@@ -2,11 +2,12 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { DashboardService } from '../../core/services/dashboard.service';
 import { Router } from '@angular/router';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FooterComponent],
+  imports: [],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'], 
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,6 +15,7 @@ import { Router } from '@angular/router';
 export class DashboardComponent {
 
   private dashboardService = inject(DashboardService);
+  private tournamentService = inject(TournamentService);
   private router = inject(Router);
   lastTournamentClicked: string = '';
   lastTournamentClickedName: string = '';
@@ -30,9 +32,17 @@ export class DashboardComponent {
   }
 
   toTournament(code: string) {
-    localStorage.setItem('lastTournamentClicked', code);
-    this.router.navigate([`/admin/tournaments/${code}`]);
-    this.dashboardService.setNameTournament(this.lastTournamentClickedName);
+    this.tournamentService.tournamentExists(code).subscribe({
+      next: (response) => {
+        if (response) {
+          this.router.navigate([`/admin/tournaments/${code}`]);
+          this.dashboardService.setNameTournament(this.lastTournamentClickedName);
+        }else{
+          alert('Torneo no encontrado');
+        }
+      }
+    });
+
   }
 
 }

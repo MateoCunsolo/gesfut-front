@@ -1,130 +1,101 @@
-.column-1 {
-  grid-area: column-1;
-  max-width: 100%;
-  max-height: 100%;
+.center {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  border: solid 1px #ccc;
-  padding: 20px;
+  background-image: url("../../../../public/imagen-de-destaque-que-es-el-futbol.-jugadores-y-balon.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 160px);
+}
 
-  h2 {
+
+.form-section{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.815);
+  height: auto;
+  width: auto;
+  padding: 15px;
+  gap: 25px;
+  border-radius: 5px;
+  text-align: start;
+
+  h2{
     color: var(--primary-color);
-    font-size: 3rem;
+    font-size: var(--font-size-title);
   }
 
-  p {
-    color: black;
-    font-size: 2rem;
+  p{
+    color: var(--primary-color);
+    font-size: var(--font-size-text);
+    font-weight: bold;
+    text-decoration: underline;
   }
 
-  ul {
-    font-size: 1.5rem;
+  ul{
+    font-size: var(--font-size-text);
+    text-wrap: nowrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
   }
+
+  @media screen and (max-width: 576px) {
+    h2{
+      font-size: var(--font-size-subtitle);
+    }
+
+    p{
+      font-size: 14px;
+    }
+
+    ul{
+      font-size: 12px;
+    }    
+  }
+
+
 }
 
 form {
   display: flex;
-  max-width: 400px;
+  min-width: auto;
+  height: auto;
   flex-direction: column;
   width: 100%;
   padding: 10px;
-  gap: 10px;
-}
+  gap: 5px;
 
-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
+  
+  @media screen and (max-width: 576px) {
+    input{
+      font-size: 14px;
+    }
 
-  &:focus {
-    outline: none;
+    small{
+      font-size: 12px;
+    }
+    
   }
+
 }
+
+
 
 label {
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: var(--font-size-text);
 }
 
-.icon {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
 
-  svg {
-    width: 30px;
-    height: 30px;
-  }
-}
 
-.btn-back,
-.btn-create {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-  border: none;
 
-  &.btn-back {
-    background-color: gray;
-    color: white;
-
-    &:hover {
-      background-color: rgb(55, 55, 55);
-    }
-  }
-
-  &.btn-create {
-    background-color: var(--primary-color);
-    color: white;
-    width: 100%;
-
-    &:hover {
-      background-color: var(--secondary-color);
-    }
-  }
-}
-
-.buttons {
-  display: flex;
-  width: 100%;
-  gap: 10px;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-areas: "column-2 column-1";
-  width: 75%;
-  box-shadow: 0 0 10px rgb(6, 118, 64);
-}
-
-.column-2 {
-  grid-area: column-2;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 160px);
-  gap: 10px;
-}
 
 .oculto {
-  color: white;
+  color: #f4f4f4  ;
 }
 
 small {
@@ -133,27 +104,29 @@ small {
   color: red;
 }
 
-// Responsive for 392px by 852px
-@media screen and (max-width: 1000px) {
-  .center{
-    flex-direction: column;
 
-    width: 100%;
-    height: auto;
-  }
-  
-  .grid-container {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "column-2"
-      "column-1";
-    width: 100%;
-    height: calc(100vh - 80px);
-    box-shadow: none;
-  }
+.position{
+  position: absolute;
+  top: 100px;
+  left: 15px;
+}
 
-  .column-1,
-  .column-2 {
-    max-width: 100%;
-  }
+.btn-create{
+  width: 100%;
+  padding: 10px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-create:hover{
+  background-color: var(--secondary-color);
+}
+
+.oculto{
+  display: flex;
+  min-height: 25px;
 }

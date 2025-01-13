@@ -1,10 +1,23 @@
 .cards {
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 118px;
     height: calc(100vh - 160px);
+    padding: 25px;
+    gap: 50px;
+
+    @media screen and (max-width: 768px) {
+        align-content: center;
+    }
+
+    @media screen and (max-width: 576px) {
+        gap: 25px;
+    }
+
+    @media screen and (max-width: 325px) {
+        height: auto;
+    }
 
 }
 
@@ -19,49 +32,44 @@
     padding: 25px 0px;
     gap: 10px;
     border: solid 1px #2a6a49;
+    background-color: var(--primary-color);
+    color: var(--font-color-ligth);
+
+    &:hover {
+        background-color: var(--secondary-color);
+        transition: 0.3s ease-in-out;
+    }
+
+    @media screen and (max-width: 576px) {
+        font-size: 8px;
+        text-align: center;
+        min-height: 125px !important;
+        max-width: 125px !important;
+        padding: 20px !important;
+    }
 }
 
-.card:hover {
-    background-color: #f0f0f0;
-}
-
-.back{
-    margin: 20px;
-}
-
-.icon{   
+.icon {
     width: 118px;
     height: 118px;
 
+    @media screen and (max-width: 576px) {
+        width: 75px !important;
+        height: 75px !important;
+    }
 }
 
-.title{
+.title {
     width: 100%;
     text-align: center;
     font-size: 15px;
     color: white;
     background-color: var(--secondary-color);
     padding: 5px;
-
 }
 
-@media screen and (max-width: 1000px) {
-    .cards {
-        gap: 20px;
-        height: calc(100vh - 80px);
-        margin: 0px;
-        align-content: center;
-    }
-
-    .card {
-        width: 150px;
-        padding: 15px 0px;
-    }
-
-    .icon {
-        width: 80px;
-        height: 80px;
-    }
+.back {
+    margin: 20px;
 }
 
 .disabled-card {
@@ -70,8 +78,13 @@
     cursor: not-allowed;
 }
 
-.heigtret{
+.heigtret {
     height: calc(100vh - 210px);
+
+    @media screen and (max-width: 270px) {
+        height: auto;
+        padding: 20px;
+    }
 }
 
 .loading-container {
@@ -80,6 +93,12 @@
     justify-content: center;
     flex-direction: column;
     height: calc(100vh - 160px);
+
+    p {
+        font-size: 18px;
+        color: #2a6449;
+        font-weight: bold;
+    }
 }
 
 .spinner {
@@ -95,10 +114,4 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-.loading-container p {
-    font-size: 18px;
-    color: #2a6449;
-    font-weight: bold;
 }

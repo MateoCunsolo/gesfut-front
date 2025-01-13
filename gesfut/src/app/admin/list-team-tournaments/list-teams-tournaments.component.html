@@ -4,7 +4,7 @@
             placeholder="BUSCAR EQUIPO">
         <div class="team-list">
             @for (team of teamsNameFilter; track $index) {
-                <li class="team-name" (click)="getParticipantsAllByIdTeam(team.idTeam, $index)"
+                <li class="team-name" style=" white-space: nowrap;" (click)="getParticipantsAllByIdTeam(team.idTeam, $index)"
                     [ngClass]="{nameClicked: nameClicked && ( $index === indexName )}">
                     {{ team.name }}
                 </li>
@@ -32,7 +32,7 @@
                     @if (player.isActive === true) {
                     <tr>
                         <td>{{ player.shirtNumber }}</td>
-                        <td>
+                        <td class="player">
                             {{ player.playerName +' '+player.playerLastName }}
                             @if (player.isCaptain) {
                             <span class="captain">🌟</span>
@@ -66,7 +66,7 @@
         @if (isAuth) {
         <div class="buttons">
             <button class="btn">AGREGAR JUGADOR</button>
-            <button class="btn">ULTIMOS PARTIDOS</button>
+            <button class="btn" (click)=" toLastMatchs()">ULTIMOS PARTIDOS</button>
             <button (click)="deleteTeamFormTournament(firstParticipant.idTeam)" class="btn">ELIMINAR</button>
         </div>
         }

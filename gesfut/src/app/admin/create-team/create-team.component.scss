@@ -4,47 +4,58 @@ section{
   align-items: center;
   width: 1280px;
   margin: 0 auto;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 160px);
 }
 
 @media (max-width: 1280px) {
   section {
-    width: 800px; /* Ancho para tablets */
-    height: calc(100vh - 80px); /* Ajuste de altura */
-    padding: 20px; /* Espaciado interior */
+    width: 768px; 
+    height: auto; 
+    padding: 20px; 
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   section {
-    width: 100%; /* Ancho completo en móviles */
-    height: calc(100vh - 100px); /* Ajuste de altura para móviles */
-    padding: 10px; /* Espaciado interior */
+    width: 100%; 
+    height: auto; 
+    padding: 10px; 
   }
 }
 
 
-/* Title Styles */
 .title {
-  font-size: 28px;
+  font-size: var(--font-size-title);
   color: var(--primary-color);
   text-align: center;
   padding: 20px 0;
 }
 
-/* Header de Jugadores */
 .player-form-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin: 16px 0;
+  @media (max-width:1280px) {
+    width: 90%;
+    margin: 0 auto;
+  }
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 8px;
+  }
 }
+.player-form-header h3{
+  margin: 0;
+}
+
 
 
 
 /* Subtitle (Jugadores) */
 h3 {
-  font-size: 22px;
+  font-size: var(--font-size-subtitle);
   color: var(--secondary-color);
   margin-top: 20px;
   margin-bottom: 10px;
@@ -59,7 +70,7 @@ form{
 
 @media (max-width: 1280px) {
   form {
-    padding: 12px; /* Espaciado interior */
+    padding: 12px; 
   }
 }
 
@@ -74,10 +85,23 @@ form{
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 40%;
   gap: 8px;
+  @media (max-width:1280px) {
+    width: 60%;
+    margin: 0 auto;
+  }
+  @media (max-width:768px){
+    width: 90%;
+  }
+  @media (max-width:576px) {
+    width: 80%;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .team-form {
     flex-direction: column;
     justify-content: center;
@@ -89,7 +113,7 @@ form{
   flex-direction: column;
   max-height: 400px;
   min-height: 400px;
-  overflow: scroll;
+  overflow-y: auto;
   margin: 24px 0;  
 }
 
@@ -99,6 +123,7 @@ form{
   align-items: start;
   justify-content: start;
   padding-top: 8px;
+  gap: 8px;
 }
 .players-form > div:nth-child(odd) {
   justify-content: start;
@@ -125,8 +150,12 @@ form{
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  width: 90%;
+  margin: 0 auto;
   gap: 8px;
 }
+
+
 
 .mini-group{
   display: flex;
@@ -143,7 +172,7 @@ form{
   gap: 8px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .player-row{
     flex-direction: column;
     justify-content: center;
@@ -163,55 +192,39 @@ form{
 
 
 /* Configuración de íconos de los inputs */
+
 .input-icon {
   position: relative;
   display: flex;
   align-items: center; /* Centrar verticalmente el ícono */
+
+  @media (max-width: 576px){
+    width: 80%;
+    margin: 0 auto;
+  }
 }
 
 .input-icon input {
   padding-left: 36px; /* Espacio para el ícono */
   padding-right: 10px; /* Espacio a la derecha */
-  height: 36px; /* Ajusta la altura según lo necesites */
-  border: 1px solid #ccc; /* Añade un borde */
-  border-radius: 5px; /* Bordes redondeados (opcional) */
-  width: 140px; /* Asegura que el input ocupe todo el ancho disponible */
-  font-size: 16px;
+  font-size: var(--font-size-text);
+  margin: 0 auto;
 }
 
-@media (max-width: 1280px) {
-  .input-icon input {
-    width: 152px;
-    margin: 0 auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .input-icon input {
-    width: 256px;
-    margin: 0 auto;
-  }
-}
-
-.input-large input{
-  width: 256px;
-}
 
 .input-icon i {
-  position: absolute;
-  left: 12px; /* Espacio desde la izquierda */
-  color: var(--primary-color); /* Color del ícono */
+  left: 12px; 
   font-size: 16px;
 }
 
 .input-icon input:focus {
   border-color: var(
     --secondary-color
-  ); /* Cambia el color del borde al enfocar */
+  ); 
 }
 
 .input-icon input:focus + i {
-  color: var(--secondary-color); /* Cambia el color del ícono al enfocar */
+  color: var(--secondary-color); 
 }
 
 label{
@@ -220,65 +233,16 @@ label{
   justify-content: center;
 }
 
-/*Checkbox*/
-/* Checkbox container */
-.checkbox-icon {
-  position: relative;
+.btn-container{
   display: flex;
-  align-items: center;
-  width: 36px; /* Ajusta el tamaño según lo necesites */
-  height: 36px;
-  border: 1px solid #ccc; /* Borde similar a los inputs */
-  border-radius: 5px; /* Bordes redondeados */
-  background-color: #fff; /* Fondo blanco por defecto */
-  cursor: pointer;
-  transition: border-color 0.3s, background-color 0.3s;
-}
-
-.checkbox-icon input[type="checkbox"] {
-  opacity: 0; /* Oculta el checkbox original */
+  flex-direction: row;
+  margin: 0 auto;
   width: 100%;
-  height: 100%;
-  margin: 0;
-  cursor: pointer;
+  justify-content: space-between;
 }
 
-.checkbox-icon i {
-  position: absolute;
-  color: var(--primary-color); /* Color del ícono */
-  font-size: 20px;
-  display: none; /* Oculta el icono inicialmente */
-}
-
-/* Muestra el icono cuando el checkbox está marcado */
-.checkbox-icon input[type="checkbox"]:checked + i {
-  display: block;
-}
-
-/* Al hacer foco, cambia el color del borde */
-.checkbox-icon input[type="checkbox"]:focus + i {
-  border-color: var(--secondary-color);
-}
-
-/* Efecto al hacer hover */
-.checkbox-icon:hover {
-  border-color: var(--secondary-color); /* Cambia el color del borde */
-  background-color: var(--secondary-color); /* Fondo de hover */
-}
-
-
-/* Botón de añadir jugador */
-/* Base Button Styles */
-.base-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: var(--primary-color);
-  border: none;
-  border-radius: 5px; /* Bordes redondeados */
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+.base-button{
+  width: 256px;
 }
 
 /* Estilos para el botón pequeño */
@@ -286,42 +250,42 @@ label{
   width: 40px; /* Ancho para botones de acción pequeños */
   height: 40px; /* Altura para botones de acción pequeños */
   font-size: 24px; /* Tamaño del icono */
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
 }
 
-/* Estilos para el botón grande */
-.button-large {
-  background-color: var(--primary-color);
-  color: white;
-  width: 80%; /* Ancho completo para el botón de enviar */
-  height: 40px; /* Altura para el botón de enviar */
-  font-size: 16px; /* Tamaño de texto para el botón de enviar */
-  margin: 8px auto;
+.add-player-button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-text);
+  width: auto;
+  padding: 8px;
+  gap: 8px;
 }
 
-/* Hover: cambio de color y fondo */
 .base-button:hover:not(:disabled) {
-  background-color: var(--secondary-color); /* Fondo al hacer hover */
-  color: #fff; /* Ícono en blanco */
-  transform: scale(1.1); /* Efecto de crecimiento ligero */
+  background-color: var(--secondary-color);
+  color: #fff; 
 }
 
-/* Al hacer foco */
 .base-button:focus {
   outline: none;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Sombra sutil */
 }
 
-/* Estilo para el botón deshabilitado */
 .base-button:disabled {
-  background-color: var(--disabled-color, #e0e0e0); /* Color de fondo para deshabilitado */
-  color: #a0a0a0; /* Color de texto para deshabilitado */
-  cursor: not-allowed; /* Cambiar el cursor para indicar que no se puede interactuar */
-  opacity: 0.7; /* Opacidad para indicar que está deshabilitado */
+  background-color: var(--disabled-color, #e0e0e0); 
+  color: #a0a0a0; 
+  cursor: not-allowed; 
+  opacity: 0.7; 
 }
 
-/* Asegúrate de que el hover no afecte el botón deshabilitado */
 .base-button:disabled:hover {
-  background-color: var(--disabled-color, #e0e0e0); /* Mantener el mismo fondo */
-  transform: none; /* No aplicar transformación de escala */
+  background-color: var(--disabled-color, #e0e0e0);
+  transform: none; 
 }
 

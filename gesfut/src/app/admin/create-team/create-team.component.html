@@ -1,5 +1,7 @@
 <section>
+
   <h2 class="title">CREAR EQUIPO</h2>
+    
   <div *ngIf="error" class="error-message"><p class="error">{{ error }}</p></div>
 
   <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
@@ -17,13 +19,19 @@
 
     <div class="player-form-header">
       <h3>Jugadores</h3>
-      <button type="button" class="base-button button-small" (click)="addPlayer()">
-        <i class="fa-solid fa-user-plus"></i>
+      <button (click)="toggleExcelUpload()" class="base-button add-player-button" type="button">
+        <i class="fa-solid fa-file-excel"></i> 
+        {{ showExcelUpload ? 'OCULTAR EXCEL' : 'CARGAR DESDE EXCEL' }}
+      </button>
+      <button type="button" class="base-button add-player-button" (click)="addPlayer()" type="button">
+        <i class="fa-solid fa-user-plus"></i><p>AGREGAR JUGADOR</p> 
       </button>
     </div>
+
     
-    <div formArrayName="players" class="players-form">
-      <div class="players-list">
+    <div formArrayName="players" class="players-form" >
+      <app-excel-upload *ngIf="showExcelUpload" (dataLoaded)="loadTeamData($event)"></app-excel-upload>
+      <div class="players-list" *ngIf="!showExcelUpload">
         <ng-container *ngIf="players.length === 0"><p>No hay jugadores en el equipo.</p></ng-container>
         <div *ngFor="let player of players.controls; let i = index" [formGroupName]="i" class="player-row">
           <div class="form-group input-icon">
@@ -50,8 +58,11 @@
         </div>
       </div>
     </div>
-    <button type="submit" class="base-button button-large" [disabled]="teamForm.invalid || !teamForm.dirty">
-      CREAR EQUIPO
-    </button>
+    <div class="btn-container">
+      <button class="back-button" type="button" (click)="changeComponent('dashboard')">ATRAS</button>
+      <button type="submit" class="base-button" [disabled]="teamForm.invalid || !teamForm.dirty">
+        CREAR EQUIPO
+      </button>
+    </div>
   </form>
 </section>
