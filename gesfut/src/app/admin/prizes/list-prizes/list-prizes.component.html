@@ -1,1 +1,86 @@
-<p>list-prizes works!</p>
+<section>
+  <div class="title-container">
+    <h2 class="title">
+    @switch (currentCategory) {
+      @case("POSITION"){
+        Premios por posición en la tabla
+      }
+      @case("FAIR_PLAY"){
+        Premios a los equipos fair play
+      }
+      @case("TOP_SCORER"){
+        Premios a los goleadores
+      }
+      @case("BEST_GOALKEEPER"){
+        Premios a los mejores arqueros
+      }
+    }
+    </h2>
+  </div>
+  <hr>
+
+  @if(prizes.length>0){
+    <article class="prizes-container">
+      @for (item of prizes; track $index) {
+        <div class="accordion-item">
+          <div (click)="toggleAccordion($index)" class="accordion-header">
+            <h3>
+              @switch(item.position){
+                @case(1){
+                  CAMPEÓN 👑
+                }
+                @case (2) {
+                  SUBCAMPEÓN
+                }
+                @case (3) {
+                  TERCER PUESTO
+                }
+                @default {
+                  {{item.position}}TO PUESTO
+                }
+              }
+            </h3>
+
+            @if(isExpanded($index)){
+              <i class="fa-solid fa-minus"></i>
+            }@else{
+              <i class="fa-solid fa-plus"></i>
+            }
+          </div>
+
+          @if(expandedIndex===$index){
+            <div class="accordion-body">
+              <p>{{item.description}}</p>
+            </div>
+          }
+        </div>
+      }
+    </article>
+    <div class="button-container">
+      <button class="base-button" (click)="setView('create')">EDITAR</button>
+    </div>
+  }@else {
+    <div class="empty-prizes">
+      <p>NO HAY PREMIOS PARA LA CATEGORÍA @switch (currentCategory) {
+      @case("POSITION"){
+        CAMPEÓN
+      }
+      @case("FAIR_PLAY"){
+        FAIR PLAY
+      }
+      @case("TOP_SCORER"){
+        GOLEADOR
+      }
+      @case("BEST_GOALKEEPER"){
+        MEJOR ARQUERO
+      }
+    }.</p>
+      <div class="button-container">
+        <button class="base-button" (click)="setView('create')">AGREGAR</button>
+      </div>
+    </div>
+  }
+</section>
+
+
+

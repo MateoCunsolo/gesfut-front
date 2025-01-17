@@ -11,7 +11,6 @@ import { LoadResultComponent } from "../../admin/match-day/load-result/load-resu
 import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments/list-teams-tournaments.component";
 import { LastsMatchesComponent } from "../../admin/lasts-matches/lasts-matches.component";
 import { LeaderboardComponent } from "../../admin/leaderboard/leaderboard.component";
-import { CreatePrizesComponent } from "../../admin/prizes/create-prizes/create-prizes.component";
 import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/prize-dashboard.component";
 
 @Component({
