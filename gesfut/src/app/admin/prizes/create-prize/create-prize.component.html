@@ -1,6 +1,21 @@
 <section>
   <div class="title-container">
-    <h2 class="title">AGREGAR PREMIOS</h2>
+    <h2 class="title">
+      @switch (category) {
+        @case("POSITION"){
+          TABLA
+        }
+        @case("FAIR_PLAY"){
+          FAIR PLAY
+        }
+        @case("TOP_SCORER"){
+          GOLEADORES
+        }
+        @case("BEST_GOALKEEPER"){
+          MEJORES ARQUEROS
+        }
+      }
+      </h2>
   </div>
 
   <form [formGroup]="prizesForm" (ngSubmit)="submitForm()">
