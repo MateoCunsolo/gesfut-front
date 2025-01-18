@@ -1,1 +1,27 @@
-<h1>HOLA</h1>
+<section>
+  <div class="title-container">
+    <h2 class="title">AGREGAR PREMIOS</h2>
+  </div>
+
+  <form [formGroup]="prizesForm" (ngSubmit)="submitForm()">
+    <button type="button" (click)="addPrize()" class="base-button">Agregar Premio</button>
+
+    <div formArrayName="prizes" class="scroller-container">
+      <div *ngFor="let prize of prizes.controls; let i = index" [formGroupName]="i" class="prize-container">
+
+        <div class="form-group input-icon">
+          <i class="fa-solid fa-award"></i>
+          <input id="position-{{i}}" type="number" formControlName="position" class="input-position"/>
+        </div>
+
+        <div class="form-group">
+          <input id="description-{{i}}" formControlName="description" placeholder="Descripción" class="input-base">
+        </div>
+
+        <button type="button" (click)="removePrize()">Eliminar Premio</button>
+      </div>
+    </div>
+
+    <button type="submit" class="base-button">Guardar</button>
+  </form>
+</section>

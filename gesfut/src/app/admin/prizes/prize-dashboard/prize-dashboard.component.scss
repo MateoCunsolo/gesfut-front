@@ -45,16 +45,16 @@ hr {
   grid-template-columns: repeat(2, 1fr);
   width: 100%;
   align-items: center;
-  justify-items: center; /* Esto centra las tarjetas dentro de cada celda del grid */
+  justify-items: center;
   height: 100%;
-  gap: 20px; /* Puedes agregar espacio entre las tarjetas */
+  gap: 20px;
 }
 
 .categories-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
-  justify-items: center; /* Centra las tarjetas dentro de cada celda */
+  justify-items: center;
   gap: 20px;
 }
 

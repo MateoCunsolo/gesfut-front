@@ -3,8 +3,6 @@ import { PrizeService } from '../../../core/services/tournament/prize.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Prize } from '../../../core/models/prizesRequest';
-import { TournamentService } from '../../../core/services/tournament/tournament.service';
-import { TournamentResponseShort } from '../../../core/models/tournamentResponseShort';
 
 @Component({
   selector: 'app-list-prizes',
@@ -57,7 +55,9 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
     return this.expandedIndex === index;
   }
 
-  setView(view:string){
+  setView(view: string) {
+    console.log("Cambiando vista a:", view);
     this.prizeService.currentView.next(view);
   }
+
 }
