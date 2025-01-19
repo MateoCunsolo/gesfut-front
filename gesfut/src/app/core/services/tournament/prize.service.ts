@@ -68,4 +68,27 @@ export class PrizeService {
       })
     );
   }
+
+  deletePrize(code:string, category:string, position:number): Observable<void> {
+    if (!this.session.isAuth()) {
+      return new Observable<void>();
+    }
+
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.Http.delete<void>(`${environment.apiUrl}/prizes/${code}/${category}/${position}`, {
+      headers,
+    }).pipe(
+      tap(() =>
+        this.alertService.successAlert("Premio eliminado exitosamente")
+      ),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    );
+  }
 }

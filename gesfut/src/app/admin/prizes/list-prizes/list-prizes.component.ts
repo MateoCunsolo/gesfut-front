@@ -60,4 +60,17 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
     this.prizeService.currentView.next(view);
   }
 
+  deletePrize(position: number) {
+    if (this.currentTournament) {
+      this.prizeService.deletePrize(this.currentTournament, this.currentCategory, position).subscribe({
+        next: () => {
+          this.prizes = this.prizes.filter(prize => prize.position !== position);
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
+    }
+  }
+
 }

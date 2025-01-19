@@ -27,13 +27,13 @@
             <h3>
               @switch(item.position){
                 @case(1){
-                  CAMPEÓN 👑
+                  1ER PUESTO 👑
                 }
                 @case (2) {
-                  SUBCAMPEÓN
+                  2DO PUESTO
                 }
                 @case (3) {
-                  TERCER PUESTO
+                  3ER PUESTO
                 }
                 @default {
                   {{item.position}}TO PUESTO
@@ -51,6 +51,10 @@
           @if(expandedIndex===$index){
             <div class="accordion-body">
               <p>{{item.description}}</p>
+              <div class="button-container">
+                <i class="fa-solid fa-pencil"></i>
+                <i class="fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
+              </div>
             </div>
           }
         </div>
