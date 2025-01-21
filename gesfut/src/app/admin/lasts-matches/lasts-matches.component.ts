@@ -27,7 +27,7 @@ export class LastsMatchesComponent {
   }
   
     viewEvents(index: number): void {
-
+      
     }
 
     back(): void {

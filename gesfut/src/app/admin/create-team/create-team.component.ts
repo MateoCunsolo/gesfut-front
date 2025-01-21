@@ -7,20 +7,23 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { ExcelUploadComponent } from '../excel-upload/excel-upload.component';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../core/services/alert.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-create-team',
   standalone: true,
-  imports: [CommonModule, ExcelUploadComponent, ReactiveFormsModule],
+  imports: [CommonModule, ExcelUploadComponent, ReactiveFormsModule, RouterModule],
   templateUrl: './create-team.component.html',
   styleUrl: './create-team.component.scss'
 })
 export class CreateTeamComponent {
   error: String = '';
   teamForm: FormGroup;
-  showExcelUpload = false; 
+  showExcelUpload = false;
+  inAdmin: boolean = false;
+  inTournament: boolean = false;
   private dashboardService = inject(DashboardService);
-
+  private route = inject(Router);
   constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
@@ -30,6 +33,16 @@ export class CreateTeamComponent {
   }
 
   ngOnInit(): void {
+
+    let url:String = this.route.url;
+    if(url.includes('tournaments')){
+      this.inTournament = true;
+      this.inAdmin = false;
+    }else{
+      this.inTournament = false;
+      this.inAdmin = true;
+    }
+
     for (let i = 0; i < 2; i++) {
       this.addPlayer();
     }
@@ -40,7 +53,8 @@ export class CreateTeamComponent {
   }
 
   changeComponent(component: string) {
-    this.dashboardService.setActiveDashboardAdminComponent(component);
+    this.dashboardService.setActiveDashboardAdminComponent(component)
+    this.dashboardService.setActiveTournamentComponent(component)
   }
 
   toggleExcelUpload(): void {
@@ -197,6 +211,9 @@ export class CreateTeamComponent {
       next: () => {
         this.error = '';
         this.alertService.successAlert("Equipo creado!");
+        if(this.inTournament){
+          this.dashboardService.setActiveTournamentComponent('initialize');
+        }
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
       },
       error: (err: HttpErrorResponse) => {

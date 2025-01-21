@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
+import { ParticipantResponse } from '../models/tournamentResponse';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 1600
     });
-  }
+  } 
 
   successAlertTop(title: string) {
     Swal.fire({
@@ -72,10 +74,15 @@ export class AlertService {
     Swal.fire({
       title: title,
       didOpen: () => {
-        /* Swal.showLoading(); */
-      }
+        Swal.showLoading();
+      },
     });
   }
+
+  closeLoadingAlert() {
+    Swal.close();
+  }
+
 
   confirmAlert(title: string, text: string, confirmButtonText: string) {
     return Swal.fire({
@@ -114,4 +121,19 @@ export class AlertService {
     });
   }
 
+  inputAlert(title: string) {
+    return Swal.fire({
+      title: title,
+      input: 'text',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Debes ingresar un valor';
+        }
+        return null;
+      }
+    });
+  }
 }
