@@ -5,6 +5,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { SessionService } from '../manager/session.service';
 import { ParticipantResponse, PlayerParticipantResponse } from '../../models/tournamentResponse';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
+import { TeamResponse } from '../../models/teamResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -147,6 +148,25 @@ export class TeamService {
   }
 
 
+  getTeam(idTeam: number): Observable<TeamResponse> {
+    if (!this.session.isAuth()) {
+      return new Observable<TeamResponse>();
+    }
+
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<TeamResponse>(`${this.url}/${idTeam}`, {
+      headers
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener el equipo', error);
+        return throwError(() => error);
+      }))
+  }
 
 
 }

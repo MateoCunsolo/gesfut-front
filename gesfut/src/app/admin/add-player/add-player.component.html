@@ -1,10 +1,10 @@
 
-<section class="containter-all">
+<section class="containter-all" [ngClass]="{onlyAdd: changeView}">
 
     
     @if (!isGlobalTeam){
     <div class="player-list">
-        @for (item of selectTeam.players; track $index) {
+        @for (item of selectTeamCopy.players; track $index) {
         <div class="player-name" (click)="addToTournamentParticipant(item)">
             {{ item.name.toLocaleUpperCase() }} {{ item.lastName.toLocaleUpperCase() }}
         </div>
@@ -12,7 +12,21 @@
     </div>
     }
 
-    <form class="container-add-player" [formGroup]="playerForm" (ngSubmit)="addPlayerToTeam()">
+    <form class="container-add-player" [ngClass]="{onlyAdd_form: changeView}" [formGroup]="playerForm" (ngSubmit)="addPlayerToTeam()">
+        
+        @if (changeView) {
+            <p>AVISO: SOLO SE AGREGARA EL JUGADOR A ESTE TORNEO.</p>
+            <select class="optional_changeView" (change)="selectTeamViewBig($event)">
+                <option [value]="0" disabled selected>Selecciona un equipo</option>
+              @for (item of teamsParticipants; track $index) {
+                <option [value]="item.idTeam">{{ item.name }}</option>
+              }
+            </select>
+          }
+          
+          
+        
+        
         <!-- Campo Nombre -->
         <div class="form-group input-icon">
             <input type="text" formControlName="name" placeholder="Nombre" />
@@ -59,7 +73,14 @@
         </div>
 
         <!-- Botones -->
-        <button type="button" class="base-button cancel" (click)="cancel()">CANCELAR</button>
-        <button type="submit" class="base-button">AGREGAR JUGADOR</button>
+        @if (changeView) {
+            <div class="change_btn">
+                <button type="button" class="base-button" [ngClass]="{cancel_change: changeView}" (click)="cancel()">CANCELAR</button>
+                <button type="submit" class="base-button change">AGREGAR JUGADOR</button>
+            </div>
+        }@else{
+            <button type="button" class="base-button cancel" (click)="cancel()">CANCELAR</button>
+            <button type="submit" class="base-button">AGREGAR JUGADOR</button>
+        }
     </form>
 </section>

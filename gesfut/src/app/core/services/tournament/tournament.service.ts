@@ -63,7 +63,22 @@ export class TournamentService {
   }
 
 
-
+  isMyTournament(code: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.url}/tournaments/is-my-tournament/${code}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }}).pipe(
+      tap({
+        next: (response: boolean) => {
+          return response;
+        },
+        error: (error: HttpErrorResponse) => {
+          return throwError(() => error)
+        }
+      })
+      );
+  }
 
 
   tournamentExists(code: String): Observable<boolean> {
