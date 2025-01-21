@@ -13,7 +13,7 @@ export class TouranmentCurrentService {
     startDate: '1',
     isFinished: false,
     haveParticipants: false,
-    isActive: true
+    isActive: false
   }
 
 

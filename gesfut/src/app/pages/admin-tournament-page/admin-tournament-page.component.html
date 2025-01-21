@@ -7,7 +7,6 @@
 } @else { @if(flag) {
 <app-navbar></app-navbar>
 }
-
 <!-- Componentes principales basados en el valor de activeComponent -->
 @if(activeComponent === 'dashboard') {
 <app-tournament-dashboard></app-tournament-dashboard>
@@ -24,13 +23,13 @@
 } @if (activeComponent==='lasts-matches'){
 <app-lasts-matches></app-lasts-matches>
 }
-@if(activeComponent==='prizes'){
-<app-create-prizes></app-create-prizes>
-}
 @if (activeComponent==='add-player') {
   <app-add-player></app-add-player>
 }
 @if (activeComponent==='create-team') {
   <app-create-team></app-create-team>
+}
+@if(activeComponent==='prizes'){
+  <app-prize-dashboard></app-prize-dashboard>
 }
 }
