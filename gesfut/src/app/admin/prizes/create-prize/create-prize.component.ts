@@ -1,28 +1,39 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { PrizeService } from '../../../core/services/tournament/prize.service';
 import { PrizesRequest } from '../../../core/models/prizesRequest';
+import { AlertService } from '../../../core/services/alert.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-prize',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './create-prize.component.html',
-  styleUrl: './create-prize.component.scss'
+  styleUrl: './create-prize.component.scss',
 })
 export class CreatePrizeComponent {
-
   prizesForm: FormGroup;
-  category:string = '';
+  category: string = '';
 
-  constructor(private fb: FormBuilder, private prizeService:PrizeService) {
+  constructor(
+    private fb: FormBuilder,
+    private prizeService: PrizeService,
+    private alertService: AlertService
+  ) {
     this.prizesForm = this.fb.group({
       prizes: this.fb.array([]),
-      code: ['']
+      code: [''],
     });
 
-    const storedCode = localStorage.getItem("lastTournamentClicked");
+    const storedCode = localStorage.getItem('lastTournamentClicked');
     if (storedCode) {
       this.prizesForm.patchValue({ code: storedCode });
     }
@@ -30,8 +41,8 @@ export class CreatePrizeComponent {
     this.prizeService.currentCategory.subscribe({
       next: (category) => {
         this.category = category;
-      }
-    })
+      },
+    });
   }
 
   get prizes(): FormArray {
@@ -41,14 +52,13 @@ export class CreatePrizeComponent {
   addPrize() {
     if (this.category !== '') {
       const prizeGroup = this.fb.group({
-        type:[this.category, Validators.required],
+        type: [this.category, Validators.required],
         description: ['', Validators.required],
-        position: [0, [Validators.required, Validators.min(1)]]
+        position: [0, [Validators.required, Validators.min(1)]],
       });
       this.prizes.push(prizeGroup);
     }
   }
-
 
   removePrize() {
     if (this.prizes.length > 0) {
@@ -63,18 +73,19 @@ export class CreatePrizeComponent {
         prizes: formValue.prizes.map((prize: any) => ({
           type: prize.type,
           description: prize.description,
-          position: prize.position
+          position: prize.position,
         })),
-        code: formValue.code
+        code: formValue.code,
       };
 
       this.prizeService.sendPrizes(prizesRequest).subscribe({
         next: () => {
-          console.log('Premios enviados correctamente');
+          this.alertService.successAlert('Premios agregados!');
         },
-        error: (error) => {
-          console.error('Error al enviar los premios:', error);
-        }
+        error: (err: HttpErrorResponse) => {
+          console.log(err);
+          this.alertService.errorAlert(err.error.error);
+        },
       });
     }
   }
