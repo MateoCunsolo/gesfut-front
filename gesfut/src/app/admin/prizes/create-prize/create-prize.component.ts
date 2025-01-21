@@ -41,6 +41,9 @@ export class CreatePrizeComponent {
     this.prizeService.currentCategory.subscribe({
       next: (category) => {
         this.category = category;
+        this.addPrize();
+        this.addPrize();
+        this.addPrize();
       },
     });
   }
@@ -54,7 +57,7 @@ export class CreatePrizeComponent {
       const prizeGroup = this.fb.group({
         type: [this.category, Validators.required],
         description: ['', Validators.required],
-        position: [0, [Validators.required, Validators.min(1)]],
+        position: [1, [Validators.required, Validators.min(1)]],
       });
       this.prizes.push(prizeGroup);
     }
@@ -67,6 +70,12 @@ export class CreatePrizeComponent {
   }
 
   submitForm() {
+
+    if (this.validateDuplicatedPosition()) {
+      this.alertService.errorAlert("Hay puestos duplicados. Corrija antes de enviar.");
+      return;
+    }
+
     if (this.prizesForm.valid) {
       const formValue = this.prizesForm.value;
       const prizesRequest: PrizesRequest = {
@@ -83,10 +92,20 @@ export class CreatePrizeComponent {
           this.alertService.successAlert('Premios agregados!');
         },
         error: (err: HttpErrorResponse) => {
-          console.log(err);
+
           this.alertService.errorAlert(err.error.error);
         },
       });
+    }else{
+      this.alertService.errorAlert("Por favor rellene todos los campos.");
     }
   }
+
+  validateDuplicatedPosition(): boolean {
+    const positions = this.prizes.controls.map(prize => prize.get('position')?.value);
+    const uniquePositions = new Set(positions);
+    return positions.length !== uniquePositions.size;
+  }
+
+
 }
