@@ -6,7 +6,7 @@ import {
   HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../../../enviroments/environment';
 import { AlertService } from '../alert.service';
 import { SessionService } from '../manager/session.service';
@@ -40,8 +40,10 @@ export class PrizeService {
     return this.Http.post<void>(`${environment.apiUrl}/prizes`, request, {
       headers,
     }).pipe(
-      tap(() =>
+      tap(() =>{
         this.alertService.successAlert('Premios enviados exitosamente')
+        this.currentView.next('list');
+      }
       ),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
@@ -59,14 +61,14 @@ export class PrizeService {
   }
 
   getAllPrizesByCategory(code: string, category: string): Observable<Prize[]> {
-    return this.Http.get<Prize[]>(
-      `${environment.apiUrl}/prizes/${code}/${category}`
-    ).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.log(error);
-        return throwError(() => error);
-      })
-    );
+    return this.Http.get<Prize[]>(`${environment.apiUrl}/prizes/${code}/${category}`)
+      .pipe(
+        map(prizes => prizes.sort((a, b) => a.position - b.position)),
+        catchError((error: HttpErrorResponse) => {
+          console.log(error);
+          return throwError(() => error);
+        })
+      );
   }
 
   deletePrize(code:string, category:string, position:number): Observable<void> {

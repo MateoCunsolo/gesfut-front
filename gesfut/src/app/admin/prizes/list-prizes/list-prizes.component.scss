@@ -3,7 +3,10 @@ section{
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  justify-self: center;
   width: 100%;
+  height: 100%;
+  margin: auto;
 }
 
 .title-container{
@@ -21,14 +24,17 @@ section{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   width: 100%;
-  height: 100%;
+  height: 400px;
+  margin: 0 auto;
+  overflow-y: scroll;
 }
+
 
 .accordion-item {
   border: 1px solid #ddd;
-  width: 80%;
+  width: 96%;
   margin: 5px 0;
   border-radius: 5px;
 }
@@ -45,22 +51,38 @@ section{
 }
 
 .accordion-body {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
   font-size: var(--font-size-text);
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 10px;
+  gap: 8px;
+  padding: 8px;
   background-color: #f9f9f9;
   border-top: 1px solid #ddd;
 }
 
-.accordion-body .button-container{
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
+.accordion-description{
+  grid-column: 1/11;
+}
+
+.accordion-button{
+  margin: 0 auto;
   font-size: var(--font-size-subtitle);
   color: var(--primary-color);
+}
+
+
+.button-container{
+  display: flex;
+  justify-content: end;
+  padding: 16px 0;
+  width: 100%;
+}
+
+.base-button{
+  width: auto;
+  padding: 8px 16px ;
 }
 
 .empty-prizes{

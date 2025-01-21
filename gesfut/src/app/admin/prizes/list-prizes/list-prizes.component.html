@@ -3,87 +3,84 @@
     <h2 class="title">
     @switch (currentCategory) {
       @case("POSITION"){
-        TABLA
+        Premios por Tabla
       }
       @case("FAIR_PLAY"){
-        FAIR PLAY
+        Premios por FAIR PLAY
       }
       @case("TOP_SCORER"){
-        GOLEADORES
+        Premios a los GOLEADORES
       }
       @case("BEST_GOALKEEPER"){
-        MEJORES ARQUEROS
+        Premios a los MEJORES ARQUEROS
       }
     }
     </h2>
   </div>
   <hr>
 
-  @if(prizes.length>0){
-    <article class="prizes-container">
-      @for (item of prizes; track $index) {
-        <div class="accordion-item">
-          <div (click)="toggleAccordion($index)" class="accordion-header">
-            <h3>
-              @switch(item.position){
-                @case(1){
-                  1ER PUESTO 👑
-                }
-                @case (2) {
-                  2DO PUESTO
-                }
-                @case (3) {
-                  3ER PUESTO
-                }
-                @default {
-                  {{item.position}}TO PUESTO
-                }
-              }
-            </h3>
 
-            @if(isExpanded($index)){
-              <i class="fa-solid fa-minus"></i>
-            }@else{
-              <i class="fa-solid fa-plus"></i>
+  <article class="prizes-container">
+  @if(prizes.length>0){
+      @for (item of prizes; track $index) {
+          <div class="accordion-item">
+            <div (click)="toggleAccordion($index)" class="accordion-header">
+              <h3>
+                @switch(item.position){
+                  @case(1){
+                    1ER PUESTO 👑
+                  }
+                  @case (2) {
+                    2DO PUESTO
+                  }
+                  @case (3) {
+                    3ER PUESTO
+                  }
+                  @default {
+                    {{item.position}}TO PUESTO
+                  }
+                }
+              </h3>
+
+              @if(isExpanded($index)){
+                <i class="fa-solid fa-minus"></i>
+              }@else{
+                <i class="fa-solid fa-plus"></i>
+              }
+            </div>
+
+            @if(expandedIndex===$index){
+              <div class="accordion-body">
+                <span class="accordion-description">{{item.description}}</span>
+                <i class="accordion-button fa-solid fa-pencil"></i>
+                <i class="accordion-button fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
+              </div>
             }
           </div>
-
-          @if(expandedIndex===$index){
-            <div class="accordion-body">
-              <p>{{item.description}}</p>
-              <div class="button-container">
-                <i class="fa-solid fa-pencil"></i>
-                <i class="fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
-              </div>
-            </div>
+        }
+    }@else {
+      <div class="empty-prizes">
+        <p>NO HAY PREMIOS PARA LA CATEGORÍA @switch (currentCategory) {
+          @case("POSITION"){
+            CAMPEÓN
           }
-        </div>
-      }
-    </article>
-    <div class="button-container">
-      <button class="base-button" (click)="setView('create')">EDITAR</button>
-    </div>
-  }@else {
-    <div class="empty-prizes">
-      <p>NO HAY PREMIOS PARA LA CATEGORÍA @switch (currentCategory) {
-      @case("POSITION"){
-        CAMPEÓN
-      }
-      @case("FAIR_PLAY"){
-        FAIR PLAY
-      }
-      @case("TOP_SCORER"){
-        GOLEADOR
-      }
-      @case("BEST_GOALKEEPER"){
-        MEJOR ARQUERO
-      }
-    }.</p>
-      <div class="button-container">
-        <button class="base-button" (click)="setView('create')">AGREGAR</button>
+          @case("FAIR_PLAY"){
+            FAIR PLAY
+          }
+          @case("TOP_SCORER"){
+            GOLEADOR
+          }
+          @case("BEST_GOALKEEPER"){
+            MEJOR ARQUERO
+          }
+        }.</p>
       </div>
-    </div>
-  }
+    }
+  </article>
+  <div class="button-container">
+    <button class="base-button" (click)="setView('create')">Agregar premios</button>
+  </div>
+
 </section>
 
 

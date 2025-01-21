@@ -3,7 +3,10 @@ section{
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  justify-self: center;
   width: 100%;
+  height: 100%;
+  margin: auto;
 }
 
 .title-container{
@@ -23,16 +26,15 @@ form{
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
 }
 
 .scroller-container{
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: start;
   width: 100%;
-  min-height: 100px;
-  max-height: 200px;
+  height: 350px;
   overflow-y: auto;
   gap: 8px;
   margin: 8px;
@@ -83,4 +85,23 @@ form{
 
 .input-position{
   width: 128px;
+}
+
+.button-container{
+  display: flex;
+  justify-content: end;
+  padding: 16px 0;
+  width: 96%;
+}
+
+.base-button{
+  width: auto;
+  padding: 8px 16px ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.base-button i{
+  font-size: var(--font-size-subtitle);
 }

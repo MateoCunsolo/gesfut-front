@@ -62,14 +62,20 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
 
   deletePrize(position: number) {
     if (this.currentTournament) {
-      this.prizeService.deletePrize(this.currentTournament, this.currentCategory, position).subscribe({
-        next: () => {
-          this.prizes = this.prizes.filter(prize => prize.position !== position);
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      });
+      const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este premio?");
+
+      if (confirmDelete) {
+        this.prizeService.deletePrize(this.currentTournament, this.currentCategory, position).subscribe({
+          next: () => {
+            this.prizes = this.prizes.filter(prize => prize.position !== position);
+            alert("Premio eliminado con éxito.");
+          },
+          error: (error) => {
+            console.log(error);
+            alert("Ocurrió un error al eliminar el premio.");
+          }
+        });
+      }
     }
   }
 

@@ -18,25 +18,28 @@
       </h2>
   </div>
 
+  <div class="button-container">
+    <button type="button" (click)="addPrize()" class="base-button"><i class="fa-solid fa-circle-plus"></i></button>
+  </div>
   <form [formGroup]="prizesForm" (ngSubmit)="submitForm()">
-    <button type="button" (click)="addPrize()" class="base-button">Agregar Premio</button>
 
     <div formArrayName="prizes" class="scroller-container">
       <div *ngFor="let prize of prizes.controls; let i = index" [formGroupName]="i" class="prize-container">
 
         <div class="form-group input-icon">
           <i class="fa-solid fa-award"></i>
-          <input id="position-{{i}}" type="number" formControlName="position" class="input-position"/>
+          <input id="position-{{i}}" type="number" formControlName="position" class="input-position" min="1" />
         </div>
 
         <div class="form-group">
           <input id="description-{{i}}" formControlName="description" placeholder="Descripción" class="input-base">
         </div>
 
-        <button type="button" (click)="removePrize()">Eliminar Premio</button>
+        <button class="base-button" type="button" (click)="removePrize()"><i class="accordion-button fa-solid fa-trash-can"></i></button>
       </div>
     </div>
-
-    <button type="submit" class="base-button">Guardar</button>
+    <div class="button-container">
+      <button type="submit" class="base-button">Guardar</button>
+    </div>
   </form>
 </section>
