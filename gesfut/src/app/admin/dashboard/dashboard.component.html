@@ -55,12 +55,11 @@
             <h2>VER EQUIPOS</h2>
         </article>
     </section>
-    @if (lastTournamentClicked !== "") {
-    <div class="last-tournament">
-        <p>ÚLTIMO TORNEO VISUALIZADO</p>
+        <div class="last-tournament" *ngIf="flagIsMyTournament">
+            <p>ÚLTIMO TORNEO VISUALIZADO</p>
         <button class="base-button btn" (click)="toTournament(lastTournamentClicked)">
             {{lastTournamentClickedName.toUpperCase()}}
         </button>
     </div>
-    }
+    
 </main>

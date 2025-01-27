@@ -74,10 +74,10 @@ export class ListTeamsComponent {
   }
 
   handleParticipantRefresh($event: ParticipantResponse) {
+    this.addPlayerClicked = false;
     if (this.selectedTournamentIndex !== null) {
       this.particpantsShortAll[this.selectedTournamentIndex].playerParticipants = $event.playerParticipants;
       this.showPlayersParticipants(this.particpantsShortAll[this.selectedTournamentIndex].playerParticipants, this.selectedTournamentIndex);
-      this.addPlayerClicked = false;
     }
   }
 
@@ -116,6 +116,7 @@ export class ListTeamsComponent {
 
 
   addPlayer() {
+    // if(this.addPlayerClicked){this.alertService.infoAlert('Ya estás añadiendo un jugador', 'Por favor completa o cancela la operacion.'); return;}
     this.alertService.twoOptionsAlert(
       '¿Dónde quieres añadir el jugador?',
       'Selecciona una opción',
@@ -139,10 +140,9 @@ export class ListTeamsComponent {
       this.alertService.loadingAlert('OBTENIENDO PARTIDOS DEL TORNEO ' + this.particpantsShortAll[this.selectedTournamentIndex].nameTournament + "...");
       this.tournamentService.getMatchesAllForParticipant(this.particpantsShortAll[this.indexName].codeTournament, this.particpantsShortAll[this.indexName].idParticipant).subscribe({
         next: (response: MatchResponse[]) => {
-          this.alertService.successAlert('PARTIDOS OBTENIDOS CON ÉXITO');
           sessionStorage.setItem('teamNameMatches', this.selectedTeam.name);
           sessionStorage.setItem('matches', JSON.stringify(response));
-
+          this.alertService.closeLoadingAlert();
           if (this.selectedTournamentIndex !== null) {
             localStorage.setItem('lastTournamentClickedName', this.particpantsShortAll[this.selectedTournamentIndex].nameTournament);
             localStorage.setItem('lastTournamentClicked', this.particpantsShortAll[this.selectedTournamentIndex].codeTournament);
@@ -281,18 +281,18 @@ export class ListTeamsComponent {
 
   deletePlayerFromTeamGlobal(firstName: string, lastName: string): void {
     //ENCONTRAR JUGADOR EN TEAMGLOBAL
-    let yes = prompt('¿Estás seguro de que quieres eliminar a ' + firstName + ' ' + lastName + ' de ' + this.teamsGlobal[this.indexName].name + '? \n Sera eliminado de todos los torneos. \n Escribe "SI" para confirmar.');
-    if (yes === null || yes === '' || yes === undefined || yes.toLowerCase() == 'no') {
-      return;
-    }
-    let player = this.teamsGlobal[this.indexName].players.find(player => player.name === firstName && player.lastName === lastName);
-    if (player?.isCaptain) {
-      alert('No se puede eliminar al capitán');
-      return;
-    } else if (player?.isGoalKeeper) {
-      alert('No se puede eliminar al portero');
-      return
-    }
+    this.alertService.inputAlert('Ingrese -> '+firstName + ' ' + lastName).then((result) => {
+      if (result.isConfirmed) {
+        let player = this.teamsGlobal[this.indexName].players.find(player => player.name === firstName && player.lastName === lastName);
+        if (player) {
+          console.log(player);
+          if (player.isCaptain) {
+          this.alertService.errorAlert('No se puede eliminar al capitán');
+          return;
+        } else if (player?.isGoalKeeper) {
+          this.alertService.errorAlert('No se puede eliminar al portero');
+          return
+        }}
     //ELIMINAR JUGADOR DE TEAMGLOBAL
     this.teamsGlobal[this.indexName].players = this.teamsGlobal[this.indexName].players.filter(player => player.name !== firstName && player.lastName !== lastName);
     //ELIMINAR JUGADOR DE PARTICIPANTSSHORTAL DE TODOS LOS TORNEOS
@@ -314,6 +314,9 @@ export class ListTeamsComponent {
     } else {
       console.error('Player not found');
     }
+      }
+    });
+    
   }
 
 

@@ -51,7 +51,12 @@ export class ListTournamentsComponent {
           next: (response) => {
             if (response) {
               this.tournaments.find(tournament => tournament.code === code)!.isActive = true;
-              this.applyFilters();
+              this.tournamentService.getTournamentShortList().subscribe({
+                next: (response) => {
+                  this.tournaments = response;
+                  this.applyFilters();
+                }
+              });
             }
           }
         });
@@ -69,10 +74,14 @@ export class ListTournamentsComponent {
           next: (response) => {
             if (response) {
               this.tournaments = this.tournaments.filter(tournament => tournament.code !== code);
-              this.applyFilters();
-            }
-          }
-        });
+              this.tournamentService.getTournamentShortList().subscribe({
+                next: (response) => {
+                  this.tournaments = response;
+                  this.applyFilters();
+                }
+              });
+            }}
+          });
       } else {
         this.alertService.errorAlert('Operación cancelada');
       }
@@ -85,44 +94,51 @@ export class ListTournamentsComponent {
   }
 
   changeNameTournament(code: string) {
-    let name = window.prompt('Introduce el nuevo nombre del torneo');
-    if (name === null) {
-      console.log('Operación del cambio de nombre cancelada');
-    } else if (name === '') {
-      alert('El nombre introducido no es válido');
-    } else if (name === this.tournaments.find(tournament => tournament.code === code)!.name) {
-      alert('El nombre introducido es igual al actual');
-    } else if (name.length > 50 || name.length < 3) {
-      alert('El nombre debe tener entre 3 y 50 caracteres');
-    } else {
-
-      let flag = false;
-      this.tournaments.forEach(tournament => {
-        if (tournament.name === name) {
-          flag = true;
-        }
-      });
-      if (flag) {
-        alert('Ya existe un torneo con ese nombre');
+    this.alertService.inputAlert('Introduce el nuevo nombre del torneo').then((result) => {
+      let name = result.value;
+      if (name === null) {
+        console.log('Operación del cambio de nombre cancelada');
+      } else if (name === '') {
+        this.alertService.errorAlert('Debes introducir un nombre');
+      } else if (name === this.tournaments.find(tournament => tournament.code === code)!.name) {
+        this.alertService.errorAlert('El nombre introducido es igual al actual');
+      } else if (name.length > 50 || name.length < 3) {
+        this.alertService.errorAlert('El nombre debe tener entre 3 y 50 caracteres');
       } else {
+
+        let flag = false;
         this.tournaments.forEach(tournament => {
-          if (tournament.code === code) {
-            tournament.name = 'cambiando nombre. . .';
+          if (tournament.name === name) {
+            flag = true;
           }
         });
-        this.tournamentService.changeNameTournament(code, name).subscribe({
-          next: (response) => {
-            if (response) {
-              this.tournaments.find(tournament => tournament.code === code)!.name = name;
-              this.applyFilters();
+        if (flag) {
+          alert('Ya existe un torneo con ese nombre');
+        } else {
+          this.tournaments.forEach(tournament => {
+            if (tournament.code === code) {
+              tournament.name = 'cambiando nombre. . .';
             }
-          }
-        });
+          });
+          this.tournamentService.changeNameTournament(code, name).subscribe({
+            next: (response) => {
+              if (response) {
+                this.tournaments.find(tournament => tournament.code === code)!.name = name;
+                this.applyFilters();
+              }
+            }
+          });
+        }
       }
-    }
+    });
+
   }
 
   toTournament(code: string) {
+    if (this.tournaments.find(tournament => tournament.code === code)!.isActive === false) {
+      this.alertService.errorAlert('Este torneo fue eliminado.');
+      return;
+    }
     this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);
     localStorage.setItem('lastTournamentClicked', code);
     localStorage.setItem('lastTournamentClickedName', this.tournaments.find(tournament => tournament.code === code)?.name || '');
@@ -169,7 +185,6 @@ export class ListTournamentsComponent {
 
   onFilterChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
-    alert('onFilterChange: ' + (select?.value || 'all'));
     const filter = select.value || 'all';
     this.filter = filter;
     this.applyFilters();

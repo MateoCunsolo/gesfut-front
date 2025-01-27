@@ -39,7 +39,9 @@ export class InitializeTournamentComponent {
     this.dashboardService.setActiveTournamentComponent(component);
   }
 
-
+  addNewTeamToTournament() {
+    this.changeComponent('create-team');
+  }
 
 
   ngOnInit(): void {
@@ -77,7 +79,7 @@ export class InitializeTournamentComponent {
     );
   }
 
-  
+
 
   initTournament() {
     this.alertService.loadingAlert('Inicializando torneo...');
@@ -88,7 +90,7 @@ export class InitializeTournamentComponent {
         teams: ids
       };
       this.adminService.initTournament(initializeRequest).subscribe({
-        next: (response) => {          
+        next: (response) => {
           this.alertService.successAlert('Torneo inicializado');
           setTimeout(() => {
             window.location.reload();

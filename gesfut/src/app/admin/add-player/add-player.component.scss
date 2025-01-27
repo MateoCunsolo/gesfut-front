@@ -16,6 +16,8 @@
     }
 }
 
+
+
 .form-group{
     display: flex;
     flex-direction: row;
@@ -72,4 +74,68 @@ input[type="number"]::-webkit-outer-spin-button {
 .player-name{
     font-weight: bold;
     cursor: pointer;
+}
+
+.onlyAdd{
+    min-height: calc(80vh - 43px) !important;
+    min-width: 800px!important;
+    display: flex!important;
+    flex-direction: column!important;
+    justify-content: center!important;
+    align-items: center!important;
+
+    .form-group{
+        width: 600px;
+    }
+
+    .check-group{
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px;
+    }
+}
+
+.onlyAdd_form{
+    grid-template-columns: 1fr !important;
+}
+
+.change{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.change_btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.cancel_change{
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border: solid 1px var(--primary-color);
+    width: 25%;
+}
+
+.cancel_change:hover{
+    background-color: gray;
+    color: var(--bg-color);
+}
+
+
+.optional_changeView{
+    padding: 10px;
+    border: solid 1px var(--primary-color);
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    cursor: pointer;
+    border-radius: 5px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;  
 }

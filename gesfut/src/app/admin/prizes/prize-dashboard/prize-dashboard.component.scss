@@ -1,0 +1,126 @@
+section{
+  display: flex;
+  flex-direction: column;
+  width: 1280px;
+  margin: 0 auto;
+  height: calc(100vh - 210px);
+  color: var(--font-color);
+  background-color: var(--bg-color);
+}
+
+@media (max-width: 1280px) {
+  section {
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 160px);
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  section {
+    min-height: calc(100vh - 80px);
+    padding: 10px;
+  }
+}
+
+.title-container{
+  width: 96%;
+  margin: 0 auto;
+}
+.title {
+  font-size: 28px;
+  color: var(--primary-color);
+  margin: 8px 0;
+}
+
+hr {
+  border: none;
+  height: 5px;
+  background-color: var(--primary-color);
+  margin: 0 auto;
+}
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 96%;
+  align-items: center;
+  justify-items: center;
+  height: 100%;
+  gap: 20px;
+  margin: 0 auto;
+}
+
+
+@media (max-width: 1280px) {
+  .dashboard-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.categories-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 1280px) {
+  .categories-container {
+    display: flex;
+    margin: 16px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .categories-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  cursor: pointer;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 0px;
+  gap: 10px;
+  border-radius: 25%;
+  border: solid 1px #2a6a49;
+  background-color: var(--primary-color);
+  color: var(--font-color-ligth);
+
+  &:hover {
+    background-color: var(--secondary-color);
+    transition: 0.3s ease-in-out;
+  }
+
+  @media screen and (max-width: 576px) {
+    font-size: 8px;
+    text-align: center;
+    min-height: 125px !important;
+    max-width: 125px !important;
+    padding: 20px !important;
+  }
+}
+
+
+.icon {
+  width: 118px;
+  height: 118px;
+
+  @media screen and (max-width: 576px) {
+      width: 75px !important;
+      height: 75px !important;
+  }
+}
+
+.prizes-container{
+  width: 100%;
+  height: 100%;
+}

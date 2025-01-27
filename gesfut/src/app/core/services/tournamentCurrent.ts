@@ -12,7 +12,8 @@ export class TouranmentCurrentService {
     name: '1',
     startDate: '1',
     isFinished: false,
-    haveParticipants: false
+    haveParticipants: false,
+    isActive: false
   }
 
 

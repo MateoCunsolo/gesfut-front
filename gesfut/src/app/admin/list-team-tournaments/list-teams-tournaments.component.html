@@ -65,10 +65,26 @@
         </div>
         @if (isAuth) {
         <div class="buttons">
-            <button class="btn">AGREGAR JUGADOR</button>
+            <button class="btn" (click)="addPlayer()">AGREGAR JUGADOR</button>
             <button class="btn" (click)=" toLastMatchs()">ULTIMOS PARTIDOS</button>
             <button (click)="deleteTeamFormTournament(firstParticipant.idTeam)" class="btn">ELIMINAR</button>
         </div>
         }
-    </div>
+
+        @if (addPlayerClicked) {
+            <app-add-player 
+            [selectTeam]="selectToAddInTournament"
+            [isGlobalTeam]="isOptionGlobal"
+            [participantTournament]="{
+              nameTournament: tournament.name,
+              codeTournament: tournament.code,
+              idParticipant: firstParticipant.idParticipant,
+              playerParticipants: firstParticipant.playerParticipants,
+              isActive: true
+            }"
+            (participantRefresh)="handleParticipantRefresh($event)"
+            (closeForm)="formHandler($event)"
+          ></app-add-player>
+          }
+    </div>  
 </section>
