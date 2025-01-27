@@ -18,6 +18,7 @@ export class NamesTeamsComponent implements OnInit {
   public selectedParticipantId: number | null = null;
   protected idSelected: number = 0;
   protected nameClicked: string = '';
+  protected nameTouranemt: string = '';
   private adminService = inject(AdminService);
   private dashBoardService = inject(DashboardService);
   protected teamsGlobales: TeamResponse[] = [];
@@ -28,6 +29,7 @@ export class NamesTeamsComponent implements OnInit {
   protected thereAreNotTeams: boolean = false;
   protected isGlobalTeams: boolean = false;
   protected codeTouranment: string = '';
+  
   constructor() {}
 
   ngOnInit() {
@@ -83,6 +85,10 @@ export class NamesTeamsComponent implements OnInit {
   
   onCodeTournament(code: string) {
     this.codeTouranment = code;
+  }
+
+  onNameTournament(name: string) {
+    this.nameTouranemt = name;
   }
 
   toDashboard(option:number) {

@@ -31,7 +31,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
   @Output() public cancelAddPlayerEvent = new EventEmitter<void>();
   protected playersGlobal: PlayerResponse[] = [];
   protected selectedPlayerId: number = 0;
-  protected therArePlayersToADD: boolean = true;
+  protected therArePlayersToADD: boolean = false;
   playerForm: FormGroup;
   constructor() {
     this.playerForm = this.fb.group({
@@ -45,7 +45,6 @@ export class AddPlayerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    
   }
 
 
@@ -79,6 +78,8 @@ export class AddPlayerComponent implements OnInit, OnChanges {
       this.playersGlobal = filteredPlayers.filter(player => player !== null);
       if (this.playersGlobal.length === 0) {
         this.therArePlayersToADD = false;
+      }else{
+        this.therArePlayersToADD = true;
       }
       console.log('Jugadores globales:', this.playersGlobal);
     } catch (error) {
@@ -104,14 +105,14 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.clearValues();
   }
 
-  clearValues(){
-    this.playerForm.get('name')?.setValue('');
-    this.playerForm.get('lastName')?.setValue('');
-    this.playerForm.get('number')?.setValue('');
-    this.playerForm.clearValidators();
+  clearValues() {
+    this.playerForm.reset({
+      teamId: this.teamIdParticipant, 
+      isCaptain: false,
+      isGoalKeeper: false
+    });
   }
-
-
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
       this.playerForm.get('teamId')?.setValue(this.teamIdParticipant);
@@ -166,6 +167,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
         let playerMaped = this.mapPlayerNoParticipants(response);
         console.log('Jugador mapeado:', playerMaped);
         this.addPlayerToTeam.emit(playerMaped);
+        this.playersGlobal.push(response);
       },
       error: (error) => {
         console.error('Error al agregar jugador:', error);
