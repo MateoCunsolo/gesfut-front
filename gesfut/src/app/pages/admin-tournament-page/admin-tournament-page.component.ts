@@ -18,7 +18,7 @@ import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/priz
 @Component({
   selector: 'app-admin-tournament-page',
   standalone: true,
-  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListTeamsTournamentsComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, CreatePrizesComponent,PrizeDashboardComponent],
+  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListTeamsTournamentsComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, PrizeDashboardComponent],
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })
