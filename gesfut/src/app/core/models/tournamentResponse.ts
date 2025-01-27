@@ -38,6 +38,7 @@ export interface PlayerParticipantResponse {
     isActive:boolean;
     isCaptain:boolean;
     isGoalKeeper:boolean;
+    playerId: number;
 }
 
 

@@ -1,0 +1,86 @@
+<section class="containter-all">
+  @if (teamIdParticipant!=0 && therArePlayersToADD) {
+    <div class="playerExist">
+  <select
+    name="playersGlobales"
+    id="playersGlobales"
+    [(ngModel)]="selectedPlayerId"
+    [value]="0"
+    (change)="changePlayer($event)"
+  >
+    <option value="0">AGREGAR JUGADOR EXISTENTE</option>
+    @for (player of playersGlobal; track $index) {
+    <option value="{{ player.id }}">
+      {{ player.name + " " + player.lastName }}
+    </option>
+    }
+
+  </select>
+  @if(selectedPlayerId!=0){
+  <button (click)="resetSelect()">X</button>
+}
+
+</div>
+  }
+  <form
+    class="container-add-player"
+    [formGroup]="playerForm"
+    (ngSubmit)="addPlayer()"
+  >
+    <!-- Campo Nombre -->
+    <div class="form-group input-icon">
+      <input type="text" formControlName="name" placeholder="Nombre" />
+      <i class="fas fa-user"></i>
+      @if (playerForm.get('name')?.invalid && playerForm.get('name')?.touched) {
+      <small>El nombre es requerido (mín. 2 caracteres).</small>
+      }
+    </div>
+
+    <!-- Campo Apellido -->
+    <div class="form-group input-icon">
+      <input type="text" formControlName="lastName" placeholder="Apellido" />
+      <i class="fas fa-user"></i>
+      @if (playerForm.get('lastName')?.invalid &&
+      playerForm.get('lastName')?.touched) {
+      <small>El apellido es requerido (mín. 2 caracteres).</small>
+      }
+    </div>
+
+    <!-- Campo Dorsal -->
+    <div class="form-group input-icon">
+      <input type="number" formControlName="number" placeholder="Dorsal" />
+      <i class="fa-solid fa-hashtag"></i>
+      @if (playerForm.get('number')?.invalid &&
+      playerForm.get('number')?.touched) {
+      <small>Ingresa un dorsal válido (1-99).</small>
+      }
+    </div>
+
+    <!-- Campos Checkbox -->
+    <div class="mini-group">
+      <div class="check-group">
+        <div class="form-group">
+          <label class="checkbox-icon">
+            <input type="checkbox" formControlName="isCaptain" />
+            <i class="fa-solid fa-c"></i>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-icon">
+            <input type="checkbox" formControlName="isGoalKeeper" />
+            <i class="fa-solid fa-hand"></i>
+          </label>
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="base-button cancel"
+      style="width: 100px !important"
+      (click)="cancelAddPlayer()"
+    >
+      CANCELAR
+    </button>
+    <button type="submit" class="base-button">AGREGAR JUGADOR</button>
+  </form>
+</section>

@@ -12,13 +12,13 @@ import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments
 import { LastsMatchesComponent } from "../../admin/lasts-matches/lasts-matches.component";
 import { LeaderboardComponent } from "../../admin/leaderboard/leaderboard.component";
 import { CreateTeamComponent } from '../../admin/create-team/create-team.component';
-import { AddPlayerComponent } from '../../admin/add-player/add-player.component';
+import { AddPlayerComponent } from '../../admin/list-teams/components/players/add-player/add-player.component';
 import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/prize-dashboard.component";
 
 @Component({
   selector: 'app-admin-tournament-page',
   standalone: true,
-  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListTeamsTournamentsComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, CreatePrizesComponent,PrizeDashboardComponent],
+  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListTeamsTournamentsComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent,PrizeDashboardComponent],
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })

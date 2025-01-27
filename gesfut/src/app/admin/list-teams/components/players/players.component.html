@@ -1,0 +1,102 @@
+<section class="main">
+  <div class="section-table">
+    <div class="hmx" #scrollContainer>
+      <table class="table">
+        <thead>
+            <th>#</th>
+            <th>JUGADOR</th>
+            <th class="stats">G</th>
+            <th class="stats">🟨</th>
+            <th class="stats">🟥</th>
+            <th class="stats">MVP</th>
+            <th class="stats">ESTADO</th>
+        </thead>
+        <tbody>
+          @if (!isGlobalTeam){ 
+          @for (player of participantTeam.playerParticipants; track $index) {
+          
+            @if (player.isActive) {
+              <tr>
+                <td>{{ player.shirtNumber }}</td>
+                <td class="player">
+                  {{ player.playerName + " " + player.playerLastName }}
+                  @if (player.isCaptain) {
+                  <span class="captain">🌟</span>
+                  } @if (player.isGoalKeeper) {
+                  <span class="goalkeeper icon">🧤</span>
+                  }
+                </td>
+                <td>{{ player.goals }}</td>
+                <td>{{ player.yellowCards }}</td>
+                <td>{{ player.redCards }}</td>
+                <td>{{ player.isMvp }}</td>
+                <td>{{ player.isSuspended ? "🟥" : "🟩" }}</td>
+                <td class="no-line">
+                  <app-delete-player
+                    [idPlayerParticipant]="player.id"
+                    [name]="player.playerName + ', ' + player.playerLastName"
+                    [isGlobalTeam]="isGlobalTeamPlayers"
+                    [isCapitan]="player.isCaptain"
+                    [isGoalKeeper]="player.isGoalKeeper"
+                    [idPlayer]="player.playerId"
+                    (deletePlayer)="deletePlayer($event)"
+                  ></app-delete-player>
+                </td>
+              </tr>
+            }
+          }
+        }@else{
+          @for (player of participantGlobalStats.playerParticipants; track $index) {
+            @if (player.status) {
+              <tr>
+                <td>{{ player.shirtNumber }}</td>
+                <td class="player">
+                  {{ player.playerName + " " + player.playerLastName }}
+                  @if (player.isCaptain) {
+                  <span class="captain">🌟</span>
+                  } @if (player.isGoalKeeper) {
+                  <span class="goalkeeper icon">🧤</span>
+                  }
+                </td>
+                <td>{{ player.goals }}</td>
+                <td>{{ player.yellowCards }}</td>
+                <td>{{ player.redCards }}</td>
+                <td>{{ player.isMvp }}</td>
+                <td>{{ player.isSuspended ? "🟥" : "🟩" }}</td>
+                <td class="no-line">
+                  <app-delete-player
+                    [idPlayerParticipant]="player.id"
+                    [name]="player.playerName + ', ' + player.playerLastName"
+                    [isGlobalTeam]="isGlobalTeamPlayers"
+                    [isCapitan]="player.isCaptain"
+                    [isGoalKeeper]="player.isGoalKeeper"
+                    [idPlayer]="player.playerId"
+                    (deletePlayer)="deletePlayer($event)"
+                  ></app-delete-player>
+                </td>
+              </tr>
+            }
+        }
+      }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @if (flagAddPlayer) {
+  <app-add-player
+  [teamIdGlobal]="returnIfIsGlobalOrNot()"
+  [teamIdParticipant]="areThereParticipanForThisTeam()"
+  (addPlayerToTeam)="addPlayerToTeam($event)"
+  [codeTournament]="code" 
+  (cancelAddPlayerEvent)="cancelAddPlayerEvent()"
+  ></app-add-player>
+  }@else {
+  <div class="buttons">
+    <button class="btn" (click)="showFormAddPlayer()">AGREGAR JUGADOR</button>
+    <button class="btn" (click)="showFormAddPlayer()">ULTIMOS PARTIDOS</button>
+    <button class="btn" (click)="showFormAddPlayer()">ELIMINAR EQUIPO</button>
+  </div>
+
+  }
+</section>

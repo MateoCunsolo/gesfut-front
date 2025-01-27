@@ -6,15 +6,15 @@ import { CreateTeamComponent } from "../../admin/create-team/create-team.compone
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
-import { ListTeamsComponent } from "../../admin/list-teams/list-teams.component";
 import { TeamService } from '../../core/services/tournament/team.service';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
+import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.component';
 
 @Component({
   selector: 'app-admin-page',
   standalone: true,
-  imports: [DashboardComponent, CreateTournamentComponent, CreateTeamComponent, ListTournamentsComponent, ListTeamsComponent],
+  imports: [DashboardComponent, NamesTeamsComponent, CreateTournamentComponent, CreateTeamComponent, ListTournamentsComponent],
   templateUrl: './admin-page.component.html',
   styleUrl: './admin-page.component.scss'
 })
