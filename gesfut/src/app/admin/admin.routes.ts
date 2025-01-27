@@ -8,12 +8,12 @@ export const ADMIN_ROUTES: Routes = [
         path: '', component: AdminPageComponent
     },
     {
-        path: 'tournaments/:code', 
-        component: AdminTournamentPageComponent, 
-        canActivate: [tournamentExistsGuard]
+        path: 'tournaments/:code',
+        component: AdminTournamentPageComponent,
+        /* canActivate: [tournamentExistsGuard] */
     },
     {
         path: '**', redirectTo: ''
     }
-    
+
 ];
