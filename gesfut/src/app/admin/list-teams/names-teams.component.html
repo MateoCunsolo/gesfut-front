@@ -1,0 +1,55 @@
+<section [ngClass]="{ centerSection: thereAreNotTeams }">
+  <button (click)="toDashboard(1)" class="back-button">ATRAS</button>
+
+  @if(teamsGlobales.length>0){
+    <input
+        class="search-team"
+        type="text"
+        name=""
+        id=""
+        placeholder="BUSCAR EQUIPO"
+        (input)="searchTeams($event)"
+      />
+  <div class="container">
+    
+    <div class="names">
+      
+
+      @for (item of teamsGlobalesInputFilter; track $index){
+      <p
+        [ngClass]="{ 'bg-primary-color': $index == indexSelectedAfter }"
+        (click)="showParticipants(item.id)"
+      >
+        {{ item.name }}
+      </p>
+      }
+    </div>
+
+    <div class="info">
+      <p class="team-name">{{ nameClicked }}</p>
+
+      <div class="names-tournaments">
+        <app-names-tournaments
+          [id]="idSelected"
+          (participantSelected)="onParticipantSelected($event)"
+          (globalsPlayer)="onGlobalPlayerSelected($event)"
+          (onlyGlobalTeams)="onOnlyGlobalTeams($event)"
+          (codeTournament)="onCodeTournament($event)"
+        ></app-names-tournaments>
+      </div>
+
+      <div class="players">
+        <app-players 
+        [participantId]="selectedParticipantId"
+        [isGlobalTeam]="isGlobalTeams"
+        [idTeam]="idSelected"
+        [code]="codeTouranment"
+        ></app-players>
+      </div>
+    </div>
+  </div>
+  }@else {
+  <p [ngClass]="{ noPointer: thereAreNotTeams }">NO HAY EQUIPOS CREADOS</p>
+  <button (click)="toDashboard(2)" class="team-name">CREAR EQUIPO</button>
+  }
+</section>
