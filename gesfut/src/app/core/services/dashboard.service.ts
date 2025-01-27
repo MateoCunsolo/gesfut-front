@@ -15,14 +15,14 @@ export class DashboardService {
 
   private haveParticipantsSubject = new BehaviorSubject<boolean>(false);
   haveParticipants$ = this.haveParticipantsSubject.asObservable();
-  
+
   private getNameTournamentSubject = new BehaviorSubject<string>('');
   getNameTournament$ = this.getNameTournamentSubject.asObservable();
 
   setActiveTournamentComponent(component: string) {
     this.activeTournamentComponentSubject.next(component);
   }
-  
+
   setActiveDashboardAdminComponent(component: string) {
     this.activeDashboardAdminComponentSubject.next(component);
   }

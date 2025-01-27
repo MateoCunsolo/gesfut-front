@@ -1,0 +1,125 @@
+/* ------------------------- Icono del menú hamburguesa ------------------------- */
+.menu-hamburguesa .icon-menu {
+  cursor: pointer;
+  width: 30px;
+  height: 3px;
+  background-color: var(--primary-color);
+  position: relative;
+  border-radius: 2px;
+}
+
+.menu-hamburguesa .icon-menu::before,
+.menu-hamburguesa .icon-menu::after {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+.menu-hamburguesa .icon-menu::before {
+  top: -8px;
+}
+
+.menu-hamburguesa .icon-menu::after {
+  top: 8px;
+}
+
+.menu-hamburguesa input[type="checkbox"]:checked+.icon-menu {
+  background-color: transparent;
+}
+
+.menu-hamburguesa input[type="checkbox"]:checked+.icon-menu::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.menu-hamburguesa input[type="checkbox"]:checked+.icon-menu::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+/* ------------------------- Menú desplegable ------------------------- */
+
+.menu-hamburguesa {
+  position: relative;
+  padding: 20px;
+  z-index: 2;
+  border-bottom: var(--primary-color) 2px solid;
+
+  @media screen and (max-width: 768px) {
+    height: 50px;
+  }
+
+}
+
+.menu-hamburguesa input[type="checkbox"] {
+  display: none;
+}
+
+.menu-hamburguesa .menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 50px;
+  min-width: 100%;
+  border-radius: 0px;
+  height: calc(100vh - 210px);
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+
+  @media screen and (max-width: 768px) {
+    width: 80%;
+  }
+}
+
+.menu-hamburguesa .menu a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: var(--font-size-subtitle);
+  padding: 12px;
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  border-radius: 0px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.menu-hamburguesa .menu a:hover {
+  color: var(--secondary-color);
+}
+
+.menu-hamburguesa input[type="checkbox"]:checked~.menu {
+  display: flex;
+}
+
+
+
+/* ------------------------- Menú de navegación ------------------------- */
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  gap: 30px;
+  font-size: 1.5rem;
+  border-top: solid 1px #ddd;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.nav-bar a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.nav-bar a:hover {
+  color: var(--hover-color);
+}
