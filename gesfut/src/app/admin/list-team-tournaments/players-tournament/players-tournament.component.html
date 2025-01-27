@@ -31,6 +31,7 @@
                   <td>{{ player.isMvp }}</td>
                   <td>{{ player.isSuspended ? "🟥" : "🟩" }}</td>
                   <td class="no-line">
+                    @if (isAuth) {
                     <app-delete-player
                       [idPlayerParticipant]="player.id"
                       [name]="player.playerName + ', ' + player.playerLastName"
@@ -39,7 +40,7 @@
                       [isGoalKeeper]="player.isGoalKeeper"
                       [idPlayer]="player.playerId"
                       (deletePlayer)="deletePlayer($event)"
-                    ></app-delete-player>
+                    ></app-delete-player>}
                   </td>
                 </tr>
               }
@@ -49,7 +50,7 @@
       </div>
     </div>
   
-    @if (flagAddPlayer) {
+    @if (flagAddPlayer && isAuth) {
     <app-add-player
     [teamIdGlobal]="returnIfIsGlobalOrNot()"
     [teamIdParticipant]="areThereParticipanForThisTeam()"
@@ -59,9 +60,13 @@
     ></app-add-player>
     }@else {
     <div class="buttons">
-      <button class="btn" (click)="showFormAddPlayer()">AGREGAR JUGADOR</button>
+        @if (isAuth) {
+        <button class="btn" (click)="showFormAddPlayer()">AGREGAR JUGADOR</button>
+        }
       <button class="btn" (click)="toLastMatches()">ULTIMOS PARTIDOS</button>
-      <button class="btn" (click)="deleteTeam()">ELIMINAR EQUIPO</button>
+      @if (isAuth) {
+        <button class="btn" (click)="deleteTeam()">ELIMINAR EQUIPO</button>
+    }
     </div>
   
     }

@@ -17,6 +17,9 @@ export class TournamentService {
   currentTournament: BehaviorSubject<TournamentResponseFull> = new BehaviorSubject<TournamentResponseFull>(INITIAL_TOURNAMENT);
   currentListTournaments: BehaviorSubject<TournamentResponseShort[]> = new BehaviorSubject<TournamentResponseShort[]>([]);
   currentTournamentShort: BehaviorSubject<TournamentResponseShort> = new BehaviorSubject<TournamentResponseShort>(INITIAL_TOURNAMENT_SHORT)
+  lastTeamClicked: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  
+
   private sessionService = inject(SessionService);
   url = environment.apiUrl;
 
@@ -40,21 +43,7 @@ export class TournamentService {
 
   getMatchesAllForParticipant(code: string, idParticipant: number): Observable<MatchResponse[]> {
     let url = `${this.url}/tournaments/${code}/matches/${idParticipant}`;
-    return this.http.get<MatchResponse[]>(`${url}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      }
-    }).pipe(
-      tap({
-        next: (response: MatchResponse[]) => {
-          return response;
-        },
-        error: (error: HttpErrorResponse) => {
-          return throwError(() => error)
-        }
-      })
-    );
+    return this.http.get<MatchResponse[]>(`${url}`);
   }
 
 
@@ -196,5 +185,14 @@ export class TournamentService {
 
       }))
   }
+
+  setLastTeamClicked(id: number) {
+    this.lastTeamClicked.next(id);
+  }
+
+  getLastTeamClicked(): Observable<number> {
+    return this.lastTeamClicked.asObservable();
+  }
+
 
 }

@@ -15,11 +15,13 @@ import { ListMatchDaysComponent } from '../../admin/match-day/list-match-days/li
 import { LeaderboardComponent } from "../../admin/leaderboard/leaderboard.component";
 import { NavbarComponent } from "../../admin/navbar/navbar.component";
 import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/prize-dashboard.component";
+import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments/list-teams-tournaments.component";
+import { LastsMatchesComponent } from "../../admin/lasts-matches/lasts-matches.component";
 
 @Component({
   selector: 'app-public-page',
   standalone: true,
-  imports: [ListMatchDaysComponent, LeaderboardComponent, PrizeDashboardComponent],
+  imports: [ListMatchDaysComponent, LeaderboardComponent, ListTeamsTournamentsComponent, LastsMatchesComponent],
   templateUrl: './public-page.component.html',
   styleUrl: './public-page.component.scss',
 })

@@ -29,17 +29,27 @@ export class ListTeamsTournamentsComponent {
   protected nameClicked: string = '';
   protected indexSelectedAfter = 0;
   protected inputText: string = '';
-
+  protected lastClicked: number = 0;
   constructor() { }
 
   ngOnInit() {
+
+    this.tournamentService.getLastTeamClicked().subscribe({
+      next: (response) => {
+        this.lastClicked = response;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+
     this.tournamentService.currentTournament.subscribe({
       next: (response) => {
         this.tournament = response;
         this.participants = response.participants;
         this.particpantsFilter = response.participants;
-        this.teamParticipant = this.participants[0];
-        this.nameClicked = this.participants[0].name;
+        this.teamParticipant = this.participants[this.lastClicked];
+        this.nameClicked = this.participants[this.lastClicked].name;
       },
       error: (error) => {
         console.error(error);
@@ -49,14 +59,10 @@ export class ListTeamsTournamentsComponent {
 
   searchTeams($event: Event) {
     this.inputText = ($event.target as HTMLInputElement).value.toLowerCase();
-    
-    // Filtrar siempre basado en la lista original
-    this.particpantsFilter = this.participants.filter(team => 
+        this.particpantsFilter = this.participants.filter(team => 
       team.name.toLowerCase().includes(this.inputText)
     );
-  
-    // Actualizar índice seleccionado basado en el participante actual
-    this.updateSelectedIndex();
+      this.updateSelectedIndex();
   }
   
   private updateSelectedIndex() {
@@ -74,6 +80,7 @@ export class ListTeamsTournamentsComponent {
     if (participant) {
       this.nameClicked = participant.name;
       this.teamParticipant = participant;
+      this.tournamentService.setLastTeamClicked(this.participants.indexOf(participant));
       this.updateSelectedIndex();
     }
   }

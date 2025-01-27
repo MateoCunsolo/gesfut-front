@@ -19,7 +19,7 @@ import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.componen
 @Component({
   selector: 'app-admin-tournament-page',
   standalone: true,
-  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, NamesTeamsComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent,PrizeDashboardComponent],
+  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent,PrizeDashboardComponent],
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })

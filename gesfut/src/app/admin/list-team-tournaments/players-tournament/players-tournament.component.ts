@@ -7,6 +7,9 @@ import { MatchResponse, PlayerParticipantResponse } from '../../../core/models/t
 import { TournamentService } from '../../../core/services/tournament/tournament.service';
 import { AlertService } from '../../../core/services/alert.service';
 import { DashboardService } from '../../../core/services/dashboard.service';
+import { AuthService } from '../../../core/services/manager/auth.service';
+import { SessionService } from '../../../core/services/manager/session.service';
+import { GuestService } from '../../../core/services/guest/guest.service';
 
 @Component({
   selector: 'app-players-tournament',
@@ -20,11 +23,21 @@ export class PlayersTournamentComponent implements OnChanges {
   private tournamentService = inject(TournamentService);
   private alertService = inject(AlertService);
   private dashboardService = inject(DashboardService);
+  private guestService = inject(GuestService);
+  private sessionService = inject(SessionService);
 
   @Input() teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
   @Input() code: string = '';
+
   flagAddPlayer: boolean = false;
+  isAuth: boolean = false;
+
   constructor() { }
+
+  ngOnInit() {
+    this.isAuth = this.sessionService.isAuth();
+  }
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['teamParticipant']) {
@@ -54,7 +67,8 @@ export class PlayersTournamentComponent implements OnChanges {
         next: (response: MatchResponse[]) => {
           sessionStorage.setItem('matches', JSON.stringify(response));
           sessionStorage.setItem('teamNameMatches', this.teamParticipant.name);
-          this.dashboardService.setActiveTournamentComponent('lasts-matches');
+          if(this.isAuth)this.dashboardService.setActiveTournamentComponent('lasts-matches');
+          else this.guestService.setActiveComponent('lasts-matches');
           this.alertService.closeLoadingAlert();
         }
       });
