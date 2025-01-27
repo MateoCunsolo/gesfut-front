@@ -92,7 +92,7 @@ export class TournamentService {
 
 
   getTournamentParticipantsTeams(code: string): Observable<ParticipantResponse[]> {
-    return this.http.get<ParticipantResponse[]>(`${this.url}/tournaments/${code}/teams`, {
+    return this.http.get<ParticipantResponse[]>(`${this.url}/team-participant/${code}/teams`, {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -101,7 +101,7 @@ export class TournamentService {
 
 
   getTournamentParticipantTeamByID(id: number): Observable<ParticipantResponse> {
-    return this.http.get<ParticipantResponse>(`${this.url}/tournaments/teams/${id}`, {
+    return this.http.get<ParticipantResponse>(`${this.url}/team-participant/teams/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionStorage.getItem('token')}`
@@ -139,8 +139,8 @@ export class TournamentService {
   }
 
 
-  changeStatusPlayer(code: string, idParticipant: number, status: boolean) {
-    const url = `http://localhost:8080/api/v1/tournaments/change-status/${code}/${idParticipant}/${status}`;
+  changeStatusPlayerParticipant(idParticipant: number, status: boolean) {
+    const url = `http://localhost:8080/api/v1/team-participant/change-status/${idParticipant}/${status}`;
     return this.http.put<void>(`${url}`, {}, {
       headers: {
         'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ export class TournamentService {
 
 
   addPlayerToParticipant(code: string, teamIdParticipant: number, player: PlayerRequest): Observable<ParticipantResponse> {
-    const url = `${this.url}/tournaments/${code}/add-player/${teamIdParticipant}`;
+    const url = `${this.url}/team-participant/${code}/add-player/${teamIdParticipant}`;
     return this.http.put<ParticipantResponse>(`${url}`, player, {
       headers: {
         'Content-Type': 'application/json',
@@ -210,7 +210,6 @@ export class TournamentService {
         }
 
       }))
-  }
-
+  } 
 
 }

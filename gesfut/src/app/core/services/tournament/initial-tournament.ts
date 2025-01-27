@@ -31,7 +31,8 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                   status: false,
                   isActive: true,
                   isCaptain: false,
-                  isGoalKeeper: false
+                  isGoalKeeper: false,
+                  playerId: 0
               }
           ],
           statistics: {
@@ -173,7 +174,8 @@ export const INITIAL_PARTICIPANT : ParticipantResponse = {
             status: false,
             isActive: true,
             isCaptain: false,
-            isGoalKeeper: false
+            isGoalKeeper: false,
+            playerId: 0
         }
     ],
     statistics: {

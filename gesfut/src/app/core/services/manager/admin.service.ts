@@ -50,7 +50,16 @@ export class AdminService {
       }
     }).pipe(
       map((response) => {
-        return response.filter(team => team.name.trim().toLowerCase() !== 'free');
+        return response.filter(team => team.name.toLowerCase() !== 'free').map(team => {
+          team.name = team.name.toUpperCase();
+          team.players = team.players.map(player => {
+            player.name = player.name.toUpperCase();
+            player.lastName = player.lastName.toUpperCase();
+            return player;
+          });
+          return team;
+        });
+        
       })
     );
   }

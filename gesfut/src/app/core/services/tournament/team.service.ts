@@ -5,7 +5,8 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { SessionService } from '../manager/session.service';
 import { ParticipantResponse, PlayerParticipantResponse } from '../../models/tournamentResponse';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
-import { TeamResponse } from '../../models/teamResponse';
+import { PlayerResponse, TeamResponse } from '../../models/teamResponse';
+import { TeamWithAllStatsPlayerResponse } from '../../models/TeamWithAllStatsPlayerResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -72,13 +73,13 @@ export class TeamService {
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
-      })
+      }),
     );
   }
 
-  changeStatusPlayerGlobal(idPlayer: number, status: boolean): Observable<string> {
+  changeStatusPlayerGlobal(idPlayer: number, status: boolean): Observable<void> {
     if (!this.session.isAuth()) {
-      return new Observable<string>();
+      return new Observable<void>();
     }
 
     const token = sessionStorage.getItem('token');
@@ -87,7 +88,7 @@ export class TeamService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.put<string>(
+    return this.http.put<void>(
       `${this.url}/change-status-player/${idPlayer}/${status}`,
       null,
       { headers }
@@ -124,7 +125,7 @@ export class TeamService {
   }
 
 
-  addPlayerToTeam(idTeam: number, playerRequest: PlayerRequest): Observable<string> {
+  addPlayerToTeam(idTeam: number, playerRequest: PlayerRequest): Observable<PlayerResponse> {
     if (!this.session.isAuth()) {
       return throwError(() => new Error('Usuario no autenticado'));
     }
@@ -135,7 +136,7 @@ export class TeamService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.put<string>(
+    return this.http.put<PlayerResponse>(
       `${this.url}/add-player/${idTeam}`,
       playerRequest,
       { headers }
@@ -162,11 +163,40 @@ export class TeamService {
     return this.http.get<TeamResponse>(`${this.url}/${idTeam}`, {
       headers
     }).pipe(
+      tap((response) => {
+         return response.players.map(player => {
+          player.name = player.name.toUpperCase();
+          player.lastName = player.lastName.toUpperCase();
+          return player;
+         });
+      } ),
       catchError((error: HttpErrorResponse) => {
         console.error('Error al obtener el equipo', error);
         return throwError(() => error);
       }))
   }
 
+
+  getAllStatsPlayersFromTeam(idTeam: number): Observable<TeamWithAllStatsPlayerResponse> {
+    if (!this.session.isAuth()) {
+      return new Observable<TeamWithAllStatsPlayerResponse>();
+    }
+
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.get<TeamWithAllStatsPlayerResponse>(`${this.url}/${idTeam}/players-stats`, {
+      headers
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al obtener las estadísticas de los jugadores del equipo', error);
+        return throwError(() => error);
+      })
+    );
+
+  }
 
 }

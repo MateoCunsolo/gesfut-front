@@ -1,0 +1,11 @@
+<section>@if (!therAreNotParticipants) {
+<div class="names">
+    <p [ngClass]="{tournamentClicked: isClicked}"  (click)="emitThatIsGlobalTeam()">JUGADORES GLOBALES</p>
+@for (participantsTournament of participantsTeam; track $index) {
+    <p  [ngClass]="{'tournamentClicked': selectedParticipantId == participantsTournament.idParticipant}"
+    (click)="showPlayers(participantsTournament.idParticipant)">{{participantsTournament.nameTournament}}</p>
+}
+</div>
+}@else {
+    <h3>EL EQUIPO NO ESTA INSCRIPTO A NINGUN TORNEO, SE MOSTRARAN LOS JUGADORES GLOBALES</h3>
+}</section>
