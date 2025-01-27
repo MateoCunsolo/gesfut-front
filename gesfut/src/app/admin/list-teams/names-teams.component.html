@@ -35,6 +35,7 @@
           (globalsPlayer)="onGlobalPlayerSelected($event)"
           (onlyGlobalTeams)="onOnlyGlobalTeams($event)"
           (codeTournament)="onCodeTournament($event)"
+          (tournamentSelected)="onNameTournament($event)"
         ></app-names-tournaments>
       </div>
 
@@ -44,6 +45,7 @@
         [isGlobalTeam]="isGlobalTeams"
         [idTeam]="idSelected"
         [code]="codeTouranment"
+        [nameTournament]="nameTouranemt"
         ></app-players>
       </div>
     </div>

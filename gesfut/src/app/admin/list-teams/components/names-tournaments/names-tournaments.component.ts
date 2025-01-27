@@ -17,6 +17,7 @@ export class NamesTournamentsComponent implements OnChanges {
   @Output() public globalsPlayer = new EventEmitter();
   @Output() public onlyGlobalTeams = new EventEmitter<boolean>();
   @Output() public codeTournament = new EventEmitter<string>();
+  @Output() public tournamentSelected = new EventEmitter<string>();
   @Input() public id: number = 0;
 
 
@@ -49,6 +50,7 @@ export class NamesTournamentsComponent implements OnChanges {
           this.therAreNotParticipants = false;
           this.participantSelected.emit(this.participantsTeam[0].idParticipant);
           this.codeTournament.emit(this.participantsTeam[0].codeTournament);
+          this.tournamentSelected.emit(this.participantsTeam[0].nameTournament);
           this.selectedParticipantId = this.participantsTeam[0].idParticipant;
           this.isClicked = false;
           this.onlyGlobalTeams.emit(false);
@@ -70,4 +72,9 @@ export class NamesTournamentsComponent implements OnChanges {
     this.onlyGlobalTeams.emit(false);
     this.participantSelected.emit(idParticipant);
   }
+
+  
+
+
+
 } 
