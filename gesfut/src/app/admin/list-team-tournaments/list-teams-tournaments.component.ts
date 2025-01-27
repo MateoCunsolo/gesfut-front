@@ -13,7 +13,7 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
 import { AlertService } from '../../core/services/alert.service';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { AddPlayerComponent } from '../add-player/add-player.component';
+import { AddPlayerComponent } from '../list-teams/components/players/add-player/add-player.component';
 @Component({
   selector: 'app-list-team-tournaments',
   standalone: true,
@@ -172,23 +172,23 @@ export class ListTeamsTournamentsComponent {
     let nameTeam = this.teamsNameFilter[this.indexName].name;
     let nameTournament = this.tournament.name;
 
-    if (nameTeam) {
-      this.alertService.confirmAlert("ELIMINAR JUGADOR DE " + nameTeam, "¿Estás seguro de que quieres eliminar el jugador " + nameParticipant + lastNameParticipant, "Eliminar").then((result) => {
-        if (result.isConfirmed) {
-          this.alertService.loadingAlert("ELIMINANDO A " + nameParticipant?.toLocaleUpperCase() + " " + lastNameParticipant?.toLocaleUpperCase() + "...");
-          this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
-            next: () => {
-              this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
-              this.alertService.successAlertTop("JUGADOR ELIMINADO");
-            },
-            error: (err) => {
-              this.alertService.errorAlert(err.error);
-            }
-          });
-        }
-      });
+    // if (nameTeam) {
+    //   this.alertService.confirmAlert("ELIMINAR JUGADOR DE " + nameTeam, "¿Estás seguro de que quieres eliminar el jugador " + nameParticipant + lastNameParticipant, "Eliminar").then((result) => {
+    //     if (result.isConfirmed) {
+    //       this.alertService.loadingAlert("ELIMINANDO A " + nameParticipant?.toLocaleUpperCase() + " " + lastNameParticipant?.toLocaleUpperCase() + "...");
+    //       this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
+    //         next: () => {
+    //           this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
+    //           this.alertService.successAlertTop("JUGADOR ELIMINADO");
+    //         },
+    //         error: (err) => {
+    //           this.alertService.errorAlert(err.error);
+    //         }
+    //       });
+    //     }
+    //   });
 
-    }
+    // }
 
 
   }
