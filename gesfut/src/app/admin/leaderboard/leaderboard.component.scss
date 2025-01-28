@@ -1,44 +1,51 @@
 section{
-    display: flex;
-    flex-direction: column;
-    width: 1280px;
-    margin: 0 auto;
-    height: calc(100vh - 210px);
-    color: var(--font-color);
-    background-color: var(--bg-color);
-    gap: 16px;
-    margin: 16px auto;
+  display: flex;
+  flex-direction: column;
+  width: 1280px;
+  margin: 0 auto;
+  height: calc(100vh - 210px);
+  color: var(--font-color);
+  background-color: var(--bg-color);
 }
 
 @media (max-width: 1280px) {
-    section {
-      width: 768px; 
-      height: calc(100vh - 160px); 
-      padding: 20px; 
-    }
+  section {
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 160px);
+    padding: 20px;
   }
-  
-  @media (max-width: 768px) {
-    section {
-      width: 100%; 
-      height: calc(100vh - 80px); 
-      padding: 10px; 
-    }
 }
 
+@media (max-width: 768px) {
+  section {
+    min-height: calc(100vh - 80px);
+    padding: 10px;
+  }
+}
+
+.title-container{
+  width: 96%;
+  margin: 0 auto;
+}
 .title {
-    font-size: var(--font-size-subtitle);
-    color: var(--primary-color);
+  font-size: 28px;
+  color: var(--primary-color);
+  margin: 8px 0;
 }
 
 hr {
-    border: none; 
-    height: 5px; 
-    background-color: var(--primary-color); 
+  border: none;
+  height: 5px;
+  background-color: var(--primary-color);
+  margin: 0 auto;
 }
 
 .overflow-x{
-    width: 100%;
+    width: 96%;
+    margin:0 auto;
+    position: relative;
+    top: 16px;
     @media (max-width: 768px) {
         overflow-x: scroll;
     }
@@ -47,12 +54,12 @@ hr {
 table{
     width: 100%;
     text-align: center;
-    border-collapse: collapse; 
+    border-collapse: collapse;
 }
 
 thead{
     font-size: var(--font-size-subtitle);
-    
+
 }
 th{
     border: 1px solid var(--primary-color);

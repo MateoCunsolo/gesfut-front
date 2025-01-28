@@ -1,7 +1,7 @@
 <section>
     <div class="title-container">
         <div>
-            <h2 class="title play-bold">Fecha N° {{selectedMatchDay+1}}</h2>
+            <h2 class="title play-bold">FECHA N° {{selectedMatchDay+1}}</h2>
             <div class="matchdays">
                 @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
                     <button class="base-button" (click)="updateMatchDay(day.numberOfMatchDay)">{{day.numberOfMatchDay+1}}</button>
