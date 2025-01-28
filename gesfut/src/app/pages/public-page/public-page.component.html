@@ -4,6 +4,7 @@
     <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
     <label for="btn-menu" class="icon-menu"></label>
     <nav class="menu" [class.open]="menuOpen">
+      <a (click)="changeComponent('recap')">INICIO</a>
       <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
       <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
       <a (click)="changeComponent('match-days')">FECHAS</a>
@@ -12,6 +13,7 @@
   </div>
 } @else {
   <nav class="nav-bar">
+    <a (click)="changeComponent('recap')">INICIO</a>
     <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
     <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
     <a (click)="changeComponent('match-days')">FECHAS</a>
@@ -28,4 +30,7 @@
 }
 @if(currentActiveComponent == 'prizes'){
   <app-prize-dashboard></app-prize-dashboard>
+}
+@if(currentActiveComponent== 'recap'){
+  <app-recap></app-recap>
 }
