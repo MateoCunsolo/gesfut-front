@@ -3,24 +3,24 @@ section{
     flex-direction: column;
     width: 1280px;
     margin: 0 auto;
-    height: calc(100vh - 210px);
+    min-height: calc(100vh - 210px);
     color: var(--font-color);
     background-color: var(--bg-color);
 }
 
 @media (max-width: 1280px) {
     section {
-      width: 768px; 
-      height: calc(100vh - 160px); 
-      padding: 20px; 
+      width: 768px;
+      min-height: calc(100vh - 160px);
+      padding: 20px;
     }
   }
-  
+
   @media (max-width: 768px) {
     section {
-      width: 100%; 
-      height: calc(100vh - 80px); 
-      padding: 10px; 
+      width: 100%;
+      min-height: calc(100vh - 80px);
+      padding: 10px;
     }
 }
 
@@ -77,9 +77,9 @@ section{
 }
 
 hr {
-    border: none; 
-    height: 5px; 
-    background-color: var(--primary-color); 
+    border: none;
+    height: 5px;
+    background-color: var(--primary-color);
     margin: 0 auto;
 }
 
@@ -120,7 +120,7 @@ hr {
         grid-column: 4/7;
     }
 }
-  
+
 @media (max-width: 576px) {
     .match{
         font-size: 12px;
@@ -139,8 +139,8 @@ hr {
 .versus {
     grid-column: 1/6;
     display: grid;
-    grid-template-columns: repeat(12, 1fr); 
-    border: 1px solid black; 
+    grid-template-columns: repeat(12, 1fr);
+    border: 1px solid black;
     font-weight: 500;
 }
 @media (max-width: 1280px) {
@@ -153,7 +153,7 @@ hr {
 .versus p:nth-child(1) {
     grid-column: 1 / 6;
     text-align: right;
-    border-right: 1px solid black;  
+    border-right: 1px solid black;
     padding: 4px;
 }
 
@@ -161,8 +161,8 @@ hr {
     grid-column: 6 / 7;
     text-align: center;
     background-color: white;
-    border-left: 1px solid black; ; 
-    border-right: 1px solid black;  
+    border-left: 1px solid black; ;
+    border-right: 1px solid black;
     padding: 4px;
 }
 
@@ -170,15 +170,15 @@ hr {
     grid-column: 7 / 8;
     text-align: center;
     background-color: white;
-    border-left: 1px solid black;  
-    border-right: 1px solid black; 
+    border-left: 1px solid black;
+    border-right: 1px solid black;
     padding: 4px;
 }
 
 .versus p:nth-child(4) {
     grid-column: 8 / 13;
     text-align: left;
-    border-left: 1px solid black;  
+    border-left: 1px solid black;
     padding: 4px;
 }
 
@@ -196,7 +196,7 @@ hr {
 
 .hour, .complex{
     border: 1px solid black;
-    padding: 4px; 
+    padding: 4px;
     text-align: center;
 }
 
