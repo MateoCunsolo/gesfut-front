@@ -64,11 +64,9 @@
         <i class="fas fa-envelope"></i>
       </div>
       <div class="error-message">
-        @if(registerForm.controls['email'].getError('required') &&
-        registerForm.controls['email'].touched) {
-        <p class="error">El correo electrónico es requerido</p>
-        } @if(registerForm.controls['email'].getError('email') &&
-        registerForm.controls['email'].touched) {
+        @if((registerForm.controls['email'].getError('invalidEmail') || 
+            registerForm.controls['email'].getError('email')) &&
+            registerForm.controls['email'].touched) {
         <p class="error">Ingrese un correo electrónico válido</p>
         }
       </div>

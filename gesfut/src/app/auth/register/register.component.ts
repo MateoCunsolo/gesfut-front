@@ -22,6 +22,11 @@ export class RegisterComponent {
   registerForm:FormGroup;
 
 
+  private emailValidator(control: { value: string }) {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(control.value) ? null : { invalidEmail: true };
+  }
+
   constructor(
     private fb:FormBuilder, 
     private authService:AuthService, 
@@ -30,7 +35,7 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, this.emailValidator.bind(this)]], // <-- Cambio aquí
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
