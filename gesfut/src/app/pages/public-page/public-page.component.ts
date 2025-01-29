@@ -16,11 +16,14 @@ import { LeaderboardComponent } from "../../admin/leaderboard/leaderboard.compon
 import { NavbarComponent } from "../../admin/navbar/navbar.component";
 import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/prize-dashboard.component";
 import { RecapComponent } from "../../guest/recap/recap.component";
+import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments/list-teams-tournaments.component";
+import { LastsMatchesComponent } from "../../admin/lasts-matches/lasts-matches.component";
+
 
 @Component({
   selector: 'app-public-page',
   standalone: true,
-  imports: [ListMatchDaysComponent, LeaderboardComponent, PrizeDashboardComponent, RecapComponent],
+  imports: [ListMatchDaysComponent, LeaderboardComponent, ListTeamsTournamentsComponent, LastsMatchesComponent, PrizeDashboardComponent, RecapComponent],
   templateUrl: './public-page.component.html',
   styleUrl: './public-page.component.scss',
 })

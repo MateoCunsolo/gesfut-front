@@ -47,7 +47,7 @@ export class DeleteComponent {
           if (this.verificationsDelete()) {
             if (result.isConfirmed) {
               this.deleteFromGlobal();
-            } else {
+            } else if (result.isDenied) {
               this.deleteFromTournament(idPlayerParticipant);
             }
           } else {
