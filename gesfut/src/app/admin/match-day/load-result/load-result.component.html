@@ -33,7 +33,7 @@
             <option *ngFor="let player of filteredPlayers" [ngValue]="player">
               {{ player.playerName }} {{player.playerLastName}}
             </option>
-          </select>          
+          </select>
         </div>
 
         <div class="container-box">
@@ -68,7 +68,7 @@
               <i class="fa-solid fa-star"></i>
             </label>
           </div>
-          
+
         </div>
 
         <button type="submit" class="base-button" [disabled]="statisticsForm.invalid">
@@ -89,7 +89,6 @@
           <thead>
             <tr>
               <th>EQUIPO</th>
-              <th>#</th>
               <th>JUGADOR</th>
               <th>G</th>
               <th>🟨</th>
@@ -100,7 +99,6 @@
           <tbody>
             <tr *ngFor="let event of events">
               <td>{{ event.team }}</td>
-              <td>{{ event.shirt }}</td>
               <td>{{ event.name }}</td>
               <td>{{ event.goals }}</td>
               <td>{{ event.yellowCard }}</td>

@@ -8,6 +8,7 @@ import { EventRequest, MatchRequest } from '../../models/matchRequest';
 import { DashboardService } from '../dashboard.service';
 import { TournamentService } from './tournament.service';
 import { AlertService } from '../alert.service';
+import { MatchDayResponse } from '../../models/tournamentResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +36,22 @@ export class MatchDaysService {
     ));
   }
 
+  getLastPlayedMatchDay(code:string){
+    return this.HttpClient.get<MatchDayResponse>(`${this.url}/match-days/${code}/lastPlayed`).pipe(
+      tap({
+        next: (response: MatchDayResponse) => {
+          return response;
+        },
+        error: (error:HttpErrorResponse) => {
+          return throwError(() => error);
+        }
+      }
+    ));
+  }
+
   closeMatchDay(idMatchDay: number, status: boolean): Observable<void> {
     const token = sessionStorage.getItem('token');
-  
+
     return this.HttpClient.put<void>(`${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`, null, {
       headers: {
         'Content-Type': 'application/json',
@@ -56,11 +70,11 @@ export class MatchDaysService {
       })
     );
   }
-  
+
   setEditResult(status:boolean){
     this.editResult.next(status);
   }
-  
+
 
   setActiveMatch(id:number){
     this.getMatchDetailed(id).subscribe({
@@ -112,11 +126,11 @@ export class MatchDaysService {
 
   generateMatchRequest(events: any[], matchId:number): MatchRequest {
     const eventRequests: EventRequest[] = [];
-  
+
     events.forEach(event => {
       if (event.goals > 0) {
         eventRequests.push({
-          playerParticipantId: event.id, 
+          playerParticipantId: event.id,
           type: 'GOAL',
           quantity: event.goals
         });
@@ -129,7 +143,7 @@ export class MatchDaysService {
           quantity: event.yellowCard
         });
       }
-  
+
       if (event.redCard > 0) {
         eventRequests.push({
           playerParticipantId: event.id,
@@ -146,7 +160,7 @@ export class MatchDaysService {
         });
       }
     });
-  
+
     return {
       matchId: matchId,
       events: eventRequests

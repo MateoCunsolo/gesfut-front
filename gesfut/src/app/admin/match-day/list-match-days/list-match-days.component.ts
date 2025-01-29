@@ -9,6 +9,7 @@ import { INITIAL_TOURNAMENT } from '../../../core/services/tournament/initial-to
 import { MatchDaysService } from '../../../core/services/tournament/match-days.service';
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SessionService } from '../../../core/services/manager/session.service';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class ListMatchDaysComponent implements OnInit{
     private dashboardService:DashboardService,
     private tournamentService:TournamentService,
     private matchDaysService:MatchDaysService,
-    private alertService:AlertService
+    private alertService:AlertService,
+    private sessionService:SessionService
   ) {}
 
   ngOnInit(): void {
@@ -66,7 +68,7 @@ export class ListMatchDaysComponent implements OnInit{
       if (result.isConfirmed) {
         this.closeMatchDay(status);
       }
-    });    
+    });
   }
 
   closeMatchDay(status: boolean){
@@ -81,11 +83,15 @@ export class ListMatchDaysComponent implements OnInit{
       }
     });
   }
-  
+
 
   editResult(id: number) {
     this.matchDaysService.setEditResult(true);
     this.matchDaysService.setActiveMatch(id);
     this.dashboardService.setActiveTournamentComponent('load-result');
+  }
+
+  isAuth():boolean{
+    return this.sessionService.isAuth();
   }
 }

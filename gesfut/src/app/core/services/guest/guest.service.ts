@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class GuestService {
 
-  activeComponent:BehaviorSubject<string>=new BehaviorSubject<string>('match-days');
+  activeComponent:BehaviorSubject<string>=new BehaviorSubject<string>('recap');
   activeComponent$ = this.activeComponent.asObservable();
   constructor() { }
 
