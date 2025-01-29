@@ -2,7 +2,11 @@
   <div class="title-container">
     @if(lastMatchDay){
     <h2 class="title play-bold">
-      RESUMEN FECHA N° {{ lastMatchDay.numberOfMatchDay + 1 }}
+      @if(!lastMatchDay.isFinished){
+        PRÓXIMA FECHA N° {{ lastMatchDay.numberOfMatchDay + 1 }}
+      }@else {
+        PRÓXIMA FECHA N° {{ lastMatchDay.numberOfMatchDay + 1 }}
+      }
     </h2>
     }
     <hr />
