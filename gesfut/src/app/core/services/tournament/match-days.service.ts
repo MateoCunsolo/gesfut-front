@@ -166,4 +166,41 @@ export class MatchDaysService {
       events: eventRequests
     };
   }
+
+  saveEditEvents(events: any[], matchId: number): void {
+    console.log('Array de eventos recibidos en el servicio:', events);
+    const request = this.generateMatchRequest(events, matchId);
+    const token = sessionStorage.getItem('token');
+
+    console.log(request);
+    this.HttpClient.put<MatchRequest>(`${this.url}/matches/update-result`, request, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      responseType: 'text' as 'json'
+    })
+    .pipe(
+      catchError(error => {
+        console.error('Error al guardar los eventos:', error);
+        return of('Error al guardar los eventos');
+      })
+    )
+    .subscribe({
+      next: (response) => {
+        console.log('Eventos guardados correctamente:', response);
+        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
+          next:() => {
+            this.alertService.successAlert('Partido guardado!')
+            this.dashboardService.setActiveTournamentComponent('match-days');
+            this.setEditResult(false);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error en la solicitud HTTP:', err);
+        this.alertService.errorAlert(err.error.error);
+      }
+    });
+  }
 }

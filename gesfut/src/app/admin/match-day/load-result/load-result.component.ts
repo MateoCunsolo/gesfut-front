@@ -122,7 +122,11 @@ export class LoadResultComponent {
   }
 
   saveEvents(){
-    this.matchDayService.saveEvents(this.events, this.currentMatch.id);
+    if(this.matchDayService.editResult.value === true){
+      this.matchDayService.saveEditEvents(this.events, this.currentMatch.id);
+    }else{
+      this.matchDayService.saveEvents(this.events, this.currentMatch.id);
+    }
   }
 
   get isMvpSelected() {
