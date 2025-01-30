@@ -44,7 +44,7 @@ export class AuthService {
       catchError((error: HttpErrorResponse) => {
         //this.logout();
         console.log(error);
-
+        alert('Error cors,' + error.error);
         return throwError(() => error);
       })
     );
