@@ -1,34 +1,32 @@
 <section>
-  <input
-    class="search-team"
-    type="text"
-    name=""
-    id=""
-    placeholder="BUSCAR EQUIPO"
-    (input)="searchTeams($event)"
-  />
-  <div class="container">
-    <div class="names">
+  <input class="search-team desktop" type="text" name="" id="" placeholder="BUSCAR EQUIPO"
+    (input)="searchTeams($event)" />    
+    <div>
+      <h3 class="search-team mobile">Selecionar equipo</h3>
+      <select class="search-team mobile" (change)="showParticipantsFromOptional($event)" [(ngModel)]="bindingSelect">
+        @for (team of particpantsFilter; track $index) {
+        <option [value]="team.idParticipant">{{ team.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="container">
+      <div class="names search-team desktop">
         @for (item of particpantsFilter; track item.idParticipant){
-        <p
-          [ngClass]="{ 'bg-primary-color': item.idParticipant === teamParticipant.idParticipant }"
-          (click)="showParticipants(item.idParticipant)"
-        >
+        <p [ngClass]="{ 'bg-primary-color': item.idParticipant === teamParticipant.idParticipant }"
+          (click)="showParticipants(item.idParticipant)">
           {{ item.name }}
         </p>
         }
       </div>
 
-    <div class="info">
+      <div class="info">
         @if (nameClicked) {
         <p class="team-name">{{ nameClicked }}</p>
         }
-      <div class="players">
-        <app-players-tournament
-        [teamParticipant]="teamParticipant"
-        [code]="tournament.code"
-        ></app-players-tournament>
+        <div class="players">
+          <app-players-tournament [teamParticipant]="teamParticipant" [code]="tournament.code"></app-players-tournament>
+        </div>
+      </div>
     </div>
-    </div>
-  </div>
 </section>
