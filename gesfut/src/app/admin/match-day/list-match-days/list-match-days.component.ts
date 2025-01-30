@@ -1,4 +1,4 @@
-import { MatchResponse } from '../../../core/models/tournamentResponse';
+import { MatchDayResponse, MatchResponse } from '../../../core/models/tournamentResponse';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TournamentResponseFull } from '../../../core/models/tournamentResponse';
@@ -11,50 +11,59 @@ import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 
-
 @Component({
   selector: 'app-list-match-days',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './list-match-days.component.html',
-  styleUrls: ['./list-match-days.component.scss']
+  styleUrls: ['./list-match-days.component.scss'],
 })
-export class ListMatchDaysComponent implements OnInit{
+export class ListMatchDaysComponent implements OnInit {
   tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
   selectedMatchDay = 0;
   code: string | null = null;
-  matchDayStatus:boolean = false;
+  matchDayStatus: boolean = false;
 
   constructor(
-    private dashboardService:DashboardService,
-    private tournamentService:TournamentService,
-    private matchDaysService:MatchDaysService,
-    private alertService:AlertService,
-    private sessionService:SessionService
+    private dashboardService: DashboardService,
+    private tournamentService: TournamentService,
+    private matchDaysService: MatchDaysService,
+    private alertService: AlertService,
+    private sessionService: SessionService
   ) {}
 
   ngOnInit(): void {
     this.tournamentService.currentTournament.subscribe({
-      next: (response:TournamentResponseFull) =>{
+      next: (response: TournamentResponseFull) => {
         this.tournament = response;
-        this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
+        const lastFinishedMatchDay = this.tournament.matchDays
+          .filter((matchday: MatchDayResponse) => matchday.isFinished)
+          .reduce((max: MatchDayResponse | undefined, matchday: MatchDayResponse) =>
+            !max || matchday.numberOfMatchDay > max.numberOfMatchDay ? matchday : max,
+            undefined
+          );
+        this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay+1: 0;
         this.sortMatchDays();
-      }
-    })
+      },
+    });
   }
 
   updateMatchDay(matchDay: number) {
     this.selectedMatchDay = matchDay;
-    this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
+    this.matchDayStatus =
+      this.tournament.matchDays[this.selectedMatchDay].isFinished;
+      console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)
   }
 
   private sortMatchDays(): void {
     if (this.tournament?.matchDays) {
-      this.tournament.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
+      this.tournament.matchDays.sort(
+        (a, b) => a.numberOfMatchDay - b.numberOfMatchDay
+      );
     }
   }
 
-  changeComponent(component:string){
+  changeComponent(component: string) {
     this.dashboardService.setActiveTournamentComponent(component);
   }
 
@@ -64,26 +73,37 @@ export class ListMatchDaysComponent implements OnInit{
   }
 
   async toggleMatchDayStatus(status: boolean) {
-    this.alertService.confirmAlert('¿Estás seguro?', 'Esta acción no se puede deshacer', 'Confirmar').then((result) => {
-      if (result.isConfirmed) {
-        this.closeMatchDay(status);
-      }
-    });
+    this.alertService
+      .confirmAlert(
+        '¿Estás seguro?',
+        'Esta acción no se puede deshacer',
+        'Confirmar'
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.closeMatchDay(status);
+        }
+      });
   }
 
-  closeMatchDay(status: boolean){
-    this.matchDaysService.closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status).subscribe({
-      next: () => {
-        if(status===true) this.alertService.successAlert('Fecha cerrada!');
-        if(status===false) this.alertService.successAlert('Fecha abierta!');
-        this.matchDayStatus = !status;
-      },
-      error: (errorResponse: HttpErrorResponse) => {
-        this.alertService.errorAlert(errorResponse.error.error);
-      }
-    });
+  closeMatchDay(status: boolean) {
+    this.matchDaysService
+      .closeMatchDay(
+        this.tournament.matchDays[this.selectedMatchDay].idMatchDay,
+        status
+      )
+      .subscribe({
+        next: () => {
+          if (status === true) this.alertService.successAlert('Fecha cerrada!');
+          if (status === false)
+            this.alertService.successAlert('Fecha abierta!');
+          this.matchDayStatus = !status;
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.alertService.errorAlert(errorResponse.error.error);
+        },
+      });
   }
-
 
   editResult(id: number) {
     this.matchDaysService.setEditResult(true);
@@ -91,7 +111,7 @@ export class ListMatchDaysComponent implements OnInit{
     this.dashboardService.setActiveTournamentComponent('load-result');
   }
 
-  isAuth():boolean{
+  isAuth(): boolean {
     return this.sessionService.isAuth();
   }
 }
