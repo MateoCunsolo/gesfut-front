@@ -2,19 +2,27 @@
   <button (click)="toDashboard(1)" class="back-button">ATRAS</button>
 
   @if(teamsGlobales.length>0){
-    <input
-        class="search-team"
-        type="text"
-        name=""
-        id=""
-        placeholder="BUSCAR EQUIPO"
-        (input)="searchTeams($event)"
-      />
-  <div class="container">
-    
-    <div class="names">
-      
+  <input
+    class="search-team desktop"
+    type="text"
+    placeholder="BUSCAR EQUIPO"
+    (input)="searchTeams($event)"
+  />
+  <div>
+    <h3 class="search-team mobile">Selecionar equipo</h3>
+    <select
+      class="search-team mobile"
+      (change)="showFromOptional($event)"
+      [(ngModel)]="bindingSelect"
+    >
+      @for (team of teamsGlobalesInputFilter; track $index) {
+      <option [value]="team.id">{{ team.name }}</option>
+      }
+    </select>
+  </div>
 
+  <div class="container">
+    <div class="names search-team desktop">
       @for (item of teamsGlobalesInputFilter; track $index){
       <p
         [ngClass]="{ 'bg-primary-color': $index == indexSelectedAfter }"
@@ -26,7 +34,7 @@
     </div>
 
     <div class="info">
-      <p class="team-name">{{ nameClicked }}</p>
+      <p class="team-name mobile">{{ nameClicked }}</p>
 
       <div class="names-tournaments">
         <app-names-tournaments
@@ -40,12 +48,12 @@
       </div>
 
       <div class="players">
-        <app-players 
-        [participantId]="selectedParticipantId"
-        [isGlobalTeam]="isGlobalTeams"
-        [idTeam]="idSelected"
-        [code]="codeTouranment"
-        [nameTournament]="nameTouranemt"
+        <app-players
+          [participantId]="selectedParticipantId"
+          [isGlobalTeam]="isGlobalTeams"
+          [idTeam]="idSelected"
+          [code]="codeTouranment"
+          [nameTournament]="nameTouranemt"
         ></app-players>
       </div>
     </div>
