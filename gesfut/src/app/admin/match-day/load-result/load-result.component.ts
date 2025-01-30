@@ -22,7 +22,7 @@ export class LoadResultComponent {
   selectedTeam: ParticipantResponse | null = null;
   filteredPlayers: PlayerParticipantResponse[] = [];
   selectedPlayer: PlayerParticipantResponse | null = null;
-  events: any[] = [];  // Array para almacenar los eventos
+  events: any[] = [];
 
   statisticsForm: FormGroup;
 
@@ -51,38 +51,38 @@ export class LoadResultComponent {
         this.filteredTeams = this.filteredTeams.filter(team => team.name !== 'Home Team' && team.name !== 'Away Team');
         this.selectedTeam = match.homeTeam;
         this.updateFilteredPlayers();
-        
+
         this.statisticsForm.get('team')?.valueChanges.subscribe(team => {
           this.selectedTeam = team;
           this.updateFilteredPlayers();
         });
-  
+
         this.statisticsForm.get('name')?.valueChanges.subscribe(player => {
           this.selectedPlayer = player;
         });
-  
+
         this.disableMvpIfNeeded();
       }
     })
   }
-  
+
   disableMvpIfNeeded() {
     if (this.events.some(event => event.mvp)) {
-      this.statisticsForm.get('mvp')?.disable(); 
+      this.statisticsForm.get('mvp')?.disable();
     } else {
-      this.statisticsForm.get('mvp')?.enable(); 
+      this.statisticsForm.get('mvp')?.enable();
     }
   }
 
   updateFilteredPlayers() {
     if (this.selectedTeam === this.currentMatch.homeTeam) {
-      this.filteredPlayers = this.currentMatch.homeTeam.playerParticipants;
+      this.filteredPlayers = this.currentMatch.homeTeam.playerParticipants.filter((player) => player.isActive === true);
       this.selectedPlayer = this.selectedTeam.playerParticipants[0];
     } else if (this.selectedTeam === this.currentMatch.awayTeam) {
-      this.filteredPlayers = this.currentMatch.awayTeam.playerParticipants;
+      this.filteredPlayers = this.currentMatch.awayTeam.playerParticipants.filter((player) => player.isActive === true);
       this.selectedPlayer = this.selectedTeam.playerParticipants[0];
     }
-    
+
     if (this.selectedPlayer) {
       this.statisticsForm.patchValue({
         id: this.selectedPlayer.id
@@ -99,15 +99,15 @@ export class LoadResultComponent {
 
   loadStatistics() {
     if (this.statisticsForm.valid) {
-      const selectedPlayer = this.statisticsForm.get('name')?.value;  
+      const selectedPlayer = this.statisticsForm.get('name')?.value;
       const newEvent = {
         ...this.statisticsForm.value,
         team: this.statisticsForm.get('team')?.value.name,
-        name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,  
-        id: selectedPlayer?.id  
+        name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,
+        id: selectedPlayer?.id
       };
       this.events.push(newEvent);
-      console.log(newEvent);  
+      console.log(newEvent);
       this.statisticsForm.reset({
         id: 0,
         name: '',
@@ -120,7 +120,7 @@ export class LoadResultComponent {
       });
     }
   }
-  
+
   saveEvents(){
     this.matchDayService.saveEvents(this.events, this.currentMatch.id);
   }
