@@ -6,6 +6,7 @@ import { MatchDaysService } from '../../../core/services/tournament/match-days.s
 import { INITIAL_DETAILED_MATCH } from '../../../core/services/tournament/initial-tournament';
 import { MatchDetailedResponse } from '../../../core/models/matchDetailedRequest';
 import { ParticipantResponse, PlayerParticipantResponse } from '../../../core/models/tournamentResponse';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
   selector: 'app-load-result',
@@ -29,7 +30,8 @@ export class LoadResultComponent {
   constructor(
     private matchDayService: MatchDaysService,
     private fb: FormBuilder,
-    private DashboardService:DashboardService
+    private DashboardService:DashboardService,
+    private alertService:AlertService
   ) {
     this.statisticsForm = this.fb.group({
       id: [0],
@@ -128,6 +130,21 @@ export class LoadResultComponent {
       this.matchDayService.saveEvents(this.events, this.currentMatch.id);
     }
   }
+
+  async deleteEvent(event: any) {
+    const result = await this.alertService.confirmAlert(
+      "¿Desea eliminar este evento?",
+      "Confirma para aceptar",
+      "Confirmar"
+    );
+
+    if (result.isConfirmed) {
+      this.events = this.events.filter(e => e !== event);
+      this.disableMvpIfNeeded();
+    }
+  }
+
+
 
   get isMvpSelected() {
     return this.events.some(event => event.mvp === true);
