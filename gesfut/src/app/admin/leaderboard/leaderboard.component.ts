@@ -9,11 +9,10 @@ import { TopYellowCardResponse } from '../../core/models/topYellowCardsResponse'
 import { TopRedCardsResponse } from '../../core/models/topRedCardsResponse';
 
 @Component({
-  selector: 'app-leaderboard',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './leaderboard.component.html',
-  styleUrl: './leaderboard.component.scss',
+    selector: 'app-leaderboard',
+    imports: [CommonModule],
+    templateUrl: './leaderboard.component.html',
+    styleUrl: './leaderboard.component.scss'
 })
 export class LeaderboardComponent {
   tournament: TournamentResponseFull = INITIAL_TOURNAMENT;

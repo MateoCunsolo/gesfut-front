@@ -13,7 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password2',
-  standalone: true,
   imports: [ReactiveFormsModule],
   styleUrl: '../login/login.component.scss',
   template: `

@@ -17,11 +17,10 @@ import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/priz
 import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.component';
 
 @Component({
-  selector: 'app-admin-tournament-page',
-  standalone: true,
-  imports: [CommonModule, AddPlayerComponent, NavbarComponent,CreateTeamComponent, ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent,PrizeDashboardComponent],
-  templateUrl: './admin-tournament-page.component.html',
-  styleUrl: './admin-tournament-page.component.scss'
+    selector: 'app-admin-tournament-page',
+    imports: [CommonModule, AddPlayerComponent, NavbarComponent, CreateTeamComponent, ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, PrizeDashboardComponent],
+    templateUrl: './admin-tournament-page.component.html',
+    styleUrl: './admin-tournament-page.component.scss'
 })
 export class AdminTournamentPageComponent implements AfterViewInit {
 

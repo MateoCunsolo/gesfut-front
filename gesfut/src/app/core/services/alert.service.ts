@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import { ParticipantResponse } from '../models/tournamentResponse';
 import { Observable, Subject } from 'rxjs';
-import {MatTimepickerModule} from '@angular/material/timepicker';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertService {
 
@@ -142,18 +141,7 @@ export class AlertService {
     return Swal.fire({
       title: 'Configuración de Partido',
       html: `
-        <div>
-          <label for="date">Selecciona la fecha </label>
-          <input type="text" id="date" class="form-control" placeholder="yyyy-mm-dd">
-        </div>
-        <div>
-          <label for="date">Selecciona la hora:</label>
-          <input type="text" id="hour" class="form-control" placeholder="HH:mm">
-        </div>
-        <div>
-          <label for="description">Descripción:</label>
-          <input type="text" id="description" class="form-control" placeholder="Añadir descripción" />
-        </div>
+        
       `,
       showCancelButton: true,
       confirmButtonText: 'Confirmar',

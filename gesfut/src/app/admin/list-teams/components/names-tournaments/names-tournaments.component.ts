@@ -14,11 +14,10 @@ import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-names-tournaments',
-  standalone: true,
-  imports: [NgClass, FormsModule],
-  templateUrl: './names-tournaments.component.html',
-  styleUrl: './names-tournaments.component.scss',
+    selector: 'app-names-tournaments',
+    imports: [NgClass, FormsModule],
+    templateUrl: './names-tournaments.component.html',
+    styleUrl: './names-tournaments.component.scss'
 })
 export class NamesTournamentsComponent implements OnChanges {
   @Output() public participantSelected = new EventEmitter<number>();

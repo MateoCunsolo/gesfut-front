@@ -13,11 +13,10 @@ import { CommonModule } from '@angular/common';
 import { AlertService } from '../../core/services/alert.service';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+    selector: 'app-register',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
   private alertService = inject(AlertService);

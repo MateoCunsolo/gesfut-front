@@ -1,10 +1,17 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
-import { INITIAL_DETAILED_MATCH} from './initial-tournament';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
+import { INITIAL_DETAILED_MATCH } from './initial-tournament';
 import { environment } from '../../../../enviroments/environment';
 import { MatchDetailedResponse } from '../../models/matchDetailedRequest';
-import { EventRequest, MatchRequest } from '../../models/matchRequest';
+import { EventRequest, MatchDateResponse, MatchRequest } from '../../models/matchRequest';
 import { DashboardService } from '../dashboard.service';
 import { TournamentService } from './tournament.service';
 import { AlertService } from '../alert.service';
@@ -12,80 +19,97 @@ import { MatchDayResponse } from '../../models/tournamentResponse';
 import { UpdateDateAndDescriptionRequest } from '../../models/UpdateDateAndDescriptionRequest';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MatchDaysService {
+  url: string = environment.apiUrl;
 
-  url:string=environment.apiUrl;
+  currentMatch: BehaviorSubject<MatchDetailedResponse> =
+    new BehaviorSubject<MatchDetailedResponse>(INITIAL_DETAILED_MATCH);
+  editResult: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  currentMatch: BehaviorSubject<MatchDetailedResponse> = new BehaviorSubject<MatchDetailedResponse>(INITIAL_DETAILED_MATCH);
-  editResult:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-  constructor(private HttpClient:HttpClient, private dashboardService:DashboardService, private tournamentService:TournamentService, private alertService:AlertService) { }
+  constructor(
+    private HttpClient: HttpClient,
+    private dashboardService: DashboardService,
+    private tournamentService: TournamentService,
+    private alertService: AlertService
+  ) {}
 
   getMatchDetailed(id: number): Observable<MatchDetailedResponse> {
-    return this.HttpClient.get<MatchDetailedResponse>(`${this.url}/matches/detailed/${id}`).pipe(
+    return this.HttpClient.get<MatchDetailedResponse>(
+      `${this.url}/matches/detailed/${id}`
+    ).pipe(
       tap({
         next: (response: MatchDetailedResponse) => {
           console.log(response);
           return response;
         },
-        error: (error:HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           return throwError(() => error);
-        }
-      }
-    ));
+        },
+      })
+    );
   }
 
-  getLastPlayedMatchDay(code:string){
-    return this.HttpClient.get<MatchDayResponse>(`${this.url}/match-days/${code}/lastPlayed`).pipe(
+  getLastPlayedMatchDay(code: string) {
+    return this.HttpClient.get<MatchDayResponse>(
+      `${this.url}/match-days/${code}/lastPlayed`
+    ).pipe(
       tap({
         next: (response: MatchDayResponse) => {
           return response;
         },
-        error: (error:HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           return throwError(() => error);
-        }
-      }
-    ));
+        },
+      })
+    );
   }
 
   closeMatchDay(idMatchDay: number, status: boolean): Observable<void> {
     const token = sessionStorage.getItem('token');
 
-    return this.HttpClient.put<void>(`${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`, null, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+    return this.HttpClient.put<void>(
+      `${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }).pipe(
-      catchError(error => {
+    ).pipe(
+      catchError((error) => {
         return throwError(() => error);
       }),
-      tap(() => { // tap no suscribe, sólo permite ejecutar código adicional
-        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
-          next: () => {
-            this.dashboardService.setActiveTournamentComponent('match-days');
-          }
-        });
+      tap(() => {
+        // tap no suscribe, sólo permite ejecutar código adicional
+        this.tournamentService
+          .getTournamentFull(
+            this.tournamentService.currentTournament.value.code
+          )
+          .subscribe({
+            next: () => {
+              this.dashboardService.setActiveTournamentComponent('match-days');
+            },
+          });
       })
     );
   }
 
-  setEditResult(status:boolean){
+  setEditResult(status: boolean) {
     this.editResult.next(status);
   }
 
-
-  setActiveMatch(id:number){
+  setActiveMatch(id: number) {
     this.getMatchDetailed(id).subscribe({
-      next: (response:MatchDetailedResponse) => {
+      next: (response: MatchDetailedResponse) => {
         this.currentMatch.next(response);
       },
       error: (error) => {
-        return throwError(()=> error);
-      }
-    })
+        return throwError(() => error);
+      },
+    });
   }
 
   saveEvents(events: any[], matchId: number): void {
@@ -94,46 +118,56 @@ export class MatchDaysService {
     const token = sessionStorage.getItem('token');
 
     console.log(request);
-    this.HttpClient.post<MatchRequest>(`${this.url}/matches/load-result`, request, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      responseType: 'text' as 'json'
-    })
-    .pipe(
-      catchError(error => {
-        console.error('Error al guardar los eventos:', error);
-        return of('Error al guardar los eventos');
-      })
-    )
-    .subscribe({
-      next: (response) => {
-        console.log('Eventos guardados correctamente:', response);
-        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
-          next:() => {
-            this.alertService.successAlert('Partido guardado!')
-            this.dashboardService.setActiveTournamentComponent('match-days');
-            this.setEditResult(false);
-          }
-        });
-      },
-      error: (err) => {
-        console.error('Error en la solicitud HTTP:', err);
-        this.alertService.errorAlert(err.error.error);
+    this.HttpClient.post<MatchRequest>(
+      `${this.url}/matches/load-result`,
+      request,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'text' as 'json',
       }
-    });
+    )
+      .pipe(
+        catchError((error) => {
+          console.error('Error al guardar los eventos:', error);
+          return of('Error al guardar los eventos');
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Eventos guardados correctamente:', response);
+          this.tournamentService
+            .getTournamentFull(
+              this.tournamentService.currentTournament.value.code
+            )
+            .subscribe({
+              next: () => {
+                this.alertService.successAlert('Partido guardado!');
+                this.dashboardService.setActiveTournamentComponent(
+                  'match-days'
+                );
+                this.setEditResult(false);
+              },
+            });
+        },
+        error: (err) => {
+          console.error('Error en la solicitud HTTP:', err);
+          this.alertService.errorAlert(err.error.error);
+        },
+      });
   }
 
-  generateMatchRequest(events: any[], matchId:number): MatchRequest {
+  generateMatchRequest(events: any[], matchId: number): MatchRequest {
     const eventRequests: EventRequest[] = [];
 
-    events.forEach(event => {
+    events.forEach((event) => {
       if (event.goals > 0) {
         eventRequests.push({
           playerParticipantId: event.id,
           type: 'GOAL',
-          quantity: event.goals
+          quantity: event.goals,
         });
       }
 
@@ -141,7 +175,7 @@ export class MatchDaysService {
         eventRequests.push({
           playerParticipantId: event.id,
           type: 'YELLOW_CARD',
-          quantity: event.yellowCard
+          quantity: event.yellowCard,
         });
       }
 
@@ -149,22 +183,22 @@ export class MatchDaysService {
         eventRequests.push({
           playerParticipantId: event.id,
           type: 'RED_CARD',
-          quantity: event.redCard
+          quantity: event.redCard,
         });
       }
 
-      if(event.mvp===true){
+      if (event.mvp === true) {
         eventRequests.push({
           playerParticipantId: event.id,
           type: 'MVP',
-          quantity: 1
+          quantity: 1,
         });
       }
     });
 
     return {
       matchId: matchId,
-      events: eventRequests
+      events: eventRequests,
     };
   }
 
@@ -174,49 +208,76 @@ export class MatchDaysService {
     const token = sessionStorage.getItem('token');
 
     console.log(request);
-    this.HttpClient.put<MatchRequest>(`${this.url}/matches/update-result`, request, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      responseType: 'text' as 'json'
-    })
-    .pipe(
-      catchError(error => {
-        console.error('Error al guardar los eventos:', error);
-        return of('Error al guardar los eventos');
-      })
-    )
-    .subscribe({
-      next: (response) => {
-        console.log('Eventos guardados correctamente:', response);
-        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
-          next:() => {
-            this.alertService.successAlert('Partido guardado!')
-            this.dashboardService.setActiveTournamentComponent('match-days');
-            this.setEditResult(false);
-          }
-        });
-      },
-      error: (err) => {
-        console.error('Error en la solicitud HTTP:', err);
-        this.alertService.errorAlert(err.error.error);
+    this.HttpClient.put<MatchRequest>(
+      `${this.url}/matches/update-result`,
+      request,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'text' as 'json',
       }
-    });
+    )
+      .pipe(
+        catchError((error) => {
+          console.error('Error al guardar los eventos:', error);
+          return of('Error al guardar los eventos');
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Eventos guardados correctamente:', response);
+          this.tournamentService
+            .getTournamentFull(
+              this.tournamentService.currentTournament.value.code
+            )
+            .subscribe({
+              next: () => {
+                this.alertService.successAlert('Partido guardado!');
+                this.dashboardService.setActiveTournamentComponent(
+                  'match-days'
+                );
+                this.setEditResult(false);
+              },
+            });
+        },
+        error: (err) => {
+          console.error('Error en la solicitud HTTP:', err);
+          this.alertService.errorAlert(err.error.error);
+        },
+      });
   }
 
-  updateDateAndDescriptionMatch(matchId:number, request:UpdateDateAndDescriptionRequest):Observable<void>{
+  updateDateAndDescriptionMatch(
+    matchId: number,
+    request: UpdateDateAndDescriptionRequest
+  ): Observable<void> {
     const token = sessionStorage.getItem('token');
 
-    return this.HttpClient.patch<void>(`${this.url}/matches/update-date-and-description/${matchId}`, request, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+    return this.HttpClient.patch<void>(
+      `${this.url}/matches/update-date-and-description/${matchId}`,
+      request,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }).pipe(
-      catchError(error => {
+    ).pipe(
+      catchError((error) => {
         return throwError(() => error);
       })
     );
+  }
+
+  updateDateMatch(date: string, idMatch: number): Observable<MatchDateResponse> {
+    const token = sessionStorage.getItem('token');
+    return this.HttpClient.patch<MatchDateResponse>(
+      `${this.url}/matches/update-date/${idMatch}`,
+      { localDateTime: date },  // ✅ Clave correcta
+      { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+    );
+    
   }
 }

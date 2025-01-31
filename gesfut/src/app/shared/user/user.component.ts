@@ -3,11 +3,10 @@ import { SessionService } from '../../core/services/manager/session.service'
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user',
-  standalone: true,
-  imports: [],
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+    selector: 'app-user',
+    imports: [],
+    templateUrl: './user.component.html',
+    styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnDestroy {
   isMenuOpen = false;

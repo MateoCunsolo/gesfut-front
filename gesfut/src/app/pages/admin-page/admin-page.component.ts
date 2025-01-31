@@ -12,11 +12,10 @@ import { TeamResponse } from '../../core/models/teamResponse';
 import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.component';
 
 @Component({
-  selector: 'app-admin-page',
-  standalone: true,
-  imports: [DashboardComponent, NamesTeamsComponent, CreateTournamentComponent, CreateTeamComponent, ListTournamentsComponent],
-  templateUrl: './admin-page.component.html',
-  styleUrl: './admin-page.component.scss'
+    selector: 'app-admin-page',
+    imports: [DashboardComponent, NamesTeamsComponent, CreateTournamentComponent, CreateTeamComponent, ListTournamentsComponent],
+    templateUrl: './admin-page.component.html',
+    styleUrl: './admin-page.component.scss'
 })
 export class AdminPageComponent {
 

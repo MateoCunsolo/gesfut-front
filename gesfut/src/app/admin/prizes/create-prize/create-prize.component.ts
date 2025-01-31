@@ -13,11 +13,10 @@ import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-create-prize',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './create-prize.component.html',
-  styleUrl: './create-prize.component.scss',
+    selector: 'app-create-prize',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './create-prize.component.html',
+    styleUrl: './create-prize.component.scss'
 })
 export class CreatePrizeComponent {
   prizesForm: FormGroup;

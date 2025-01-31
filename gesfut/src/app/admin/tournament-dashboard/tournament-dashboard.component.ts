@@ -8,11 +8,10 @@ import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from '../../core/services/tournament/initial-tournament';
 
 @Component({
-  selector: 'app-tournament-dashboard',
-  standalone: true,
-  imports: [RouterModule],
-  templateUrl: './tournament-dashboard.component.html',
-  styleUrl: './tournament-dashboard.component.scss'
+    selector: 'app-tournament-dashboard',
+    imports: [RouterModule],
+    templateUrl: './tournament-dashboard.component.html',
+    styleUrl: './tournament-dashboard.component.scss'
 })
 
 export class TournamentDashboardComponent {

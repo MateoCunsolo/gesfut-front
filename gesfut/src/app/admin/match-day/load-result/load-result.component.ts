@@ -9,11 +9,10 @@ import { ParticipantResponse, PlayerParticipantResponse } from '../../../core/mo
 import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
-  selector: 'app-load-result',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './load-result.component.html',
-  styleUrls: ['./load-result.component.scss']
+    selector: 'app-load-result',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    templateUrl: './load-result.component.html',
+    styleUrls: ['./load-result.component.scss']
 })
 export class LoadResultComponent {
 
