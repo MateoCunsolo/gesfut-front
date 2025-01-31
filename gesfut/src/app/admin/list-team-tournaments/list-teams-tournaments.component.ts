@@ -1,209 +1,101 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MatchResponse, ParticipantResponse, PlayerParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
-import { SessionService } from '../../core/services/manager/session.service';
-import { TeamResponse } from '../../core/models/teamResponse';
-import { AdminService } from '../../core/services/manager/admin.service';
-import { TeamService } from '../../core/services/tournament/team.service';
-import { ParticipantShortResponse } from '../../core/models/participantShortResponse';
 import { NgClass } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
-import { AlertService } from '../../core/services/alert.service';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { AddPlayerComponent } from '../list-teams/components/players/add-player/add-player.component';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { ParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
+import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
+import { NamesTournamentsComponent } from '../list-teams/components/names-tournaments/names-tournaments.component';
+import { PlayersComponent } from '../list-teams/components/players/players.component';
+import { PlayersTournamentComponent } from './players-tournament/players-tournament.component';
+
 @Component({
   selector: 'app-list-team-tournaments',
   standalone: true,
-  imports: [NgClass, CommonModule, FormsModule,AddPlayerComponent],
+  imports: [NgClass, CommonModule, FormsModule, PlayersTournamentComponent],
   templateUrl: './list-teams-tournaments.component.html',
   styleUrl: './list-teams-tournaments.component.scss'
 })
 export class ListTeamsTournamentsComponent {
 
-  // Inyección de servicios
-  private activedRoute = inject(ActivatedRoute);
-  private sessionService = inject(SessionService);
-  private torunameService = inject(TournamentService);
   private dashboardService = inject(DashboardService);
   private tournamentService = inject(TournamentService);
-  private alertService = inject(AlertService);
-  teamService = inject(TeamService);
 
-  // nuevas variables
-  tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
-  firstParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
-  teamsNameFilter: { name: string, idTeam: number }[] = [];
-  code: string = '';
-  isAuth: boolean = false;
-  nameClicked: boolean = false;
-  indexName: number = 0;
-  searchTerm: string = '';
-  teamNameClicked: string = '';
-  teams: TeamResponse[] = [];
-  addPlayerClicked: Boolean = false;
-  isOptionGlobal: boolean = false;
-  selectToAddInTournament:TeamResponse = {} as TeamResponse;
+  protected tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
+  protected participants: ParticipantResponse[] = [];
+  protected particpantsFilter: ParticipantResponse[] = [];
+  protected teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
+  protected nameClicked: string = '';
+  protected indexSelectedAfter = 0;
+  protected inputText: string = '';
+  protected lastClicked: number = 0;
+  bindingSelect: number = 0;
   constructor() { }
 
-  ngOnInit(): void {
-    if (this.sessionService.isAuth()) { this.isAuth = true; } else { this.isAuth = false; }
-    if (this.activedRoute.snapshot.paramMap.get('code')) { this.code = this.activedRoute.snapshot.paramMap.get('code') || ''; }
+  ngOnInit() {
 
-    this.torunameService.currentTournament.subscribe({
-      next: (response: TournamentResponseFull) => {
-        this.tournament = response;
-        this.tournament.participants = this.tournament.participants.filter(participant => participant.name.toLowerCase() !== 'free');
-        this.tournament.participants.sort((a, b) => a.name.localeCompare(b.name));
-        this.tournament.participants.forEach(participant => {
-          participant.playerParticipants.sort((a, b) => a.shirtNumber - b.shirtNumber);
-        });
-
-        this.firstParticipant = this.tournament.participants[0];
-        this.teamsNameFilter = this.tournament.participants.map(participant => ({
-          name: participant.name,
-          idTeam: participant.idTeam
-        }));
-
-        this.teamNameClicked = this.firstParticipant.name;
-        this.nameClicked = true;
-        this.indexName = this.teamsNameFilter.findIndex(team => team.name === this.teamNameClicked);
-      }
-    });
-  }
-
-  // En ListTeamsTournamentsComponent
-  getTeamResponseFromParticipant(participant: ParticipantResponse) {
-    this.teamService.getTeam(participant.idTeam).subscribe({
+    this.tournamentService.getLastTeamClicked().subscribe({
       next: (response) => {
-        this.selectToAddInTournament = response;
+        this.lastClicked = response;
+        this.bindingSelect = response;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+
+    this.tournamentService.currentTournament.subscribe({
+      next: (response) => {
+        this.tournament = response;
+        this.participants = response.participants;
+        this.particpantsFilter = response.participants;
+        this.teamParticipant = this.participants[this.lastClicked];
+        this.bindingSelect = this.participants[this.lastClicked].idParticipant;
+        this.nameClicked = this.participants[this.lastClicked].name;
+      },
+      error: (error) => {
+        console.error(error);
       }
     });
   }
 
-
-  handleParticipantRefresh($event: ParticipantResponse) {
-    this.addPlayerClicked = false;
-    // Actualizar la lista de jugadores
-    this.firstParticipant = $event;
+  searchTeams($event: Event) {
+    this.inputText = ($event.target as HTMLInputElement).value.toLowerCase();
+        this.particpantsFilter = this.participants.filter(team => 
+      team.name.toLowerCase().includes(this.inputText)
+    );
+      this.updateSelectedIndex();
   }
-
-  formHandler($event: Boolean) {
-    this.addPlayerClicked = $event;
-  }
-
-  addPlayer() {
-    this.addPlayerClicked = true;
-    this.isOptionGlobal = false;
-    this.getTeamResponseFromParticipant(this.firstParticipant);
-  }
-
-  toLastMatchs() {
-    this.alertService.loadingAlert('OBTENIENDO PARTIDOS DEL EQUIPO ' + this.teamNameClicked);
-    let idParticipant = this.tournament.participants.find(participant => participant.name === this.teamNameClicked);
-    if (!idParticipant) {
-      return;
+  
+  private updateSelectedIndex() {
+    if (this.teamParticipant) {
+      this.indexSelectedAfter = this.particpantsFilter.findIndex(
+        team => team.idParticipant === this.teamParticipant.idParticipant
+      );
     } else {
-
-      this.tournamentService.getMatchesAllForParticipant(this.tournament.code, idParticipant.idParticipant).subscribe({
-        next: (response: MatchResponse[]) => {
-          sessionStorage.setItem('teamNameMatches', this.teamNameClicked);
-          sessionStorage.setItem('matches', JSON.stringify(response));
-          localStorage.removeItem('lastTournamentClickedName');
-          localStorage.removeItem('lastTournamentClicked');
-          this.dashboardService.setActiveTournamentComponent('lasts-matches');
-          this.alertService.closeLoadingAlert();
-        }
-      });
+      this.indexSelectedAfter = -1;
     }
   }
 
-
-
-
-
-  getParticipantsAllByIdTeam(id: number, indexName: number) {
-    this.nameClicked = true;
-    this.indexName = indexName;
-    this.teamNameClicked = this.teamsNameFilter[indexName].name;
-    this.firstParticipant = this.tournament.participants.find(participant => participant.idTeam === id) || INITIAL_PARTICIPANT;
-    this.getTeamResponseFromParticipant(this.firstParticipant);
+  showParticipants(idParticipant: number) {
+    const participant = this.participants.find(p => p.idParticipant === idParticipant);
+    if (participant) {
+      this.nameClicked = participant.name;
+      this.teamParticipant = participant;
+      this.tournamentService.setLastTeamClicked(this.participants.indexOf(participant));
+      this.updateSelectedIndex();
+      this.bindingSelect = idParticipant;
+    }
   }
 
-
-  filterTeams() {
-    const term = this.searchTerm.toLowerCase();
-    this.nameClicked = false;
-    this.teamsNameFilter = this.tournament.participants
-      .filter(participant => participant.name.toLowerCase().includes(term))
-      .map(participant => ({
-        name: participant.name,
-        idTeam: participant.idTeam
-      }))
-
-    this.teamsNameFilter.forEach((team, index) => {
-      if (team.name === this.teamNameClicked) {
-        this.nameClicked = true;
-        this.indexName = index;
-      }
-    });
-
-  }
-
-  deleteTeamFormTournament(idTeam: number) {
-    let nameTeam = this.teamsNameFilter.find(team => team.idTeam === idTeam)?.name;
-    if (nameTeam) {
-      alert("¿Estás seguro de que quieres eliminar el equipo " + nameTeam + " del torneo?");
+  showParticipantsFromOptional(idParticipant: Event) {
+    let idParticipantValue = (idParticipant.target as HTMLInputElement).value;
+    if (parseInt(idParticipantValue) === 0) {
+      this.showParticipants(this.teamParticipant.idParticipant);
+    } else {
+      this.showParticipants(parseInt(idParticipantValue));
     }
-    alert("El equipo con id " + idTeam + " ha sido eliminado del torneo \n FALTA IMPLEMENTACION.");
-  }
-
-  deletePlayerParticipantFromTeam(idPlayer: number) {
-
-    if (this.validations(idPlayer)) {
-      return;
-    }
-
-    let idPlayerParticipant = idPlayer;
-    let nameParticipant = this.firstParticipant.playerParticipants.find(player => player.id === idPlayerParticipant)?.playerName;
-    let lastNameParticipant = this.firstParticipant.playerParticipants.find(player => player.id === idPlayerParticipant)?.playerLastName;
-    let nameTeam = this.teamsNameFilter[this.indexName].name;
-    let nameTournament = this.tournament.name;
-
-    // if (nameTeam) {
-    //   this.alertService.confirmAlert("ELIMINAR JUGADOR DE " + nameTeam, "¿Estás seguro de que quieres eliminar el jugador " + nameParticipant + lastNameParticipant, "Eliminar").then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.alertService.loadingAlert("ELIMINANDO A " + nameParticipant?.toLocaleUpperCase() + " " + lastNameParticipant?.toLocaleUpperCase() + "...");
-    //       this.torunameService.changeStatusPlayer(this.code, idPlayerParticipant, false).subscribe({
-    //         next: () => {
-    //           this.firstParticipant.playerParticipants = this.firstParticipant.playerParticipants.filter(player => player.id !== idPlayerParticipant);
-    //           this.alertService.successAlertTop("JUGADOR ELIMINADO");
-    //         },
-    //         error: (err) => {
-    //           this.alertService.errorAlert(err.error);
-    //         }
-    //       });
-    //     }
-    //   });
-
-    // }
-
-
-  }
-
-  validations(idPlayer: number): boolean {
-    let player = this.firstParticipant.playerParticipants.find(player => player.id === idPlayer);
-    if (player?.isCaptain) {
-      this.alertService.errorAlert("No puedes eliminar a un capitán");
-      return true;
-    }
-    if (player?.isGoalKeeper) {
-      this.alertService.errorAlert("No puedes eliminar a un portero");
-      return true;
-    }
-    return false;
   }
 
 }

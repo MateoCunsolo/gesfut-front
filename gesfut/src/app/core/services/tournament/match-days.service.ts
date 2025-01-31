@@ -8,6 +8,8 @@ import { EventRequest, MatchRequest } from '../../models/matchRequest';
 import { DashboardService } from '../dashboard.service';
 import { TournamentService } from './tournament.service';
 import { AlertService } from '../alert.service';
+import { MatchDayResponse } from '../../models/tournamentResponse';
+import { UpdateDateAndDescriptionRequest } from '../../models/UpdateDateAndDescriptionRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +37,22 @@ export class MatchDaysService {
     ));
   }
 
+  getLastPlayedMatchDay(code:string){
+    return this.HttpClient.get<MatchDayResponse>(`${this.url}/match-days/${code}/lastPlayed`).pipe(
+      tap({
+        next: (response: MatchDayResponse) => {
+          return response;
+        },
+        error: (error:HttpErrorResponse) => {
+          return throwError(() => error);
+        }
+      }
+    ));
+  }
+
   closeMatchDay(idMatchDay: number, status: boolean): Observable<void> {
     const token = sessionStorage.getItem('token');
-  
+
     return this.HttpClient.put<void>(`${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`, null, {
       headers: {
         'Content-Type': 'application/json',
@@ -56,11 +71,11 @@ export class MatchDaysService {
       })
     );
   }
-  
+
   setEditResult(status:boolean){
     this.editResult.next(status);
   }
-  
+
 
   setActiveMatch(id:number){
     this.getMatchDetailed(id).subscribe({
@@ -112,11 +127,11 @@ export class MatchDaysService {
 
   generateMatchRequest(events: any[], matchId:number): MatchRequest {
     const eventRequests: EventRequest[] = [];
-  
+
     events.forEach(event => {
       if (event.goals > 0) {
         eventRequests.push({
-          playerParticipantId: event.id, 
+          playerParticipantId: event.id,
           type: 'GOAL',
           quantity: event.goals
         });
@@ -129,7 +144,7 @@ export class MatchDaysService {
           quantity: event.yellowCard
         });
       }
-  
+
       if (event.redCard > 0) {
         eventRequests.push({
           playerParticipantId: event.id,
@@ -146,10 +161,62 @@ export class MatchDaysService {
         });
       }
     });
-  
+
     return {
       matchId: matchId,
       events: eventRequests
     };
+  }
+
+  saveEditEvents(events: any[], matchId: number): void {
+    console.log('Array de eventos recibidos en el servicio:', events);
+    const request = this.generateMatchRequest(events, matchId);
+    const token = sessionStorage.getItem('token');
+
+    console.log(request);
+    this.HttpClient.put<MatchRequest>(`${this.url}/matches/update-result`, request, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      responseType: 'text' as 'json'
+    })
+    .pipe(
+      catchError(error => {
+        console.error('Error al guardar los eventos:', error);
+        return of('Error al guardar los eventos');
+      })
+    )
+    .subscribe({
+      next: (response) => {
+        console.log('Eventos guardados correctamente:', response);
+        this.tournamentService.getTournamentFull(this.tournamentService.currentTournament.value.code).subscribe({
+          next:() => {
+            this.alertService.successAlert('Partido guardado!')
+            this.dashboardService.setActiveTournamentComponent('match-days');
+            this.setEditResult(false);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error en la solicitud HTTP:', err);
+        this.alertService.errorAlert(err.error.error);
+      }
+    });
+  }
+
+  updateDateAndDescriptionMatch(matchId:number, request:UpdateDateAndDescriptionRequest):Observable<void>{
+    const token = sessionStorage.getItem('token');
+
+    return this.HttpClient.patch<void>(`${this.url}/matches/update-date-and-description/${matchId}`, request, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
   }
 }

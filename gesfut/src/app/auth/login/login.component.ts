@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +18,13 @@ export class LoginComponent {
   loginForm: FormGroup;
   error: string = '';
   redActive = false;
-
+  protected tryLogin = false;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private sessionService: SessionService,
     private dashboardService: DashboardService,
+    private alertService: AlertService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -41,11 +43,14 @@ export class LoginComponent {
         },
         (error) => {
           this.error = error.error.error;
+          this.alertService.errorAlert(this.error);
           this.redActive = true;
+          this.tryLogin = true;
         }
       );
     }else{
-      this.error = 'Campos inválidos';
+      // this.error = 'Campos inválidos';
+      this.alertService.errorAlert('Formulario inválido');
     }
   }
 
@@ -54,7 +59,9 @@ export class LoginComponent {
   }
 
 
-
+  toForgotPassword() {
+    this.router.navigate(['auth/reset-password']);
+  }
 
 }
 

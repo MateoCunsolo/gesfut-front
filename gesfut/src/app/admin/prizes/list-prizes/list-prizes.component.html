@@ -52,8 +52,10 @@
             @if(expandedIndex===$index){
               <div class="accordion-body">
                 <span class="accordion-description">{{item.description}}</span>
-                <i class="accordion-button fa-solid fa-pencil"></i>
-                <i class="accordion-button fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
+                @if(isAuth()){
+                  <i class="accordion-button fa-solid fa-pencil"></i>
+                  <i class="accordion-button fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
+                }
               </div>
             }
           </div>
@@ -77,9 +79,11 @@
       </div>
     }
   </article>
-  <div class="button-container">
-    <button class="base-button" (click)="setView('create')">Agregar premios</button>
-  </div>
+  @if(isAuth()){
+    <div class="button-container">
+      <button class="base-button" (click)="setView('create')">Agregar premios</button>
+    </div>
+  }
 
 </section>
 

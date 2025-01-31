@@ -6,11 +6,12 @@ import { PlayersComponent } from './components/players/players.component';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { NgClass } from '@angular/common';
 import { AddPlayerComponent } from "./components/players/add-player/add-player.component";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-names-teams',
   standalone: true,
-  imports: [NamesTournamentsComponent, PlayersComponent, NgClass],
+  imports: [NamesTournamentsComponent, PlayersComponent, NgClass, FormsModule],
   templateUrl: './names-teams.component.html',
   styleUrl: './names-teams.component.scss'
 })
@@ -18,6 +19,7 @@ export class NamesTeamsComponent implements OnInit {
   public selectedParticipantId: number | null = null;
   protected idSelected: number = 0;
   protected nameClicked: string = '';
+  protected nameTouranemt: string = '';
   private adminService = inject(AdminService);
   private dashBoardService = inject(DashboardService);
   protected teamsGlobales: TeamResponse[] = [];
@@ -28,6 +30,7 @@ export class NamesTeamsComponent implements OnInit {
   protected thereAreNotTeams: boolean = false;
   protected isGlobalTeams: boolean = false;
   protected codeTouranment: string = '';
+  bindingSelect : number = 0;
   constructor() {}
 
   ngOnInit() {
@@ -36,6 +39,7 @@ export class NamesTeamsComponent implements OnInit {
       this.teamsGlobalesInputFilter = response;
       if (this.teamsGlobales.length > 0) {
         this.idSelected = this.teamsGlobales[0].id;
+        this.bindingSelect = this.idSelected;
         this.nameClicked = this.teamsGlobales[0].name;
       }else{
         this.thereAreNotTeams = true;
@@ -47,10 +51,21 @@ export class NamesTeamsComponent implements OnInit {
     this.isGlobalTeams = event;
   }
 
+  showFromOptional(idEvent: Event) {
+    let id = (idEvent.target as HTMLInputElement).value;
+    if (parseInt(id) != 0) {
+      this.showParticipants(parseInt(id));
+    }else{
+      this.showParticipants(this.idSelected);
+    }
+  }
+
+
   showParticipants(id: number) {
     this.idSelected = id;
     this.nameClicked = this.teamsGlobales.find((team) => team.id === id)?.name || '';
     this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === id);
+    this.bindingSelect = this.idSelected;
     console.log('ID de equipo seleccionado:', this.idSelected, 'index:', this.indexSelectedAfter);
   }
 
@@ -83,6 +98,10 @@ export class NamesTeamsComponent implements OnInit {
   
   onCodeTournament(code: string) {
     this.codeTouranment = code;
+  }
+
+  onNameTournament(name: string) {
+    this.nameTouranemt = name;
   }
 
   toDashboard(option:number) {

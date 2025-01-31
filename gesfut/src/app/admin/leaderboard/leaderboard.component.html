@@ -1,36 +1,97 @@
 <section>
-  <h2 class="title play-bold">CLASIFICACIÓN</h2>
-  <hr/>
+  <div class="title-container">
+    <h2 class="title play-bold">CLASIFICACIÓN</h2>
+    <hr />
+  </div>
   <div class="overflow-x">
     <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>EQUIPO</th>
-            <th>PTS</th>
-            <th>PG</th>
-            <th>PP</th>
-            <th>PE</th>
-            <th>PJ</th>
-            <th>GF</th>
-            <th>GC</th>
-            <th>DIF</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let team of tournament.participants; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ team.name.toUpperCase() }}</td>
-            <td>{{ team.statistics.points }}</td>
-            <td>{{ team.statistics.wins }}</td>
-            <td>{{ team.statistics.losses }}</td>
-            <td>{{ team.statistics.draws }}</td>
-            <td>{{ team.statistics.matchesPlayed }}</td>
-            <td>{{ team.statistics.goalsFor }}</td>
-            <td>{{ team.statistics.goalsAgainst }}</td>
-            <td>{{ team.statistics.goalsFor - team.statistics.goalsAgainst }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>EQUIPO</th>
+          <th>PTS</th>
+          <th>PG</th>
+          <th>PP</th>
+          <th>PE</th>
+          <th>PJ</th>
+          <th>GF</th>
+          <th>GC</th>
+          <th>DIF</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let team of tournament.participants; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ team.name.toUpperCase() }}</td>
+          <td>{{ team.statistics.points }}</td>
+          <td>{{ team.statistics.wins }}</td>
+          <td>{{ team.statistics.losses }}</td>
+          <td>{{ team.statistics.draws }}</td>
+          <td>{{ team.statistics.matchesPlayed }}</td>
+          <td>{{ team.statistics.goalsFor }}</td>
+          <td>{{ team.statistics.goalsAgainst }}</td>
+          <td>{{ team.statistics.goalsFor - team.statistics.goalsAgainst }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
+  <div class="statistics-container">
+
+
+  <div class="overflow-y">
+    <table >
+      <thead>
+        <tr>
+          <th>JUGADOR</th>
+          <th>⚽</th>
+          <th>EQUIPO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let player of topScorers">
+          <td>{{ player.playerName }}</td>
+          <td>{{ player.goals }}</td>
+          <td>{{ player.teamName }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="overflow-y">
+    <table>
+      <thead>
+        <tr>
+          <th>JUGADOR</th>
+          <th>🟨</th>
+          <th>EQUIPO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let player of topYellowCards">
+          <td>{{ player.playerName }}</td>
+          <td>{{ player.yellowCards}}</td>
+          <td>{{ player.teamName }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="overflow-y">
+    <table>
+      <thead>
+        <tr>
+          <th>JUGADOR</th>
+          <th>🟥</th>
+          <th>EQUIPO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let player of topRedCards">
+          <td>{{ player.playerName }}</td>
+          <td>{{ player.redCards }}</td>
+          <td>{{ player.teamName }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 </section>

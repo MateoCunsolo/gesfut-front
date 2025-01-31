@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output, SimpleChanges } from '@
 import { TournamentService } from '../../../../../core/services/tournament/tournament.service';
 import { TeamService } from '../../../../../core/services/tournament/team.service';
 import { AlertService } from '../../../../../core/services/alert.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-delete-player',
@@ -47,7 +48,7 @@ export class DeleteComponent {
           if (this.verificationsDelete()) {
             if (result.isConfirmed) {
               this.deleteFromGlobal();
-            } else {
+            } else if (result.dismiss === Swal.DismissReason.cancel){
               this.deleteFromTournament(idPlayerParticipant);
             }
           } else {
@@ -66,6 +67,7 @@ export class DeleteComponent {
   }
 
   deleteFromTournament(idPlayerParticipant: number) {
+    console.log('Eliminando jugador de torneo:', idPlayerParticipant);
     this.tournamentService.changeStatusPlayerParticipant(idPlayerParticipant, false).subscribe({
       next:()=>{
         this.alertService.successAlert('Jugador eliminado');

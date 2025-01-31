@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { ParticipantResponse, PlayerParticipantResponse } from '../../../../core/models/tournamentResponse';
+import { MatchResponse, ParticipantResponse, PlayerParticipantResponse } from '../../../../core/models/tournamentResponse';
 import { INITIAL_PARTICIPANT } from '../../../../core/services/tournament/initial-tournament';
 import { TournamentService } from '../../../../core/services/tournament/tournament.service';
 import { DeleteComponent } from './delete/delete.component';
@@ -7,6 +7,9 @@ import { TeamService } from '../../../../core/services/tournament/team.service';
 import { TeamResponse } from '../../../../core/models/teamResponse';
 import { AddPlayerComponent } from "./add-player/add-player.component";
 import { TeamWithAllStatsPlayerResponse } from '../../../../core/models/TeamWithAllStatsPlayerResponse';
+import { AlertService } from '../../../../core/services/alert.service';
+import { DashboardService } from '../../../../core/services/dashboard.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-players',
@@ -19,16 +22,21 @@ export class PlayersComponent implements OnChanges {
 
   private tournamentService = inject(TournamentService);
   private teamService = inject(TeamService);
+  private alertService = inject(AlertService);
+  private dashboardService = inject(DashboardService);
+  private route = inject(Router);
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @Input() public participantId: number | null = null;
   @Input() public idTeam: number | null = null;
   @Input() public thereAreNotParticipants: boolean = false;
   @Input() public isGlobalTeam: boolean = false;
   @Input() public code: string = '';
+  @Input() public nameTournament: string = '';
   protected isGlobalTeamPlayers: boolean = false;
   protected participantTeam: ParticipantResponse = INITIAL_PARTICIPANT;
   protected participantGlobalStats = {} as TeamWithAllStatsPlayerResponse;
   protected flagAddPlayer: boolean = false;
+
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -174,5 +182,31 @@ export class PlayersComponent implements OnChanges {
     }
   }
 
+  deleteTeam() {
+    this.alertService.infoAlert("ELMINAR EQUIPO", "FUNCION NO IMPLEMENTADA");
+  }
 
+  toLastMatches() {
+    if(this.isGlobalTeam){
+      this.alertService.errorAlert('Debes selecionar un torneo para ver los partidos.');
+    }else if (this.participantId){
+      this.alertService.loadingAlert('OBTENIENDO ULTIMOS PARTIDOS');
+        this.tournamentService.getMatchesAllForParticipant(this.code, this.participantId).subscribe({
+          next: (response: MatchResponse[]) => {
+            sessionStorage.setItem('matches', JSON.stringify(response));
+            localStorage.setItem('lastTournamentClicked', this.code);
+            localStorage.setItem('lastTournamentClickedName', this.nameTournament);
+            sessionStorage.setItem('teamNameMatches', this.participantTeam.name);
+            this.route.navigate(['admin/tournaments', this.code]).finally(() => {
+              this.dashboardService.setActiveTournamentComponent('lasts-matches');
+              this.alertService.closeLoadingAlert();
+            });
+          }
+        });
+      }else{
+        this.alertService.errorAlert('No se ha seleccionado un equipo');
+      }
+    }
+  
 }
+   

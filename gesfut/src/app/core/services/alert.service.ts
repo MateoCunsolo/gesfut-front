@@ -17,7 +17,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 1600
     });
-  } 
+  }
 
   successAlertTop(title: string) {
     Swal.fire({
@@ -133,6 +133,41 @@ export class AlertService {
           return 'Debes ingresar un valor';
         }
         return null;
+      }
+    });
+  }
+
+  EditDateAndDescriptionMatchAlert() {
+    return Swal.fire({
+      title: 'Configuración de Partido',
+      html: `
+        <div>
+          <label for="date">Selecciona la fecha </label>
+          <input type="text" id="date" class="form-control" placeholder="yyyy-mm-dd">
+        </div>
+        <div>
+          <label for="date">Selecciona la hora:</label>
+          <input type="text" id="hour" class="form-control" placeholder="HH:mm">
+        </div>
+        <div>
+          <label for="description">Descripción:</label>
+          <input type="text" id="description" class="form-control" placeholder="Añadir descripción" />
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      focusCancel: true,
+      preConfirm: () => {
+        const date = (document.getElementById('date') as HTMLInputElement).value;
+        const description = (document.getElementById('description') as HTMLInputElement).value;
+        const hour = (document.getElementById('hour') as HTMLInputElement).value;
+
+        if (!date || !description || !hour) {
+          Swal.showValidationMessage('¡Debes completar todos los campos!');
+        }
+
+        return { date, description, hour };
       }
     });
   }

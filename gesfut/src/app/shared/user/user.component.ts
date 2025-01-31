@@ -23,8 +23,8 @@ export class UserComponent implements OnDestroy {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  profile() {
-    console.log('Ver perfil');
+  toChangePasswordWithPassword(){
+    this.route.navigateByUrl('/admin/change-password');
   }
 
   settings() {

@@ -1,0 +1,42 @@
+
+@if (isMobile) {
+  <div class="menu-hamburguesa">
+    <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
+    <label for="btn-menu" class="icon-menu"></label>
+    <nav class="menu" [class.open]="menuOpen">
+      <a (click)="changeComponent('recap')">INICIO</a>
+      <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
+      <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
+      <a (click)="changeComponent('match-days')">FECHAS</a>
+      <a (click)="changeComponent('prizes')">PREMIOS</a>
+    </nav>
+  </div>
+} @else {
+  <nav class="nav-bar">
+    <a (click)="changeComponent('recap')">INICIO</a>
+    <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
+    <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
+    <a (click)="changeComponent('match-days')">FECHAS</a>
+    <a (click)="changeComponent('prizes')">PREMIOS</a>
+  </nav>
+}
+
+
+@if(currentActiveComponent == 'match-days'){
+  <app-list-match-days></app-list-match-days>
+}
+@if(currentActiveComponent == 'leaderboard'){
+  <app-leaderboard></app-leaderboard>
+}
+@if(currentActiveComponent == 'prizes'){
+  <app-prize-dashboard></app-prize-dashboard>
+}
+@if(currentActiveComponent== 'recap'){
+  <app-recap></app-recap>
+}
+@if (currentActiveComponent == 'list-teams-tournament') {
+  <app-list-team-tournaments></app-list-team-tournaments>
+}
+@if (currentActiveComponent == 'lasts-matches') {
+  <app-lasts-matches></app-lasts-matches>
+}

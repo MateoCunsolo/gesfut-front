@@ -1,90 +1,32 @@
-<section class="teams">
-    <div class="section-name">
-        <input [(ngModel)]="searchTerm" (ngModelChange)="filterTeams()" class="search-team" type="text"
-            placeholder="BUSCAR EQUIPO">
-        <div class="team-list">
-            @for (team of teamsNameFilter; track $index) {
-                <li class="team-name" style=" white-space: nowrap;" (click)="getParticipantsAllByIdTeam(team.idTeam, $index)"
-                    [ngClass]="{nameClicked: nameClicked && ( $index === indexName )}">
-                    {{ team.name }}
-                </li>
-              }
-        </div>
+<section>
+  <input class="search-team desktop" type="text" name="" id="" placeholder="BUSCAR EQUIPO"
+    (input)="searchTeams($event)" />    
+    <div>
+      <h3 class="search-team mobile">Selecionar equipo</h3>
+      <select class="search-team mobile" (change)="showParticipantsFromOptional($event)" [(ngModel)]="bindingSelect">
+        @for (team of particpantsFilter; track $index) {
+        <option [value]="team.idParticipant">{{ team.name }}</option>
+        }
+      </select>
     </div>
 
-    <div class="section-table">
-        <p>{{teamNameClicked}}</p>
-        <div class="hmx">
-            <table class="table">
-                <thead>
-                    <tr class="columnas">
-                        <th>#</th>
-                        <th>JUGADOR</th>
-                        <th>G</th>
-                        <th>🟨</th>
-                        <th>🟥</th>
-                        <th>MVP</th>
-                        <th>ESTADO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (player of firstParticipant.playerParticipants; track $index) {
-                    @if (player.isActive === true) {
-                    <tr>
-                        <td>{{ player.shirtNumber }}</td>
-                        <td class="player">
-                            {{ player.playerName +' '+player.playerLastName }}
-                            @if (player.isCaptain) {
-                            <span class="captain">🌟</span>
-                            }
-                            @if (player.isGoalKeeper) {
-                            <span class="goalkeeper icon">🧤</span>
-                            }
-                        </td>
-                        <td>{{ player.goals }}</td>
-                        <td>{{ player.yellowCards }}</td>
-                        <td>{{ player.redCards }}</td>
-                        <td>{{ player.isMvp }}</td>
-                        <td>{{ player.isSuspended ? '🟥' : '🟩' }}</td>
-
-                        @if (isAuth) {
-                        <td (click)="deletePlayerParticipantFromTeam(player.id)" class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                                <path fill="#2a6a49"
-                                    d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
-                            </svg>
-                        </td>
-                        }
-
-                    </tr>
-                    }
-                    }
-                </tbody>
-            </table>
-        </div>
-        @if (isAuth) {
-        <div class="buttons">
-            <button class="btn" (click)="addPlayer()">AGREGAR JUGADOR</button>
-            <button class="btn" (click)=" toLastMatchs()">ULTIMOS PARTIDOS</button>
-            <button (click)="deleteTeamFormTournament(firstParticipant.idTeam)" class="btn">ELIMINAR</button>
-        </div>
+    <div class="container">
+      <div class="names search-team desktop">
+        @for (item of particpantsFilter; track item.idParticipant){
+        <p [ngClass]="{ 'bg-primary-color': item.idParticipant === teamParticipant.idParticipant }"
+          (click)="showParticipants(item.idParticipant)">
+          {{ item.name }}
+        </p>
         }
+      </div>
 
-        <!-- @if (addPlayerClicked) {
-            <app-add-player 
-            [selectTeam]="selectToAddInTournament"
-            [isGlobalTeam]="isOptionGlobal"
-            [participantTournament]="{
-              nameTournament: tournament.name,
-              codeTournament: tournament.code,
-              idParticipant: firstParticipant.idParticipant,
-              playerParticipants: firstParticipant.playerParticipants,
-              isActive: true
-            }"
-            (participantRefresh)="handleParticipantRefresh($event)"
-            (closeForm)="formHandler($event)"
-          ></app-add-player>
-          } -->
-    </div>  
+      <div class="info">
+        @if (nameClicked) {
+        <p class="team-name mobile">{{ nameClicked }}</p>
+        }
+        <div class="players">
+          <app-players-tournament [teamParticipant]="teamParticipant" [code]="tournament.code"></app-players-tournament>
+        </div>
+      </div>
+    </div>
 </section>

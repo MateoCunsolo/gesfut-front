@@ -1,7 +1,7 @@
 <section>
     <div class="title-container">
         <div>
-            <h2 class="title play-bold">Fecha N° {{selectedMatchDay+1}}</h2>
+            <h2 class="title play-bold">FECHA N° {{selectedMatchDay+1}}</h2>
             <div class="matchdays">
                 @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
                     <button class="base-button" (click)="updateMatchDay(day.numberOfMatchDay)">{{day.numberOfMatchDay+1}}</button>
@@ -30,14 +30,16 @@
                                 <p>{{match.awayGoals}}</p>
                                 <p>{{ match.awayTeam.toUpperCase()}}</p>
                             </div>
-                            <div class="hour"><p>09:12 HS</p></div>
-                            <div class="complex"><p>Complejo</p></div>
-                            @if(!tournament.matchDays[selectedMatchDay].isFinished){
-                                @if(!match.isFinished){
-                                    <button class="base-button" (click)="loadResult(match.id)">CARGAR EVENTOS</button>
-                                }@else {
-                                    <button (click)="editResult(match.id)" class="base-button edit-button">EDITAR</button>
-                                }
+                            <div class="hour"><p>{{match.dateTime | date: 'yyyy-MM-dd HH:mm' }}</p></div>
+                            <div class="complex"><p (click)="editDateAndDescription(match.id)">Editar</p></div>
+                            @if(isAuth()){
+                              @if(!tournament.matchDays[selectedMatchDay].isFinished){
+                                  @if(!match.isFinished){
+                                      <button class="base-button" (click)="loadResult(match.id)">CARGAR EVENTOS</button>
+                                  }@else {
+                                      <button (click)="editResult(match.id)" class="base-button edit-button">EDITAR</button>
+                                  }
+                              }
                             }
                         }
                     </div>
@@ -54,10 +56,12 @@
         }
     </div>
     <div class="btn-container">
+      @if(isAuth()){
         @if(this.matchDayStatus){
-            <button class="base-button edit-button" (click)="toggleMatchDayStatus(false)">REABRIR FECHA</button>
+          <button class="base-button edit-button" (click)="toggleMatchDayStatus(false)">REABRIR FECHA</button>
         }@else{
-            <button class="base-button" (click)="closeMatchDay(true)">FINALIZAR FECHA</button>
+          <button class="base-button" (click)="closeMatchDay(true)">FINALIZAR FECHA</button>
         }
+      }
     </div>
 </section>

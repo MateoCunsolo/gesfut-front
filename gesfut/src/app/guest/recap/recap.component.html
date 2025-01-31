@@ -1,0 +1,64 @@
+<section>
+  <div class="title-container">
+    @if(lastMatchDay){
+    <h2 class="title play-bold">
+      @if(!lastMatchDay.isFinished){
+        PRÓXIMA FECHA N° {{ lastMatchDay.numberOfMatchDay + 1 }}
+      }@else {
+        FECHA N° {{ lastMatchDay.numberOfMatchDay + 1 }}
+      }
+    </h2>
+    }
+    <hr />
+  </div>
+
+  <div class="dashboard-container">
+    <div class="matches-container">
+      @if(this.lastMatchDay){ @for (match of lastMatchDay.matches; track
+      match.id) {
+      <div class="match">
+        @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
+        @if(match.homeTeam === 'Free'){
+        <p class="free-match">
+          {{ match.awayTeam.toUpperCase() }} TIENE FECHA LIBRE
+        </p>
+        }@else{
+        <p class="free-match">
+          {{ match.homeTeam.toUpperCase() }} TIENE FECHA LIBRE
+        </p>
+        } }@else{
+        <div class="versus">
+          <p>{{ match.homeTeam.toUpperCase() }}</p>
+          <p>{{ match.homeGoals }}</p>
+          <p>{{ match.awayGoals }}</p>
+          <p>{{ match.awayTeam.toUpperCase() }}</p>
+        </div>
+        }
+      </div>
+      } }@else{
+      <ng-template #noMatches>
+        <p>No hay partidos programados para esta jornada.</p>
+      </ng-template>
+      }
+    </div>
+    <div class="top-scorers-container">
+      @if(topScorers.length > 0) {
+        <div class="table-header">
+          <div class="table-cell">Jugador</div>
+          <div class="table-cell">Goles</div>
+        </div>
+        <div class="top-scorers-table">
+          @for(scorer of topScorers; track scorer.playerName) {
+            <div class="table-row">
+              <div class="table-cell">{{ scorer.playerName.toUpperCase() }}</div>
+              <div class="table-cell">{{ scorer.goals }} @if(scorer.goals <= 1) { GOL } @else { GOLES } </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No hay goleadores registrados.</p>
+      }
+    </div>
+
+  </div>
+</section>

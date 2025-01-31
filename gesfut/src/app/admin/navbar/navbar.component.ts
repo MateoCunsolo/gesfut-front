@@ -2,12 +2,13 @@ import { Component, HostListener } from '@angular/core';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { CommonModule } from '@angular/common';  // Asegúrate de importar CommonModule
 import { NgModule } from '@angular/core';
+import { SessionService } from '../../core/services/manager/session.service';
 
 
 @Component({
   selector: 'app-navbar',
-  standalone: true,  
-  imports: [CommonModule], 
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
@@ -16,7 +17,7 @@ export class NavbarComponent {
   isMobile: boolean = false;
   menuOpen: boolean = false;
 
-  constructor(private dashboardService: DashboardService) {
+  constructor(private dashboardService: DashboardService, private sessionService:SessionService) {
     this.checkScreenSize();
   }
 
@@ -33,8 +34,12 @@ export class NavbarComponent {
     this.dashboardService.setActiveTournamentComponent(component);
     this.menuOpen = false;
   }
-  
+
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
+  }
+
+  isAuth():boolean{
+    return this.sessionService.isAuth();
   }
 }

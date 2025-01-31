@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Prize } from '../../../core/models/prizesRequest';
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SessionService } from '../../../core/services/manager/session.service';
 
 @Component({
   selector: 'app-list-prizes',
@@ -23,7 +24,8 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
 
   constructor(
     private prizeService: PrizeService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private sessionService:SessionService
   ) {}
 
   ngOnInit() {
@@ -91,5 +93,9 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
               },
             });
       });
+  }
+
+  isAuth():boolean{
+    return this.sessionService.isAuth();
   }
 }
