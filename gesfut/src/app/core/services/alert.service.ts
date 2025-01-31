@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import { ParticipantResponse } from '../models/tournamentResponse';
 import { Observable, Subject } from 'rxjs';
+import {MatTimepickerModule} from '@angular/material/timepicker';
 
 @Injectable({
   providedIn: 'root'
