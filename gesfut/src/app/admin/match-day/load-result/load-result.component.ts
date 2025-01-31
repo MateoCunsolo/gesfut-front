@@ -78,10 +78,10 @@ export class LoadResultComponent {
 
   updateFilteredPlayers() {
     if (this.selectedTeam === this.currentMatch.homeTeam) {
-      this.filteredPlayers = this.currentMatch.homeTeam.playerParticipants.filter((player) => player.isActive === true);
+      this.filteredPlayers = this.currentMatch.homeTeam.playerParticipants.filter((player) => player.isActive === true && player.isSuspended === false);
       this.selectedPlayer = this.selectedTeam.playerParticipants[0];
     } else if (this.selectedTeam === this.currentMatch.awayTeam) {
-      this.filteredPlayers = this.currentMatch.awayTeam.playerParticipants.filter((player) => player.isActive === true);
+      this.filteredPlayers = this.currentMatch.awayTeam.playerParticipants.filter((player) => player.isActive === true && player.isSuspended === false);
       this.selectedPlayer = this.selectedTeam.playerParticipants[0];
     }
 

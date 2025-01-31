@@ -46,6 +46,8 @@ hr {
   margin: 0 auto;
   position: relative;
   padding-top: 16px;
+  max-height: 500px;
+  overflow-y: scroll;
   @media (max-width: 768px) {
     overflow-x: scroll;
   }
@@ -53,7 +55,7 @@ hr {
 
 .statistics-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   align-items: flex-start;
   width: 96%;
   height: 100%;
