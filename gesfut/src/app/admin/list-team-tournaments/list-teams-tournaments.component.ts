@@ -11,11 +11,10 @@ import { PlayersComponent } from '../list-teams/components/players/players.compo
 import { PlayersTournamentComponent } from './players-tournament/players-tournament.component';
 
 @Component({
-  selector: 'app-list-team-tournaments',
-  standalone: true,
-  imports: [NgClass, CommonModule, FormsModule, PlayersTournamentComponent],
-  templateUrl: './list-teams-tournaments.component.html',
-  styleUrl: './list-teams-tournaments.component.scss'
+    selector: 'app-list-team-tournaments',
+    imports: [NgClass, CommonModule, FormsModule, PlayersTournamentComponent],
+    templateUrl: './list-teams-tournaments.component.html',
+    styleUrl: './list-teams-tournaments.component.scss'
 })
 export class ListTeamsTournamentsComponent {
 

@@ -8,11 +8,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 
 @Component({
-  selector: 'app-list-prizes',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './list-prizes.component.html',
-  styleUrls: ['./list-prizes.component.scss'],
+    selector: 'app-list-prizes',
+    imports: [CommonModule],
+    templateUrl: './list-prizes.component.html',
+    styleUrls: ['./list-prizes.component.scss']
 })
 export class ListPrizesComponent implements OnInit, OnDestroy {
   currentCategory: string = '';

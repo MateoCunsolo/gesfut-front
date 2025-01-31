@@ -10,11 +10,10 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 import { AlertService } from '../../core/services/alert.service';
 
 @Component({
-  selector: 'app-initialize-tournament',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './initialize-tournament.component.html',
-  styleUrl: './initialize-tournament.component.scss'
+    selector: 'app-initialize-tournament',
+    imports: [FormsModule],
+    templateUrl: './initialize-tournament.component.html',
+    styleUrl: './initialize-tournament.component.scss'
 })
 export class InitializeTournamentComponent {
   teams: TeamResponse[] = [];

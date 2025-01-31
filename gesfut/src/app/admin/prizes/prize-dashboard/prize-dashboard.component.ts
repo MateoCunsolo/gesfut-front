@@ -6,11 +6,10 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
-  selector: 'app-prize-dashboard',
-  standalone: true,
-  imports: [ListPrizesComponent, CreatePrizeComponent],
-  templateUrl: './prize-dashboard.component.html',
-  styleUrl: './prize-dashboard.component.scss'
+    selector: 'app-prize-dashboard',
+    imports: [ListPrizesComponent, CreatePrizeComponent],
+    templateUrl: './prize-dashboard.component.html',
+    styleUrl: './prize-dashboard.component.scss'
 })
 export class PrizeDashboardComponent {
 

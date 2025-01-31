@@ -6,12 +6,11 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [NgIf],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'], 
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-dashboard',
+    imports: [NgIf],
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent {
 

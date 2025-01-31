@@ -5,11 +5,10 @@ import { UserComponent } from '../../shared/user/user.component';
 import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [UserComponent],
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']  // Cambiado 'styleUrl' a 'styleUrls'
+    selector: 'app-header',
+    imports: [UserComponent],
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'] // Cambiado 'styleUrl' a 'styleUrls'
 })
 export class HeaderComponent {
   lastTournamentClickedName: string = '';

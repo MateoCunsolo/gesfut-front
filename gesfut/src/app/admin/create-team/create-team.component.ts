@@ -10,11 +10,10 @@ import { AlertService } from '../../core/services/alert.service';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-create-team',
-  standalone: true,
-  imports: [CommonModule, ExcelUploadComponent, ReactiveFormsModule, RouterModule],
-  templateUrl: './create-team.component.html',
-  styleUrl: './create-team.component.scss'
+    selector: 'app-create-team',
+    imports: [CommonModule, ExcelUploadComponent, ReactiveFormsModule, RouterModule],
+    templateUrl: './create-team.component.html',
+    styleUrl: './create-team.component.scss'
 })
 export class CreateTeamComponent {
   error: String = '';

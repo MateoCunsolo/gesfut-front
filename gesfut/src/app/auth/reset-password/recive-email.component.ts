@@ -12,10 +12,9 @@ import { AlertService } from '../../core/services/alert.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-recive-email',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  template: ` 
+    selector: 'app-recive-email',
+    imports: [ReactiveFormsModule],
+    template: ` 
   <section>
       <div class="form">
         <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
@@ -52,7 +51,7 @@ import { Router } from '@angular/router';
       </div>
     </section>
     `,
-  styleUrls: ['../login/login.component.scss'],
+    styleUrls: ['../login/login.component.scss']
 })
 export class ReciveEmailComponent {
   emailForm: FormGroup;

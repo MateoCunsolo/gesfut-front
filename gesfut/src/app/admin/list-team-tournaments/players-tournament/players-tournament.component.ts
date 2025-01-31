@@ -12,11 +12,10 @@ import { SessionService } from '../../../core/services/manager/session.service';
 import { GuestService } from '../../../core/services/guest/guest.service';
 
 @Component({
-  selector: 'app-players-tournament',
-  standalone: true,
-  imports: [DeleteComponent, AddPlayerComponent],
-  templateUrl: './players-tournament.component.html',
-  styleUrls: ['./players-tournament.component.scss']
+    selector: 'app-players-tournament',
+    imports: [DeleteComponent, AddPlayerComponent],
+    templateUrl: './players-tournament.component.html',
+    styleUrls: ['./players-tournament.component.scss']
 })
 export class PlayersTournamentComponent implements OnChanges {
 

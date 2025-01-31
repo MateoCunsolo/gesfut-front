@@ -9,11 +9,10 @@ import { AddPlayerComponent } from "./components/players/add-player/add-player.c
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-names-teams',
-  standalone: true,
-  imports: [NamesTournamentsComponent, PlayersComponent, NgClass, FormsModule],
-  templateUrl: './names-teams.component.html',
-  styleUrl: './names-teams.component.scss'
+    selector: 'app-names-teams',
+    imports: [NamesTournamentsComponent, PlayersComponent, NgClass, FormsModule],
+    templateUrl: './names-teams.component.html',
+    styleUrl: './names-teams.component.scss'
 })
 export class NamesTeamsComponent implements OnInit {
   public selectedParticipantId: number | null = null;

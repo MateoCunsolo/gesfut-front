@@ -10,3 +10,7 @@ export interface EventRequest {
     type:                string;
     quantity:            number;
 }
+
+export interface MatchDateResponse {
+    newDate:String;
+}

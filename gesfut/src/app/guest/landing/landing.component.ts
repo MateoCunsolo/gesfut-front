@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-landing',
-  standalone: true,
-  imports: [RouterModule],
-  templateUrl: './landing.component.html',
-  styleUrl: './landing.component.scss'
+    selector: 'app-landing',
+    imports: [RouterModule],
+    templateUrl: './landing.component.html',
+    styleUrl: './landing.component.scss'
 })
 
 export class LandingComponent {
