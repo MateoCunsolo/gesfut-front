@@ -174,8 +174,8 @@ export class ResetPasswordComponent {
     this.alertService.loadingAlert('Cambiando contraseña...');
     this.authService.changePasswordWithOldPassword(oldPassword, newPassword).subscribe({
       next: () => {
-        this.alertService.infoAlert('Contraseña cambiada', 'Inicia sesión con tu nueva contraseña');
-        this.router.navigate(['auth/login']);
+        this.alertService.infoAlert('Contraseña cambiada', 'Cuando inicies sesión la próxima vez, utiliza tu nueva contraseña');
+        this.router.navigate(['admin']);
       },
       error: (error) => {
         this.alertService.errorAlert(error.error.error);
