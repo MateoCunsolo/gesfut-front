@@ -11,9 +11,10 @@ import {
 
 import { AuthResponse } from '../../models/authResponse';
 import { LoginRequest } from '../../models/loginRequest';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { RegisterRequest } from '../../models/registerRequest';
 import { SessionService } from './session.service';
+import { Token } from '@angular/compiler';
 @Injectable({
   providedIn: 'root',
 })
@@ -43,8 +44,6 @@ export class AuthService {
       }),
       catchError((error: HttpErrorResponse) => {
         //this.logout();
-        console.log(error);
-        alert('Error cors,' + error.error);
         return throwError(() => error);
       })
     );
@@ -63,4 +62,26 @@ export class AuthService {
       })
     )
   }
+
+  resetPasswordSendEmail(email: string): Observable<void> {
+    return this.http.post<void>(`${this.url}/reset-password/${email}`, {}); 
+  }
+
+  resetPasswordSendNewPassword(password: string, token: string): Observable<void> {
+    return this.http.post<void>(`${this.url}/change-password/${token}`, password);
+  }   
+
+  changePasswordWithOldPassword(oldPassword: string, newPassword: string): Observable<void> {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token de autenticación no encontrado');
+    }
+    const passwords = { oldPassword, newPassword }; 
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<void>(`${this.url}/change-password-with-old-password`, passwords, { headers });
+  }
+  
+  
+
 }
+  

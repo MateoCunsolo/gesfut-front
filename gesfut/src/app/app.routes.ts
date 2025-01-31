@@ -3,6 +3,7 @@ import { LandingComponent } from './guest/landing/landing.component';
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
 import { isAuthGuard } from './core/guards/is-auth.guard';
 import { PublicPageComponent } from './pages/public-page/public-page.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
@@ -19,5 +20,6 @@ export const routes: Routes = [
     },
     {
       path: ':code', component: PublicPageComponent
-  }
+    }
+   
 ];

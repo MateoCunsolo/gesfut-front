@@ -18,7 +18,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   error: string = '';
   redActive = false;
-
+  protected tryLogin = false;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -43,7 +43,9 @@ export class LoginComponent {
         },
         (error) => {
           this.error = error.error.error;
+          this.alertService.errorAlert(this.error);
           this.redActive = true;
+          this.tryLogin = true;
         }
       );
     }else{
@@ -57,7 +59,9 @@ export class LoginComponent {
   }
 
 
-
+  toForgotPassword() {
+    this.router.navigate(['auth/reset-password']);
+  }
 
 }
 
