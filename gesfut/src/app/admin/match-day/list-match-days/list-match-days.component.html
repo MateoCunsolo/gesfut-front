@@ -30,8 +30,8 @@
                                 <p>{{match.awayGoals}}</p>
                                 <p>{{ match.awayTeam.toUpperCase()}}</p>
                             </div>
-                            <div class="hour"><p>09:12 HS</p></div>
-                            <div class="complex"><p>Complejo</p></div>
+                            <div class="hour"><p>{{match.dateTime | date: 'yyyy-MM-dd HH:mm' }}</p></div>
+                            <div class="complex"><p (click)="editDateAndDescription(match.id)">Editar</p></div>
                             @if(isAuth()){
                               @if(!tournament.matchDays[selectedMatchDay].isFinished){
                                   @if(!match.isFinished){

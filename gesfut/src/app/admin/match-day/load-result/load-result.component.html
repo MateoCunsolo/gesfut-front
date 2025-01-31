@@ -94,6 +94,7 @@
               <th>🟨</th>
               <th>🟥</th>
               <th>MVP</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -106,6 +107,7 @@
               <td>@if(event.mvp){
                 <i class="fa-solid fa-star"></i>
                 }</td>
+              <td><p (click)="deleteEvent(event)"><i class="fa-solid fa-trash-can"></i></p></td>
             </tr>
           </tbody>
         </table>
