@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthResponse } from '../../models/authResponse';
 import { Router } from '@angular/router';
-
+import {  map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,20 +17,42 @@ export class SessionService {
     role: ''
   });
 
-  constructor(private router:Router) {
+  url: string = 'http://localhost:8080/api/v1/auth';
+
+
+  constructor(private router:Router, private http: HttpClient) {
     this.initializeSession();
   }
 
   private initializeSession(): void {
-      const token = sessionStorage.getItem('token');
-      this.currentUserLoginOn.next(token != null);
-      this.currentUserData.next({
-        name: sessionStorage.getItem('name') || '',
-        lastName: sessionStorage.getItem('lastName') || '',
-        token: sessionStorage.getItem('token') || '',
-        role: sessionStorage.getItem('role') || ''
-      });
-  }
+    const token = sessionStorage.getItem('token');
+    if(token != null){
+      this.verificateSession(token);
+    }
+}
+
+verificateSession(token:string) {
+  this.validateToken(token).subscribe({
+    next: (response) => {
+      console.log(response);
+      if(response){
+        this.getItems(response);
+      }else{
+        sessionStorage.removeItem('token');
+      }
+    }
+  });
+}
+
+getItems(response:boolean) {
+  this.currentUserLoginOn.next(response)
+  this.currentUserData.next({
+    name: sessionStorage.getItem('name') || '',
+    lastName: sessionStorage.getItem('lastName') || '',
+    token: sessionStorage.getItem('token') || '',
+    role: sessionStorage.getItem('role') || ''
+  });
+}
 
   setUserSession(response: AuthResponse): void {
       sessionStorage.setItem('token', response.token);
@@ -53,7 +76,7 @@ export class SessionService {
         role: ''
       });
       window.location.reload();
-      this.router.navigateByUrl("/home");
+      this.router.navigate(['/login']);
   }
 
   get userData(): Observable<AuthResponse> {
@@ -77,4 +100,16 @@ export class SessionService {
     const userdata = this.currentUserData.getValue();
     return userdata.token;
   }
+
+  validateToken(token:string): Observable<boolean> {
+    return this.http.post<boolean>(`${this.url}/validate-token/${token}`,
+    {
+      headers: {
+        'Content-Type': 'application/json'
+        }
+      }
+    );
+  }
+
+
 }

@@ -1,18 +1,26 @@
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { TeamService } from '../../../../core/services/tournament/team.service';
 import { ParticipantShortResponse } from '../../../../core/models/participantShortResponse';
 import { AlertService } from '../../../../core/services/alert.service';
 import { NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-names-tournaments',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, FormsModule],
   templateUrl: './names-tournaments.component.html',
-  styleUrl: './names-tournaments.component.scss'
+  styleUrl: './names-tournaments.component.scss',
 })
 export class NamesTournamentsComponent implements OnChanges {
-
   @Output() public participantSelected = new EventEmitter<number>();
   @Output() public globalsPlayer = new EventEmitter();
   @Output() public onlyGlobalTeams = new EventEmitter<boolean>();
@@ -20,13 +28,13 @@ export class NamesTournamentsComponent implements OnChanges {
   @Output() public tournamentSelected = new EventEmitter<string>();
   @Input() public id: number = 0;
 
-
   private teamService = inject(TeamService);
   private alertService = inject(AlertService);
   protected therAreNotParticipants: boolean = false;
   protected participantsTeam: ParticipantShortResponse[] = [];
   protected isClicked: boolean = false;
   protected selectedParticipantId: number | null = null;
+  selectedTournament: number = this.participantsTeam.length ? this.participantsTeam[0].idParticipant : 0;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['id']) {
@@ -35,12 +43,15 @@ export class NamesTournamentsComponent implements OnChanges {
   }
 
   emitThatIsGlobalTeam() {
-    this.alertService.infoAlert('AVISO IMPORTANTE','LOS JUGADORES QUE SE MOSTRARAN ABARCA A TODOS LOS QUE FUERON AGREGADOS ALGUNA VEZ A ESTE EQUIPO, ESTEN O NO JUGANDO UN TORNEO.')
+    this.alertService.infoAlert(
+      'AVISO IMPORTANTE',
+      'LOS JUGADORES QUE SE MOSTRARAN ABARCA A TODOS LOS QUE FUERON AGREGADOS ALGUNA VEZ A ESTE EQUIPO, ESTEN O NO JUGANDO UN TORNEO.'
+    );
     this.isClicked = true;
     this.selectedParticipantId = null;
     this.onlyGlobalTeams.emit(true);
+    this.selectedTournament = 0;
   }
-
 
   getAllParticipantsTournament(id: number) {
     this.teamService.getParticipantsShortAllTournamemts(id).subscribe({
@@ -54,7 +65,8 @@ export class NamesTournamentsComponent implements OnChanges {
           this.selectedParticipantId = this.participantsTeam[0].idParticipant;
           this.isClicked = false;
           this.onlyGlobalTeams.emit(false);
-        }else{
+          this.selectedTournament = this.participantsTeam[0].idParticipant;
+        } else {
           this.therAreNotParticipants = true;
           this.globalsPlayer.emit(id);
           this.onlyGlobalTeams.emit(true);
@@ -62,19 +74,25 @@ export class NamesTournamentsComponent implements OnChanges {
       },
       error: (error) => {
         console.error('Error al obtener los participantes:', error);
-      }
+      },
     });
+  }
+
+  showPlayersFromOptional(idParticipant: Event) {
+    if ((idParticipant.target as HTMLInputElement).value === '0') {
+      this.emitThatIsGlobalTeam();
+    } else {
+      this.showPlayers(
+        parseInt((idParticipant.target as HTMLInputElement).value)
+      );
+    }
   }
 
   showPlayers(idParticipant: number) {
     this.selectedParticipantId = idParticipant;
+    this.selectedTournament = idParticipant;
     this.isClicked = false;
     this.onlyGlobalTeams.emit(false);
     this.participantSelected.emit(idParticipant);
   }
-
-  
-
-
-
-} 
+}
