@@ -1,8 +1,7 @@
-import { MatchDayResponse, MatchResponse } from '../../../core/models/tournamentResponse';
+import { MatchDayResponse } from '../../../core/models/tournamentResponse';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TournamentResponseFull } from '../../../core/models/tournamentResponse';
-import { Subscription } from 'rxjs';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { TournamentService } from '../../../core/services/tournament/tournament.service';
 import { INITIAL_TOURNAMENT } from '../../../core/services/tournament/initial-tournament';
@@ -10,6 +9,7 @@ import { MatchDaysService } from '../../../core/services/tournament/match-days.s
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
+import { UpdateDateAndDescriptionRequest } from '../../../core/models/UpdateDateAndDescriptionRequest';
 
 @Component({
   selector: 'app-list-match-days',
@@ -114,4 +114,41 @@ export class ListMatchDaysComponent implements OnInit {
   isAuth(): boolean {
     return this.sessionService.isAuth();
   }
+
+  async editDateAndDescription(matchId:number){
+    const result = await this.alertService.EditDateAndDescriptionMatchAlert();
+
+    const selectedDate: string = result.value.date;  // Asumo que esto es un string en formato 'yyyy-mm-dd'
+    const selectedTime: string = result.value.time;  // Asumo que esto es un string en formato 'HH:mm'
+
+    // Concatenamos la fecha y la hora para crear un string de fecha y hora completo
+    const dateTimeString = `${selectedDate}T${selectedTime}:00`; // Ejemplo: "2025-02-05T23:00:00"
+
+    // Convertimos ese string en un objeto Date
+    const date = new Date(dateTimeString);  // Esto creará una fecha válida
+
+    // Convertimos el objeto Date a formato ISO 8601 (esto también incluirá el 'Z' para UTC)
+    const isoDateTime = date.toISOString();  // Esto dará formato como "2025-02-05T23:00:00.000Z"
+
+    const request: UpdateDateAndDescriptionRequest = {
+      description: result.value.description,
+      localDateTime: isoDateTime // Pasamos la fecha en formato ISO 8601
+    };
+
+    if (result.isConfirmed) {
+      console.log("Fecha y hora seleccionadas:", isoDateTime);
+      console.log("Descripción:", result.value.description);
+
+      this.matchDaysService.updateDateAndDescriptionMatch(matchId, request).subscribe({
+        next: () => {
+          this.alertService.successAlert("Fecha y hora modificadas.");
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          console.log(errorResponse);
+          this.alertService.errorAlert(errorResponse.error.error);
+        }
+      });
+    }
+  }
+
 }

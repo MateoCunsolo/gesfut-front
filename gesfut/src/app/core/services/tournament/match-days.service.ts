@@ -9,6 +9,7 @@ import { DashboardService } from '../dashboard.service';
 import { TournamentService } from './tournament.service';
 import { AlertService } from '../alert.service';
 import { MatchDayResponse } from '../../models/tournamentResponse';
+import { UpdateDateAndDescriptionRequest } from '../../models/UpdateDateAndDescriptionRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -202,5 +203,20 @@ export class MatchDaysService {
         this.alertService.errorAlert(err.error.error);
       }
     });
+  }
+
+  updateDateAndDescriptionMatch(matchId:number, request:UpdateDateAndDescriptionRequest):Observable<void>{
+    const token = sessionStorage.getItem('token');
+
+    return this.HttpClient.patch<void>(`${this.url}/matches/update-date-and-description/${matchId}`, request, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
   }
 }
