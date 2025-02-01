@@ -82,6 +82,10 @@ hr {
   margin: 0 auto;
 }
 
+.activeNumberClass{
+  color: var(--secondary-color) !important;
+}
+
 .matches {
   display: flex;
   flex-direction: column;

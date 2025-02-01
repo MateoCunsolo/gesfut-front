@@ -12,7 +12,7 @@
       <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
       <div class="matchdays">
         @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
-        <button
+        <button [ngClass]="{activeNumberClass: day.numberOfMatchDay === selectedMatchDay}"
           class="base-button"
           (click)="updateMatchDay(day.numberOfMatchDay)"
         >
