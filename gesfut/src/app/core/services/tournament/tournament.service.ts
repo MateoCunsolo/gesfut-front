@@ -29,6 +29,7 @@ export class TournamentService {
     return this.http.get<TournamentResponseFull>(`${this.url}/tournaments/${code}`).pipe(
       tap({
         next: (response: TournamentResponseFull) => {
+          response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
           this.currentTournament.next(response)
           this
           return response;
