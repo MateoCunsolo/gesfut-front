@@ -1,4 +1,9 @@
-<h3 class="search-team mobile">Selecionar torneo</h3>
+@if (!therAreNotParticipants) {
+    <h3 class="search-team mobile">Selecionar torneo</h3>
+}@else {
+    <h3>EL EQUIPO NO ESTA INSCRIPTO A NINGUN TORNEO, SE MOSTRARAN LOS JUGADORES GLOBALES</h3>
+}
+
 <section>@if (!therAreNotParticipants) {
     <select class="search-team mobile" id="optional" [(ngModel)]="selectedTournament"
     (change)="showPlayersFromOptional($event)">
@@ -17,7 +22,5 @@
             (click)="showPlayers(participantsTournament.idParticipant)">{{participantsTournament.nameTournament}}</p>
         }
     </div>
-    }@else {
-    <h3>EL EQUIPO NO ESTA INSCRIPTO A NINGUN TORNEO, SE MOSTRARAN LOS JUGADORES GLOBALES</h3>
     }
 </section>
