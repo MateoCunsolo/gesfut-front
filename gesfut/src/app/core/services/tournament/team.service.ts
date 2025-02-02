@@ -71,6 +71,9 @@ export class TeamService {
     return this.http.get<ParticipantShortResponse[]>(`${this.url}/${id}/tournaments`, {
       headers
     }).pipe(
+      tap( (response) => response.map(participant => {
+        participant.nameTournament = participant.nameTournament.toUpperCase();
+      })),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       }),

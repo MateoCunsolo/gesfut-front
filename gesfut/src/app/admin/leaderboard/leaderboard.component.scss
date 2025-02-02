@@ -78,10 +78,13 @@ table {
 }
 
 thead {
-  font-size: var(--font-size-subtitle);
   background-color: var(--primary-color);
+  font-size: var(--font-size-subtitle);
   color: white;
+  position: sticky;
+  top: 0;
 }
+
 th {
   border: 1px solid var(--primary-color);
 }
@@ -93,3 +96,4 @@ td {
   border: 1px solid var(--primary-color);
   padding: 4px 0;
 }
+

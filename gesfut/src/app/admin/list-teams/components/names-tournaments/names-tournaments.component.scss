@@ -37,6 +37,8 @@ p {
 }
 
 .names {
+  display: flex;
+  flex-wrap: wrap;
   &.desktop {
     display: flex;
     flex-direction: row;
