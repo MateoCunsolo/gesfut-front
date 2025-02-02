@@ -82,7 +82,7 @@ hr {
   margin: 0 auto;
 }
 
-.activeNumberClass{
+.activeNumberClass {
   color: var(--secondary-color) !important;
 }
 
@@ -188,7 +188,6 @@ hr {
   grid-column: 1/5;
   text-align: center;
   font-size: var(--font-size-text);
-  font-weight: bold;
   border: 1px solid black;
   padding: 4px;
   @media (max-width: 1280px) {
@@ -205,14 +204,13 @@ hr {
   justify-content: space-between;
 }
 
-.hour{
-    grid-column: 5/7;
+.hour {
+  grid-column: 5/7;
 }
 
-.complex{
-    grid-column: 7/8;
+.complex {
+  grid-column: 7/8;
 }
-
 
 .match button {
   font-size: var(--font-size-text);
@@ -229,7 +227,6 @@ hr {
   font-weight: bold;
   width: auto;
 }
-
 
 .btn-container {
   display: flex;
@@ -278,13 +275,51 @@ hr {
   opacity: 0.5; /* Hace que se vea más tenue */
 }
 
-.icon{
-    cursor: pointer;
-    color: var(--primary-color);
+.icon {
+  cursor: pointer;
+  color: var(--primary-color);
 }
 
-.heigt-mx{
-    height: 100%;
-    padding: 0px 2px !important;
-    border-radius: 0%;
+.heigt-mx {
+  height: 100%;
+  padding: 0px 2px !important;
+  border-radius: 0%;
+}
+
+
+
+
+.titles{
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 4px;
+  text-align: center !important;
+  font-weight: bold;
+  font-size: var(--font-size-text);
+  border: solid 1px var(--primary-color);
+}
+
+.title-hour {
+  grid-column: 5/7;
+  cursor: pointer;
+}
+
+.title-hour:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.title-complex {
+  grid-column: 7/8;
+  cursor: pointer;
+}
+
+.title-complex:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.title-versus {
+
+  grid-column: 1/5;
 }
