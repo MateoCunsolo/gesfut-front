@@ -1,0 +1,144 @@
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - 160px);
+    background-image: url('../../../../../public/register-image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    height: auto;
+    margin: 20px;
+    font-size: var(--font-size-text);
+    color: white;
+  }
+  
+  section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - 160px);
+    background-image: url('../../../../../public/register-image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    height: auto;
+    font-size: var(--font-size-text);
+    color: white;
+    overflow: visible;
+  }
+  
+  @keyframes kickBall {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(100vw, -100vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+  
+  .ball-container {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    z-index: 2;
+  }
+  
+  .soccer-ball {
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: kickBall 3s infinite ease-out;
+  }
+  
+  /* Alternativa si no tienes una imagen de pelota */
+  .soccer-ball-emoji {
+    font-size: 30px;
+    animation: kickBall 3s infinite ease-out;
+  }
+
+  .not-verified {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    color: white;
+  }
+  
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  
+    p {
+      font-size: var(--font-size-text);
+      margin: 0;
+    }
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Opcional: Si quieres que los dos contenedores tengan el mismo ancho */
+  .verify-email, .not-verified {
+    width: 100%;
+    max-width: 400px; /* o el ancho que prefieras */
+  }
+
+  button{
+    border: solid var(--secondary-color) 2px;
+  }
+
+  p{
+    text-align: center;
+  }

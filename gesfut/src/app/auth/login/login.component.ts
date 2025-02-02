@@ -43,6 +43,11 @@ export class LoginComponent {
         (error) => {
           this.error = error.error.error;
           this.alertService.errorAlert(this.error);
+          if (error.error.error === 'Email no verificado. Por favor, verifica tu email antes de iniciar sesión.') {
+            setTimeout(() => {
+              this.resendEmail();
+            }, 2000);
+          }
           this.redActive = true;
           this.tryLogin = true;
         }
@@ -60,6 +65,22 @@ export class LoginComponent {
 
   toForgotPassword() {
     this.router.navigate(['auth/reset-password']);
+  }
+
+  resendEmail() {
+    this.alertService.confirmAlert("Verificacion de correo", "Deseas recibir nuevamente el correo de verificación?", 'Reenviar').then((result) => {
+      if (result.isConfirmed) {
+        this.alertService.loadingAlert('Reenviando correo de verificación...');
+        this.authService.resendEmail(this.loginForm.value.email).subscribe(
+          (response) => {
+            this.alertService.successAlert('Correo reenviado');
+          },
+          (error) => {
+            this.alertService.errorAlert('Error al reenviar el correo');
+          }
+        );
+      }
+    }); 
   }
 
 }
