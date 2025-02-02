@@ -30,6 +30,7 @@ export class NamesTeamsComponent implements OnInit {
   protected isGlobalTeams: boolean = false;
   protected codeTouranment: string = '';
   bindingSelect : number = 0;
+  clickedToOcultPlayers: boolean = false;
   constructor() {}
 
   ngOnInit() {
@@ -61,6 +62,9 @@ export class NamesTeamsComponent implements OnInit {
 
 
   showParticipants(id: number) {
+    if ( id != this.idSelected){
+      this.clickedToOcultPlayers = false;
+    }
     this.idSelected = id;
     this.nameClicked = this.teamsGlobales.find((team) => team.id === id)?.name || '';
     this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === id);
@@ -97,6 +101,7 @@ export class NamesTeamsComponent implements OnInit {
   
   onCodeTournament(code: string) {
     this.codeTouranment = code;
+    this.clickedToOcultPlayers = true;
   }
 
   onNameTournament(name: string) {

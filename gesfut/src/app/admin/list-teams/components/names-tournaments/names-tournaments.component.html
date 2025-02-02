@@ -1,3 +1,12 @@
+@if (spinner) {
+        <app-spinner
+        [text]='"Cargando participaciones"'
+        ></app-spinner>
+}
+
+
+@if (!spinner) {
+
 @if (!therAreNotParticipants) {
     <h3 class="search-team mobile">Selecionar torneo</h3>
 }@else {
@@ -24,3 +33,4 @@
     </div>
     }
 </section>
+}

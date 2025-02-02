@@ -12,10 +12,11 @@ import { ParticipantShortResponse } from '../../../../core/models/participantSho
 import { AlertService } from '../../../../core/services/alert.service';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SpinnerComponent } from '../../../../shared/spinner/spinner.component';
 
 @Component({
     selector: 'app-names-tournaments',
-    imports: [NgClass, FormsModule],
+    imports: [NgClass, FormsModule, SpinnerComponent],
     templateUrl: './names-tournaments.component.html',
     styleUrl: './names-tournaments.component.scss'
 })
@@ -32,12 +33,16 @@ export class NamesTournamentsComponent implements OnChanges {
   protected therAreNotParticipants: boolean = false;
   protected participantsTeam: ParticipantShortResponse[] = [];
   protected isClicked: boolean = false;
+  protected spinner: boolean = true;
   protected selectedParticipantId: number | null = null;
   selectedTournament: number = this.participantsTeam.length ? this.participantsTeam[0].idParticipant : 0;
+
+  constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['id']) {
       this.getAllParticipantsTournament(this.id);
+      this.spinner = true;
     }
   }
 
@@ -55,6 +60,7 @@ export class NamesTournamentsComponent implements OnChanges {
   getAllParticipantsTournament(id: number) {
     this.teamService.getParticipantsShortAllTournamemts(id).subscribe({
       next: (response) => {
+        this.spinner = false;
         this.participantsTeam = response;
         if (this.participantsTeam.length > 0) {
           this.therAreNotParticipants = false;
