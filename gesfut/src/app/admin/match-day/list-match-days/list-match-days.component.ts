@@ -132,7 +132,7 @@ export class ListMatchDaysComponent implements OnInit {
         break;
     }
 
-    
+
   }
 
 
@@ -141,22 +141,40 @@ export class ListMatchDaysComponent implements OnInit {
     this.selectedMatchId = id;
   }
 
-  editDescription(id: number){
+  async editDescription(id: number){
     ///TODO: Implementar la edición de la descripción
-    this.alertService.infoAlertTop('Función no implementada');
+    let description = await this.alertService.updateTextAreaAlert("Ingrese la nueva descripción");
+    if(description!=null){
+      this.matchDaysService.updateDescriptionMatch(description, id).subscribe({
+        next: () => {
+          this.alertService.successAlert("Descripción actualizada.");
+
+          let matchFound = this.tournament.matchDays[this.selectedMatchDay].matches.find(
+            (match) => match.id === id
+          )
+
+          if(matchFound){
+            matchFound.description = description;
+          }else{
+            this.alertService.errorAlert('No se encontró el partido seleccionado');
+          }
+        },
+        error: (error:HttpErrorResponse) => {
+          this.alertService.errorAlert(error.error.error)
+        }
+      })
+    }
   }
-
-
 
 
   updateDateTime(date: String) {
     console.log('Fecha recibida en el componente:', date);
-  
+
     if (!date) {  // También cubre el caso de `null`
       this.alertService.errorAlert('Debe seleccionar una fecha y hora válida');
       return;
     }
-    
+
 
     let matchFound = this.tournament.matchDays[this.selectedMatchDay].matches.find(
       (match) => match.id === this.selectedMatchId
@@ -167,8 +185,8 @@ export class ListMatchDaysComponent implements OnInit {
     }else{
       this.alertService.errorAlert('No se encontró el partido seleccionado');
     }
-    
+
   }
-  
+
 
 }
