@@ -29,8 +29,15 @@ export class TournamentService {
     return this.http.get<TournamentResponseFull>(`${this.url}/tournaments/${code}`).pipe(
       tap({
         next: (response: TournamentResponseFull) => {
+          response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
+          response.matchDays.forEach(matchDay => {
+            matchDay.matches.sort((a, b) => {
+              const aIsFree = a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free';
+              const bIsFree = b.homeTeam.toLocaleLowerCase() === 'free' || b.awayTeam.toLocaleLowerCase() === 'free';
+              return aIsFree === bIsFree ? 0 : aIsFree ? 1 : -1;
+            });
+          });
           this.currentTournament.next(response)
-          this
           return response;
         },
         error: (error: HttpErrorResponse) => {

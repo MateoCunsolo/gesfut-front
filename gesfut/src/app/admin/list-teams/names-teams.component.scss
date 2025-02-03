@@ -179,3 +179,11 @@ h3 {
   font-weight: 100;
   background-color: var(--secondary-color);
 }
+
+.center{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: var(--font-size-text);
+}

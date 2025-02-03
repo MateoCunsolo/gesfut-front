@@ -21,12 +21,13 @@ export class CreateTeamComponent {
   showExcelUpload = false;
   inAdmin: boolean = false;
   inTournament: boolean = false;
+  noPlayers: boolean = true;
   private dashboardService = inject(DashboardService);
   private route = inject(Router);
   constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
-      color: ['', Validators.required],
+      color: ['#000000', Validators.required],
       players: this.fb.array([])
     });
   }
@@ -45,6 +46,16 @@ export class CreateTeamComponent {
     for (let i = 0; i < 2; i++) {
       this.addPlayer();
     }
+
+     // Observando cambios en el formulario
+     this.teamForm.valueChanges.subscribe(() => {
+      if (this.teamForm.get('name')?.value && this.teamForm.get('color')?.value) {
+        this.noPlayers = false;
+      } else {
+        this.noPlayers = true;
+      }
+    });
+
   }
 
   get players(): FormArray {
@@ -68,7 +79,7 @@ export class CreateTeamComponent {
       isCaptain: [false],
       isGoalKeeper: [false]
     });
-    this.players.push(playerForm);
+    this.players.push(playerForm);  
   }
 
   removePlayer(index: number) {
@@ -202,9 +213,17 @@ export class CreateTeamComponent {
         });
         this.showExcelUpload=false;
       }
+      if(this.players.length>0){
+        this.noPlayers = false;
+      }
   }
     
   onSubmit() {
+
+    if (this.teamForm.touched && this.teamForm.get('name')?.value && this.teamForm.get('color')?.value) {
+      this.noPlayers = false;
+    }  
+
     const teamData = this.teamForm.value;
     this.teamService.createTeam(teamData).subscribe({
       next: () => {

@@ -43,7 +43,6 @@ export class HeaderComponent {
 
   
   ngOnInit(): void {
-
     if(this.route.url.includes('admin') && !this.route.url.includes('tournaments')){
       this.isRouteTorunament = false;
     }else{

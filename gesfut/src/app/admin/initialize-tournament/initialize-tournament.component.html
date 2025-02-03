@@ -1,9 +1,24 @@
-<section class="center">
+@if (showPicker) {
+    <app-time-picker 
+    class="oculto"
+    [ngClass]="{ show: showPicker }"
+    [matchId]="0" 
+    (sendDate)="timeChange($event)"
+    (cancelPicker)="cancelPicker($event)"
+    ></app-time-picker>
+}
+
+<section class="center" [ngClass]="{ blur: showPicker }">
     <button class="back-button " (click)="changeComponent('dashboard')">ATRAS</button>
     <h2 class="title">
         SELECIONAR EQUIPOS PARA EL INICIO DEL TORNEO
     </h2>
     <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px;">
+    @if (!showPicker && date) {
+        <p class="title">FECHA DEL PARTIDO INICIAL: {{date}}</p>
+    }@else{
+        <button (click)="showFormTimePicker()" class="base-button">AGREGAR FECHA DEL PARTIDO INICIAL</button>
+    }
     <div class="grid-conteiner">
 
         <section class="col-1-teams-all">

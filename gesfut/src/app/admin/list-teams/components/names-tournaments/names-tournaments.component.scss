@@ -37,6 +37,8 @@ p {
 }
 
 .names {
+  display: flex;
+  flex-wrap: wrap;
   &.desktop {
     display: flex;
     flex-direction: row;
@@ -83,6 +85,8 @@ p {
 h3 {
   font-weight: 100 !important;
   background-color: var(--secondary-color) !important;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 button {

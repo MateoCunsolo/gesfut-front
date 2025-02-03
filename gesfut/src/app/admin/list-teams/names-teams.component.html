@@ -47,6 +47,7 @@
         ></app-names-tournaments>
       </div>
 
+      @if (clickedToOcultPlayers) {
       <div class="players">
         <app-players
           [participantId]="selectedParticipantId"
@@ -55,7 +56,11 @@
           [code]="codeTouranment"
           [nameTournament]="nameTouranemt"
         ></app-players>
-      </div>
+      </div>}@else {
+        <div class="player center"> 
+          <p>CARGANDO DATOS...</p>
+        </div>
+      }
     </div>
   </div>
   }@else {

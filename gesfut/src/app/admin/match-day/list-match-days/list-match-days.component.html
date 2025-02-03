@@ -12,7 +12,7 @@
       <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
       <div class="matchdays">
         @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
-        <button
+        <button [ngClass]="{activeNumberClass: day.numberOfMatchDay === selectedMatchDay}"
           class="base-button"
           (click)="updateMatchDay(day.numberOfMatchDay)"
         >
@@ -27,6 +27,21 @@
     @if(this.tournament && this.tournament.matchDays.length > 0){
     @if(tournament.matchDays[selectedMatchDay].matches &&
     tournament.matchDays[selectedMatchDay].matches.length > 0){
+      <div class="match">
+        <p class=" titles title-versus">
+          PARTIDOS
+        </p>
+        <div class="titles title-hour">
+          @if (tournament.matchDays[selectedMatchDay].matches[0].dateTime != null) {
+            <p>FECHA</p>
+          }@else {
+            <p (click)="chargeAllDates()" >CARGAR TODAS LAS FECHAS</p>
+          }
+        </div>
+        <div class="titles title-complex">
+          <p>COMPLEJO</p>
+        </div>
+      </div>
     <ng-container
       *ngFor="let match of tournament.matchDays[selectedMatchDay].matches"
     >
@@ -48,6 +63,11 @@
           <p>{{ match.awayTeam.toUpperCase() }}</p>
         </div>
         <div class="hour">
+          @if (match.dateTime != null) {
+            <p>{{ match.dateTime.toUpperCase() }}</p>
+          }@else {
+            <p>FECHA SIN DEFINIR</p>
+          }
           <p>{{ match.dateTime }}</p>
           <i
             (click)="sendMatchId(match.id, 1)"

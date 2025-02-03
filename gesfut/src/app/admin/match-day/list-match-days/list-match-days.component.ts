@@ -186,6 +186,7 @@ export class ListMatchDaysComponent implements OnInit {
     }
 
   }
-
-
+  chargeAllDates(){
+    this.alertService.infoAlert('Cargar todas las fechas a la vez','Función no implementada');
+  }
 }

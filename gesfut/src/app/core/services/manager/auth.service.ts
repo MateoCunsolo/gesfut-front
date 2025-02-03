@@ -81,7 +81,14 @@ export class AuthService {
     return this.http.post<void>(`${this.url}/change-password-with-old-password`, passwords, { headers });
   }
   
-  
+  verifyEmail(token: string): Observable<void> {
+    return this.http.post<void>(`${this.url}/verify-email/${token}`,{});
+  }
+
+  resendEmail(email: string): Observable<void> {
+    return this.http.post<void>(`${this.url}/resend-verification/${email}`, {});
+  }
+
 
 }
   
