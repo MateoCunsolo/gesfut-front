@@ -142,9 +142,10 @@ export class ListMatchDaysComponent implements OnInit {
 
   async editDescription(id: number){
     ///TODO: Implementar la edición de la descripción
-    let description = await this.alertService.updateTextAreaAlert("Ingrese la nueva descripción");
+    let description = await this.alertService.updateNumberInputAlert("Ingrese la nueva descripción");
     if(description!=null){
-      this.matchDaysService.updateDescriptionMatch(description, id).subscribe({
+      let descripciónString = description.toString();
+      this.matchDaysService.updateDescriptionMatch(descripciónString, id).subscribe({
         next: () => {
           this.alertService.successAlert("Descripción actualizada.");
 
@@ -153,7 +154,7 @@ export class ListMatchDaysComponent implements OnInit {
           )
 
           if(matchFound){
-            matchFound.description = description;
+            matchFound.description = descripciónString;
           }else{
             this.alertService.errorAlert('No se encontró el partido seleccionado');
           }
