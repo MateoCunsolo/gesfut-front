@@ -48,14 +48,14 @@
           <p>{{ match.awayTeam.toUpperCase() }}</p>
         </div>
         <div class="hour">
-          <p>{{ match.dateTime.toUpperCase() }}</p>
+          <p>{{ match.dateTime }}</p>
           <i
             (click)="sendMatchId(match.id, 1)"
             class="icon fa-solid fa-pen-to-square"
           ></i>
         </div>
         <div class="complex">
-          <p>Complejo</p>
+          <p>{{match.description}}</p>
           <i
             (click)="sendMatchId(match.id, 2)"
             class="icon fa-solid fa-pen-to-square"

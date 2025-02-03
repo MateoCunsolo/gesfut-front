@@ -53,7 +53,7 @@
               <div class="accordion-body">
                 <span class="accordion-description">{{item.description}}</span>
                 @if(isAuth()){
-                  <i class="accordion-button fa-solid fa-pencil"></i>
+                  <i class="accordion-button fa-solid fa-pencil" (click)="updatePrizeDescription(item.position)"></i>
                   <i class="accordion-button fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
                 }
               </div>

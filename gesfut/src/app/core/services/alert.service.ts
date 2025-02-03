@@ -141,7 +141,7 @@ export class AlertService {
     return Swal.fire({
       title: 'Configuración de Partido',
       html: `
-        
+
       `,
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
@@ -160,4 +160,29 @@ export class AlertService {
       }
     });
   }
+
+  updateTextAreaAlert(title:String): Promise<string | null> {
+    return Swal.fire({
+      title: title,
+      input: 'textarea',
+      inputPlaceholder: 'Escribe la nueva descripción...',
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value) {
+          return '¡La descripción no puede estar vacía!';
+        }
+        return undefined;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return result.value;
+      } else {
+        return null;
+      }
+    });
+  }
+
+
 }
