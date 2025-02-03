@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { PrizeService } from '../../../core/services/tournament/prize.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Prize } from '../../../core/models/prizesRequest';
+import { Prize, updatePrizeDescription } from '../../../core/models/prizesRequest';
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
@@ -92,6 +92,27 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
               },
             });
       });
+  }
+
+  async updatePrizeDescription(position:number){
+    let description = await this.alertService.updateTextAreaAlert("Ingrese la nueva descripción.");
+    if(description && this.currentTournament){
+      let request: updatePrizeDescription = {
+        description: description,
+        type: this.currentCategory,
+        position:position
+      }
+      this.prizeService.updatePrize(this.currentTournament, request).subscribe({
+        next: () => {
+          this.alertService.successAlert("Descripción de premio actualizada!");
+
+          let prizeFound = this.prizes.find( prize => prize.type == this.currentCategory && prize.position == position);
+          if(prizeFound){
+            prizeFound.description = description;
+          }
+        }
+      })
+    }
   }
 
   isAuth():boolean{

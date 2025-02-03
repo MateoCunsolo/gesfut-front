@@ -16,7 +16,8 @@ import { DashboardService } from '../dashboard.service';
 import { TournamentService } from './tournament.service';
 import { AlertService } from '../alert.service';
 import { MatchDayResponse } from '../../models/tournamentResponse';
-import { UpdateDateAndDescriptionRequest } from '../../models/UpdateDateAndDescriptionRequest';
+import { MatchDescription } from '../../models/MatchDescriptionResponse';
+
 
 @Injectable({
   providedIn: 'root',
@@ -249,35 +250,21 @@ export class MatchDaysService {
       });
   }
 
-  updateDateAndDescriptionMatch(
-    matchId: number,
-    request: UpdateDateAndDescriptionRequest
-  ): Observable<void> {
-    const token = sessionStorage.getItem('token');
-
-    return this.HttpClient.patch<void>(
-      `${this.url}/matches/update-date-and-description/${matchId}`,
-      request,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    ).pipe(
-      catchError((error) => {
-        return throwError(() => error);
-      })
-    );
-  }
-
   updateDateMatch(date: string, idMatch: number): Observable<MatchDateResponse> {
     const token = sessionStorage.getItem('token');
     return this.HttpClient.patch<MatchDateResponse>(
       `${this.url}/matches/update-date/${idMatch}`,
-      { localDateTime: date },  // ✅ Clave correcta
+      { localDateTime: date },
       { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
     );
-    
+  }
+
+  updateDescriptionMatch(description: string, idMatch: number): Observable<void> {
+    const token = sessionStorage.getItem('token');
+    return this.HttpClient.patch<void>(
+      `${this.url}/matches/update-description/${idMatch}`,
+      { description: description },
+      { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Prize, PrizesRequest } from './../../models/prizesRequest';
+import { Prize, PrizesRequest, updatePrizeDescription } from './../../models/prizesRequest';
 import {
   HttpClient,
   HttpErrorResponse,
@@ -88,6 +88,26 @@ export class PrizeService {
       tap(() =>
         this.alertService.successAlert("Premio eliminado exitosamente")
       ),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  updatePrize(code: string, request: updatePrizeDescription){
+    if (!this.session.isAuth()) {
+      return new Observable<void>();
+    }
+
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.Http.patch<void>(`${environment.apiUrl}/prizes/${code}`, request, {
+      headers,
+    }).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       })
