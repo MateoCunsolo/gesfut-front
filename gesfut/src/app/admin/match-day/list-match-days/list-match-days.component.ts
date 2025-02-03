@@ -9,7 +9,6 @@ import { MatchDaysService } from '../../../core/services/tournament/match-days.s
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
-import { UpdateDateAndDescriptionRequest } from '../../../core/models/UpdateDateAndDescriptionRequest';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
 
 @Component({

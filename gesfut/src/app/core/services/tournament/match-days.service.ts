@@ -254,16 +254,16 @@ export class MatchDaysService {
     const token = sessionStorage.getItem('token');
     return this.HttpClient.patch<MatchDateResponse>(
       `${this.url}/matches/update-date/${idMatch}`,
-      { localDateTime: date },  // ✅ Clave correcta
+      { localDateTime: date },
       { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
     );
   }
 
-  updateDescriptionMatch(description: string, idMatch: number): Observable<MatchDescription> {
+  updateDescriptionMatch(description: string, idMatch: number): Observable<void> {
     const token = sessionStorage.getItem('token');
-    return this.HttpClient.patch<MatchDescription>(
+    return this.HttpClient.patch<void>(
       `${this.url}/matches/update-description/${idMatch}`,
-      { description: description },  // ✅ Clave correcta
+      { description: description },
       { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
     );
   }

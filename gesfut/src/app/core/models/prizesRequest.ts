@@ -8,3 +8,11 @@ export interface Prize {
     description: string;
     position:    number;
 }
+
+export interface updatePrizeDescription{
+
+    type: string;
+    description: string;
+    position: number;
+
+}
