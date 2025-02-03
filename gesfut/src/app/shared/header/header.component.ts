@@ -28,8 +28,16 @@ export class HeaderComponent {
       this.route.navigateByUrl('/admin');
       
     }
+    this.dashboardService.haveParticipants$.subscribe({
+      next: (response: boolean) => {
+        if(response){
+          this.dashboardService.setActiveTournamentComponent('recap');
+        }else{
+          this.dashboardService.setActiveTournamentComponent(component);
+        }
+      }
+    });
     this.dashboardService.setActiveDashboardAdminComponent(component);
-    this.dashboardService.setActiveTournamentComponent(component);
   }
 
 
