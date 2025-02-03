@@ -21,11 +21,10 @@ import { LastsMatchesComponent } from "../../admin/lasts-matches/lasts-matches.c
 
 
 @Component({
-  selector: 'app-public-page',
-  standalone: true,
-  imports: [ListMatchDaysComponent, LeaderboardComponent, ListTeamsTournamentsComponent, LastsMatchesComponent, PrizeDashboardComponent, RecapComponent],
-  templateUrl: './public-page.component.html',
-  styleUrl: './public-page.component.scss',
+    selector: 'app-public-page',
+    imports: [ListMatchDaysComponent, LeaderboardComponent, ListTeamsTournamentsComponent, LastsMatchesComponent, PrizeDashboardComponent, RecapComponent],
+    templateUrl: './public-page.component.html',
+    styleUrl: './public-page.component.scss'
 })
 export class PublicPageComponent {
   currentTournament: BehaviorSubject<TournamentResponseFull> =

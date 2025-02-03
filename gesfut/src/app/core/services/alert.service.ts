@@ -4,7 +4,7 @@ import { ParticipantResponse } from '../models/tournamentResponse';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertService {
 
@@ -141,18 +141,7 @@ export class AlertService {
     return Swal.fire({
       title: 'Configuración de Partido',
       html: `
-        <div>
-          <label for="date">Selecciona la fecha </label>
-          <input type="text" id="date" class="form-control" placeholder="yyyy-mm-dd">
-        </div>
-        <div>
-          <label for="date">Selecciona la hora:</label>
-          <input type="text" id="hour" class="form-control" placeholder="HH:mm">
-        </div>
-        <div>
-          <label for="description">Descripción:</label>
-          <input type="text" id="description" class="form-control" placeholder="Añadir descripción" />
-        </div>
+
       `,
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
@@ -171,4 +160,61 @@ export class AlertService {
       }
     });
   }
+
+  updateTextAreaAlert(title:String): Promise<string | null> {
+    return Swal.fire({
+      title: title,
+      input: 'textarea',
+      inputPlaceholder: 'Escribe la nueva descripción...',
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      inputValidator: (value) => {
+        if (!value) {
+          return '¡La descripción no puede estar vacía!';
+        }
+        return undefined;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return result.value;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  
+  updateNumberInputAlert(title: string): Promise<number | null> {
+    return Swal.fire({
+      title: title,
+      input: 'number',
+      inputPlaceholder: 'Ingresa un número...',
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      inputAttributes: {
+        min: '1', // Puedes cambiar esto para restringir valores negativos
+        step: '1' // Define si se permiten decimales (cambiar a '0.01' para permitir decimales)
+      },
+      inputValidator: (value) => {
+        if (!value) {
+          return '¡El campo no puede estar vacío!';
+        }
+        if (Number(value) < 1) {
+          return '¡El valor debe ser mayor a 0!';
+        }
+
+        return undefined;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return Number(result.value); // Convierte el resultado a número antes de devolverlo
+      } else {
+        return null;
+      }
+    });
+  }
+  
+
 }

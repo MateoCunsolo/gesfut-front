@@ -7,11 +7,10 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { GuestService } from '../../core/services/guest/guest.service';
 
 @Component({
-  selector: 'app-lasts-matches',
-  standalone: true,
-  imports: [NgClass],
-  templateUrl: './lasts-matches.component.html',
-  styleUrl: './lasts-matches.component.scss'
+    selector: 'app-lasts-matches',
+    imports: [NgClass],
+    templateUrl: './lasts-matches.component.html',
+    styleUrl: './lasts-matches.component.scss'
 })
 export class LastsMatchesComponent {
   matches: MatchResponse[] = [];  

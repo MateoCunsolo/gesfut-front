@@ -4,11 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { MatchDayResponse } from '../../core/models/tournamentResponse';
 
 @Component({
-  selector: 'app-recap',
-  standalone: true,
-  imports: [],
-  templateUrl: './recap.component.html',
-  styleUrl: './recap.component.scss'
+    selector: 'app-recap',
+    imports: [],
+    templateUrl: './recap.component.html',
+    styleUrl: './recap.component.scss'
 })
 export class RecapComponent {
   tournamentCode!: string;

@@ -9,21 +9,21 @@ import { MatchDaysService } from '../../../core/services/tournament/match-days.s
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
-import { UpdateDateAndDescriptionRequest } from '../../../core/models/UpdateDateAndDescriptionRequest';
+import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
 
 @Component({
-  selector: 'app-list-match-days',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './list-match-days.component.html',
-  styleUrls: ['./list-match-days.component.scss'],
+    selector: 'app-list-match-days',
+    imports: [CommonModule, TimepickerDatepickerIntegrationExample],
+    templateUrl: './list-match-days.component.html',
+    styleUrls: ['./list-match-days.component.scss']
 })
 export class ListMatchDaysComponent implements OnInit {
   tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
   selectedMatchDay = 0;
   code: string | null = null;
   matchDayStatus: boolean = false;
-
+  showPicker: boolean = false;
+  selectedMatchId: number = 0;
   constructor(
     private dashboardService: DashboardService,
     private tournamentService: TournamentService,
@@ -115,40 +115,79 @@ export class ListMatchDaysComponent implements OnInit {
     return this.sessionService.isAuth();
   }
 
-  async editDateAndDescription(matchId:number){
-    const result = await this.alertService.EditDateAndDescriptionMatchAlert();
+  cancelPicker(flag:Boolean){
+    this.showPicker = false;
+  }
 
-    const selectedDate: string = result.value.date;  // Asumo que esto es un string en formato 'yyyy-mm-dd'
-    const selectedTime: string = result.value.time;  // Asumo que esto es un string en formato 'HH:mm'
+  sendMatchId(id:number, option: number){
+    switch(option){
+      //caso 1: Editar fecha
+      case 1:
+        this.editDate(id);
+        break;
+      //caso 2: Editar descripción (complejo)
+      case 2:
+        this.editDescription(id);
+        break;
+    }
 
-    // Concatenamos la fecha y la hora para crear un string de fecha y hora completo
-    const dateTimeString = `${selectedDate}T${selectedTime}:00`; // Ejemplo: "2025-02-05T23:00:00"
 
-    // Convertimos ese string en un objeto Date
-    const date = new Date(dateTimeString);  // Esto creará una fecha válida
+  }
 
-    // Convertimos el objeto Date a formato ISO 8601 (esto también incluirá el 'Z' para UTC)
-    const isoDateTime = date.toISOString();  // Esto dará formato como "2025-02-05T23:00:00.000Z"
 
-    const request: UpdateDateAndDescriptionRequest = {
-      description: result.value.description,
-      localDateTime: isoDateTime // Pasamos la fecha en formato ISO 8601
-    };
+  editDate(id: number){
+    this.showPicker = true;
+    this.selectedMatchId = id;
+  }
 
-    if (result.isConfirmed) {
-      console.log("Fecha y hora seleccionadas:", isoDateTime);
-      console.log("Descripción:", result.value.description);
-
-      this.matchDaysService.updateDateAndDescriptionMatch(matchId, request).subscribe({
+  async editDescription(id: number){
+    ///TODO: Implementar la edición de la descripción
+    let description = await this.alertService.updateNumberInputAlert("Ingrese la nueva descripción");
+    if(description!=null){
+      let descripciónString = description.toString();
+      this.matchDaysService.updateDescriptionMatch(descripciónString, id).subscribe({
         next: () => {
-          this.alertService.successAlert("Fecha y hora modificadas.");
+          this.alertService.successAlert("Descripción actualizada.");
+
+          let matchFound = this.tournament.matchDays[this.selectedMatchDay].matches.find(
+            (match) => match.id === id
+          )
+
+          if(matchFound){
+            matchFound.description = descripciónString;
+          }else{
+            this.alertService.errorAlert('No se encontró el partido seleccionado');
+          }
         },
-        error: (errorResponse: HttpErrorResponse) => {
-          console.log(errorResponse);
-          this.alertService.errorAlert(errorResponse.error.error);
+        error: (error:HttpErrorResponse) => {
+          this.alertService.errorAlert(error.error.error)
         }
-      });
+      })
     }
   }
 
+
+  updateDateTime(date: String) {
+    console.log('Fecha recibida en el componente:', date);
+
+    if (!date) {  // También cubre el caso de `null`
+      this.alertService.errorAlert('Debe seleccionar una fecha y hora válida');
+      return;
+    }
+
+
+    let matchFound = this.tournament.matchDays[this.selectedMatchDay].matches.find(
+      (match) => match.id === this.selectedMatchId
+    )
+
+    if(matchFound){
+      matchFound.dateTime = date;
+    }else{
+      this.alertService.errorAlert('No se encontró el partido seleccionado');
+    }
+
+  }
+  chargeAllDates(){
+    this.alertService.infoAlert('Cargar todas las fechas a la vez','Función no implementada');
+  }
 }

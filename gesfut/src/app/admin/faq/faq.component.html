@@ -1,0 +1,15 @@
+<button (click)="toAdminDashboard()" class="back-button">ATRAS</button>
+<section class="faq-container">
+    <h2 class="title">Preguntas Frecuentes</h2>
+    @for (faq of faqs; track faq) {
+      <div class="faq-item">
+        <button (click)="toggleFaq(faq)" class="faq-question">
+          {{ faq.question }}
+        </button>
+        @if (faq.open) {
+          <p class="faq-answer">{{ faq.answer }}</p>
+        }
+      </div>
+    }
+  </section>
+  

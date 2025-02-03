@@ -8,12 +8,11 @@ import { AdminService } from '../../core/services/manager/admin.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
 @Component({
-  selector: 'app-create-tournament',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './create-tournament.component.html',
-  styleUrl: './create-tournament.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-create-tournament',
+    imports: [ReactiveFormsModule],
+    templateUrl: './create-tournament.component.html',
+    styleUrl: './create-tournament.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class CreateTournamentComponent {

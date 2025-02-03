@@ -68,7 +68,7 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                       }
                   ],
                   isFinished: false,
-                  dateTime: new Date(),
+                  dateTime: '',
                   description: ''
               }
           ]

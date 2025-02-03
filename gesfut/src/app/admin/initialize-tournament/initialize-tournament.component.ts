@@ -8,13 +8,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { AlertService } from '../../core/services/alert.service';
+import { TimepickerDatepickerIntegrationExample } from "../match-day/list-match-days/timePicker/timePicker.component";
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-initialize-tournament',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './initialize-tournament.component.html',
-  styleUrl: './initialize-tournament.component.scss'
+    selector: 'app-initialize-tournament',
+    imports: [FormsModule, TimepickerDatepickerIntegrationExample, NgClass],
+    templateUrl: './initialize-tournament.component.html',
+    styleUrl: './initialize-tournament.component.scss'
 })
 export class InitializeTournamentComponent {
   teams: TeamResponse[] = [];
@@ -22,6 +23,8 @@ export class InitializeTournamentComponent {
   teamsFilters: TeamResponse[] = [];
   code: string = '';
   searchTerm: string = '';
+  date: string = '';
+  showPicker: boolean = false;
 
 
   constructor(
@@ -73,13 +76,23 @@ export class InitializeTournamentComponent {
     });
   }
 
+  cancelPicker( event: Boolean) {
+    this.showPicker = false;
+  }
+
+  showFormTimePicker() {
+    this.showPicker = true;
+  }
+
   filterTeams() {
     this.teams = this.teamsFilters.filter(team =>
       team.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
-
+  timeChange(event: String) {
+    this.date = (event as string);
+  }
 
   initTournament() {
     this.alertService.loadingAlert('Inicializando torneo...');
@@ -87,7 +100,8 @@ export class InitializeTournamentComponent {
       const ids = this.teamsTournament.map(team => team.id);
       const initializeRequest = {
         tournamentCode: this.code,
-        teams: ids
+        teams: ids,
+        startDate: this.date
       };
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {

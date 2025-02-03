@@ -10,12 +10,11 @@ import { PlayerResponse } from '../../../../../core/models/teamResponse';
 import { forkJoin, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'app-add-player',
-  standalone: true,
-  imports: [ReactiveFormsModule,FormsModule],
-  templateUrl: './add-player.component.html',
-  styleUrls: ['./add-player.component.scss'],
-  inputs: ['teamName', 'teamPlayers']
+    selector: 'app-add-player',
+    imports: [ReactiveFormsModule, FormsModule],
+    templateUrl: './add-player.component.html',
+    styleUrls: ['./add-player.component.scss'],
+    inputs: ['teamName', 'teamPlayers']
 })
 export class AddPlayerComponent implements OnInit, OnChanges {
 

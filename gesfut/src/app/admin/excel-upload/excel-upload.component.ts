@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import * as XLSX from 'xlsx';
 
 @Component({
-  selector: 'app-excel-upload',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './excel-upload.component.html',
-  styleUrls: ['./excel-upload.component.scss']
+    selector: 'app-excel-upload',
+    imports: [CommonModule],
+    templateUrl: './excel-upload.component.html',
+    styleUrls: ['./excel-upload.component.scss']
 })
 export class ExcelUploadComponent {
   @Output() dataLoaded = new EventEmitter<any>();

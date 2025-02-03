@@ -5,11 +5,10 @@ import { AlertService } from '../../../../../core/services/alert.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-delete-player',
-  standalone: true,
-  imports: [],
-  templateUrl: './delete.component.html',
-  styleUrl: './delete.component.scss'
+    selector: 'app-delete-player',
+    imports: [],
+    templateUrl: './delete.component.html',
+    styleUrl: './delete.component.scss'
 })
 export class DeleteComponent {
 

@@ -8,11 +8,10 @@ import { INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tourn
 import { AlertService } from '../../core/services/alert.service';
 
 @Component({
-  selector: 'app-list-tournaments',
-  standalone: true,
-  imports: [DatePipe, CommonModule],
-  templateUrl: './list-tournaments.component.html',
-  styleUrl: './list-tournaments.component.scss'
+    selector: 'app-list-tournaments',
+    imports: [DatePipe, CommonModule],
+    templateUrl: './list-tournaments.component.html',
+    styleUrl: './list-tournaments.component.scss'
 })
 export class ListTournamentsComponent {
 

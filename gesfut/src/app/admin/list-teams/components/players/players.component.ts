@@ -12,11 +12,10 @@ import { DashboardService } from '../../../../core/services/dashboard.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-players',
-  standalone: true,
-  imports: [DeleteComponent, AddPlayerComponent],
-  templateUrl: './players.component.html',
-  styleUrl: './players.component.scss'
+    selector: 'app-players',
+    imports: [DeleteComponent, AddPlayerComponent],
+    templateUrl: './players.component.html',
+    styleUrl: './players.component.scss'
 })
 export class PlayersComponent implements OnChanges {
 

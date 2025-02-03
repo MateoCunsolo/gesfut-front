@@ -1,20 +1,21 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
-import { SessionService } from '../../core/services/manager/session.service'
+import { Component, HostListener, inject, OnDestroy } from '@angular/core';
+import { SessionService } from '../../core/services/manager/session.service';
 import { Router } from '@angular/router';
+import { AlertService } from '../../core/services/alert.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user',
-  standalone: true,
   imports: [],
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
-export class UserComponent implements OnDestroy {
+export class UserComponent {
   isMenuOpen = false;
   name: string = '';
-
+  private alertService = inject(AlertService);
   constructor(private sessionService: SessionService, private route: Router) {
-    this.sessionService.userData.subscribe(data => {
+    this.sessionService.userData.subscribe((data) => {
       this.name = data.name;
     });
   }
@@ -23,12 +24,8 @@ export class UserComponent implements OnDestroy {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  toChangePasswordWithPassword(){
+  toChangePasswordWithPassword() {
     this.route.navigateByUrl('/admin/change-password');
-  }
-
-  settings() {
-    console.log('Abrir configuración');
   }
 
   onLogout(): void {
@@ -44,7 +41,23 @@ export class UserComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    
+  help() {
+    this.alertService
+      .twoOptionsAlert(
+        'AYUDA',
+        'ELIGUE QUE QUIERES HACER',
+        'PREGUNTAS FRECUENTES',
+        'ENVIAR CORREO'
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.route.navigateByUrl('/admin/faq');
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          this.alertService.infoAlert('gesfut.arg@gmail.com', 'Porfavor detalla correctamente el problema y si puedes envia fotos. Gracias por tu colaboración');
+        }else{
+          this.alertService.infoAlertTop('No se ha seleccionado ninguna opción');
+          this.route.navigateByUrl('/admin');
+        }
+      });
   }
 }
