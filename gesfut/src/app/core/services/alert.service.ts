@@ -184,5 +184,37 @@ export class AlertService {
     });
   }
 
+  
+  updateNumberInputAlert(title: string): Promise<number | null> {
+    return Swal.fire({
+      title: title,
+      input: 'number',
+      inputPlaceholder: 'Ingresa un número...',
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      inputAttributes: {
+        min: '1', // Puedes cambiar esto para restringir valores negativos
+        step: '1' // Define si se permiten decimales (cambiar a '0.01' para permitir decimales)
+      },
+      inputValidator: (value) => {
+        if (!value) {
+          return '¡El campo no puede estar vacío!';
+        }
+        if (Number(value) < 1) {
+          return '¡El valor debe ser mayor a 0!';
+        }
+
+        return undefined;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return Number(result.value); // Convierte el resultado a número antes de devolverlo
+      } else {
+        return null;
+      }
+    });
+  }
+  
 
 }

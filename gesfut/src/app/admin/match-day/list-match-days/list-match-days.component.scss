@@ -114,28 +114,19 @@ hr {
 
 @media (max-width: 1280px) {
   .match button:nth-child(4) {
-    grid-column: 7/13;
+    grid-column: 1/13;
   }
   .match .hour:nth-child(2) {
-    grid-column: 1/4;
+    grid-column: 1/7;
   }
   .match .complex:nth-child(3) {
-    grid-column: 4/7;
+    grid-column: 7/13;
   }
 }
 
 @media (max-width: 576px) {
   .match {
     font-size: 12px;
-  }
-  .match button:nth-child(4) {
-    grid-column: 1/13;
-  }
-  .match .hour:nth-child(2) {
-    grid-column: 1/4;
-  }
-  .match .complex:nth-child(3) {
-    grid-column: 4/13;
   }
 }
 
@@ -215,9 +206,9 @@ hr {
 .match button {
   font-size: var(--font-size-text);
   padding: 0;
+  height: 24px;
   @media (max-width: 576px) {
-    height: 24px;
-    width: 50%;
+    width: 100%;
   }
 }
 
@@ -302,6 +293,10 @@ hr {
 .title-hour {
   grid-column: 5/7;
   cursor: pointer;
+  @media screen and (max-width: 1280px) {
+    grid-column: 1/7;
+    
+  }
 }
 
 .title-hour:hover {
@@ -312,6 +307,14 @@ hr {
 .title-complex {
   grid-column: 7/8;
   cursor: pointer;
+  @media screen and (max-width: 1280px) {
+    grid-column: 7/13;
+  }
+  // @media screen and (max-width: 576px) {
+  //   grid-column: 4/13;
+    
+  // }
+
 }
 
 .title-complex:hover {
@@ -320,6 +323,8 @@ hr {
 }
 
 .title-versus {
-
   grid-column: 1/5;
+  @media screen and (max-width: 1280px) {
+    grid-column: 1/13;
+  }
 }
