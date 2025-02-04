@@ -80,6 +80,8 @@ export class LoadResultComponent {
           (team) => team.name !== 'Home Team' && team.name !== 'Away Team'
         );
         if (match.events.length > 0) {
+          console.log(match.events);
+          console.log('ANTES DE MAPPEAR');
           this.events = this.mapEventsAndAgruopStatics(match.events);
           this.eventsCopy = this.events.map((event) => ({ ...event }));
         }
@@ -346,6 +348,7 @@ export class LoadResultComponent {
     } else {
       this.currentMatch.awayGoals += 1;
     }
+    this.whoWins();
   }
 
   addYellowCard(id: number) {
@@ -384,6 +387,8 @@ export class LoadResultComponent {
     } else {
       if (this.currentMatch.awayGoals > 0) this.currentMatch.awayGoals -= 1;
     }
+    this.whoWins();
+
   }
 
   removeYellowCard(id: number) {

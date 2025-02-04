@@ -9,8 +9,8 @@
   </div>
   <div class="versus">
     <p [ngClass]="{win:homeWin, loss: awayWin, draw: (!awayWin && !homeWin)}">{{ currentMatch.homeTeam.name.toUpperCase() }}</p>
-    <p>{{ currentMatch.homeGoals }}</p>
-    <p>{{ currentMatch.awayGoals }}</p>
+    <p >{{ currentMatch.homeGoals }}</p>
+    <p >{{ currentMatch.awayGoals }}</p>
     <p [ngClass]="{win:awayWin, loss:homeWin, draw: (!awayWin && !homeWin)}">{{ currentMatch.awayTeam.name.toUpperCase() }}</p>
   </div>
   <article>
