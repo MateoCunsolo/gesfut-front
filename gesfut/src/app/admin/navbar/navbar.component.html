@@ -3,16 +3,19 @@
     <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
     <label for="btn-menu" class="icon-menu"></label>
     <nav class="menu" [class.open]="menuOpen">
-      <a (click)="changeComponent('dashboard')">INICIO</a>
+      <a (click)="changeComponent('recap')">INICIO</a>
       <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
       <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
       <a (click)="changeComponent('match-days')">FECHAS</a>
       <a (click)="changeComponent('prizes')">PREMIOS</a>
     </nav>
+    <p class="childLogo">{{tournamentName}}</p>
+    <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
+    <label></label>
   </div>
 } @else {
   <nav class="nav-bar">
-    <a (click)="changeComponent('dashboard')">INICIO</a>
+    <a (click)="changeComponent('recap')">INICIO</a>
     <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
     <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
     <a (click)="changeComponent('match-days')">FECHAS</a>

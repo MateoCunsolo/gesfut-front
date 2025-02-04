@@ -8,9 +8,13 @@
 <app-navbar></app-navbar>
 }
 <!-- Componentes principales basados en el valor de activeComponent -->
-@if(activeComponent === 'dashboard') {
+@if (activeComponent==='recap' && flag) {
+<app-recap></app-recap>
+} @if(activeComponent === 'dashboard') {
 <app-tournament-dashboard></app-tournament-dashboard>
-} @if(activeComponent === 'initialize') {
+}
+
+@if(activeComponent === 'initialize') {
 <app-initialize-tournament></app-initialize-tournament>
 } @if(activeComponent === 'list-teams-tournament') {
 <app-list-team-tournaments></app-list-team-tournaments>
@@ -22,14 +26,10 @@
 <app-load-result></app-load-result>
 } @if (activeComponent==='lasts-matches'){
 <app-lasts-matches></app-lasts-matches>
-}
-@if (activeComponent==='add-player') {
-  <app-add-player></app-add-player>
-}
-@if (activeComponent==='create-team') {
-  <app-create-team></app-create-team>
-}
-@if(activeComponent==='prizes'){
-  <app-prize-dashboard></app-prize-dashboard>
-}
-}
+} @if (activeComponent==='add-player') {
+<app-add-player></app-add-player>
+} @if (activeComponent==='create-team') {
+<app-create-team></app-create-team>
+} @if(activeComponent==='prizes'){
+<app-prize-dashboard></app-prize-dashboard>
+} }

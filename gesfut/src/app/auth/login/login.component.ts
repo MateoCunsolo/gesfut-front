@@ -5,10 +5,11 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
     selector: 'app-login',
-    imports: [RouterModule, ReactiveFormsModule],
+    imports: [RouterModule, ReactiveFormsModule, SpinnerComponent],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
@@ -18,6 +19,7 @@ export class LoginComponent {
   error: string = '';
   redActive = false;
   protected tryLogin = false;
+  protected isLoading = false;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -34,6 +36,7 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      this.isLoading = true;
       this.authService.login(this.loginForm.value).subscribe(
         (response) => {
           this.sessionService.setUserSession(response);
@@ -50,6 +53,7 @@ export class LoginComponent {
           }
           this.redActive = true;
           this.tryLogin = true;
+          this.isLoading = false;
         }
       );
     }else{

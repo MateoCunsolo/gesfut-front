@@ -35,7 +35,12 @@
         }
       </div>
 
-      <button type="submit" class="base-button">ENVIAR</button>
+      @if (isLoading) {
+        <app-spinner></app-spinner>
+      } @else {
+        <button class="base-button" type="submit">INGRESAR</button>
+      }
+      
       <a class="link" (click)="toRegister()">No tenes cuenta? Registrate aca!</a>
       @if (tryLogin) {
         <a class="link" (click)="toForgotPassword()">Olvide mi contraseña.</a>
