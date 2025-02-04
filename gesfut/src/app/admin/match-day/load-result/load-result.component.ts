@@ -36,7 +36,7 @@ export class LoadResultComponent {
   awayWin: boolean = false;
   homeWin: boolean = false;
   statisticsForm: FormGroup;
-
+  isEditMatch: boolean = false;
   constructor(
     private matchDayService: MatchDaysService,
     private fb: FormBuilder,
@@ -59,6 +59,17 @@ export class LoadResultComponent {
   }
 
   ngOnInit() {
+    this.matchDayService.editResult.subscribe({
+      next: (edit: boolean) => {
+        if (edit) {
+          this.isEditMatch = true;
+        }else{
+          this.isEditMatch = false;
+        }
+        alert('edit: ' + edit);
+      },
+    }) 
+
     this.matchDayService.currentMatch.subscribe({
       next: (match: MatchDetailedResponse) => {
         this.currentMatch = match;
@@ -306,6 +317,7 @@ export class LoadResultComponent {
   }
 
   btnBack() {
+    this.matchDayService.editResult.next(false);
     this.DashboardService.setActiveTournamentComponent('match-days');
   }
 
@@ -355,6 +367,7 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event) {
       event.mvp = !event.mvp;
+      this.analizeStats(event);
     }
   }
 
@@ -362,6 +375,7 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event && event.goals > 0) {
       event.goals--;
+      this.analizeStats(event);
     }else{
       this.noLessThanZero();
     }
@@ -377,6 +391,7 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event && event.yellowCard > 0) {
       event.yellowCard--;
+      this.analizeStats(event);
     }else{
       this.noLessThanZero();
     }
@@ -386,6 +401,7 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event && event.redCard > 0) {
       event.redCard--;
+      this.analizeStats(event);
     }else{
       this.noLessThanZero();
     }
@@ -397,4 +413,13 @@ export class LoadResultComponent {
   }
 
 
+  analizeStats(event: any) {
+    if(event.yellowCard === 0
+      && event.redCard === 0
+      && event.goals === 0
+      && event.mvp === false
+    ){
+      this.events = this.events.filter((e) => e !== event);
+    }
+  }
 }

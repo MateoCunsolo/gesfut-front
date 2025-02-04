@@ -80,7 +80,13 @@
     <!-- Visualizar los eventos agregados -->
     <div class="events-container">
       <div class="container-box">
-        <h3>ESTADISTICAS INGRESADAS</h3>
+        @if (events.length<1 && isEditMatch) {
+          <h3>NO HAY ESTADISTICAS INGRESADAS EL PARTIDO HABIA SIDO EMPATE </h3>
+        }@else if(events.length<1 && !isEditMatch){
+        <h3>NO HAY ESTADISTICAS INGRESADAS </h3>
+        }@else {
+        <h3>ESTADISTICAS INGESADAS</h3>
+        }
       </div>
 
       <div class="overflow-x">
