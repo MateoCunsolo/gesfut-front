@@ -66,7 +66,6 @@ export class LoadResultComponent {
         }else{
           this.isEditMatch = false;
         }
-        alert('edit: ' + edit);
       },
     }) 
 
