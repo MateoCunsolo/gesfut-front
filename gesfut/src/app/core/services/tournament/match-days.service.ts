@@ -106,6 +106,7 @@ export class MatchDaysService {
     this.getMatchDetailed(id).subscribe({
       next: (response: MatchDetailedResponse) => {
         this.currentMatch.next(response);
+        this.dashboardService.setActiveTournamentComponent('load-result');
       },
       error: (error) => {
         return throwError(() => error);

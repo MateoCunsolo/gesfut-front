@@ -1,18 +1,17 @@
 <section>
   <div class="title-container">
     <h2 class="title play-bold">
-      PARTIDO CORRESPONDIENTE A LA FECHA #{{
+      FECHA #{{
         currentMatch.numberOfMatchDay + 1
       }}
-      EN EL HORARIO 10:10
     </h2>
     <hr />
   </div>
   <div class="versus">
-    <p>{{ currentMatch.homeTeam.name.toUpperCase() }}</p>
+    <p [ngClass]="{win:homeWin, loss: awayWin, draw: (!awayWin && !homeWin)}">{{ currentMatch.homeTeam.name.toUpperCase() }}</p>
     <p>{{ currentMatch.homeGoals }}</p>
     <p>{{ currentMatch.awayGoals }}</p>
-    <p>{{ currentMatch.awayTeam.name.toUpperCase() }}</p>
+    <p [ngClass]="{win:awayWin, loss:homeWin, draw: (!awayWin && !homeWin)}">{{ currentMatch.awayTeam.name.toUpperCase() }}</p>
   </div>
   <article>
     <!-- Form para buscar el jugador y agregar eventos -->
@@ -28,7 +27,7 @@
             </select>
           </div>
 
-          <select formControlName="name">
+          <select (click)="isTeamSelected()" formControlName="name">
             <option value="" disabled selected>SELECCIONE UN JUGADOR</option>
             <option *ngFor="let player of filteredPlayers" [ngValue]="player">
               {{ player.playerName }} {{player.playerLastName}}
@@ -36,35 +35,35 @@
           </select>
         </div>
 
-        <div class="container-box">
+        <!-- <div class="container-box">
           <p>EQUIPO: {{ this.statisticsForm.controls["team"].value.name }}</p>
         </div>
         <div class="container-box">
           <p>
             JUGADOR: {{ this.statisticsForm.controls["name"].value.playerName }}
           </p>
-        </div>
+        </div> -->
 
         <div class="event-type-container">
           <div class="input-icon ">
-            <input formControlName="goals" type="number" min="0" />
+            <input (click)="isPlayerSelected()" formControlName="goals" type="number" min="0" />
             <i class="fa-solid fa-g"></i>
           </div>
 
           <div class="input-icon ">
-            <input formControlName="yellowCard" type="number" min="0" max="2"/>
+            <input  (click)="isPlayerSelected()"  formControlName="yellowCard" type="number" min="0" max="2"/>
             <i class="fa-solid fa-square" id="yellow"></i>
           </div>
 
           <div class="input-icon ">
-            <input formControlName="redCard" type="number" min="0" max="1"/>
+            <input  (click)="isPlayerSelected()"  formControlName="redCard" type="number" min="0" max="1"/>
             <i class="fa-solid fa-square" id="red"></i>
           </div>
 
           <div class="form-group">
             <p>MVP</p>
             <label class="checkbox-icon">
-              <input type="checkbox" formControlName="mvp" />
+              <input (click)="isPlayerSelected()"  type="checkbox" formControlName="mvp" />
               <i class="fa-solid fa-star"></i>
             </label>
           </div>
@@ -101,12 +100,15 @@
             <tr *ngFor="let event of events">
               <td>{{ event.team }}</td>
               <td>{{ event.name }}</td>
-              <td>{{ event.goals }}</td>
-              <td>{{ event.yellowCard }}</td>
-              <td>{{ event.redCard }}</td>
+              <td><span (click)="addGoals(event.id)" style="cursor: pointer;">+</span>{{ event.goals }}  <span (click)="removeGoal(event.id)" style="cursor: pointer;"> - </span></td>
+              <td><span (click)="addYellowCard(event.id)"style="cursor: pointer;">+</span> {{ event.yellowCard }}<span (click)="removeYellowCard(event.id)" style="cursor: pointer;"> - </span></td>
+              <td><span (click)="addRedCard(event.id)" style="cursor: pointer;">+</span>{{ event.redCard }}<span (click)="removeRedCard(event.id)" style="cursor: pointer;"> - </span></td>
               <td>@if(event.mvp){
-                <i class="fa-solid fa-star"></i>
-                }</td>
+                <i (click)="changeMvpStatus(event.id)" class="fa-solid fa-star"></i>
+                }@else {
+                <p style="cursor:pointer;" (click)="changeMvpStatus(event.id)">NO</p>
+                }
+              </td>
               <td><p (click)="deleteEvent(event)"><i class="fa-solid fa-trash-can"></i></p></td>
             </tr>
           </tbody>

@@ -3,6 +3,8 @@ export interface EventResponse {
     quantity: number;
     type: string;
     playerName: string;
+    teamName: string;
+    idPlayerParticipant: number;
 }
 
 export interface MatchResponse {

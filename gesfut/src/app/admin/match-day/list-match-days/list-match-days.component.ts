@@ -69,7 +69,6 @@ export class ListMatchDaysComponent implements OnInit {
 
   loadResult(matchId: number) {
     this.matchDaysService.setActiveMatch(matchId);
-    this.dashboardService.setActiveTournamentComponent('load-result');
   }
 
   async toggleMatchDayStatus(status: boolean) {
@@ -97,7 +96,7 @@ export class ListMatchDaysComponent implements OnInit {
           if (status === true) this.alertService.successAlert('Fecha cerrada!');
           if (status === false)
             this.alertService.successAlert('Fecha abierta!');
-          this.matchDayStatus = !status;
+          this.matchDayStatus = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.alertService.errorAlert(errorResponse.error.error);
@@ -108,7 +107,6 @@ export class ListMatchDaysComponent implements OnInit {
   editResult(id: number) {
     this.matchDaysService.setEditResult(true);
     this.matchDaysService.setActiveMatch(id);
-    this.dashboardService.setActiveTournamentComponent('load-result');
   }
 
   isAuth(): boolean {
