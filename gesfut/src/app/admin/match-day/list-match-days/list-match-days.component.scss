@@ -100,6 +100,10 @@ hr {
   @media (max-width: 1280px) {
     height: 400px;
   }
+  @media screen and (max-width: 576px) {
+    height: auto;
+    gap: 20px;
+  }
 }
 
 .match {
@@ -362,5 +366,9 @@ hr {
   width: auto !important;
   p{
     font-size: var(--font-size-text);
+  }
+  @media screen and (max-width: 576px){
+    width: 100% !important;
+    flex-direction: row;
   }
 }

@@ -18,6 +18,7 @@ import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/priz
 import { RecapComponent } from "../../guest/recap/recap.component";
 import { ListTeamsTournamentsComponent } from "../../admin/list-team-tournaments/list-teams-tournaments.component";
 import { LastsMatchesComponent } from "../../admin/lasts-matches/lasts-matches.component";
+import { DashboardService } from '../../core/services/dashboard.service';
 
 
 @Component({
@@ -39,16 +40,23 @@ export class PublicPageComponent {
 
   isMobile: boolean = false;
   menuOpen: boolean = false;
-
+  tournamentName: string = 'Cargando nombre...';
   constructor(
     private tournamentService: TournamentService,
     private activedRoute: ActivatedRoute,
-    private guestService: GuestService
+    private guestService: GuestService,
+    private dashboardService: DashboardService
   ) {
     this.checkScreenSize();
   }
 
   ngOnInit() {
+     
+    this.dashboardService.getNameTournament$.subscribe({
+      next: (response: string) => {
+        this.tournamentName = response;
+      }
+    });
 
     this.activedRoute.paramMap.subscribe((paramMap) => {
       const code = paramMap.get('code');
@@ -60,6 +68,7 @@ export class PublicPageComponent {
     this.tournamentService.getTournamentFull(this.code).subscribe({
       next: (response: TournamentResponseFull) => {
         this.currentTournament.next(response);
+        this.dashboardService.setNameTournament(response.name);
       },
     });
 
@@ -81,63 +90,11 @@ export class PublicPageComponent {
 
   changeComponent(component: string) {
     this.guestService.setActiveComponent(component);
+    this.menuOpen = false;
   }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
-  /* activeComponent = '';
-  flag: boolean = false;
-  code: string = '';
-  isLoading: boolean = true;
-
-  constructor(
-    private dashboardService: DashboardService,
-    private tournamentService: TournamentService,
-    private activedRoute: ActivatedRoute
-  ) {}
-
-  ngOnInit() {
-    this.dashboardService.setNameTournament(
-      localStorage.getItem('lastTournamentClickedName') || ''
-    );
-
-    this.activedRoute.paramMap.subscribe((paramMap) => {
-      const code = paramMap.get('code');
-      if (code) {
-        this.code = code;
-      }
-    });
-
-    this.tournamentService.getTournamentShort(this.code).subscribe({
-      next: (response) => {
-        this.flag = response.haveParticipants;
-        this.dashboardService.setHaveParticipants(response.haveParticipants);
-        this.isLoading = false;
-      },
-    });
-
-    this.tournamentService.getTournamentFull(this.code).subscribe({
-      next: (response) => {
-        this.tournamentService.currentTournament.next(response);
-      },
-    });
-
-    this.dashboardService.activeTournamentComponent$.subscribe(
-      (component: string) => {
-        this.activeComponent = component;
-      }
-    );
-
-    this.dashboardService.setActiveTournamentComponent('list-teams-tournament')
-  }
-
-  ngAfterViewInit() {
-    this.dashboardService.activeTournamentComponent$.subscribe(
-      (component: string) => {
-        this.activeComponent = component;
-      }
-    );
-  } */
 }
