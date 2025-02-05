@@ -260,6 +260,16 @@ export class MatchDaysService {
     );
   }
 
+  udpateAllMatchesDates(date: string, idMatchDay: number, plusMinutes:number): Observable<MatchDateResponse[]> {
+    const token = sessionStorage.getItem('token');
+    return this.HttpClient.patch<MatchDateResponse[]>(
+      `${this.url}/match-days/update-date-all-matches/${idMatchDay}/${plusMinutes}`,
+      { localDateTime: date },
+      { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+    );
+  }
+
+
   updateDescriptionMatch(description: string, idMatch: number): Observable<void> {
     const token = sessionStorage.getItem('token');
     return this.HttpClient.patch<void>(
@@ -267,5 +277,22 @@ export class MatchDaysService {
       { description: description },
       { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
     );
+  }
+
+
+  previusMatchDayIsFinished(lastMatchDay: MatchDayResponse): boolean {
+    let indexLastMatchDay = this.tournamentService.currentTournament.value.matchDays.findIndex(
+      (matchDay) => matchDay.idMatchDay === lastMatchDay.idMatchDay
+    );
+    if (indexLastMatchDay > 0) {
+      let previusMatchDay = this.tournamentService.currentTournament.value.matchDays[indexLastMatchDay - 1];
+      if (previusMatchDay.isFinished) {
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      return true;
+    }
   }
 }

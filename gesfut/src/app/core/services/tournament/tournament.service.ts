@@ -18,7 +18,10 @@ export class TournamentService {
   currentListTournaments: BehaviorSubject<TournamentResponseShort[]> = new BehaviorSubject<TournamentResponseShort[]>([]);
   currentTournamentShort: BehaviorSubject<TournamentResponseShort> = new BehaviorSubject<TournamentResponseShort>(INITIAL_TOURNAMENT_SHORT)
   lastTeamClicked: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  
+  matches: BehaviorSubject<MatchResponse[]> = new BehaviorSubject<MatchResponse[]>([]);
+  $matches = this.matches.asObservable();
+  teamName: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  $teamName = this.teamName.asObservable();
 
   private sessionService = inject(SessionService);
   url = environment.apiUrl;
@@ -30,13 +33,7 @@ export class TournamentService {
       tap({
         next: (response: TournamentResponseFull) => {
           response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
-          response.matchDays.forEach(matchDay => {
-            matchDay.matches.sort((a, b) => {
-              const aIsFree = a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free';
-              const bIsFree = b.homeTeam.toLocaleLowerCase() === 'free' || b.awayTeam.toLocaleLowerCase() === 'free';
-              return aIsFree === bIsFree ? 0 : aIsFree ? 1 : -1;
-            });
-          });
+          response.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
           this.currentTournament.next(response)
           return response;
         },
@@ -201,5 +198,12 @@ export class TournamentService {
     return this.lastTeamClicked.asObservable();
   }
 
+  setMatches(matches: MatchResponse[]) {
+    this.matches.next(matches);
+  }
+  
+  setNameTeamToViewEvents(teamName: string) {
+    this.teamName.next(teamName);
+  }
 
 }

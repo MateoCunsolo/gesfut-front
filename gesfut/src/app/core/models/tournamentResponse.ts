@@ -16,7 +16,7 @@ export interface MatchResponse {
     awayGoals: number;
     events: EventResponse[];
     isFinished: boolean;
-    dateTime: String,
+    dateTime: string,
     description: string
 }
 

@@ -12,5 +12,5 @@ export interface EventRequest {
 }
 
 export interface MatchDateResponse {
-    newDate:String;
+    newDate:string;
 }
