@@ -44,6 +44,7 @@ export class ListMatchDaysComponent implements OnInit {
           );
         this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay+1: 0;
         this.sortMatchDays();
+        this.orderForDateMatchDay();
       },
     });
   }
@@ -53,6 +54,7 @@ export class ListMatchDaysComponent implements OnInit {
     this.matchDayStatus =
       this.tournament.matchDays[this.selectedMatchDay].isFinished;
       console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)
+      this.orderForDateMatchDay();
   }
 
   private sortMatchDays(): void {
@@ -165,7 +167,7 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  updateDateTime(date: String) {
+  updateDateTime(date: string) {
     console.log('Fecha recibida en el componente:', date);
 
     if (!date) {  // También cubre el caso de `null`
@@ -188,4 +190,25 @@ export class ListMatchDaysComponent implements OnInit {
   chargeAllDates(){
     this.alertService.infoAlert('Cargar todas las fechas a la vez','Función no implementada');
   }
+
+  orderForDateMatchDay() {
+    if (this.tournament.matchDays[this.selectedMatchDay]) {
+      this.tournament.matchDays[this.selectedMatchDay].matches.sort((a, b) => {
+        if(a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free'){
+          return 1;
+        }
+        if(this.returnHour(a.dateTime) > this.returnHour(b.dateTime)){
+          return 1;
+        }else{
+          return -1;
+        }
+    });
+  }}
+
+  returnHour(dateTime: string) {
+    const dateTimeString = dateTime;
+    const time = dateTimeString.split('|')[1].trim().split(' ')[0];
+    return time;
+  }
+
 }

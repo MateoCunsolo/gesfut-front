@@ -69,12 +69,24 @@ hr {
 
 .match{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  gap: 8px;
   width: 100%;
   font-size: var(--font-size-text);
   margin: 0 auto;
+}
+
+.status{
+  font-size: var(--font-size-text);
+  background-color: var(--terciary-color);
+  padding-left: 5px;
+  width: 13%;
+  color: white;
+}
+
+.prox{
+  background-color: var(--primary-color);
+  width: 17%;
 }
 
 .versus {
@@ -189,4 +201,36 @@ hr {
 
 .table-row:last-child .table-cell {
   border-bottom: 1px solid var(--border-color);
+}
+
+.weather{
+  grid-column: 1/4;
+  width: 96%;
+}
+
+.isFinished{
+  color: var(--primary-color);
+}
+
+.isNotFinished{
+  
+}
+
+.inProgress{
+  color: var(--tertiary-color);
+}
+
+.tags-matchDay{
+  display: flex;
+  justify-content: space-between;
+  .prox{
+    width: auto;
+    padding: 0px 10px;
+    cursor:pointer;
+  }
+
+  .prox:hover{
+    background-color: var(--secondary-color);
+    color: var(--bg-color);
+  }
 }

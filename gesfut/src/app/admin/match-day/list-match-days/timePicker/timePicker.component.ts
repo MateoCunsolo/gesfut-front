@@ -135,7 +135,7 @@ export class TimepickerDatepickerIntegrationExample {
   value: Date = new Date();
   @Input() matchId: number = 0;
   @Output() cancelPicker = new EventEmitter<Boolean>();
-  @Output() sendDate = new EventEmitter<String>();
+  @Output() sendDate = new EventEmitter<string>();
 
   constructor() {}
 

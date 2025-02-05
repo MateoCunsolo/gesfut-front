@@ -30,13 +30,7 @@ export class TournamentService {
       tap({
         next: (response: TournamentResponseFull) => {
           response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
-          response.matchDays.forEach(matchDay => {
-            matchDay.matches.sort((a, b) => {
-              const aIsFree = a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free';
-              const bIsFree = b.homeTeam.toLocaleLowerCase() === 'free' || b.awayTeam.toLocaleLowerCase() === 'free';
-              return aIsFree === bIsFree ? 0 : aIsFree ? 1 : -1;
-            });
-          });
+          response.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
           this.currentTournament.next(response)
           return response;
         },
