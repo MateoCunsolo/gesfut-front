@@ -10,6 +10,7 @@ import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
+import { MatchDateResponse } from '../../../core/models/matchRequest';
 
 @Component({
     selector: 'app-list-match-days',
@@ -24,6 +25,7 @@ export class ListMatchDaysComponent implements OnInit {
   matchDayStatus: boolean = false;
   showPicker: boolean = false;
   selectedMatchId: number = 0;
+  isForAllMatches: boolean = false;
   constructor(
     private dashboardService: DashboardService,
     private tournamentService: TournamentService,
@@ -44,6 +46,7 @@ export class ListMatchDaysComponent implements OnInit {
           );
         this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay+1: 0;
         this.sortMatchDays();
+        this.orderForDateMatchDay();
       },
     });
   }
@@ -53,6 +56,7 @@ export class ListMatchDaysComponent implements OnInit {
     this.matchDayStatus =
       this.tournament.matchDays[this.selectedMatchDay].isFinished;
       console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)
+      this.orderForDateMatchDay();
   }
 
   private sortMatchDays(): void {
@@ -68,8 +72,11 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   loadResult(matchId: number) {
-    this.matchDaysService.setActiveMatch(matchId);
-    this.dashboardService.setActiveTournamentComponent('load-result');
+    if(this.matchDaysService.previusMatchDayIsFinished(this.tournament.matchDays[this.selectedMatchDay])){
+      this.matchDaysService.setActiveMatch(matchId);
+    }else{
+      this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
+    }
   }
 
   async toggleMatchDayStatus(status: boolean) {
@@ -97,7 +104,7 @@ export class ListMatchDaysComponent implements OnInit {
           if (status === true) this.alertService.successAlert('Fecha cerrada!');
           if (status === false)
             this.alertService.successAlert('Fecha abierta!');
-          this.matchDayStatus = !status;
+          this.matchDayStatus = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.alertService.errorAlert(errorResponse.error.error);
@@ -108,7 +115,6 @@ export class ListMatchDaysComponent implements OnInit {
   editResult(id: number) {
     this.matchDaysService.setEditResult(true);
     this.matchDaysService.setActiveMatch(id);
-    this.dashboardService.setActiveTournamentComponent('load-result');
   }
 
   isAuth(): boolean {
@@ -123,6 +129,7 @@ export class ListMatchDaysComponent implements OnInit {
     switch(option){
       //caso 1: Editar fecha
       case 1:
+        this.isForAllMatches = false;
         this.editDate(id);
         break;
       //caso 2: Editar descripción (complejo)
@@ -167,7 +174,17 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  updateDateTime(date: String) {
+  updateAllDates(data:MatchDateResponse[])
+  {
+    this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match, index) => {
+      if(match.id !== 0){
+        match.dateTime = data[index].newDate;
+      }
+    })
+  }
+
+
+  updateDateTime(date: string) {
     console.log('Fecha recibida en el componente:', date);
 
     if (!date) {  // También cubre el caso de `null`
@@ -187,7 +204,35 @@ export class ListMatchDaysComponent implements OnInit {
     }
 
   }
+
   chargeAllDates(){
-    this.alertService.infoAlert('Cargar todas las fechas a la vez','Función no implementada');
+    this.isForAllMatches = true;
+    this.showPicker = true;
+    this.selectedMatchId = 0;
   }
+
+  orderForDateMatchDay() {
+    if (this.tournament.matchDays[this.selectedMatchDay].matches[0].dateTime) {
+      this.tournament.matchDays[this.selectedMatchDay].matches.sort((a, b) => {
+        if(a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free'){
+          return 1;
+        }
+        if(this.returnHour(a.dateTime) > this.returnHour(b.dateTime)){
+          return 1;
+        }else{
+          return -1;
+        }
+    });
+  }}
+
+  returnHour(dateTime: string) {
+    const dateTimeString = dateTime;
+    const time = dateTimeString.split('|')[1].trim().split(' ')[0];
+    return time;
+  }
+
+  someMatchIsClosed() {
+    return this.tournament.matchDays[this.selectedMatchDay].matches.some((match) => match.isFinished);
+  }
+
 }

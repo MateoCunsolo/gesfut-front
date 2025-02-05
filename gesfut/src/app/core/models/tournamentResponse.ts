@@ -3,6 +3,8 @@ export interface EventResponse {
     quantity: number;
     type: string;
     playerName: string;
+    teamName: string;
+    idPlayerParticipant: number;
 }
 
 export interface MatchResponse {
@@ -14,7 +16,7 @@ export interface MatchResponse {
     awayGoals: number;
     events: EventResponse[];
     isFinished: boolean;
-    dateTime: String,
+    dateTime: string,
     description: string
 }
 

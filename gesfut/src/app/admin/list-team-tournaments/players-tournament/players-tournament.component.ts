@@ -61,11 +61,11 @@ export class PlayersTournamentComponent implements OnChanges {
 
   toLastMatches() {
     if (this.teamParticipant.idParticipant) {
-      this.alertService.loadingAlert('OBTENIENDO ULTIMOS PARTIDOS');
+      this.alertService.loadingAlert('OBTENIENDO ULTIMOS PARTIDOS...');
       this.tournamentService.getMatchesAllForParticipant(this.code, this.teamParticipant.idParticipant).subscribe({
         next: (response: MatchResponse[]) => {
-          sessionStorage.setItem('matches', JSON.stringify(response));
-          sessionStorage.setItem('teamNameMatches', this.teamParticipant.name);
+          this.tournamentService.setMatches(response);
+          this.tournamentService.setNameTeamToViewEvents(this.teamParticipant.name);
           if(this.isAuth)this.dashboardService.setActiveTournamentComponent('lasts-matches');
           else this.guestService.setActiveComponent('lasts-matches');
           this.alertService.closeLoadingAlert();

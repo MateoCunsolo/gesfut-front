@@ -36,11 +36,11 @@ header {
   
   .logo {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
     gap: 10px;
-    width: 275px;
+    width: auto;
   
     @media screen and (max-width: 576px) {
       flex-direction: column;
@@ -52,10 +52,11 @@ header {
   
     @media screen and (max-width: 768px) {
       width: auto;
-      gap: 5px;
+      gap: 10px;
     }
   }
-  
+
+
   a {
     text-decoration: none;
     font-size: 2rem;
@@ -64,15 +65,14 @@ header {
     cursor: pointer;
   }
   
-  .title-torunament {
+  .title-tournament {
     cursor: default;
-    margin-right: 10%;
-  
     @media screen and (max-width: 576px) {
       display: none;
     }
   }
-  
+ 
+
   .p-panel {
     font-size: 15px;
     text-decoration: underline;

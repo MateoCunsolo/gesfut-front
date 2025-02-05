@@ -1,36 +1,54 @@
 <section class="conteiner">
+  <div>
     <button class="back-button btn" (click)="back()">ATRAS</button>
-
-    <h1 class="title">PARTIDOS DE {{teamName}}</h1>
-    <hr>
+    <h1 class="title">PARTIDOS DE {{ teamName }}</h1>
+  </div>
+  <div class="gap">
     @for (item of matches; track $index) {
-    <div class="match-container">
-        <div class="match-summary">
-            <p class="match-date">FECHA {{item.numberOfMatchDay + 1 }}</p>
-            <p class="match-teams">
-                @if (item.homeTeam.toLocaleLowerCase() == 'free'|| item.awayTeam.toLocaleLowerCase() == 'free') {
-                {{teamName}}@if(item.isFinished){ TUVO DESCANSO}@else{ TIENE DESCANSO}
-                }@else{
-                <span class="name-team-home" [ngClass]="{ 'highlight': teamName === item.homeTeam }">
-                    {{ item.homeTeam }}
-                </span>
-                <span class="score">{{ item.homeGoals }}</span>-
-                <span class="score">{{ item.awayGoals }}</span>
-                <span  span class="name-team-away" [ngClass]="{ 'highlight': teamName === item.awayTeam }">
-                    {{ item.awayTeam }}
-                </span>
-                }
-            </p>
+    <div class="withEvents">
+      <article class="match">
+        <p class="number">FECHA {{ item.numberOfMatchDay + 1 }}</p>
 
-            @if (item.isFinished) {
-            <button class="view-events-btn" (click)="viewEvents($index)">VER EVENTOS</button>
-            }@else if (!(item.homeTeam.toLocaleLowerCase() == 'free' || item.awayTeam.toLocaleLowerCase() == 'free')){
-            <button class="no-events" (click)="viewEvents($index)">PARTIDO NO JUGADO</button>
-            }@else {
-                <div class="no-events"></div>
-            }
-
+        @if (someIsFree($index)) {
+        <div class="versus">
+          <p></p>
+          <p class="free-match">FECHA LIBRE</p>
+          <p></p>
+          <p></p>
         </div>
+        }@else{
+        <div class="versus">
+          <p [ngClass]="{ teamName: teamName === item.homeTeam }">
+            {{ item.homeTeam }}
+          </p>
+          <p>{{ item.homeGoals }}</p>
+          <span>-</span>
+          <p>{{ item.awayGoals }}</p>
+          <p [ngClass]="{ teamName: teamName === item.awayTeam }">
+            {{ item.awayTeam }}
+          </p>
+        </div>
+        }
+
+        <button
+          class="base-button"
+          [ngClass]="{
+            hidden: viewEventsFlag && $index === matchIndex,
+            noFinished: !item.isFinished
+          }"
+          (click)="viewEvents($index)"
+        >
+          @if (viewEventsFlag && $index === matchIndex) { OCULTAR EVENTOS }
+          @else if (item.isFinished) { VER EVENTOS } @else { PARTIDO NO
+          FINALIZADO }
+        </button>
+      </article>
+
+      @if (viewEventsFlag && $index === matchIndex) {
+      <app-list-events [match]="matches[$index]" [isTeamNameClicked]="teamName">
+      </app-list-events>
+      }
     </div>
     }
+  </div>
 </section>

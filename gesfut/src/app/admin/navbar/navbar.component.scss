@@ -47,7 +47,9 @@
   padding: 20px;
   z-index: 2;
   border-bottom: var(--primary-color) 2px solid;
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   @media screen and (max-width: 768px) {
     height: 50px;
   }
@@ -122,4 +124,16 @@
 
 .nav-bar a:hover {
   color: var(--hover-color);
+}
+
+
+ 
+.childLogo{
+  font-weight: bold;
+  font-size: var(--font-size-text);
+  color: var(--primary-color);
+  @media screen and (min-width: 576px) {
+    display: none;
+  }
+  cursor: default;
 }

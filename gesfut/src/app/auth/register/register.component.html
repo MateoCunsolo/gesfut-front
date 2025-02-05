@@ -90,8 +90,11 @@
         <p class="error">La contraseña debe tener al menos 8 caracteres</p>
         }
       </div>
-
+      @if (isLoading) {
+        <app-spinner></app-spinner>
+      }@else {
       <button type="submit" class="base-button">ENVIAR</button>
+      }
       <a class="link" (click)="toLogin()" >Ya tenes cuenta? Inicia sesion aca!</a>
     </form>
   </div>

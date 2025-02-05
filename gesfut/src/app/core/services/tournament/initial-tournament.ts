@@ -64,7 +64,9 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                           id: 0,
                           quantity: 0,
                           type: '',
-                          playerName: ''
+                          playerName: '',
+                          teamName: '',
+                          idPlayerParticipant: 0
                       }
                   ],
                   isFinished: false,

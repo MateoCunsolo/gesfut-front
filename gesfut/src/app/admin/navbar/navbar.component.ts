@@ -15,9 +15,17 @@ export class NavbarComponent {
 
   isMobile: boolean = false;
   menuOpen: boolean = false;
-
+  tournamentName: string = '';
   constructor(private dashboardService: DashboardService, private sessionService:SessionService) {
     this.checkScreenSize();
+  }
+
+  ngOnInit() {
+    this.dashboardService.getNameTournament$.subscribe({
+      next: (response: string) => {
+        this.tournamentName = response;
+      }
+    });
   }
 
   @HostListener('window:resize', ['$event'])

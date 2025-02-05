@@ -79,15 +79,29 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         </svg>
       </div>
 
+      @if(isForAllMatches){
+      <h3>Actualizar fecha de todos los partidos</h3>
+      }@else{
+      <h3>Actualizar fecha del partido</h3>
+      }
+
       <mat-form-field>
+        @if(isForAllMatches){
+        <mat-label>Elegir fecha del partido inicial</mat-label>
+        }@else {
         <mat-label>Elegir fecha</mat-label>
+        }
         <input matInput [matDatepicker]="datepicker" [(ngModel)]="value" />
         <mat-datepicker #datepicker />
         <mat-datepicker-toggle [for]="datepicker" matSuffix />
       </mat-form-field>
 
       <mat-form-field>
+        @if(isForAllMatches){
+        <mat-label>Elegir hora del partido inicial</mat-label>
+        }@else {
         <mat-label>Elegir hora</mat-label>
+        }
         <input
           matInput
           [matTimepicker]="timepicker"
@@ -97,6 +111,13 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         <mat-timepicker #timepicker />
         <mat-timepicker-toggle [for]="timepicker" matSuffix />
       </mat-form-field>
+
+      @if(isForAllMatches){
+      <mat-form-field>
+        <mat-label>Duracion estimada del partido en minutos</mat-label>
+        <input matInput type="number" min="45" [(ngModel)]="plusMinutes"/> </mat-form-field
+      >}
+
       <button class="base-button" (click)="dateFunction()">CARGAR FECHA</button>
     </section>
   `,
@@ -133,11 +154,20 @@ export class TimepickerDatepickerIntegrationExample {
   private matchDayServices = inject(MatchDaysService);
   private alertService = inject(AlertService);
   value: Date = new Date();
+  plusMinutes: number = 60;
   @Input() matchId: number = 0;
+  @Input() matchDayId: number = 0;
+  @Input() isForAllMatches: boolean = false;
   @Output() cancelPicker = new EventEmitter<Boolean>();
-  @Output() sendDate = new EventEmitter<String>();
-
+  @Output() sendDate = new EventEmitter<string>();
+  @Output() sendAllDates = new EventEmitter<MatchDateResponse[]>();
   constructor() {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isForAllMatches']) {
+      this.isForAllMatches = changes['isForAllMatches'].currentValue;
+    }
+  }
 
   cancelPickerFunction() {
     this.cancelPicker.emit(false);
@@ -159,31 +189,60 @@ export class TimepickerDatepickerIntegrationExample {
   }
 
   dateFunction() {
-    if (this.value && this.matchId != 0) {
+    if (this.value) {
       let localDateTime = this.converDateToISO(this.value);
-      this.alertService.loadingAlert('Actualizando fecha...');
-      this.matchDayServices
-        .updateDateMatch(localDateTime, this.matchId)
-        .subscribe({
-          next: (response: MatchDateResponse) => {
-            this.alertService.successAlert('Fecha actualizada');
-            this.sendDate.emit(response.newDate);
-            this.cancelPickerFunction();
-          },
-          error: (err) => {
-            console.error('Error en la solicitud HTTP:', err);
-            this.alertService.errorAlert(err.error.error);
-          },
-        });
-    } else {
-      if (this.matchId == 0) {
-        this.sendDate.emit(this.converDateToISO(this.value));
-        this.cancelPickerFunction();
+      if (this.isForAllMatches && this.plusMinutes) {
+        this.infoAlertsAndContinue(localDateTime, this.matchDayId, this.plusMinutes);
       } else {
-        this.alertService.errorAlert(
-          'Debe seleccionar una fecha y hora válida'
-        );
+        this.alertService.loadingAlert('Actualizando fecha...');
+        this.updateOneMatchDate(localDateTime, this.matchId);
       }
-    }
+    } else
+      this.alertService.errorAlert('Debe seleccionar una fecha y hora válida');
+  }
+
+  updateOneMatchDate(date: string, idMatch: number) {
+    this.matchDayServices.updateDateMatch(date, idMatch).subscribe({
+      next: (response: MatchDateResponse) => {
+        this.alertService.successAlert('Fecha actualizada');
+        this.sendDate.emit(response.newDate);
+        this.cancelPickerFunction();
+      },
+      error: (err) => {
+        console.error('Error en la solicitud HTTP:', err);
+        this.alertService.errorAlert(err.error.error);
+      },
+    });
+  }
+
+  updateAllMatchesDates(date: string, idMatchDay: number, plusMinutes: number) {
+    this.matchDayServices.udpateAllMatchesDates(date, idMatchDay, plusMinutes).subscribe({
+      next: (response : MatchDateResponse[]) => {
+        this.alertService.successAlert('Fechas actualizadas correctamente');
+        this.cancelPickerFunction();
+        this.sendAllDates.emit(response);
+      },
+      error: (err) => {
+        console.error('Error en la solicitud HTTP:', err);
+        this.alertService.errorAlert(err.error.error);
+      },
+    });
+  }
+
+  infoAlertsAndContinue(date: string, idMatchDay: number, plusMinutes: number) {
+    this.alertService
+      .confirmAlert(
+        'Actualizar todas las fechas',
+        '¿Está seguro que desea actualizar todas las fechas de los partidos de esta jornada?',
+        'Aceptar'
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.alertService.loadingAlert('Actualizando fecha...');
+          this.updateAllMatchesDates(date, idMatchDay, plusMinutes);
+        } else {
+          this.cancelPickerFunction();
+        }
+      });
   }
 }

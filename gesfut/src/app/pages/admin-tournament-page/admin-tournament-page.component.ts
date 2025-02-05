@@ -15,10 +15,11 @@ import { CreateTeamComponent } from '../../admin/create-team/create-team.compone
 import { AddPlayerComponent } from '../../admin/list-teams/components/players/add-player/add-player.component';
 import { PrizeDashboardComponent } from "../../admin/prizes/prize-dashboard/prize-dashboard.component";
 import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.component';
+import { RecapComponent } from '../../guest/recap/recap.component';
 
 @Component({
     selector: 'app-admin-tournament-page',
-    imports: [CommonModule, AddPlayerComponent, NavbarComponent, CreateTeamComponent, ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, PrizeDashboardComponent],
+    imports: [CommonModule, AddPlayerComponent, NavbarComponent, CreateTeamComponent, RecapComponent,ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, PrizeDashboardComponent],
     templateUrl: './admin-tournament-page.component.html',
     styleUrl: './admin-tournament-page.component.scss'
 })
@@ -49,6 +50,9 @@ export class AdminTournamentPageComponent implements AfterViewInit {
     this.tournamentService.getTournamentShort(this.code).subscribe({
       next: (response) => {
         this.flag = response.haveParticipants;
+        if (response.haveParticipants) {
+          this.dashboardService.setActiveTournamentComponent('recap');
+        }
         this.dashboardService.setHaveParticipants(response.haveParticipants);
         this.isLoading = false;
       }

@@ -11,10 +11,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../core/services/alert.service';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
     selector: 'app-register',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, SpinnerComponent],
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss'
 })
@@ -23,6 +24,7 @@ export class RegisterComponent {
 
   error: String = '';
   registerForm: FormGroup;
+  protected isLoading = false;
 
   private emailValidator(control: { value: string }) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -61,6 +63,7 @@ export class RegisterComponent {
     if (this.registerForm.invalid) {
       this.alertService.errorAlert('Formulario inválido');
     } else {
+      this.isLoading = true;
       this.authService.register(credentials).subscribe({
         next: (response) => {
           if (response.token){
@@ -73,6 +76,7 @@ export class RegisterComponent {
         error: (err: HttpErrorResponse) => {
           console.log(err);
           this.error = err.error.error;
+          this.isLoading = false;
         },
       });
     }

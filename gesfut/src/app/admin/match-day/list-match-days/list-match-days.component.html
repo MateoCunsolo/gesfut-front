@@ -2,14 +2,28 @@
   class="oculto"
   [ngClass]="{ show: showPicker }"
   [matchId]="selectedMatchId"
+  [isForAllMatches]="isForAllMatches"
+  [matchDayId]="this.tournament.matchDays[selectedMatchDay].idMatchDay"
   (cancelPicker)="cancelPicker($event)"
   (sendDate)="updateDateTime($event)"
+  (sendAllDates)="updateAllDates($event)"
 ></app-time-picker>
 
 <section [ngClass]="{ blur: showPicker }">
   <div class="title-container">
     <div>
-      <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+      <div class="matchDayStatus-container">
+        <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+        <p [ngClass]="{ finished: matchDayStatus, progress: someMatchIsClosed() && !matchDayStatus, soon: !someMatchIsClosed() }">
+          @if (this.tournament.matchDays[selectedMatchDay].isFinished) {
+            FINALIZADA
+          }@else if (someMatchIsClosed()) {
+            EN CURSO
+          }@else {
+            PRÓXIMAMENTE
+          }
+        </p>
+      </div>
       <div class="matchdays">
         @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
         <button [ngClass]="{activeNumberClass: day.numberOfMatchDay === selectedMatchDay}"
@@ -62,23 +76,31 @@
           <p>{{ match.awayGoals }}</p>
           <p>{{ match.awayTeam.toUpperCase() }}</p>
         </div>
-        <div class="hour">
+
+        <div class="hour" [ngClass]="{noAuth : !isAuth()  || this.matchDayStatus}" >
+          
           @if (match.dateTime != null) {
             <p>{{ match.dateTime.toUpperCase() }}</p>
           }@else {
             <p>FECHA SIN DEFINIR</p>
           }
-          <i
+
+          @if (!this.matchDayStatus && isAuth()) {
+            <i
             (click)="sendMatchId(match.id, 1)"
             class="icon fa-solid fa-pen-to-square"
           ></i>
+          }
+     
         </div>
-        <div class="complex">
+        <div class="complex" [ngClass]="{noAuth : !isAuth() || this.matchDayStatus}">
           <p>{{match.description}}</p>
-          <i
+          @if (!this.matchDayStatus && isAuth()) {
+            <i
             (click)="sendMatchId(match.id, 2)"
             class="icon fa-solid fa-pen-to-square"
           ></i>
+          }
         </div>
         @if(isAuth()){ @if(!tournament.matchDays[selectedMatchDay].isFinished){
         @if(!match.isFinished){
