@@ -268,4 +268,21 @@ export class MatchDaysService {
       { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
     );
   }
+
+
+  previusMatchDayIsFinished(lastMatchDay: MatchDayResponse): boolean {
+    let indexLastMatchDay = this.tournamentService.currentTournament.value.matchDays.findIndex(
+      (matchDay) => matchDay.idMatchDay === lastMatchDay.idMatchDay
+    );
+    if (indexLastMatchDay > 0) {
+      let previusMatchDay = this.tournamentService.currentTournament.value.matchDays[indexLastMatchDay - 1];
+      if (previusMatchDay.isFinished) {
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      return true;
+    }
+  }
 }

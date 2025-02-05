@@ -70,7 +70,11 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   loadResult(matchId: number) {
-    this.matchDaysService.setActiveMatch(matchId);
+    if(this.matchDaysService.previusMatchDayIsFinished(this.tournament.matchDays[this.selectedMatchDay])){
+      this.matchDaysService.setActiveMatch(matchId);
+    }else{
+      this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
+    }
   }
 
   async toggleMatchDayStatus(status: boolean) {
