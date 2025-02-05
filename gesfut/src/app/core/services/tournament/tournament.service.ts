@@ -18,7 +18,10 @@ export class TournamentService {
   currentListTournaments: BehaviorSubject<TournamentResponseShort[]> = new BehaviorSubject<TournamentResponseShort[]>([]);
   currentTournamentShort: BehaviorSubject<TournamentResponseShort> = new BehaviorSubject<TournamentResponseShort>(INITIAL_TOURNAMENT_SHORT)
   lastTeamClicked: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  
+  matches: BehaviorSubject<MatchResponse[]> = new BehaviorSubject<MatchResponse[]>([]);
+  $matches = this.matches.asObservable();
+  teamName: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  $teamName = this.teamName.asObservable();
 
   private sessionService = inject(SessionService);
   url = environment.apiUrl;
@@ -195,5 +198,12 @@ export class TournamentService {
     return this.lastTeamClicked.asObservable();
   }
 
+  setMatches(matches: MatchResponse[]) {
+    this.matches.next(matches);
+  }
+  
+  setNameTeamToViewEvents(teamName: string) {
+    this.teamName.next(teamName);
+  }
 
 }
