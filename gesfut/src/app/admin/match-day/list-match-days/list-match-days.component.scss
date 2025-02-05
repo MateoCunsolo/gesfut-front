@@ -328,3 +328,12 @@ hr {
     grid-column: 1/13;
   }
 }
+
+.noAuth{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: var(--font-size-text);
+  color: var(--font-color);
+}

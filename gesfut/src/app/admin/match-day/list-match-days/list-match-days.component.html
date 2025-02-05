@@ -62,13 +62,16 @@
           <p>{{ match.awayGoals }}</p>
           <p>{{ match.awayTeam.toUpperCase() }}</p>
         </div>
-        <div class="hour">
+
+        <div class="hour" [ngClass]="{noAuth : !isAuth()}" >
+          
           @if (match.dateTime != null) {
             <p>{{ match.dateTime.toUpperCase() }}</p>
           }@else {
             <p>FECHA SIN DEFINIR</p>
           }
-          @if (!this.matchDayStatus) {
+
+          @if (!this.matchDayStatus && isAuth()) {
             <i
             (click)="sendMatchId(match.id, 1)"
             class="icon fa-solid fa-pen-to-square"
@@ -76,9 +79,9 @@
           }
      
         </div>
-        <div class="complex">
+        <div class="complex" [ngClass]="{noAuth : !isAuth() || this.matchDayStatus}">
           <p>{{match.description}}</p>
-          @if (!this.matchDayStatus) {
+          @if (!this.matchDayStatus && isAuth()) {
             <i
             (click)="sendMatchId(match.id, 1)"
             class="icon fa-solid fa-pen-to-square"

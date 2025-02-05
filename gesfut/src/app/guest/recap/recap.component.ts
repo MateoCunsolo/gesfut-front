@@ -125,6 +125,7 @@ export class RecapComponent {
         '⚠️ No hay fecha en el partido, no se puede obtener el pronóstico.'
       );
       this.loadingWeather = false;
+      this.forecast = null;
       return;
     }
 
@@ -212,6 +213,14 @@ export class RecapComponent {
   }
 
   getMatchDayStatus() {
+    let date:any;
+    if(this.lastMatchDay.matches[0].dateTime == null){
+      date = '( no hay horarios definidos )';
+    }else{
+      date = this.lastMatchDay.matches[0].dateTime;
+    }
+
+
     if (
       this.lastMatchDay.isFinished &&
       this.lastMatchDay.matches.every((match) => match.isFinished)
@@ -232,7 +241,7 @@ export class RecapComponent {
       );
     }
 
-    return 'PRÓXIMA FECHA Nº' + (this.lastMatchDay.numberOfMatchDay + 1) + ' ' + this.lastMatchDay.matches[0].dateTime.toLocaleUpperCase();
+    return 'PRÓXIMA FECHA Nº' + (this.lastMatchDay.numberOfMatchDay + 1) + ' ' + date;
   }
 
   someMatchIsClosed() {
@@ -246,7 +255,7 @@ export class RecapComponent {
   }
 
   orderForDateMatchDay() {
-    if (this.lastMatchDay) {
+    if (this.lastMatchDay && this.lastMatchDay.matches.some((match) => match.dateTime != null)) {
       this.lastMatchDay.matches.sort((a, b) => {
         if(this.returnHour(a.dateTime) > this.returnHour(b.dateTime)){
           return 1;
