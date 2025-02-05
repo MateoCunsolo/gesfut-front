@@ -25,9 +25,9 @@ import { NgClass } from '@angular/common';
             class="event-item left"
             [ngClass]="{ isTeamNameClicked: isTeamNameClicked === teamHome }"
           >
-            <span class="type">{{ returnType(item.type) }}</span>
+            <span class="type"  [title]="returnTranslate(item.type)"  >{{ returnType(item.type) }}</span>
             <span class="player">{{ item.playerName }}</span>
-            <span class="quantity">x{{ item.quantity }}</span>
+            <span class="quantity" title="CANTIDAD" >x{{ item.quantity }}</span>
           </div>
           }
         </div>
@@ -38,9 +38,9 @@ import { NgClass } from '@angular/common';
             class="event-item right"
             [ngClass]="{ isTeamNameClicked: isTeamNameClicked === teamAway }"
           >
-            <span class="quantity">x{{ item.quantity }}</span>
+            <span class="quantity" title="CANTIDAD">x{{ item.quantity }}</span>
             <span class="player">{{ item.playerName }}</span>
-            <span class="type">{{ returnType(item.type) }}</span>
+            <span class="type" [title]="returnTranslate(item.type)" >{{ returnType(item.type) }}</span>
           </div>
           }
         </div>
@@ -98,6 +98,7 @@ import { NgClass } from '@angular/common';
 
       .type {
         font-size: 16px;
+        cursor: default;
       }
 
       .player {
@@ -109,6 +110,7 @@ import { NgClass } from '@angular/common';
 
       .quantity {
         font-size: 14px;
+        cursor: default;
         color: #666;
       }
     `,
@@ -158,7 +160,21 @@ export class ListEventsComponent {
       case 'RED_CARD':
         return '🟥';
       default:
-        return '🚫';
+        return '⭐';
     }
   }
+
+  returnTranslate(type: string): string {
+    switch (type) {
+      case 'GOAL':
+        return 'GOL';
+      case 'YELLOW_CARD':
+        return 'AMARILLA';
+      case 'RED_CARD':
+        return 'ROJA';
+      default:
+        return 'MVP';
+    }
+  }
+
 }
