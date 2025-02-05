@@ -15,7 +15,7 @@ export class HeaderComponent {
   isLoggedIn: boolean = false;
   isRouteTorunament: boolean = false;
   name: string = '';
-
+  noIsAdmin: boolean = true;
   constructor(private sessionService: SessionService, private route: Router, private dashboardService:DashboardService){
 
   }
@@ -51,8 +51,10 @@ export class HeaderComponent {
 
   
   ngOnInit(): void {
+    
     if(this.route.url.includes('admin') && !this.route.url.includes('tournaments')){
       this.isRouteTorunament = false;
+      this.noIsAdmin = false;
     }else{
       this.dashboardService.getNameTournament$.subscribe({
         next: (response: string) => {

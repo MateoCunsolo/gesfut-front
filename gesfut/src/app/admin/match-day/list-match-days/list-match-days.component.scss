@@ -72,7 +72,6 @@ section {
 .title {
   font-size: 28px;
   color: var(--primary-color);
-  margin: 8px 0;
 }
 
 hr {
@@ -94,11 +93,14 @@ hr {
   height: 500px;
   overflow-y: scroll;
   padding: 8px 0;
-  margin: 24px 0;
   width: 100%;
   gap: 8px;
   @media (max-width: 1280px) {
     height: 400px;
+  }
+  @media screen and (max-width: 576px) {
+    height: auto;
+    gap: 20px;
   }
 }
 
@@ -362,5 +364,9 @@ hr {
   width: auto !important;
   p{
     font-size: var(--font-size-text);
+  }
+  @media screen and (max-width: 576px){
+    width: 100% !important;
+    flex-direction: row;
   }
 }

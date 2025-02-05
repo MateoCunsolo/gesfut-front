@@ -48,8 +48,10 @@
         <div class="titles title-hour">
           @if (tournament.matchDays[selectedMatchDay].matches[0].dateTime != null) {
             <p>FECHA</p>
-          }@else {
+          }@else if(isAuth()) {
             <p (click)="chargeAllDates()" >CARGAR FECHAS</p>
+          }@else {
+            <p>FECHA</p>
           }
         </div>
         <div class="titles title-complex">
