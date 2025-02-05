@@ -7,8 +7,10 @@
       <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
       @if (isTheFirst()) {
       <p class="status prox" (click)="nextMatchDay()">{{returnText()}}</p>
-      }@else {
+      }@else if(!isTheLast()) {
         <p class="status prox" (click)="nextOrBackMatchDay()">{{returnText()}}</p>
+      }@else{
+        <p class="status prox" (click)="previousMatchDay()">{{returnText()}}</p>
       }
       </div>
       

@@ -7,7 +7,7 @@ import { WeatherService } from '../../core/services/weather-api/weather.service'
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { NgClass, NgIf } from '@angular/common';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { PublicPageComponent } from "../../pages/public-page/public-page.component";
+import { PublicPageComponent } from '../../pages/public-page/public-page.component';
 
 @Component({
   selector: 'app-recap',
@@ -39,7 +39,7 @@ export class RecapComponent {
 
   verifyNextMatchDay() {
     if (this.lastMatchDay) {
-      console.log('Verificando si la fecha siguiente tiene partidos cerrados');
+      console.log('Verificando si la fecha siguiente tiene partidos cerrados...');
       if (
         this.lastMatchDay.isFinished &&
         this.lastMatchDay.matches.every((match) => match.isFinished)
@@ -51,18 +51,18 @@ export class RecapComponent {
               (matchDay) => matchDay.idMatchDay === this.lastMatchDay.idMatchDay
             );
             //ahora ver si la fecha siguiente tiene algun partido cerrado
-            if (
-              response.matchDays[index + 1].matches.some(
-                (match) => match.isFinished
-              )
-            ) {
-              console.log('La fecha siguiente tiene partidos cerrados');
-              this.lastMatchDay = response.matchDays[index + 1];
-              this.loadTopScorers();
-              this.getForecast();
-              this.orderForDateMatchDay();
-            } else {
-              console.log('La fecha siguiente no tiene partidos cerrados');
+            if(response.matchDays[index + 1]){
+              if (response.matchDays[index + 1].matches.some((match) => match.isFinished)){
+                console.log('La fecha siguiente tiene partidos cerrados.');
+                this.lastMatchDay = response.matchDays[index + 1];
+                this.loadTopScorers();
+                this.getForecast();
+                this.orderForDateMatchDay();
+              } else {
+                console.log('La fecha siguiente no tiene partidos cerrados.');
+              }
+            }else{
+              console.log('No hay fecha siguiente.');
             }
           },
         });
@@ -213,13 +213,12 @@ export class RecapComponent {
   }
 
   getMatchDayStatus() {
-    let date:any;
-    if(this.lastMatchDay.matches[0].dateTime == null){
+    let date: any;
+    if (this.lastMatchDay.matches[0].dateTime == null) {
       date = '( no hay horarios definidos )';
-    }else{
+    } else {
       date = this.lastMatchDay.matches[0].dateTime;
     }
-
 
     if (
       this.lastMatchDay.isFinished &&
@@ -241,7 +240,9 @@ export class RecapComponent {
       );
     }
 
-    return 'PRÓXIMA FECHA Nº' + (this.lastMatchDay.numberOfMatchDay + 1) + ' ' + date;
+    return (
+      'PRÓXIMA FECHA Nº' + (this.lastMatchDay.numberOfMatchDay + 1) + ' ' + date
+    );
   }
 
   someMatchIsClosed() {
@@ -255,21 +256,24 @@ export class RecapComponent {
   }
 
   orderForDateMatchDay() {
-    if (this.lastMatchDay && this.lastMatchDay.matches.some((match) => match.dateTime != null)) {
+    if (
+      this.lastMatchDay &&
+      this.lastMatchDay.matches.some((match) => match.dateTime != null)
+    ) {
       this.lastMatchDay.matches.sort((a, b) => {
-        if(this.returnHour(a.dateTime) > this.returnHour(b.dateTime)){
+        if (this.returnHour(a.dateTime) > this.returnHour(b.dateTime)) {
           return 1;
-        }else{
+        } else {
           return -1;
         }
-    });
-  }}
+      });
+    }
+  }
 
   nextOrBackMatchDay() {
-    
-    if(this.returnText() === "VER PROXIMA FECHA"){
+    if (this.returnText() === 'VER PROXIMA FECHA') {
       this.nextMatchDay();
-    }else{
+    } else {
       this.previousMatchDay();
     }
   }
@@ -306,21 +310,37 @@ export class RecapComponent {
     this.orderForDateMatchDay();
   }
 
-  returnText(){
-    if(this.lastMatchDay.isFinished || this.isTheFirst()){
-      return "VER PROXIMA FECHA";
-    }else{
-      return "VER FECHA ANTERIOR";
+  returnText() {
+    if (
+      (this.lastMatchDay.isFinished || this.isTheFirst()) &&
+      !this.isTheLast()
+    ) {
+      return 'VER PROXIMA FECHA';
+    } else {
+      return 'VER FECHA ANTERIOR';
     }
   }
 
   isTheFirst(): boolean {
-    if(this.lastMatchDay.numberOfMatchDay+1 == 1){
+    if (this.lastMatchDay.numberOfMatchDay + 1 == 1) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
 
-
+  isTheLast(): boolean {
+    let isLast = false;
+    this.tournamentService.currentTournament.subscribe({
+      next: (response) => {
+        if (
+          this.lastMatchDay.numberOfMatchDay + 1 ==
+          response.matchDays.length
+        ) {
+          isLast = true;
+        }
+      },
+    });
+    return isLast;
+  }
 }

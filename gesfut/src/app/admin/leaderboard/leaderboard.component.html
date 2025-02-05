@@ -20,9 +20,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let team of tournament.participants; let i = index">
+        <tr *ngFor="let team of tournament.participants; let i = index" [ngClass]="{winner: tournament.isFinished && i==0}" >
           <td>{{ i + 1 }}</td>
-          <td>{{ team.name.toUpperCase() }}</td>
+          @if (tournament.isFinished && i==0) {
+            <td class="campeon"><span class="tag-winner">CAMPEON</span>  {{ team.name.toUpperCase() }} <span class="tag-winner">CAMPEON</span> </td>
+          }@else {
+            <td>{{ team.name.toUpperCase() }}</td>
+          }
           <td>{{ team.statistics.points }}</td>
           <td>{{ team.statistics.wins }}</td>
           <td>{{ team.statistics.losses }}</td>

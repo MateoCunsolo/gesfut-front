@@ -97,3 +97,32 @@ td {
   padding: 4px 0;
 }
 
+.winner{
+  background-color: var(--secondary-color);
+}
+
+.tag-winner{
+  background-color: var(--primary-color);
+  padding: 0px 8px;
+  color: white;
+  @media screen and (max-width: 1200px){
+    display: none;
+  }
+}
+
+.campeon{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  @media screen and (max-width: 1200px){
+    justify-content: center;
+
+    .campeon :first-child{
+      display: none;
+    }
+    .campeon :last-child{
+      display: none;
+    }
+  }
+}

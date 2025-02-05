@@ -14,7 +14,7 @@ export class DeleteComponent {
 
   private tournamentService = inject(TournamentService);
   private teamService = inject(TeamService);
-
+  private isFinishedTournament: boolean = false;
   private alertService = inject(AlertService);
   @Input() idPlayerParticipant: number = 0;
   @Input() isGlobalTeam: boolean = false;
@@ -25,6 +25,15 @@ export class DeleteComponent {
   @Output() public deletePlayer = new EventEmitter<number>();
   constructor() { }
 
+  ngOnInit(): void {
+    this.tournamentService.currentTournament.subscribe({
+      next: (response) => {
+        this.isFinishedTournament = response.isFinished;
+      },
+    });
+  }
+
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isGlobalTeam']) {
       this.isGlobalTeam = this.isGlobalTeam;
@@ -33,6 +42,10 @@ export class DeleteComponent {
 
 
   reconfirmDelete(idPlayerParticipant: number) {
+    if (this.isFinishedTournament) {
+      this.alertService.errorAlert('El torneo ha finalizado');
+      return;
+    }
     if (this.isGlobalTeam) {
       this.deleteFromGlobal();
     } else {
