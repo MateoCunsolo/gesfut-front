@@ -337,3 +337,30 @@ hr {
   font-size: var(--font-size-text);
   color: var(--font-color);
 }
+
+.finished{
+  background-color: var(--terciary-color);
+  padding: 2.5px 5px;
+}
+
+.soon{
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2.5px 5px;
+}
+
+.progress{
+  background-color: var(--secondary-color);
+  padding: 2.5px 5px;
+}
+
+.matchDayStatus-container{
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: auto !important;
+  p{
+    font-size: var(--font-size-text);
+  }
+}

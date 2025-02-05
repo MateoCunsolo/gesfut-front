@@ -215,4 +215,8 @@ export class ListMatchDaysComponent implements OnInit {
     return time;
   }
 
+  someMatchIsClosed() {
+    return this.tournament.matchDays[this.selectedMatchDay].matches.some((match) => match.isFinished);
+  }
+
 }

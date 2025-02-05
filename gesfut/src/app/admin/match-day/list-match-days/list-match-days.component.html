@@ -9,7 +9,18 @@
 <section [ngClass]="{ blur: showPicker }">
   <div class="title-container">
     <div>
-      <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+      <div class="matchDayStatus-container">
+        <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+        <p [ngClass]="{ finished: matchDayStatus, progress: someMatchIsClosed() && !matchDayStatus, soon: !someMatchIsClosed() }">
+          @if (this.tournament.matchDays[selectedMatchDay].isFinished) {
+            FINALIZADA
+          }@else if (someMatchIsClosed()) {
+            EN CURSO
+          }@else {
+            PRÓXIMAMENTE
+          }
+        </p>
+      </div>
       <div class="matchdays">
         @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
         <button [ngClass]="{activeNumberClass: day.numberOfMatchDay === selectedMatchDay}"
@@ -63,7 +74,7 @@
           <p>{{ match.awayTeam.toUpperCase() }}</p>
         </div>
 
-        <div class="hour" [ngClass]="{noAuth : !isAuth()}" >
+        <div class="hour" [ngClass]="{noAuth : !isAuth()  || this.matchDayStatus}" >
           
           @if (match.dateTime != null) {
             <p>{{ match.dateTime.toUpperCase() }}</p>
