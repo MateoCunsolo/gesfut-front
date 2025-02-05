@@ -2,8 +2,11 @@
   class="oculto"
   [ngClass]="{ show: showPicker }"
   [matchId]="selectedMatchId"
+  [isForAllMatches]="isForAllMatches"
+  [matchDayId]="this.tournament.matchDays[selectedMatchDay].idMatchDay"
   (cancelPicker)="cancelPicker($event)"
   (sendDate)="updateDateTime($event)"
+  (sendAllDates)="updateAllDates($event)"
 ></app-time-picker>
 
 <section [ngClass]="{ blur: showPicker }">

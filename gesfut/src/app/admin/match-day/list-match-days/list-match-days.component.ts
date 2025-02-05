@@ -10,6 +10,7 @@ import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
+import { MatchDateResponse } from '../../../core/models/matchRequest';
 
 @Component({
     selector: 'app-list-match-days',
@@ -24,6 +25,7 @@ export class ListMatchDaysComponent implements OnInit {
   matchDayStatus: boolean = false;
   showPicker: boolean = false;
   selectedMatchId: number = 0;
+  isForAllMatches: boolean = false;
   constructor(
     private dashboardService: DashboardService,
     private tournamentService: TournamentService,
@@ -127,6 +129,7 @@ export class ListMatchDaysComponent implements OnInit {
     switch(option){
       //caso 1: Editar fecha
       case 1:
+        this.isForAllMatches = false;
         this.editDate(id);
         break;
       //caso 2: Editar descripción (complejo)
@@ -171,6 +174,16 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
+  updateAllDates(data:MatchDateResponse[])
+  {
+    this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match, index) => {
+      if(match.id !== 0){
+        match.dateTime = data[index].newDate;
+      }
+    })
+  }
+
+
   updateDateTime(date: string) {
     console.log('Fecha recibida en el componente:', date);
 
@@ -191,12 +204,15 @@ export class ListMatchDaysComponent implements OnInit {
     }
 
   }
+
   chargeAllDates(){
-    this.alertService.infoAlert('Cargar todas las fechas a la vez','Función no implementada');
+    this.isForAllMatches = true;
+    this.showPicker = true;
+    this.selectedMatchId = 0;
   }
 
   orderForDateMatchDay() {
-    if (this.tournament.matchDays[this.selectedMatchDay]) {
+    if (this.tournament.matchDays[this.selectedMatchDay].matches[0].dateTime) {
       this.tournament.matchDays[this.selectedMatchDay].matches.sort((a, b) => {
         if(a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free'){
           return 1;

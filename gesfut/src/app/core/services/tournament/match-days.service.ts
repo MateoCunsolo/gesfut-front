@@ -260,6 +260,16 @@ export class MatchDaysService {
     );
   }
 
+  udpateAllMatchesDates(date: string, idMatchDay: number, plusMinutes:number): Observable<MatchDateResponse[]> {
+    const token = sessionStorage.getItem('token');
+    return this.HttpClient.patch<MatchDateResponse[]>(
+      `${this.url}/match-days/update-date-all-matches/${idMatchDay}/${plusMinutes}`,
+      { localDateTime: date },
+      { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+    );
+  }
+
+
   updateDescriptionMatch(description: string, idMatch: number): Observable<void> {
     const token = sessionStorage.getItem('token');
     return this.HttpClient.patch<void>(
