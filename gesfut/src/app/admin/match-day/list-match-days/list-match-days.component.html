@@ -97,7 +97,7 @@
           <p>{{match.description}}</p>
           @if (!this.matchDayStatus && isAuth()) {
             <i
-            (click)="sendMatchId(match.id, 1)"
+            (click)="sendMatchId(match.id, 2)"
             class="icon fa-solid fa-pen-to-square"
           ></i>
           }
