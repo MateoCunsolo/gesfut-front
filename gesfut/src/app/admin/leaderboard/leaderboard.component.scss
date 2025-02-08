@@ -46,8 +46,6 @@ hr {
   margin: 0 auto;
   position: relative;
   padding-top: 16px;
-  max-height: 500px;
-  overflow-y: scroll;
   @media (max-width: 768px) {
     overflow-x: scroll;
   }
@@ -67,8 +65,12 @@ hr {
 }
 
 .overflow-y{
-  max-height: 300px;
-  overflow-y: scroll;
+  height: auto;
+  box-shadow: 0 0 5px 0 gray;
+  padding: 5px;
+  th,td{
+    font-size: var(--font-size-text);
+  }
 }
 
 table {
@@ -129,4 +131,30 @@ td {
 
 .titles-show{
   cursor: default;
+}
+
+.no-statistics-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100%;
+}
+
+
+.no-statistics{
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.stats-players-title{
+  font-size: var(--font-size-text);
+}
+
+.hr-stats{
+  border: none;
+  height: 2px;
+  background-color: var(--primary-color);
+  margin: 0 auto;
+  width: 100%;
 }
