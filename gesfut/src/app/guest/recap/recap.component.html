@@ -4,12 +4,14 @@
     <h2 class="title play-bold">
       {{ getMatchDayStatus() }}
       <div class="tags-matchDay">
-      <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
-      @if (isTheFirst()) {
-      <p class="status prox" (click)="nextMatchDay()">{{returnText()}}</p>
-      }@else {
-        <p class="status prox" (click)="nextOrBackMatchDay()">{{returnText()}}</p>
-      }
+        <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
+        @if (isTheFirst()) {
+        <p class="status prox" (click)="nextMatchDay()">{{returnText()}}</p>
+        }@else if(!isTheLast()) {
+          <p class="status prox" (click)="nextOrBackMatchDay()">{{returnText()}}</p>
+        }@else{
+          <p class="status prox" (click)="previousMatchDay()">{{returnText()}}</p>
+        }
       </div>
       
     </h2>
@@ -70,15 +72,15 @@
     <div class="top-scorers-container">
       @if(topScorers.length > 0) {
       <div class="table-header">
-        <div class="table-cell">Jugador</div>
-        <div class="table-cell">Goles</div>
+        <div class="table-cell">JUGADOR</div>
+        <div class="table-cell" title="GOLES">⚽</div>
       </div>
       <div class="top-scorers-table">
         @for(scorer of topScorers; track scorer.playerName) {
         <div class="table-row">
           <div class="table-cell">{{ scorer.playerName.toUpperCase() }}</div>
           <div class="table-cell">
-            {{ scorer.goals }} @if(scorer.goals <= 1) { GOL } @else { GOLES }
+            {{ scorer.goals }}
           </div>
         </div>
         }
@@ -88,8 +90,10 @@
       } @else if(loadingWeather) {
       <p class="title">Cargando clima...</p>
       <app-spinner></app-spinner>
+      }@else if(isPreviousDayAvailable) {
+        <p>La fecha es anterior al dia actual. No es posible visuallizar el clima.</p>
       }@else {
-      <p>Los partidos no tiene fecha, no se puede visualizar el clima.</p>
+        <p>Los partidos no tiene fecha, no se puede visualizar el clima.</p>
       }
     </div>
   </div>

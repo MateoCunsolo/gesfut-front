@@ -32,6 +32,18 @@ section{
   font-size: 28px;
   color: var(--primary-color);
   margin: 8px 0;
+  @media screen and (max-width: 768px) {
+    font-size: 24px;
+  }
+  @media screen and (max-width: 576px) {
+    font-size: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px; 
+  }
 }
 
 hr {
@@ -48,6 +60,13 @@ hr {
   justify-content: center;
   margin: 0 auto;
   width: 96%;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0px;
+  }
+
 }
 
 .matches-container{
@@ -56,15 +75,17 @@ hr {
   flex-direction: column;
   align-items: center;
   justify-content: start;
-  height: 500px;
-  overflow-y: scroll;
   padding: 8px 0;
+  min-height: calc(100vh - 250px);
   margin: 24px 0;
   width: 100%;
   gap: 8px;
-  @media (max-width: 1280px) {
-      height: 400px;
+
+
+  @media screen and (max-width: 768px) {
+    height: auto;
   }
+
 }
 
 .match{
@@ -149,60 +170,79 @@ hr {
       grid-column: 1/13;
   }
 }
-
 .top-scorers-container {
   grid-column: 3/4;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
-  height: 300px;
+  height: auto;
   padding: 8px 0;
   margin: 24px auto;
   width: 96%;
+
+  @media screen and (max-width: 768px) {
+    grid-column: 1/4;
+    width: 65%;
+  }
+
+  @media screen and (max-width: 576px) {
+    width: 80%;
+  }
 }
 
 .top-scorers-table {
   width: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border-color);
-  overflow-y: scroll;
-  height: 200px;
+  height: auto;
   font-size: var(--font-size-text);
-}
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 
+  @media screen and (max-width: 576px) {
+    font-size: 12px;
+  }
+}
 .table-header {
   display: flex;
+  font-size: var(--font-size-text);
   background-color: var(--primary-color);
-  font-size: var(--font-size-subtitle);
   color: white;
   font-weight: bold;
-  padding: 0;
-  margin: 0;
   text-align: center;
   width: 100%;
 }
 
 .table-row {
   display: flex;
-  border-top: 1px solid var(--border-color);
 }
 
 .table-cell {
-  flex: 1;
   padding: 8px;
-  text-align: center;
-  border-left: 1px solid var(--border-color);
+  border: 1px solid var(--primary-color);
 }
 
 .table-cell:first-child {
-  border-left: none;
+  flex: 1;
+  text-align: left;
+  padding-left: 12px;
 }
 
-.table-row:last-child .table-cell {
-  border-bottom: 1px solid var(--border-color);
+.table-cell:last-child {
+  flex: 0 0 auto;
+  width: 40px;
+  text-align: center;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
 }
+
+
 
 .weather{
   grid-column: 1/4;
@@ -230,5 +270,11 @@ hr {
   .prox:hover{
     background-color: var(--secondary-color);
     color: var(--bg-color);
+  }
+
+  @media screen and (max-width: 576px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 }

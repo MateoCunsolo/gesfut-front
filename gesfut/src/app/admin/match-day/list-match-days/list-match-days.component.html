@@ -11,7 +11,7 @@
 
 <section [ngClass]="{ blur: showPicker }">
   <div class="title-container">
-    <div>
+    <div class="title-cont">
       <div class="matchDayStatus-container">
         <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
         <p [ngClass]="{ finished: matchDayStatus, progress: someMatchIsClosed() && !matchDayStatus, soon: !someMatchIsClosed() }">
@@ -35,8 +35,8 @@
         } @empty { Cargando... }
       </div>
     </div>
-    <hr />
   </div>
+  <hr class="hr"/>
   <div class="matches">
     @if(this.tournament && this.tournament.matchDays.length > 0){
     @if(tournament.matchDays[selectedMatchDay].matches &&
@@ -126,6 +126,7 @@
     </ng-template>
     }
   </div>
+  <hr class="hr">
   <div class="btn-container">
     @if(isAuth()){ @if(this.matchDayStatus){
     <button

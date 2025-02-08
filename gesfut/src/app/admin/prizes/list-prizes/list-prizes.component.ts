@@ -6,6 +6,7 @@ import { Prize, updatePrizeDescription } from '../../../core/models/prizesReques
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
+import { TournamentService } from '../../../core/services/tournament/tournament.service';
 
 @Component({
     selector: 'app-list-prizes',
@@ -17,6 +18,7 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
   currentCategory: string = '';
   prizes: Prize[] = [];
   categorySubscription: Subscription | undefined;
+  isFinished: boolean = false;
   currentTournament: string | null = localStorage.getItem(
     'lastTournamentClicked'
   );
@@ -24,10 +26,19 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
   constructor(
     private prizeService: PrizeService,
     private alertService: AlertService,
-    private sessionService:SessionService
+    private sessionService:SessionService,
+    private tournamentService: TournamentService
   ) {}
 
   ngOnInit() {
+    this.tournamentService.currentTournament.subscribe({
+      next: (response) => {
+        this.isFinished = response.isFinished;
+      },
+      
+    })
+
+    
     this.categorySubscription = this.prizeService.currentCategory.subscribe(
       (newCategory: string) => {
         this.currentCategory = newCategory;
@@ -65,6 +76,10 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
   }
 
   setView(view: string) {
+    if(this.isFinished){
+      this.alertService.errorAlert('El torneo ha finalizado, no se pueden realizar cambios.');
+      return
+    }
     console.log('Cambiando vista a:', view);
     this.prizeService.currentView.next(view);
   }

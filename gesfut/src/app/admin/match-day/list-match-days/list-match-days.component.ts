@@ -45,6 +45,10 @@ export class ListMatchDaysComponent implements OnInit {
             undefined
           );
         this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay+1: 0;
+        if(this.selectedMatchDay === this.tournament.matchDays.length){
+          this.selectedMatchDay = this.tournament.matchDays.length - 1; 
+          this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
+        }
         this.sortMatchDays();
         this.orderForDateMatchDay();
       },
@@ -80,6 +84,10 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   async toggleMatchDayStatus(status: boolean) {
+    if(this.tournament.isFinished){
+      this.alertService.errorAlert('El torneo ya ha finalizado');
+      return;
+    }
     this.alertService
       .confirmAlert(
         '¿Estás seguro?',

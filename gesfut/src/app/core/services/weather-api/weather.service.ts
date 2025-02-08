@@ -22,4 +22,27 @@ export class WeatherService {
       })
     );
   }
+
+  //obtener el clima anterior
+  getHistoricalForecast(location: string, date: string): Observable<any> {
+    const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&dt=${date}&aqi=no&alerts=no`;
+    return this.http.get<any>(url).pipe(
+      catchError(error => {
+        console.error('Error fetching weather data', error);
+        throw error;
+      })
+    );
+  }
+
+  //obtener una semana de clima atrás
+  getWeekHistoricalForecast(location: string, date: string): Observable<any> {
+    const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&dt=${date}&days=7&aqi=no&alerts=no`;
+    return this.http.get<any>(url).pipe(
+      catchError(error => {
+        console.error('Error fetching weather data', error);
+        throw error;
+      })
+    );
+  }
+
 }
