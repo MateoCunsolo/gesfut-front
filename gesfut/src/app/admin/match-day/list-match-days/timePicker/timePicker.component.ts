@@ -155,6 +155,7 @@ export class TimepickerDatepickerIntegrationExample {
   private alertService = inject(AlertService);
   value: Date = new Date();
   plusMinutes: number = 60;
+  @Input() isToInitTournament: boolean = false;
   @Input() matchId: number = 0;
   @Input() matchDayId: number = 0;
   @Input() isForAllMatches: boolean = false;
@@ -193,9 +194,12 @@ export class TimepickerDatepickerIntegrationExample {
       let localDateTime = this.converDateToISO(this.value);
       if (this.isForAllMatches && this.plusMinutes) {
         this.infoAlertsAndContinue(localDateTime, this.matchDayId, this.plusMinutes);
-      } else {
+      } else if(!this.isToInitTournament) {
         this.alertService.loadingAlert('Actualizando fecha...');
         this.updateOneMatchDate(localDateTime, this.matchId);
+      }else if(this.isToInitTournament){
+        this.sendDate.emit(localDateTime);
+        this.cancelPickerFunction();
       }
     } else
       this.alertService.errorAlert('Debe seleccionar una fecha y hora válida');
