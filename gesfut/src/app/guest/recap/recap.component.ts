@@ -21,6 +21,7 @@ export class RecapComponent {
   topScorers: { playerName: string; goals: number }[] = [];
   forecast: any;
   loadingWeather: boolean = false;
+  isPreviousDayAvailable: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private matchDaysService: MatchDaysService,
@@ -158,6 +159,7 @@ export class RecapComponent {
           );
         } else {
           console.warn('La fecha solicitada no está disponible en la API.');
+          this.isPreviousDayAvailable = true;
         }
       }
     });
@@ -217,7 +219,7 @@ export class RecapComponent {
     if (this.lastMatchDay.matches[0].dateTime == null) {
       date = '( no hay horarios definidos )';
     } else {
-      date = this.lastMatchDay.matches[0].dateTime;
+      date = this.lastMatchDay.matches[0].dateTime.split('|')[0].toUpperCase();
     }
 
     if (
