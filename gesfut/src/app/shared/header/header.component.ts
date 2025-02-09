@@ -26,7 +26,7 @@ export class HeaderComponent {
       this.dashboardService.setActiveDashboardAdminComponent(component);
       this.isRouteTorunament = false;
       this.route.navigateByUrl('/admin');
-      
+      this.lastTournamentClickedName = '';
     }
     this.dashboardService.haveParticipants$.subscribe({
       next: (response: boolean) => {

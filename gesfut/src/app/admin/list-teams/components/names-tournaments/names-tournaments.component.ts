@@ -99,5 +99,11 @@ export class NamesTournamentsComponent implements OnChanges {
     this.isClicked = false;
     this.onlyGlobalTeams.emit(false);
     this.participantSelected.emit(idParticipant);
+    this.codeTournament.emit(
+      this.participantsTeam.find((participant) => participant.idParticipant === idParticipant)?.codeTournament || ''
+    );
+    this.tournamentSelected.emit(
+      this.participantsTeam.find((participant) => participant.idParticipant === idParticipant)?.nameTournament || ''
+    );
   }
 }

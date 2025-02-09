@@ -32,7 +32,12 @@ export class LastsMatchesComponent {
 
     this.tournamentServices.$teamName.subscribe({
       next: (response) => {
-        this.teamName = response;
+        //si la ruta contiente touranaments/
+        if(this.route.url.includes('tournaments/')){
+          this.teamName = response;
+        }else{
+          this.teamName = response +' EN '+ sessionStorage.getItem('lastTournamentClickedName');
+        }
       },
     });
 
