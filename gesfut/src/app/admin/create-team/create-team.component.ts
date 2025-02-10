@@ -83,7 +83,19 @@ export class CreateTeamComponent {
   }
 
   removePlayer(index: number) {
+    
+    if (this.players.length < 3) {
+      Swal.fire({
+        title: '¡Atención!',
+        text: 'El equipo debe tener al menos un jugador.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+    
     this.players.removeAt(index);
+
   }
 
   returnColorHex(color: string): string {
@@ -215,15 +227,16 @@ export class CreateTeamComponent {
       }
       if(this.players.length>0){
         this.noPlayers = false;
+      }else{
+        this.noPlayers = true;
       }
   }
     
   onSubmit() {
-
-    if (this.teamForm.touched && this.teamForm.get('name')?.value && this.teamForm.get('color')?.value) {
-      this.noPlayers = false;
-    }  
-
+    if (this.teamForm.invalid) {
+      this.alertService.errorAlert("Por favor, rellene todos los campos.");
+      return;
+    }
     const teamData = this.teamForm.value;
     this.teamService.createTeam(teamData).subscribe({
       next: () => {

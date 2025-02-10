@@ -42,7 +42,7 @@
 
     <div class="info">
 
-      <p class="team-name mobile">
+      <p class="team-name mobile" [ngClass]="{shirtPrimaryColorEqual: (colorSelected == '#2a6a49')}">
         {{ nameClicked }}
         <i class="fa-solid fa-shirt fa-xl" [style.color]="colorSelected"></i>
       </p>
