@@ -42,6 +42,7 @@ export class NamesTeamsComponent implements OnInit {
         this.idSelected = this.teamsGlobales[0].id;
         this.bindingSelect = this.idSelected;
         this.nameClicked = this.teamsGlobales[0].name;
+        this.colorSelected = this.teamsGlobales[0].color;
       }else{
         this.thereAreNotTeams = true;
       }
