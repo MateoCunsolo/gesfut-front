@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
 import { MatchDateResponse } from '../../../core/models/matchRequest';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-match-days',
@@ -104,8 +105,19 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   closeMatchDay(status: boolean) {
+    this.playersMvpS = [];
+    this.playersMvpS.push('Seleccionar MVP');
+
+    if(this.selectedMatchDay != 0){
+      if(!this.tournament.matchDays[this.selectedMatchDay-1].isFinished){
+        this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
+        return;
+      }
+    }
+   
     if (this.tournament.matchDays[this.selectedMatchDay].matches.some(match => !match.isFinished)) {
-      this.alertService.errorAlert('No se puede cerrar una fecha con partidos sin finalizar');
+      const match = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
+      this.alertService.errorAlert('El partido: '+ match?.homeTeam + ' vs ' + match?.awayTeam + ' no fue cerrado.');
       return;
     }
     if (!this.tournament.matchDays[this.selectedMatchDay].isFinished) {
@@ -138,11 +150,11 @@ export class ListMatchDaysComponent implements OnInit {
         this.playersMvpS.push(match.mvpPlayer);
       }
     });
-    this.playersMvpS = this.playersMvpS.filter((item, index) => this.playersMvpS.indexOf(item) === index);
-    this.alertService.selectOptionsAlert('SELECIONE EL MVP DE LA FECHA', this.playersMvpS, "CERRAR SIN MVP").then((result) => {
-      if (result.isConfirmed && result.value) {
-        playerMvp = this.playersMvpS[result.value];
-        if (playerMvp !== 'Seleccionar MVP' && playerMvp !== '') {
+    this.alertService.selectOptionsAlert('SELECCIONE EL MVP DE LA FECHA', this.playersMvpS, "CERRAR SIN MVP")
+    .then((result) => {
+      if (result.isConfirmed && result.value !== undefined) {
+        const playerMvp = this.playersMvpS[result.value];
+        if (playerMvp && playerMvp !== 'Seleccionar MVP') {
           this.matchDaysService
             .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, playerMvp)
             .subscribe({
@@ -154,14 +166,16 @@ export class ListMatchDaysComponent implements OnInit {
                 this.alertService.errorAlert(errorResponse.error.error);
               }
             });
-        }else{
+        } else {
           this.alertService.errorAlert('Debe seleccionar un MVP');
         }
-      } else if (result.isDismissed) {
-        this.openMatchDay(status);        
+      } else if (result.dismiss === Swal.DismissReason.backdrop) {
+        return;
+      } else {
+        this.openMatchDay(status);
       }
     });
-  }
+  }  
 
 
 
