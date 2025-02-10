@@ -14,7 +14,7 @@ export class WeatherService {
   constructor(private http: HttpClient) {}
 
   getForecast(location: string, days: number): Observable<any> {
-    const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&days=${days}&aqi=no&alerts=no`;
+    const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&days=${days}&aqi=no&alerts=no&lang=es`;
     return this.http.get<any>(url).pipe(
       catchError(error => {
         console.error('Error fetching weather data', error);
