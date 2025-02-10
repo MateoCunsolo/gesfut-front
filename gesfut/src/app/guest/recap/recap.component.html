@@ -69,7 +69,16 @@
       </ng-template>
       }
     </div>
+    
     <div class="top-scorers-container">
+      @if (lastMatchDay.isFinished) {
+      <div class="mvp-container">
+        <div class="mvp">
+          MVP
+        </div>
+        <p>{{lastMatchDay.mvpPlayer ? lastMatchDay.mvpPlayer : "NO HAY MVP SELECIONADO"}}</p>
+      </div>
+      }
       @if(topScorers.length > 0) {
       <div class="table-header">
         <div class="table-cell">JUGADOR</div>

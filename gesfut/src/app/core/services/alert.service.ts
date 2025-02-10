@@ -121,6 +121,26 @@ export class AlertService {
     });
   }
 
+
+  selectOptionsAlert(title: string, options: string[], cancelText: string) {
+    return Swal.fire({
+      title: title,
+      input: 'select',
+      inputOptions: options,
+      showCancelButton: true,
+      confirmButtonText: 'CERRAR FECHA',
+      cancelButtonText: cancelText,
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Debes seleccionar una opción';
+        }
+        return null;
+      }
+    });
+  }
+
+
+
   inputAlert(title: string) {
     return Swal.fire({
       title: title,

@@ -67,24 +67,24 @@ export class MatchDaysService {
     );
   }
 
-  closeMatchDay(idMatchDay: number, status: boolean): Observable<void> {
+  closeMatchDay(idMatchDay: number, status: boolean,playerMvp:String): Observable<void> {
     const token = sessionStorage.getItem('token');
 
     return this.HttpClient.put<void>(
-      `${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}`,
+      `${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}&playerMvp=${playerMvp}`,
       null,
       {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
+      
     ).pipe(
       catchError((error) => {
         return throwError(() => error);
       }),
       tap(() => {
-        // tap no suscribe, sólo permite ejecutar código adicional
         this.tournamentService
           .getTournamentFull(
             this.tournamentService.currentTournament.value.code
