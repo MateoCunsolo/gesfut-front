@@ -114,7 +114,6 @@ export class PlayersComponent implements OnChanges {
       next: (response) => {
         if(!this.isGlobalTeam){
           this.participantTeam = response;
-          console.log('Equipo participante obtenido:', this.participantTeam);
         }
       },
       error: (error) => {

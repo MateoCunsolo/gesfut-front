@@ -51,6 +51,7 @@ export class NamesTeamsComponent implements OnInit {
 
   onOnlyGlobalTeams(event: boolean) {
     this.isGlobalTeams = event;
+    this.clickedToOcultPlayers = true;
   }
 
   showFromOptional(idEvent: Event) {

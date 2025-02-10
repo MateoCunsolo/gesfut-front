@@ -34,7 +34,6 @@ export class SessionService {
 verificateSession(token:string) {
   this.validateToken(token).subscribe({
     next: (response) => {
-      console.log(response);
       if(response){
         this.getItems(response);
       }else{
