@@ -126,6 +126,7 @@ export class AlertService {
     return Swal.fire({
       title: title,
       input: 'select',
+      text: 'Se mostrarán aquellos jugadores que hayan sido elegidos como MVP en sus partidos.',
       inputOptions: options,
       showCancelButton: true,
       confirmButtonText: 'CERRAR FECHA',

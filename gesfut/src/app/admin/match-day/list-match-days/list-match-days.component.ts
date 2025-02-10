@@ -120,7 +120,7 @@ export class ListMatchDaysComponent implements OnInit {
       this.alertService.errorAlert('El partido: '+ match?.homeTeam + ' vs ' + match?.awayTeam + ' no fue cerrado.');
       return;
     }
-    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished) {
+    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
       this.closeMatchDayWithMvp(status);
     } else {
       this.openMatchDay(status);
