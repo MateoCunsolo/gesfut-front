@@ -131,7 +131,23 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     }
   }
 
+  showErrors() {
+    if (this.playerForm.get('name')?.invalid) {
+      this.alertService.errorAlert('Falta ingresar el nombre.');
+    } else if (this.playerForm.get('lastName')?.invalid) {
+      this.alertService.errorAlert('Falta ingresar el apellido.');
+    } else if (this.playerForm.get('number')?.invalid) {
+      this.alertService.errorAlert('Falta ingresar el número de camiseta.');
+    }
+  }
+
+
+
   addPlayer() {
+    if (this.playerForm.invalid) {
+      this.showErrors();
+      return;
+    }
     if (this.teamIdParticipant != 0 && this.selectedPlayerId == 0) {
       this.showMenuTwoOptions();
     } else if(this.selectedPlayerId != 0) 
@@ -201,6 +217,10 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.alertService.confirmAlert('Agregar jugador', 'Estas seguro que quieres agregar a ' + this.playerForm.get('name')?.value + ' ' + this.playerForm.get('lastName')?.value + '?', 'Aceptar').then((result) => {
       if (result.isConfirmed) {
         let newPlayer: PlayerRequest = this.validateForm();
+        if (newPlayer === null) {
+          this.alertService.errorAlert('Faltan campos por llenar');
+          return;
+        }
         console.log('Nuevo jugador:', newPlayer);
         if (option === 1) {
           this.addPlayerToTournament(newPlayer);
