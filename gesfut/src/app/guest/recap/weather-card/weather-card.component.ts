@@ -6,7 +6,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
  <div class="weather-card">
   
   <div class="day">
-    <h3>{{ getDayName(day.time) }} {{getNumberDay(day.time)}} {{getMonthName(day.time)}} </h3>
+    <h3>{{day.date}}</h3>
   </div>
 
   <div class="temps">
@@ -20,7 +20,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
   <section class="condition">
     <img src="{{day.condition.icon}}"><img>
-    <p class="text-conditio">{{ translateCondition(day.condition.text).toLocaleUpperCase() }}</p>
+    <p class="text-conditio">{{conditionText}}</p>
   </section>
 
 </div>
@@ -88,103 +88,89 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 })
 export class WeatherCardComponent implements OnChanges {
   @Input() day: any;
-
+  conditionText: string = 'Cargando condicion...';
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['day'].previousValue !== changes['day'].currentValue) {
+    if (changes['day'] && changes['day'].currentValue) {
       this.day = changes['day'].currentValue;
-      console.log(this.day);
+      this.day.date = this.getDayName(this.day.date) + ' ' + this.getNumberDay(this.day.date) + ' DE ' + this.getMonthName(this.day.date);
+      if (this.day.condition?.text) {
+        const key = this.day.condition.text.trim().toUpperCase();
+        console.log("Clave para traducción:", key);
+        this.conditionText = this.weatherTranslations[key] || this.day.condition.text;
+      } else {
+        this.conditionText = 'Condición desconocida';
+      }
+      console.log("Traducción aplicada:", this.conditionText);
     }
-
   }
-
-
-
+  
   weatherTranslations: { [key: string]: string } = {
-    'Sunny': 'Soleado',
-    'Partly cloudy': 'Parcialmente nublado',
-    'Cloudy': 'Nublado',
-    'Overcast': 'Cubierto',
-    'Mist': 'Niebla',
-    'Patchy rain possible': 'Posible lluvia irregular',
-    'Patchy snow possible': 'Posible nieve irregular',
-    'Patchy sleet possible': 'Posible aguanieve',
-    'Patchy freezing drizzle possible': 'Posible llovizna helada',
-    'Thundery outbreaks possible': 'Posibles tormentas eléctricas',
-    'Blowing snow': 'Ventisca',
-    'Blizzard': 'Tormenta de nieve',
-    'Fog': 'Niebla',
-    'Freezing fog': 'Niebla helada',
-    'Patchy light drizzle': 'Llovizna ligera',
-    'Light drizzle': 'Llovizna',
-    'Freezing drizzle': 'Llovizna helada',
-    'Heavy freezing drizzle': 'Llovizna helada fuerte',
-    'Patchy light rain': 'Lluvia ligera irregular',
-    'Light rain': 'Lluvia ligera',
-    'Moderate rain at times': 'Lluvia moderada a veces',
-    'Moderate rain': 'Lluvia moderada',
-    'Heavy rain at times': 'Lluvia fuerte a veces',
-    'Heavy rain': 'Lluvia fuerte',
-    'Light freezing rain': 'Lluvia helada ligera',
-    'Moderate or heavy freezing rain': 'Lluvia helada moderada o fuerte',
-    'Light sleet': 'Aguanieve ligera',
-    'Moderate or heavy sleet': 'Aguanieve moderada o fuerte',
-    'Patchy light snow': 'Nieve ligera irregular',
-    'Light snow': 'Nieve ligera',
-    'Patchy moderate snow': 'Nieve moderada irregular',
-    'Moderate snow': 'Nieve moderada',
-    'Patchy heavy snow': 'Nieve fuerte irregular',
-    'Heavy snow': 'Nieve fuerte',
-    'Ice pellets': 'Granizo',
-    'Light rain shower': 'Chubasco ligero',
-    'Moderate or heavy rain shower': 'Chubasco moderado o fuerte',
-    'Torrential rain shower': 'Chubasco torrencial',
-    'Light sleet showers': 'Chubascos de aguanieve ligeros',
-    'Moderate or heavy sleet showers': 'Chubascos de aguanieve moderados o fuertes',
-    'Light snow showers': 'Chubascos de nieve ligeros',
-    'Moderate or heavy snow showers': 'Chubascos de nieve moderados o fuertes',
-    'Light showers of ice pellets': 'Chubascos ligeros de granizo',
-    'Moderate or heavy showers of ice pellets': 'Chubascos moderados o fuertes de granizo',
-    'Patchy light rain with thunder': 'Lluvia ligera irregular con tormenta',
-    'Moderate or heavy rain with thunder': 'Lluvia moderada o fuerte con tormenta',
-    'Patchy light snow with thunder': 'Nieve ligera irregular con tormenta',
-    'Moderate or heavy snow with thunder': 'Nieve moderada o fuerte con tormenta'
+    'SUNNY': 'SOLEADO',
+    'CLOUDY': 'NUBLADO',
+    'OVERCAST': 'CUBIERTO',
+    'MIST': 'NIEBLA',
+    'PATCHY RAIN POSSIBLE': 'POSIBLE LLUVIA IRREGULAR',
+    'PATCHY SNOW POSSIBLE': 'POSIBLE NIEVE IRREGULAR',
+    'PATCHY SLEET POSSIBLE': 'POSIBLE AGUANIEVE',
+    'PATCHY FREEZING DRIZZLE POSSIBLE': 'POSIBLE LLOVIZNA HELADA',
+    'THUNDERY OUTBREAKS POSSIBLE': 'POSIBLES TORMENTAS ELÉCTRICAS',
+    'BLOWING SNOW': 'VENTISCA',
+    'BLIZZARD': 'TORMENTA DE NIEVE',
+    'FOG': 'NIEBLA',
+    'FREEZING FOG': 'NIEBLA HELADA',
+    'PATCHY LIGHT DRIZZLE': 'LLOVIZNA LIGERA',
+    'LIGHT DRIZZLE': 'LLOVIZNA',
+    'FREEZING DRIZZLE': 'LLOVIZNA HELADA',
+    'HEAVY FREEZING DRIZZLE': 'LLOVIZNA HELADA FUERTE',
+    'PATCHY LIGHT RAIN': 'LLUVIA LIGERA IRREGULAR',
+    'LIGHT RAIN': 'LLUVIA LIGERA',
+    'MODERATE RAIN AT TIMES': 'LLUVIA MODERADA A VECES',
+    'MODERATE RAIN': 'LLUVIA MODERADA',
+    'HEAVY RAIN AT TIMES': 'LLUVIA FUERTE A VECES',
+    'HEAVY RAIN': 'LLUVIA FUERTE',
+    'LIGHT FREEZING RAIN': 'LLUVIA HELADA LIGERA',
+    'MODERATE OR HEAVY FREEZING RAIN': 'LLUVIA HELADA MODERADA O FUERTE',
+    'LIGHT SLEET': 'AGUANIEVE LIGERA',
+    'MODERATE OR HEAVY SLEET': 'AGUANIEVE MODERADA O FUERTE',
+    'PATCHY LIGHT SNOW': 'NIEVE LIGERA IRREGULAR',
+    'LIGHT SNOW': 'NIEVE LIGERA',
+    'PATCHY MODERATE SNOW': 'NIEVE MODERADA IRREGULAR',
+    'MODERATE SNOW': 'NIEVE MODERADA',
+    'PATCHY HEAVY SNOW': 'NIEVE FUERTE IRREGULAR',
+    'HEAVY SNOW': 'NIEVE FUERTE',
+    'ICE PELLETS': 'GRANIZO',
+    'LIGHT RAIN SHOWER': 'CHUBASCO LIGERO',
+    'MODERATE OR HEAVY RAIN SHOWER': 'CHUBASCO MODERADO O FUERTE',
+    'TORRENTIAL RAIN SHOWER': 'CHUBASCO TORRENCIAL',
+    'LIGHT SLEET SHOWERS': 'CHUBASCOS DE AGUANIEVE LIGEROS',
+    'MODERATE OR HEAVY SLEET SHOWERS': 'CHUBASCOS DE AGUANIEVE MODERADOS O FUERTES',
+    'LIGHT SNOW SHOWERS': 'CHUBASCOS DE NIEVE LIGEROS',
+    'MODERATE OR HEAVY SNOW SHOWERS': 'CHUBASCOS DE NIEVE MODERADOS O FUERTES',
+    'LIGHT SHOWERS OF ICE PELLETS': 'CHUBASCOS DE GRANIZO LIGEROS',
+    'MODERATE OR HEAVY SHOWERS OF ICE PELLETS': 'CHUBASCOS DE GRANIZO MODERADOS O FUERTES',
+    'PATCHY LIGHT RAIN WITH THUNDER': 'LLUVIA LIGERA IR REGULAR CON TORMENTA',
+    'MODERATE OR HEAVY RAIN WITH THUNDER': 'LLUVIA MODERADA O FUERTE CON TORMENTA',
+    'PATCHY LIGHT SNOW WITH THUNDER': 'NIEVE LIGERA IRREGULAR CON TORMENTA',
+    'MODERATE OR HEAVY SNOW WITH THUNDER': 'NIEVE MODERADA O FUERTE CON TORMENTA',
   };
 
   getDayName(dateStr: string): string {
-    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day); 
+    console.log("Fecha corregida:", date);
     return date.toLocaleDateString('es-ES', { weekday: 'long' }).toUpperCase();
   }
-
+  
   getNumberDay(dateStr: string): string {
-    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day); 
     return date.toLocaleDateString('es-ES', { day: 'numeric' });
   }
-
+  
   getMonthName(dateStr: string): string {
-    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day); 
     return date.toLocaleDateString('es-ES', { month: 'long' }).toUpperCase();
   }
-
-  translateCondition(condition: string): string {
-    return this.weatherTranslations[condition] || condition;
-  }
-
-  analizeCondition(): string {
-    const condition = this.day.condition.text;
-    if (condition.includes('rain') || condition.includes('shower')) {
-      return '🌧';
-    } else if (condition.includes('snow') || condition.includes('sleet')) {
-      return '❄️';
-    } else if (condition.includes('thunder')) {
-      return '⛈';
-    } else if (condition.includes('cloud')) {
-      return '☁️';
-    } else if (condition.includes('sun')) {
-      return '☀️';
-    } else {
-      return '🌫';
-    }
-  }
-
+  
 }
-
