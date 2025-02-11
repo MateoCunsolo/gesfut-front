@@ -8,13 +8,14 @@ import { PlayerRequest } from '../../../../../core/models/teamRequest';
 import { PlayerParticipantResponse } from '../../../../../core/models/tournamentResponse';
 import { PlayerResponse } from '../../../../../core/models/teamResponse';
 import { forkJoin, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-add-player',
-    imports: [ReactiveFormsModule, FormsModule],
-    templateUrl: './add-player.component.html',
-    styleUrls: ['./add-player.component.scss'],
-    inputs: ['teamName', 'teamPlayers']
+  selector: 'app-add-player',
+  imports: [ReactiveFormsModule, FormsModule],
+  templateUrl: './add-player.component.html',
+  styleUrls: ['./add-player.component.scss'],
+  inputs: ['teamName', 'teamPlayers']
 })
 export class AddPlayerComponent implements OnInit, OnChanges {
 
@@ -22,7 +23,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
   private alertService = inject(AlertService);
   private teamService = inject(TeamService);
   private tournamentService = inject(TournamentService);
-
+  private route = inject(Router);
   @Input() teamIdParticipant: number = 0;
   @Input() teamIdGlobal: number = 0;
   @Input() codeTournament: string = '';
@@ -32,6 +33,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
   protected selectedPlayerId: number = 0;
   protected therArePlayersToADD: boolean = false;
   playerForm: FormGroup;
+
   constructor() {
     this.playerForm = this.fb.group({
       teamId: ['', [Validators.required]],
@@ -49,18 +51,21 @@ export class AddPlayerComponent implements OnInit, OnChanges {
 
   async existInTournament(playerId: number): Promise<boolean> {
     try {
+      console.log('teamIdParticipant:', this.teamIdParticipant);
       const response = await this.tournamentService.getTournamentParticipantTeamByID(this.teamIdParticipant).toPromise();
       if (!response) {
         return false;
       }
       return response.playerParticipants.some(player => player.playerId === playerId);
     } catch (error) {
+      console.log(this.i = this.i + 1);
+
       console.error('Error al obtener equipo participante:', error);
       return false;
     }
   }
-  
 
+  i: number = 0;
 
   async callPlayerGlobals() {
     try {
@@ -68,6 +73,12 @@ export class AddPlayerComponent implements OnInit, OnChanges {
       if (!response) {
         return;
       }
+
+      if (response.players.length === 0) {
+        this.therArePlayersToADD = false;
+        return;
+      }
+
       const filteredPlayers = await Promise.all(
         response.players.map(async (player) => {
           const exists = await this.existInTournament(player.id);
@@ -75,21 +86,25 @@ export class AddPlayerComponent implements OnInit, OnChanges {
         })
       );
       this.playersGlobal = filteredPlayers.filter(player => player !== null);
+
       if (this.playersGlobal.length === 0) {
         this.therArePlayersToADD = false;
-      }else{
+      } else {
         this.therArePlayersToADD = true;
       }
+
+      
       console.log('Jugadores globales:', this.playersGlobal);
+
     } catch (error) {
       console.error('Error al obtener jugadores globales:', error);
     }
   }
-  
+
   changePlayer(event: Event) {
     const selectedPlayerId = Number((event.target as HTMLSelectElement).value);
     const player = this.playersGlobal.find(player => player.id === selectedPlayerId);
-  
+
     if (player) {
       this.playerForm.get('name')?.setValue(player.name);
       this.playerForm.get('lastName')?.setValue(player.lastName);
@@ -98,24 +113,26 @@ export class AddPlayerComponent implements OnInit, OnChanges {
       this.playerForm.get('isGoalKeeper')?.setValue(player.isGoalKeeper);
     }
   }
-  
-  resetSelect(){
+
+  resetSelect() {
     this.selectedPlayerId = 0;
     this.clearValues();
   }
 
   clearValues() {
     this.playerForm.reset({
-      teamId: this.teamIdParticipant, 
+      teamId: this.teamIdParticipant,
       isCaptain: false,
       isGoalKeeper: false
     });
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
       this.playerForm.get('teamId')?.setValue(this.teamIdParticipant);
-      this.callPlayerGlobals();
+      if(this.teamIdParticipant != 0){
+        this.callPlayerGlobals();
+      }
       this.verifyIfAreThereParticipantsForThisTeam();
       console.log('teamIdGlobal:', this.teamIdGlobal);
     } else {
@@ -149,16 +166,19 @@ export class AddPlayerComponent implements OnInit, OnChanges {
       return;
     }
     if (this.teamIdParticipant != 0 && this.selectedPlayerId == 0) {
-      this.showMenuTwoOptions();
-    } else if(this.selectedPlayerId != 0) 
-    {
+      if (this.route.url.includes('tournament')) {
+        this.showReConfirmAlert(1);
+      } else {
+        this.showMenuTwoOptions();
+      }
+    }
+    else if (this.selectedPlayerId != 0) {
       this.showReConfirmAlert(1);
-    }else
-    {
+    } else {
       this.showReConfirmAlert(0);
     }
     this.playersGlobal = this.playersGlobal.filter(player => player.number !== this.playerForm.get('number')?.value);
-    if(this.playersGlobal.length === 0){
+    if (this.playersGlobal.length === 0) {
       this.therArePlayersToADD = false;
     }
   }
@@ -169,7 +189,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
         this.showReConfirmAlert(0);
       } else {
         this.showReConfirmAlert(1);
-      }      
+      }
     });
   }
 
@@ -177,8 +197,8 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.teamService.addPlayerToTeam(this.teamIdGlobal, newPlayer).subscribe({
       next: (response) => {
         this.alertService.successAlert('Jugador agregado');
-        this.clearValues();       
-        this.selectedPlayerId = 0; 
+        this.clearValues();
+        this.selectedPlayerId = 0;
         let playerMaped = this.mapPlayerNoParticipants(response);
         console.log('Jugador mapeado:', playerMaped);
         this.addPlayerToTeam.emit(playerMaped);
@@ -196,8 +216,8 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.tournamentService.addPlayerToParticipant(this.codeTournament, this.teamIdParticipant, newPlayer).subscribe({
       next: (response) => {
         this.alertService.successAlert('Jugador agregado');
-        this.clearValues();       
-        this.selectedPlayerId = 0; 
+        this.clearValues();
+        this.selectedPlayerId = 0;
         if (response) {
           response.playerParticipants.forEach(playerParticipant => {
             if (playerParticipant.playerName === newPlayer.name && playerParticipant.playerLastName === newPlayer.lastName) {
@@ -265,7 +285,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
   }
 
   cancelAddPlayer() {
-    this.clearValues();       
+    this.clearValues();
     this.selectedPlayerId = 0;
     this.cancelAddPlayerEvent.emit();
   }

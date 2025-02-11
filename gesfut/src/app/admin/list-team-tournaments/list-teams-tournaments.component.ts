@@ -10,6 +10,7 @@ import { NamesTournamentsComponent } from '../list-teams/components/names-tourna
 import { PlayersComponent } from '../list-teams/components/players/players.component';
 import { PlayersTournamentComponent } from './players-tournament/players-tournament.component';
 import { TeamService } from '../../core/services/tournament/team.service';
+import { IfStmt } from '@angular/compiler';
 
 @Component({
     selector: 'app-list-team-tournaments',
@@ -37,16 +38,6 @@ export class ListTeamsTournamentsComponent {
 
   ngOnInit() {
 
-    this.tournamentService.getLastTeamClicked().subscribe({
-      next: (response) => {
-        this.lastClicked = response;
-        this.bindingSelect = response;
-        this.getTeamColor(this.participants[response].idTeam);
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    });
 
     this.tournamentService.currentTournament.subscribe({
       next: (response) => {
@@ -62,6 +53,23 @@ export class ListTeamsTournamentsComponent {
         console.error(error);
       }
     });
+    
+
+    this.tournamentService.getLastTeamClicked().subscribe({
+      next: (response) => {
+        this.lastClicked = response;
+        this.bindingSelect = response;
+        if (this.participants.length > 0) {
+          this.teamParticipant = this.participants[this.lastClicked];
+          this.nameClicked = this.participants[this.lastClicked].name;
+          this.getTeamColor(this.participants[this.lastClicked].idTeam);
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+
   }
 
   searchTeams($event: Event) {
