@@ -157,7 +157,8 @@ export class RecapComponent {
           console.log(`Pronóstico promedio para ${targetDate}:`, this.forecast);
         } else {
           console.warn('La fecha solicitada no está disponible en la API.');
-          this.isPreviousDayAvailable = true;
+          this.isPreviousDayAvailable = false;
+          this.forecast = null;
         }
       }
     });

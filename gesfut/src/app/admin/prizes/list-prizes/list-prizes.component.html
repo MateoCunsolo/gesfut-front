@@ -1,91 +1,58 @@
 <section>
   <div class="title-container">
     <h2 class="title">
-    @switch (currentCategory) {
-      @case("POSITION"){
-        Premios por Tabla
-      }
-      @case("FAIR_PLAY"){
-        Premios por FAIR PLAY
-      }
-      @case("TOP_SCORER"){
-        Premios a los GOLEADORES
-      }
-      @case("BEST_GOALKEEPER"){
-        Premios a los MEJORES ARQUEROS
-      }
-    }
+      @switch (currentCategory) { @case("POSITION"){ Premios por Tabla }
+      @case("FAIR_PLAY"){ Premios por FAIR PLAY } @case("TOP_SCORER"){ Premios a
+      los GOLEADORES } @case("BEST_GOALKEEPER"){ Premios a los MEJORES ARQUEROS
+      } }
     </h2>
   </div>
-  <hr>
-
+  <hr />
 
   <article class="prizes-container">
-  @if(prizes.length>0){
-      @for (item of prizes; track $index) {
-          <div class="accordion-item">
-            <div (click)="toggleAccordion($index)" class="accordion-header">
-              <h3>
-                @switch(item.position){
-                  @case(1){
-                    1ER PUESTO 👑
-                  }
-                  @case (2) {
-                    2DO PUESTO
-                  }
-                  @case (3) {
-                    3ER PUESTO
-                  }
-                  @default {
-                    {{item.position}}TO PUESTO
-                  }
-                }
-              </h3>
-
-              @if(isExpanded($index)){
-                <i class="fa-solid fa-minus"></i>
-              }@else{
-                <i class="fa-solid fa-plus"></i>
-              }
-            </div>
-
-            @if(expandedIndex===$index){
-              <div class="accordion-body">
-                <span class="accordion-description">{{item.description}}</span>
-                @if(isAuth()){
-                  <i class="accordion-button fa-solid fa-pencil" (click)="updatePrizeDescription(item.position)"></i>
-                  <i class="accordion-button fa-solid fa-trash-can" (click)="deletePrize(item.position)"></i>
-                }
-              </div>
-            }
-          </div>
+    @if(prizes.length>0){ @for (item of prizes; track $index) {
+    <div class="accordion-item">
+      <div (click)="toggleAccordion($index)" class="accordion-header">
+        <h3>{{ item.position }}º PUESTO</h3>
+        @if(isExpanded($index)){
+        <i class="fa-solid fa-minus"></i>
+        }@else{
+        <i class="fa-solid fa-plus"></i>
         }
-    }@else {
-      <div class="empty-prizes">
-        <p>NO HAY PREMIOS PARA LA CATEGORÍA @switch (currentCategory) {
-          @case("POSITION"){
-            CAMPEÓN
-          }
-          @case("FAIR_PLAY"){
-            FAIR PLAY
-          }
-          @case("TOP_SCORER"){
-            GOLEADOR
-          }
-          @case("BEST_GOALKEEPER"){
-            MEJOR ARQUERO
-          }
-        }.</p>
       </div>
+
+      @if(expandedIndex===$index){
+      <div class="accordion-body">
+        <span class="accordion-description">{{ item.description }}</span>
+        @if(isAuth()){
+        <i
+          class="accordion-button fa-solid fa-pencil"
+          (click)="updatePrizeDescription(item.position)"
+        ></i>
+        <i
+          class="accordion-button fa-solid fa-trash-can"
+          (click)="deletePrize(item.position)"
+        ></i>
+        }
+      </div>
+      }
+    </div>
+    } }@else {
+    <div class="empty-prizes">
+      <p>
+        NO HAY PREMIOS PARA LA CATEGORÍA @switch (currentCategory) {
+        @case("POSITION"){ CAMPEÓN } @case("FAIR_PLAY"){ FAIR PLAY }
+        @case("TOP_SCORER"){ GOLEADOR } @case("BEST_GOALKEEPER"){ MEJOR ARQUERO
+        } }.
+      </p>
+    </div>
     }
   </article>
   @if(isAuth()){
-    <div class="button-container">
-      <button class="base-button" (click)="setView('create')">Agregar premios</button>
-    </div>
+  <div class="button-container">
+    <button class="base-button" (click)="setView('create')">
+      Agregar premios
+    </button>
+  </div>
   }
-
 </section>
-
-
-

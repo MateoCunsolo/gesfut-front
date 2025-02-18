@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../core/services/alert.service';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
+import { EmailVerificationService } from '../../core/services/manager/emailVerification.service';
 
 @Component({
     selector: 'app-register',
@@ -21,7 +22,7 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 })
 export class RegisterComponent {
   private alertService = inject(AlertService);
-
+  private emailVerificationService = inject(EmailVerificationService);
   error: String = '';
   registerForm: FormGroup;
   protected isLoading = false;
@@ -58,29 +59,44 @@ export class RegisterComponent {
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     const credentials: RegisterRequest = this.registerForm.value;
+    
     if (this.registerForm.invalid) {
       this.alertService.errorAlert('Formulario inválido');
-    } else {
-      this.isLoading = true;
-      this.authService.register(credentials).subscribe({
-        next: (response) => {
-          if (response.token){
-            this.alertService.successAlert('Usuario registrado correctamente');
-            this.route.navigateByUrl('/auth/login');
-          }else{
-            this.alertService.errorAlert('Error al registrar usuario');
-          }
-        },
-        error: (err: HttpErrorResponse) => {
-          console.log(err);
-          this.error = err.error.error;
-          this.isLoading = false;
-        },
-      });
+      return;
     }
+      try {
+      const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
+      
+      if (!isValidEmail) {
+        this.alertService.errorAlert('Email no válido');
+        this.isLoading = false;
+        return;
+      }
+    } catch (err) {
+      this.alertService.errorAlert('Error al verificar el email');
+      this.isLoading = false;
+      return;
+    }
+  
+    this.isLoading = true;
+    this.authService.register(credentials).subscribe({
+      next: (response) => {
+        if (response.token) {
+          this.alertService.successAlert('Usuario registrado correctamente');
+          this.route.navigateByUrl('/auth/login');
+        } else {
+          this.alertService.errorAlert('Error al registrar usuario');
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.alertService.errorAlert(err.error.error);
+        this.isLoading = false;
+      },
+    });
   }
+  
 
   validate(field: string, error: string): void {
     return (
