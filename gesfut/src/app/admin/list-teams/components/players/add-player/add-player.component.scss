@@ -170,3 +170,12 @@ select{
     -webkit-appearance: none;
     -moz-appearance: none;  
 }
+
+.disabled{
+    background-color: var(--bg-color) !important;
+    cursor: not-allowed !important; 
+}
+
+.disabled:hover{
+    background-color: none !important;
+}

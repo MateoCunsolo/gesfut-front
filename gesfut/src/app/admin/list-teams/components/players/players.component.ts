@@ -26,7 +26,6 @@ export class PlayersComponent implements OnChanges {
   private dashboardService = inject(DashboardService);
   private guestService = inject(GuestService);
   private route = inject(Router);
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @Input() public participantId: number | null = null;
   @Input() public idTeam: number | null = null;
   @Input() public thereAreNotParticipants: boolean = false;
@@ -64,37 +63,6 @@ export class PlayersComponent implements OnChanges {
 
   }
 
-  ngAfterViewInit() {
-    this.scrollContainer.nativeElement.addEventListener('wheel', (event) => {
-      event.preventDefault(); 
-      const scrollAmount = event.deltaY ;
-      this.smoothScroll(scrollAmount);
-    });
-  }
-  
-  private smoothScroll(amount: number) {
-    const start = this.scrollContainer.nativeElement.scrollTop;
-    const end = start + amount;
-    const duration = 750;
-    let startTime: number | null = null;
-  
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      this.scrollContainer.nativeElement.scrollTop = start + (end - start) * this.easeOutQuad(progress);
-  
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
-    };
-  
-    requestAnimationFrame(step);
-  }
-  
-  private easeOutQuad(t: number): number {
-    return t * (2 - t);
-  }
-  
   getPlayersGlobal(idTeam: number) {
     this.teamService.getTeam(idTeam).subscribe({
       next: (response) => {
