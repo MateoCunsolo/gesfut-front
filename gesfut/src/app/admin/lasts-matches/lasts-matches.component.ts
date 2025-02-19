@@ -35,8 +35,10 @@ export class LastsMatchesComponent {
         //si la ruta contiente touranaments/
         if(this.route.url.includes('tournaments/')){
           this.teamName = response;
-        }else{
+        }else if (this.route.url.includes('admin')) {
           this.teamName = response +' EN '+ sessionStorage.getItem('lastTournamentClickedName');
+        }else{
+          this.teamName = response;
         }
       },
     });

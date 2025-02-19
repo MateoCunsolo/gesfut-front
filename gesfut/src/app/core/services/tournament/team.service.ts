@@ -153,14 +153,8 @@ export class TeamService {
 
 
   getTeam(idTeam: number): Observable<TeamResponse> {
-    if (!this.session.isAuth()) {
-      return new Observable<TeamResponse>();
-    }
-
-    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Content-Type': 'application/json',      
     });
 
     return this.http.get<TeamResponse>(`${this.url}/${idTeam}`, {

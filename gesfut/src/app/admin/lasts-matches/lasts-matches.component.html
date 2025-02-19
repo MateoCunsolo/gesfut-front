@@ -1,7 +1,7 @@
 <section class="conteiner">
   <div>
     <button class="back-button btn" (click)="back()">ATRAS</button>
-    <h1 class="title">PARTIDOS DE {{ teamName }}</h1>
+    <h1 class="title">PARTIDOS DE {{ teamName.toUpperCase() }}</h1>
   </div>
   <div class="gap">
     @for (item of matches; track $index) {
