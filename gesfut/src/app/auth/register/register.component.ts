@@ -67,6 +67,7 @@ export class RegisterComponent {
       return;
     }
       try {
+      this.isLoading = true;
       const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
       console.log(isValidEmail);
       if (!isValidEmail) {
