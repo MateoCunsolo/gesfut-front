@@ -21,9 +21,9 @@
           (change)="updateMatchDay($event)"
           [(ngModel)]="bindingSelect"
           >
-            <option [value]="1" disabled selected>SELECCIONAR LA FECHA</option>
+            <option [value]="" disabled selected>SELECCIONAR LA FECHA</option>
             @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
-            <option (click)="updateMatchDay(day.numberOfMatchDay)"  [value]="day.numberOfMatchDay">FECHA {{ day.numberOfMatchDay + 1 }}</option>
+            <option [value]="day.numberOfMatchDay">FECHA {{ day.numberOfMatchDay + 1 }}</option>
             }
           </select>
         </div>
