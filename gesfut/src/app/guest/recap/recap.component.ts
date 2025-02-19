@@ -340,11 +340,10 @@ export class RecapComponent {
     let isLast = false;
     this.tournamentService.currentTournament.subscribe({
       next: (response) => {
-        if (
-          this.lastMatchDay.numberOfMatchDay + 1 ==
-          response.matchDays.length
-        ) {
-          isLast = true;
+        if(this.lastMatchDay){
+          if (this.lastMatchDay.numberOfMatchDay + 1 == response.matchDays.length){
+            isLast = true;
+          }
         }
       },
     });

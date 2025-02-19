@@ -95,7 +95,6 @@ export class InitializeTournamentComponent {
   }
 
   initTournament() {
-    this.alertService.loadingAlert('Inicializando torneo...');
     if (this.teamsTournament.length >= 4) {
       const ids = this.teamsTournament.map(team => team.id);
       const initializeRequest = {
@@ -103,6 +102,7 @@ export class InitializeTournamentComponent {
         teams: ids,
         startDate: this.date
       };
+      this.alertService.loadingAlert('Inicializando torneo...');
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {
           this.alertService.successAlert('Torneo inicializado');
