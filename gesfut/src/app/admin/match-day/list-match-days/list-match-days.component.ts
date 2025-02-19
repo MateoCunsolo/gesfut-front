@@ -124,7 +124,11 @@ export class ListMatchDaysComponent implements OnInit {
    
     if (this.tournament.matchDays[this.selectedMatchDay].matches.some(match => !match.isFinished)) {
       const match = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
-      this.alertService.errorAlert('El partido: '+ match?.homeTeam + ' vs ' + match?.awayTeam + ' no fue cerrado.');
+      if (match?.homeTeam.toLowerCase() === 'free' || match?.awayTeam.toLowerCase() === 'free') {
+        match.isFinished = true;
+      }else{
+        this.alertService.errorAlert('El partido: '+ match?.homeTeam + ' vs ' + match?.awayTeam + ' no fue cerrado.');
+      }
       return;
     }
     if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {

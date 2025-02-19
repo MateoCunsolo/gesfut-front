@@ -54,6 +54,10 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.route.events.subscribe(() => {
+      if(this.route.url.includes('auth')){
+        this.guest = false;
+        return;
+      }
       const match = this.route.url.match(/\/([^/]+)$/);
       this.code = match ? match[1] : '';
       if (this.code.length > 0) {
@@ -62,7 +66,7 @@ export class HeaderComponent {
         this.guest = false;
       }
     });
-    
+
     if (this.route.url.includes('admin') && !this.route.url.includes('tournaments')) {
       this.isRouteTorunament = false;
       this.noIsAdmin = false;
