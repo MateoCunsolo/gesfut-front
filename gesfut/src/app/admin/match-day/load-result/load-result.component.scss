@@ -235,7 +235,7 @@ article {
   }
 }
 .overflow-x{
-    height: 320px;
+  min-height: 320px;
 }
 
 .events-table {
@@ -278,6 +278,7 @@ tbody tr {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    margin-top: 16px;
 }
 
 .base-button{

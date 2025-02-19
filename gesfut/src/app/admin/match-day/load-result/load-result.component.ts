@@ -180,7 +180,15 @@ export class LoadResultComponent {
     }
   }
 
+  thereAreMoreThanOneMvp(events: any[]): boolean {
+    return events.filter((event) => event.mvp === true).length > 1;
+  }
+
   saveEvents() {
+    if(this.thereAreMoreThanOneMvp(this.events)){
+      this.alertService.errorAlert('Solo puede haber un MVP por partido');
+      return;
+    }
     if (this.matchDayService.editResult.value === true) {
       console.log('es editando');
       if (this.eventsAreEquals()) {

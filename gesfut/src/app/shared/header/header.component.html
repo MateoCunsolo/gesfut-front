@@ -9,14 +9,17 @@
     }   
   </section>
 
-  @if(isRouteTorunament) {
+  @if(isRouteTorunament || noIsAdmin) {
   <p class="title-tournament">{{ lastTournamentClickedName.toUpperCase() }}</p>
-  } 
+  }
   
-  @if (!isLoggedIn) {
+  
+  @if (!isLoggedIn && !guest) {
   <button class="btn-login" (click)="onLogin()">INICIAR SESION</button>
-  } @else {
+  } @else if (isLoggedIn) {
   <app-user class="user"></app-user>
+  }@else {
+    <div></div>
   }
 
 

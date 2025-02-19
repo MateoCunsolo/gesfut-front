@@ -4,12 +4,14 @@
     <h2 class="title play-bold">
       {{ getMatchDayStatus() }}
       <div class="tags-matchDay">
-      <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
-      @if (isTheFirst()) {
-      <p class="status prox" (click)="nextMatchDay()">{{returnText()}}</p>
-      }@else {
-        <p class="status prox" (click)="nextOrBackMatchDay()">{{returnText()}}</p>
-      }
+        <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
+        @if (isTheFirst()) {
+        <p class="status prox" (click)="nextMatchDay()">{{returnText()}}</p>
+        }@else if(!isTheLast()) {
+          <p class="status prox" (click)="nextOrBackMatchDay()">{{returnText()}}</p>
+        }@else{
+          <p class="status prox" (click)="previousMatchDay()">{{returnText()}}</p>
+        }
       </div>
       
     </h2>
@@ -67,29 +69,40 @@
       </ng-template>
       }
     </div>
+    
     <div class="top-scorers-container">
+      @if (lastMatchDay.isFinished) {
+      <div class="mvp-container">
+        <div class="mvp">
+          MVP
+        </div>
+        <p>{{lastMatchDay.mvpPlayer ? lastMatchDay.mvpPlayer : "NO HAY MVP SELECIONADO"}}</p>
+      </div>
+      }
       @if(topScorers.length > 0) {
       <div class="table-header">
-        <div class="table-cell">Jugador</div>
-        <div class="table-cell">Goles</div>
+        <div class="table-cell">JUGADOR</div>
+        <div class="table-cell" title="GOLES">⚽</div>
       </div>
       <div class="top-scorers-table">
         @for(scorer of topScorers; track scorer.playerName) {
         <div class="table-row">
           <div class="table-cell">{{ scorer.playerName.toUpperCase() }}</div>
           <div class="table-cell">
-            {{ scorer.goals }} @if(scorer.goals <= 1) { GOL } @else { GOLES }
+            {{ scorer.goals }}
           </div>
         </div>
         }
       </div>
-      } @else if(forecast) {
+      } @else if(forecast && !lastMatchDay.isFinished) {
       <app-weather-card class="weather" [day]="forecast"></app-weather-card>
-      } @else if(loadingWeather) {
+      } @else if(loadingWeather && !lastMatchDay.isFinished) {
       <p class="title">Cargando clima...</p>
       <app-spinner></app-spinner>
-      }@else {
-      <p>Los partidos no tiene fecha, no se puede visualizar el clima.</p>
+      }@else if(isPreviousDayAvailable && !lastMatchDay.isFinished) {
+        <p>La fecha es anterior al dia actual. No es posible visuallizar el clima.</p>
+      }@else if(!lastMatchDay.isFinished) {
+        <p>No se puede visualizar el clima.</p>
       }
     </div>
   </div>

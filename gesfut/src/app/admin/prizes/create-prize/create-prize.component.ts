@@ -40,23 +40,27 @@ export class CreatePrizeComponent {
     this.prizeService.currentCategory.subscribe({
       next: (category) => {
         this.category = category;
-        this.addPrize();
-        this.addPrize();
-        this.addPrize();
+        this.addPrize(1);
+        this.addPrize(2);
+        this.addPrize(3);
       },
     });
+  }
+
+  back() {
+    this.prizeService.currentView.next('list');
   }
 
   get prizes(): FormArray {
     return this.prizesForm.get('prizes') as FormArray;
   }
 
-  addPrize() {
+  addPrize(number: number) {
     if (this.category !== '') {
       const prizeGroup = this.fb.group({
         type: [this.category, Validators.required],
         description: ['', Validators.required],
-        position: [1, [Validators.required, Validators.min(1)]],
+        position: [number, [Validators.required, Validators.min(1)]],
       });
       this.prizes.push(prizeGroup);
     }

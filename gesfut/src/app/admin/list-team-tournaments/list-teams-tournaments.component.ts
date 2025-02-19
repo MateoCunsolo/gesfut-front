@@ -9,17 +9,20 @@ import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tou
 import { NamesTournamentsComponent } from '../list-teams/components/names-tournaments/names-tournaments.component';
 import { PlayersComponent } from '../list-teams/components/players/players.component';
 import { PlayersTournamentComponent } from './players-tournament/players-tournament.component';
+import { TeamService } from '../../core/services/tournament/team.service';
+import { IfStmt } from '@angular/compiler';
 
 @Component({
-    selector: 'app-list-team-tournaments',
-    imports: [NgClass, CommonModule, FormsModule, PlayersTournamentComponent],
-    templateUrl: './list-teams-tournaments.component.html',
-    styleUrl: './list-teams-tournaments.component.scss'
+  selector: 'app-list-team-tournaments',
+  imports: [NgClass, CommonModule, FormsModule, PlayersTournamentComponent],
+  templateUrl: './list-teams-tournaments.component.html',
+  styleUrl: './list-teams-tournaments.component.scss'
 })
 export class ListTeamsTournamentsComponent {
 
   private dashboardService = inject(DashboardService);
   private tournamentService = inject(TournamentService);
+  private teamService = inject(TeamService);
 
   protected tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
   protected participants: ParticipantResponse[] = [];
@@ -29,29 +32,38 @@ export class ListTeamsTournamentsComponent {
   protected indexSelectedAfter = 0;
   protected inputText: string = '';
   protected lastClicked: number = 0;
-  bindingSelect: number = 0;
+  protected bindingSelect: number = 0;
+  protected colorSelected: string = '';
   constructor() { }
 
   ngOnInit() {
-
-    this.tournamentService.getLastTeamClicked().subscribe({
+    this.tournamentService.currentTournament.subscribe({
       next: (response) => {
-        this.lastClicked = response;
-        this.bindingSelect = response;
+        this.tournament = response;
+        this.participants = response.participants;
+        this.particpantsFilter = response.participants;
+
+        if (this.participants.length > 0) {
+          this.teamParticipant = this.participants[this.lastClicked] || this.participants[0];
+          this.bindingSelect = this.teamParticipant.idParticipant;
+          this.nameClicked = this.teamParticipant.name;
+          this.getTeamColor(this.teamParticipant.idTeam);
+        }
       },
       error: (error) => {
         console.error(error);
       }
     });
 
-    this.tournamentService.currentTournament.subscribe({
+    this.tournamentService.getLastTeamClicked().subscribe({
       next: (response) => {
-        this.tournament = response;
-        this.participants = response.participants;
-        this.particpantsFilter = response.participants;
-        this.teamParticipant = this.participants[this.lastClicked];
-        this.bindingSelect = this.participants[this.lastClicked].idParticipant;
-        this.nameClicked = this.participants[this.lastClicked].name;
+        this.lastClicked = response;
+        if (this.participants.length > 0) {
+          this.teamParticipant = this.participants[this.lastClicked] || this.participants[0];
+          this.bindingSelect = this.teamParticipant.idParticipant;
+          this.nameClicked = this.teamParticipant.name;
+          this.getTeamColor(this.teamParticipant.idTeam);
+        }
       },
       error: (error) => {
         console.error(error);
@@ -61,12 +73,12 @@ export class ListTeamsTournamentsComponent {
 
   searchTeams($event: Event) {
     this.inputText = ($event.target as HTMLInputElement).value.toLowerCase();
-        this.particpantsFilter = this.participants.filter(team => 
+    this.particpantsFilter = this.participants.filter(team =>
       team.name.toLowerCase().includes(this.inputText)
     );
-      this.updateSelectedIndex();
+    this.updateSelectedIndex();
   }
-  
+
   private updateSelectedIndex() {
     if (this.teamParticipant) {
       this.indexSelectedAfter = this.particpantsFilter.findIndex(
@@ -85,8 +97,21 @@ export class ListTeamsTournamentsComponent {
       this.tournamentService.setLastTeamClicked(this.participants.indexOf(participant));
       this.updateSelectedIndex();
       this.bindingSelect = idParticipant;
+      this.getTeamColor(participant.idTeam);
     }
   }
+
+  getTeamColor(idTeam: number) {
+    this.teamService.getTeam(idTeam).subscribe({
+      next: (response) => {
+        this.colorSelected = response.color;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    })
+  }
+
 
   showParticipantsFromOptional(idParticipant: Event) {
     let idParticipantValue = (idParticipant.target as HTMLInputElement).value;

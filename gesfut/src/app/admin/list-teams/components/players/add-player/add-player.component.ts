@@ -5,33 +5,41 @@ import { AlertService } from '../../../../../core/services/alert.service';
 import { TeamService } from '../../../../../core/services/tournament/team.service';
 import { TournamentService } from '../../../../../core/services/tournament/tournament.service';
 import { PlayerRequest } from '../../../../../core/models/teamRequest';
-import { PlayerParticipantResponse } from '../../../../../core/models/tournamentResponse';
+import { ParticipantResponse, PlayerParticipantResponse } from '../../../../../core/models/tournamentResponse';
 import { PlayerResponse } from '../../../../../core/models/teamResponse';
 import { forkJoin, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { INITIAL_PARTICIPANT } from '../../../../../core/services/tournament/initial-tournament';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-add-player',
-    imports: [ReactiveFormsModule, FormsModule],
-    templateUrl: './add-player.component.html',
-    styleUrls: ['./add-player.component.scss'],
-    inputs: ['teamName', 'teamPlayers']
+  selector: 'app-add-player',
+  imports: [ReactiveFormsModule, FormsModule, NgClass],
+  templateUrl: './add-player.component.html',
+  styleUrls: ['./add-player.component.scss'],
+  inputs: ['teamName', 'teamPlayers']
 })
-export class AddPlayerComponent implements OnInit, OnChanges {
+export class AddPlayerComponent implements OnChanges {
 
   private fb = inject(FormBuilder);
   private alertService = inject(AlertService);
   private teamService = inject(TeamService);
   private tournamentService = inject(TournamentService);
-
+  private route = inject(Router);
   @Input() teamIdParticipant: number = 0;
   @Input() teamIdGlobal: number = 0;
   @Input() codeTournament: string = '';
   @Output() public addPlayerToTeam = new EventEmitter<PlayerParticipantResponse>();
   @Output() public cancelAddPlayerEvent = new EventEmitter<void>();
+  protected teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
   protected playersGlobal: PlayerResponse[] = [];
   protected selectedPlayerId: number = 0;
   protected therArePlayersToADD: boolean = false;
+  protected inactivedPlayers: PlayerResponse[] = [];
+  disbalechecks:boolean=false;
   playerForm: FormGroup;
+  changeText: boolean = false;
+
   constructor() {
     this.playerForm = this.fb.group({
       teamId: ['', [Validators.required]],
@@ -43,53 +51,74 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnInit() {
-  }
-
-
-  async existInTournament(playerId: number): Promise<boolean> {
-    try {
-      const response = await this.tournamentService.getTournamentParticipantTeamByID(this.teamIdParticipant).toPromise();
-      if (!response) {
-        return false;
-      }
-      return response.playerParticipants.some(player => player.playerId === playerId);
-    } catch (error) {
-      console.error('Error al obtener equipo participante:', error);
-      return false;
-    }
-  }
   
-
-
   async callPlayerGlobals() {
     try {
-      const response = await this.teamService.getTeam(this.teamIdGlobal).toPromise();
-      if (!response) {
+      const teamResponse = await this.teamService.getTeam(this.teamIdGlobal).toPromise();
+      if (!teamResponse || teamResponse.players.length === 0) {
+        this.therArePlayersToADD = false;
         return;
       }
-      const filteredPlayers = await Promise.all(
-        response.players.map(async (player) => {
-          const exists = await this.existInTournament(player.id);
-          return exists ? null : player;
-        })
-      );
-      this.playersGlobal = filteredPlayers.filter(player => player !== null);
-      if (this.playersGlobal.length === 0) {
-        this.therArePlayersToADD = false;
-      }else{
-        this.therArePlayersToADD = true;
-      }
-      console.log('Jugadores globales:', this.playersGlobal);
+  
+      this.tournamentService.getTournamentParticipantTeamByID(this.teamIdParticipant).subscribe({
+        next: (response) => {
+          this.teamParticipant = response || { playerParticipants: [] };
+  
+          // Extraer los IDs de los jugadores que ya están en el torneo
+          const existingPlayerIds = new Set(this.teamParticipant.playerParticipants.map(player => player.playerId));
+  
+          // Filtrar jugadores que NO están en el torneo
+          const newPlayers = teamResponse.players.filter(player => !existingPlayerIds.has(player.id));
+  
+          // Filtrar jugadores que están en el torneo pero tienen isActive === false
+          this.inactivedPlayers = this.teamParticipant.playerParticipants
+            .filter(player => !player.isActive)
+            .map(player => ({
+              id: player.id, // ID del jugador en el torneo para poder encontrarlo y activarlo
+              name: player.playerName,
+              lastName: player.playerLastName,
+              number: player.shirtNumber,
+              isCaptain: player.isCaptain,
+              isGoalKeeper: player.isGoalKeeper,
+              status: player.status
+            }));
+  
+          this.playersGlobal = [...newPlayers, ...this.inactivedPlayers];
+          this.therArePlayersToADD = this.playersGlobal.length > 0;
+  
+          console.log('Jugadores globales:', this.playersGlobal);
+        },
+        error: (error) => {
+          console.error('Error al obtener participante del equipo:', error);
+        }
+      });
+  
     } catch (error) {
       console.error('Error al obtener jugadores globales:', error);
     }
   }
   
+  
+  
+
   changePlayer(event: Event) {
     const selectedPlayerId = Number((event.target as HTMLSelectElement).value);
     const player = this.playersGlobal.find(player => player.id === selectedPlayerId);
-  
+    
+    if(this.teamParticipant.playerParticipants.find(player => player.id === selectedPlayerId)){
+      this.changeText=true;
+    }else{
+      this.changeText=false;
+    }
+
+
+    this.playerForm.get('name')?.disable();
+    this.playerForm.get('lastName')?.disable();
+    this.playerForm.get('number')?.disable();
+    this.playerForm.get('isCaptain')?.disable();
+    this.playerForm.get('isGoalKeeper')?.disable();
+    this.disbalechecks=true;
+
     if (player) {
       this.playerForm.get('name')?.setValue(player.name);
       this.playerForm.get('lastName')?.setValue(player.lastName);
@@ -98,24 +127,38 @@ export class AddPlayerComponent implements OnInit, OnChanges {
       this.playerForm.get('isGoalKeeper')?.setValue(player.isGoalKeeper);
     }
   }
-  
-  resetSelect(){
+
+  resetSelect() {
     this.selectedPlayerId = 0;
+    this.disbalechecks=false;
+    this.changeText=false;
     this.clearValues();
   }
 
   clearValues() {
     this.playerForm.reset({
-      teamId: this.teamIdParticipant, 
+      teamId: this.teamIdParticipant,
       isCaptain: false,
       isGoalKeeper: false
     });
+    this.playerForm.get('name')?.enable();
+    this.playerForm.get('lastName')?.enable();  
+    this.playerForm.get('number')?.enable();
+    this.playerForm.get('isCaptain')?.enable();
+    this.playerForm.get('isGoalKeeper')?.enable();
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
+      this.playersGlobal = [];
+      this.inactivedPlayers = [];
+      this.therArePlayersToADD = false;
+      this.selectedPlayerId = 0;
+      this.clearValues();
       this.playerForm.get('teamId')?.setValue(this.teamIdParticipant);
-      this.callPlayerGlobals();
+      if(this.teamIdParticipant != 0){
+        this.callPlayerGlobals();
+      }
       this.verifyIfAreThereParticipantsForThisTeam();
       console.log('teamIdGlobal:', this.teamIdGlobal);
     } else {
@@ -131,20 +174,83 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     }
   }
 
+  showErrors() {
+    if (this.playerForm.get('name')?.invalid) {
+      this.alertService.errorAlert('Falta ingresar el nombre.');
+    } else if (this.playerForm.get('lastName')?.invalid) {
+      this.alertService.errorAlert('Falta ingresar el apellido.');
+    } else if (this.playerForm.get('number')?.invalid) {
+      this.alertService.errorAlert('Falta ingresar el número de camiseta.');
+    }
+  }
+
+  changeActivePlayer(id: number) {
+    this.alertService.confirmAlert('Activar jugador', 'Este jugador ya está registrado en el torneo, ¿Deseas activarlo?', 'Aceptar').then((result) => {
+      if (result.isConfirmed) {
+        this.tournamentService.changeStatusPlayerParticipant(id, true).subscribe({
+          next: (response) => {
+            this.alertService.successAlert('Jugador activado');
+            this.playersGlobal = this.playersGlobal.filter(player => player.id !== id);
+            this.inactivedPlayers = this.inactivedPlayers.filter(player => player.id !== id);
+            this.therArePlayersToADD = this.playersGlobal.length > 0;
+            const playerParticipant = this.teamParticipant.playerParticipants.find(player => player.id == id);
+            if (playerParticipant) {
+              playerParticipant.isActive = true;
+              this.addPlayerToTeam.emit(playerParticipant);
+              this.clearValues();
+              this.selectedPlayerId = 0;
+              this.disbalechecks=false;
+              this.changeText=false;
+            }else{
+              console.error('No se encontró el jugador a activar');
+            }
+          },
+          error: (error) => {
+            console.error('Error al activar jugador:', error);
+            this.alertService.errorAlert(error.error.error);
+          }
+        });
+      }
+    });
+  }
+
+
   addPlayer() {
+    let flag = false;
+    const numberShirt = this.playerForm.get('number')?.value;
+    this.inactivedPlayers.some(player => {
+      if (player.number === numberShirt) {
+        this.changeActivePlayer(player.id);
+        flag = true;
+      }
+    });
+
+    if (flag) {
+      return;
+    }
+
+    if (this.playerForm.invalid) {
+      this.showErrors();
+      return;
+    }
     if (this.teamIdParticipant != 0 && this.selectedPlayerId == 0) {
-      this.showMenuTwoOptions();
-    } else if(this.selectedPlayerId != 0) 
-    {
+      if (this.route.url.includes('tournament')) {
+        this.showReConfirmAlert(1);
+      } else {
+        this.showMenuTwoOptions();
+      }
+    }
+    else if (this.selectedPlayerId != 0) {
       this.showReConfirmAlert(1);
-    }else
-    {
+    } else {
       this.showReConfirmAlert(0);
     }
     this.playersGlobal = this.playersGlobal.filter(player => player.number !== this.playerForm.get('number')?.value);
-    if(this.playersGlobal.length === 0){
+    if (this.playersGlobal.length === 0) {
       this.therArePlayersToADD = false;
     }
+    this.disbalechecks=false;
+    this.changeText=false;
   }
 
   showMenuTwoOptions() {
@@ -153,7 +259,7 @@ export class AddPlayerComponent implements OnInit, OnChanges {
         this.showReConfirmAlert(0);
       } else {
         this.showReConfirmAlert(1);
-      }      
+      }
     });
   }
 
@@ -161,8 +267,8 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.teamService.addPlayerToTeam(this.teamIdGlobal, newPlayer).subscribe({
       next: (response) => {
         this.alertService.successAlert('Jugador agregado');
-        this.clearValues();       
-        this.selectedPlayerId = 0; 
+        this.clearValues();
+        this.selectedPlayerId = 0;
         let playerMaped = this.mapPlayerNoParticipants(response);
         console.log('Jugador mapeado:', playerMaped);
         this.addPlayerToTeam.emit(playerMaped);
@@ -180,8 +286,8 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.tournamentService.addPlayerToParticipant(this.codeTournament, this.teamIdParticipant, newPlayer).subscribe({
       next: (response) => {
         this.alertService.successAlert('Jugador agregado');
-        this.clearValues();       
-        this.selectedPlayerId = 0; 
+        this.clearValues();
+        this.selectedPlayerId = 0;
         if (response) {
           response.playerParticipants.forEach(playerParticipant => {
             if (playerParticipant.playerName === newPlayer.name && playerParticipant.playerLastName === newPlayer.lastName) {
@@ -201,6 +307,10 @@ export class AddPlayerComponent implements OnInit, OnChanges {
     this.alertService.confirmAlert('Agregar jugador', 'Estas seguro que quieres agregar a ' + this.playerForm.get('name')?.value + ' ' + this.playerForm.get('lastName')?.value + '?', 'Aceptar').then((result) => {
       if (result.isConfirmed) {
         let newPlayer: PlayerRequest = this.validateForm();
+        if (newPlayer === null) {
+          this.alertService.errorAlert('Faltan campos por llenar');
+          return;
+        }
         console.log('Nuevo jugador:', newPlayer);
         if (option === 1) {
           this.addPlayerToTournament(newPlayer);
@@ -245,9 +355,13 @@ export class AddPlayerComponent implements OnInit, OnChanges {
   }
 
   cancelAddPlayer() {
-    this.clearValues();       
+    this.clearValues();
     this.selectedPlayerId = 0;
     this.cancelAddPlayerEvent.emit();
+  }
+
+  existPlayerInTournament(ID: number): boolean {
+    return this.teamParticipant.playerParticipants.some(player => player.id === ID);
   }
 
 }

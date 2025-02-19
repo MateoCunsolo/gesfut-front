@@ -9,7 +9,7 @@
       <a (click)="changeComponent('match-days')">FECHAS</a>
       <a (click)="changeComponent('prizes')">PREMIOS</a>
     </nav>
-    <p class="childLogo">{{tournamentName}}</p>
+    <p class="childLogo">{{tournamentName.toUpperCase()}}</p>
     <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
     <label></label>
   </div>

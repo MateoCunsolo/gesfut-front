@@ -10,10 +10,11 @@ import { TeamService } from '../../core/services/tournament/team.service';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
 import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.component';
+import { LastsMatchesComponent } from '../../admin/lasts-matches/lasts-matches.component';
 
 @Component({
     selector: 'app-admin-page',
-    imports: [DashboardComponent, NamesTeamsComponent, CreateTournamentComponent, CreateTeamComponent, ListTournamentsComponent],
+    imports: [DashboardComponent, LastsMatchesComponent, NamesTeamsComponent, CreateTournamentComponent, CreateTeamComponent, ListTournamentsComponent],
     templateUrl: './admin-page.component.html',
     styleUrl: './admin-page.component.scss'
 })

@@ -45,7 +45,6 @@ export class DashboardComponent {
       next: (response) => {
         if (response) {
           this.flagIsMyTournament = true;
-          console.log("Es mi torneo");
         }else{
           this.flagIsMyTournament = false;
           //recargar la pagina:

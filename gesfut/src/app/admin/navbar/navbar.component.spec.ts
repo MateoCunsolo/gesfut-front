@@ -11,6 +11,7 @@ export class NavbarComponent {
 
   isMobile: boolean = false;
   menuOpen: boolean = false;
+tournamentName: any;
 
   constructor(private dashboardService: DashboardService) {
     // Inicializamos la detección de pantalla móvil
@@ -28,6 +29,7 @@ export class NavbarComponent {
 
   changeComponent(component: string) {
     this.dashboardService.setActiveTournamentComponent(component);
+    this.menuOpen = false;
   }
 
   toggleMenu() {

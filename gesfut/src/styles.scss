@@ -243,16 +243,17 @@ label {
 
 ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
+    background-color: #000 !important;
   }
 
   ::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
+    background-color: var(--secondary-color);
   }
 
   ::-webkit-scrollbar-thumb {
     background-color: var(--primary-color);
-    height: 100px !important;
-  }
+}
 
 
   // ==================================== SPINNER ====================================
@@ -305,3 +306,6 @@ label {
 }
 
 
+.titles-show{
+    cursor: default;
+}

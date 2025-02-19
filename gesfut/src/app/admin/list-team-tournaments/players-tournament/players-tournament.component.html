@@ -3,13 +3,13 @@
       <div class="hmx">
         <table class="table">
           <thead>
-              <th>#</th>
-              <th>JUGADOR</th>
-              <th class="stats">G</th>
-              <th class="stats">🟨</th>
-              <th class="stats">🟥</th>
-              <th class="stats">MVP</th>
-              <th class="stats">ESTADO</th>
+            <th>#</th>
+            <th>JUGADOR</th>
+            <th class="stats" title="Cantidad de Goles que marco">G</th>
+            <th class="stats" title="Cantidad de amarillas que recibio">🟨</th>
+            <th class="stats" title="Cantidad de rojas que recibio">🟥</th>
+            <th class="stats" title="Cantidad de veces que fue MOST VALUE PLAYER">MVP</th>
+            <th class="stats" title="Esta suspendido para la proxima fecha?">ESTADO</th>
           </thead>
           <tbody>
             @for (player of teamParticipant.playerParticipants; track $index) {
@@ -20,16 +20,20 @@
                   <td class="player">
                     {{ player.playerName + " " + player.playerLastName }}
                     @if (player.isCaptain) {
-                    <span class="captain">🌟</span>
+                    <span title="MVP" class="titles-show captain">🌟</span>
                     } @if (player.isGoalKeeper) {
-                    <span class="goalkeeper icon">🧤</span>
+                    <span title="ARQUERO" class="titles-show goalkeeper icon">🧤</span>
                     }
                   </td>
                   <td>{{ player.goals }}</td>
                   <td>{{ player.yellowCards }}</td>
                   <td>{{ player.redCards }}</td>
                   <td>{{ player.isMvp }}</td>
-                  <td>{{ player.isSuspended ? "🟥" : "🟩" }}</td>
+                  @if (player.isSuspended) {
+                    <td class="titles-show" title="Suspendido">🟥</td>
+                    }@else {
+                    <td class="titles-show" title="No suspendido">🟩</td>
+                    }
                   <td class="no-line">
                     @if (isAuth) {
                     <app-delete-player

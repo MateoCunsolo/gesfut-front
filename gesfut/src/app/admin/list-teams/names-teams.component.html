@@ -10,15 +10,22 @@
   />
   <div>
     <h3 class="search-team mobile">Selecionar equipo</h3>
+
     <select
       class="search-team mobile"
       (change)="showFromOptional($event)"
       [(ngModel)]="bindingSelect"
     >
       @for (team of teamsGlobalesInputFilter; track $index) {
-      <option [value]="team.id">{{ team.name }}</option>
+      <option [value]="team.id">{{ team.name }} </option>
       }
     </select>
+
+    <div class="shirt-section search-team mobile" [ngClass]="{'shirt-section-no-white': (colorSelected != '#FFFFFF' && colorSelected != '#ffffff' )}">
+      <i class="icon-shirt fa-solid fa-shirt fa-2xl" [style.color]="colorSelected"></i>
+    </div>
+
+
   </div>
 
   <div class="container">
@@ -34,7 +41,11 @@
     </div>
 
     <div class="info">
-      <p class="team-name mobile">{{ nameClicked }}</p>
+
+      <p class="team-name mobile" [ngClass]="{shirtPrimaryColorEqual: (colorSelected == '#2a6a49')}">
+        {{ nameClicked }}
+        <i class="fa-solid fa-shirt fa-xl" [style.color]="colorSelected"></i>
+      </p>
 
       <div class="names-tournaments">
         <app-names-tournaments
@@ -56,10 +67,11 @@
           [code]="codeTouranment"
           [nameTournament]="nameTouranemt"
         ></app-players>
-      </div>}@else {
-        <div class="player center"> 
-          <p>CARGANDO DATOS...</p>
-        </div>
+      </div>
+      }@else {
+      <div class="player center">
+        <p>CARGANDO DATOS...</p>
+      </div>
       }
     </div>
   </div>

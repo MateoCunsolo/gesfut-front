@@ -112,7 +112,7 @@ export class ListTournamentsComponent {
           }
         });
         if (flag) {
-          alert('Ya existe un torneo con ese nombre');
+          this.alertService.errorAlert('Ya existe un torneo con ese nombre');
         } else {
           this.tournaments.forEach(tournament => {
             if (tournament.code === code) {
