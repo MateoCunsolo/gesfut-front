@@ -238,6 +238,10 @@ export class CreateTeamComponent {
       return;
     }
     const teamData = this.teamForm.value;
+    if(this.validateIfPlayersAreRepeated(teamData)){
+      this.alertService.errorAlert("No se pueden repetir jugadores en un equipo.");
+      return;
+    }
     this.teamService.createTeam(teamData).subscribe({
       next: () => {
         this.error = '';
@@ -253,4 +257,14 @@ export class CreateTeamComponent {
       }
     });
   }
+
+  validateIfPlayersAreRepeated(teamData: any): boolean {
+    let players = teamData.players;
+    let repeatedPlayers = players.filter((player: any, index: number) => {
+      return players.findIndex((p: any) => p.name === player.name && p.lastName === player.lastName) !== index;
+    });
+    return repeatedPlayers.length
+  }
+
+  
 }
