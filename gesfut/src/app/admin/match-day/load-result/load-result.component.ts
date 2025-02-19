@@ -344,6 +344,9 @@ export class LoadResultComponent {
     this.events[index].yellowCard += event.yellowCard;
     this.events[index].redCard += event.redCard;
     this.events[index].mvp = event.mvp;
+    if(this.events[index].yellowCard == 2){
+      this.events[index].redCard = 1;
+    }
   }
 
   addGoals(id: number) {
@@ -361,9 +364,20 @@ export class LoadResultComponent {
 
   addYellowCard(id: number) {
     const event = this.events.find((e) => e.id === id);
+
+    if(event.yellowCard == 2){
+      this.alertService.errorAlert('No puedes tener más de 2 tarjetas amarillas');
+      return;
+    }
+
     if (event) {
       event.yellowCard++;
     }
+
+    if(event.yellowCard == 2){
+      this.events.find((e) => e.id === id).redCard = 1;
+    }
+
   }
 
   addRedCard(id: number) {
@@ -403,6 +417,7 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event && event.yellowCard > 0) {
       event.yellowCard--;
+      this.events.find((e) => e.id === id).redCard = 0;
       this.analizeStats(event);
     }else{
       this.noLessThanZero();
