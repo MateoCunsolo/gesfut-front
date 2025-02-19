@@ -14,10 +14,12 @@
   }
   
   
-  @if (!isLoggedIn) {
+  @if (!isLoggedIn && !guest) {
   <button class="btn-login" (click)="onLogin()">INICIAR SESION</button>
-  } @else {
+  } @else if (isLoggedIn) {
   <app-user class="user"></app-user>
+  }@else {
+    <div></div>
   }
 
 

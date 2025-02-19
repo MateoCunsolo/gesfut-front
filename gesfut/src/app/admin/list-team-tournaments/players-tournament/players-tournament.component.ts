@@ -112,8 +112,8 @@ export class PlayersTournamentComponent implements OnChanges {
   }
 
   addPlayerToTeam(player: PlayerParticipantResponse) {
-    this.teamParticipant.playerParticipants.push(player);
-  }
+  this.teamParticipant.playerParticipants.push(player);
+}
 
   deletePlayer(playerId: number) {
     this.teamParticipant.playerParticipants =

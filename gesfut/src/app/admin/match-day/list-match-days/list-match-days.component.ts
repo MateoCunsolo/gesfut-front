@@ -11,12 +11,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
 import { MatchDateResponse } from '../../../core/models/matchRequest';
+import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-list-match-days',
-    imports: [CommonModule, TimepickerDatepickerIntegrationExample],
-    templateUrl: './list-match-days.component.html',
-    styleUrls: ['./list-match-days.component.scss']
+  selector: 'app-list-match-days',
+  imports: [CommonModule, TimepickerDatepickerIntegrationExample, FormsModule],
+  templateUrl: './list-match-days.component.html',
+  styleUrls: ['./list-match-days.component.scss']
 })
 export class ListMatchDaysComponent implements OnInit {
   tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
@@ -26,13 +28,15 @@ export class ListMatchDaysComponent implements OnInit {
   showPicker: boolean = false;
   selectedMatchId: number = 0;
   isForAllMatches: boolean = false;
+  playersMvpS: string[] = ['Seleccionar MVP'];
+  bindingSelect: number = 0;
   constructor(
     private dashboardService: DashboardService,
     private tournamentService: TournamentService,
     private matchDaysService: MatchDaysService,
     private alertService: AlertService,
     private sessionService: SessionService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.tournamentService.currentTournament.subscribe({
@@ -44,9 +48,9 @@ export class ListMatchDaysComponent implements OnInit {
             !max || matchday.numberOfMatchDay > max.numberOfMatchDay ? matchday : max,
             undefined
           );
-        this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay+1: 0;
-        if(this.selectedMatchDay === this.tournament.matchDays.length){
-          this.selectedMatchDay = this.tournament.matchDays.length - 1; 
+        this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay + 1 : 0;
+        if (this.selectedMatchDay === this.tournament.matchDays.length) {
+          this.selectedMatchDay = this.tournament.matchDays.length - 1;
           this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
         }
         this.sortMatchDays();
@@ -55,12 +59,18 @@ export class ListMatchDaysComponent implements OnInit {
     });
   }
 
-  updateMatchDay(matchDay: number) {
-    this.selectedMatchDay = matchDay;
+  updateMatchDay(matchDay: number | Event) {
+    if (typeof matchDay === 'number') {
+      this.selectedMatchDay = matchDay;
+      this.bindingSelect = this.selectedMatchDay;
+    }else{
+      this.selectedMatchDay = parseInt((<HTMLInputElement>matchDay.target).value)
+      this.bindingSelect = this.selectedMatchDay;
+    }
     this.matchDayStatus =
       this.tournament.matchDays[this.selectedMatchDay].isFinished;
-      console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)
-      this.orderForDateMatchDay();
+    console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)
+    this.orderForDateMatchDay();
   }
 
   private sortMatchDays(): void {
@@ -76,15 +86,15 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   loadResult(matchId: number) {
-    if(this.matchDaysService.previusMatchDayIsFinished(this.tournament.matchDays[this.selectedMatchDay])){
+    if (this.matchDaysService.previusMatchDayIsFinished(this.tournament.matchDays[this.selectedMatchDay])) {
       this.matchDaysService.setActiveMatch(matchId);
-    }else{
+    } else {
       this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
     }
   }
 
   async toggleMatchDayStatus(status: boolean) {
-    if(this.tournament.isFinished){
+    if (this.tournament.isFinished) {
       this.alertService.errorAlert('El torneo ya ha finalizado');
       return;
     }
@@ -102,23 +112,83 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   closeMatchDay(status: boolean) {
+    this.playersMvpS = [];
+    this.playersMvpS.push('Seleccionar MVP');
+
+    if(this.selectedMatchDay != 0){
+      if(!this.tournament.matchDays[this.selectedMatchDay-1].isFinished){
+        this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
+        return;
+      }
+    }
+   
+    if (this.tournament.matchDays[this.selectedMatchDay].matches.some(match => !match.isFinished)) {
+      const match = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
+      if (match?.homeTeam.toLowerCase() === 'free' || match?.awayTeam.toLowerCase() === 'free') {
+        match.isFinished = true;
+      }else{
+        this.alertService.errorAlert('El partido: '+ match?.homeTeam + ' vs ' + match?.awayTeam + ' no fue cerrado.');
+      }
+      return;
+    }
+    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
+      this.closeMatchDayWithMvp(status);
+    } else {
+      this.openMatchDay(status);
+    }
+  }
+
+
+  openMatchDay(status: boolean) {
     this.matchDaysService
-      .closeMatchDay(
-        this.tournament.matchDays[this.selectedMatchDay].idMatchDay,
-        status
-      )
+      .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, '')
       .subscribe({
         next: () => {
-          if (status === true) this.alertService.successAlert('Fecha cerrada!');
-          if (status === false)
-            this.alertService.successAlert('Fecha abierta!');
+          this.alertService.successAlert(status ? 'Fecha cerrada!' : 'Fecha abierta!');
           this.matchDayStatus = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.alertService.errorAlert(errorResponse.error.error);
-        },
+        }
       });
   }
+
+
+  closeMatchDayWithMvp(status: boolean) {
+    let playerMvp = '';
+    this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match) => {
+      if (match.mvpPlayer != null) {
+        this.playersMvpS.push(match.mvpPlayer);
+      }
+    });
+    this.alertService.selectOptionsAlert('SELECCIONE EL MVP DE LA FECHA', this.playersMvpS, "CERRAR SIN MVP")
+    .then((result) => {
+      if (result.isConfirmed && result.value !== undefined) {
+        const playerMvp = this.playersMvpS[result.value];
+        if (playerMvp && playerMvp !== 'Seleccionar MVP') {
+          this.matchDaysService
+            .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, playerMvp)
+            .subscribe({
+              next: () => {
+                this.alertService.successAlert(status ? 'Fecha cerrada!' : 'Fecha abierta!');
+                this.matchDayStatus = false;
+              },
+              error: (errorResponse: HttpErrorResponse) => {
+                this.alertService.errorAlert(errorResponse.error.error);
+              }
+            });
+        } else {
+          this.alertService.errorAlert('Debe seleccionar un MVP');
+        }
+      } else if (result.dismiss === Swal.DismissReason.backdrop) {
+        return;
+      } else {
+        this.openMatchDay(status);
+      }
+    });
+  }  
+
+
 
   editResult(id: number) {
     this.matchDaysService.setEditResult(true);
@@ -129,12 +199,12 @@ export class ListMatchDaysComponent implements OnInit {
     return this.sessionService.isAuth();
   }
 
-  cancelPicker(flag:Boolean){
+  cancelPicker(flag: Boolean) {
     this.showPicker = false;
   }
 
-  sendMatchId(id:number, option: number){
-    switch(option){
+  sendMatchId(id: number, option: number) {
+    switch (option) {
       //caso 1: Editar fecha
       case 1:
         this.isForAllMatches = false;
@@ -150,15 +220,15 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  editDate(id: number){
+  editDate(id: number) {
     this.showPicker = true;
     this.selectedMatchId = id;
   }
 
-  async editDescription(id: number){
+  async editDescription(id: number) {
     ///TODO: Implementar la edición de la descripción
     let description = await this.alertService.updateNumberInputAlert("Ingrese la nueva descripción");
-    if(description!=null){
+    if (description != null) {
       let descripciónString = description.toString();
       this.matchDaysService.updateDescriptionMatch(descripciónString, id).subscribe({
         next: () => {
@@ -168,13 +238,13 @@ export class ListMatchDaysComponent implements OnInit {
             (match) => match.id === id
           )
 
-          if(matchFound){
+          if (matchFound) {
             matchFound.description = descripciónString;
-          }else{
+          } else {
             this.alertService.errorAlert('No se encontró el partido seleccionado');
           }
         },
-        error: (error:HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.alertService.errorAlert(error.error.error)
         }
       })
@@ -182,10 +252,9 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  updateAllDates(data:MatchDateResponse[])
-  {
+  updateAllDates(data: MatchDateResponse[]) {
     this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match, index) => {
-      if(match.id !== 0){
+      if (match.id !== 0) {
         match.dateTime = data[index].newDate;
       }
     })
@@ -205,15 +274,15 @@ export class ListMatchDaysComponent implements OnInit {
       (match) => match.id === this.selectedMatchId
     )
 
-    if(matchFound){
+    if (matchFound) {
       matchFound.dateTime = date;
-    }else{
+    } else {
       this.alertService.errorAlert('No se encontró el partido seleccionado');
     }
 
   }
 
-  chargeAllDates(){
+  chargeAllDates() {
     this.isForAllMatches = true;
     this.showPicker = true;
     this.selectedMatchId = 0;
@@ -222,16 +291,17 @@ export class ListMatchDaysComponent implements OnInit {
   orderForDateMatchDay() {
     if (this.tournament.matchDays[this.selectedMatchDay].matches[0].dateTime) {
       this.tournament.matchDays[this.selectedMatchDay].matches.sort((a, b) => {
-        if(a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free'){
+        if (a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free') {
           return 1;
         }
-        if(this.returnHour(a.dateTime) > this.returnHour(b.dateTime)){
+        if (this.returnHour(a.dateTime) > this.returnHour(b.dateTime)) {
           return 1;
-        }else{
+        } else {
           return -1;
         }
-    });
-  }}
+      });
+    }
+  }
 
   returnHour(dateTime: string) {
     const dateTimeString = dateTime;

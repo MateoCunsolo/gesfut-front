@@ -69,7 +69,16 @@
       </ng-template>
       }
     </div>
+    
     <div class="top-scorers-container">
+      @if (lastMatchDay.isFinished) {
+      <div class="mvp-container">
+        <div class="mvp">
+          MVP
+        </div>
+        <p>{{lastMatchDay.mvpPlayer ? lastMatchDay.mvpPlayer : "NO HAY MVP SELECIONADO"}}</p>
+      </div>
+      }
       @if(topScorers.length > 0) {
       <div class="table-header">
         <div class="table-cell">JUGADOR</div>
@@ -85,15 +94,15 @@
         </div>
         }
       </div>
-      } @else if(forecast) {
+      } @else if(forecast && !lastMatchDay.isFinished) {
       <app-weather-card class="weather" [day]="forecast"></app-weather-card>
-      } @else if(loadingWeather) {
+      } @else if(loadingWeather && !lastMatchDay.isFinished) {
       <p class="title">Cargando clima...</p>
       <app-spinner></app-spinner>
-      }@else if(isPreviousDayAvailable) {
+      }@else if(isPreviousDayAvailable && !lastMatchDay.isFinished) {
         <p>La fecha es anterior al dia actual. No es posible visuallizar el clima.</p>
-      }@else {
-        <p>Los partidos no tiene fecha, no se puede visualizar el clima.</p>
+      }@else if(!lastMatchDay.isFinished) {
+        <p>No se puede visualizar el clima.</p>
       }
     </div>
   </div>

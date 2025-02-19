@@ -29,6 +29,7 @@ export class NamesTeamsComponent implements OnInit {
   protected thereAreNotTeams: boolean = false;
   protected isGlobalTeams: boolean = false;
   protected codeTouranment: string = '';
+  protected colorSelected: string = '';
   bindingSelect : number = 0;
   clickedToOcultPlayers: boolean = false;
   constructor() {}
@@ -41,6 +42,7 @@ export class NamesTeamsComponent implements OnInit {
         this.idSelected = this.teamsGlobales[0].id;
         this.bindingSelect = this.idSelected;
         this.nameClicked = this.teamsGlobales[0].name;
+        this.colorSelected = this.teamsGlobales[0].color;
       }else{
         this.thereAreNotTeams = true;
       }
@@ -49,6 +51,7 @@ export class NamesTeamsComponent implements OnInit {
 
   onOnlyGlobalTeams(event: boolean) {
     this.isGlobalTeams = event;
+    this.clickedToOcultPlayers = true;
   }
 
   showFromOptional(idEvent: Event) {
@@ -69,6 +72,7 @@ export class NamesTeamsComponent implements OnInit {
     this.nameClicked = this.teamsGlobales.find((team) => team.id === id)?.name || '';
     this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === id);
     this.bindingSelect = this.idSelected;
+    this.colorSelected = this.teamsGlobales[this.indexSelectedAfter].color;
     console.log('ID de equipo seleccionado:', this.idSelected, 'index:', this.indexSelectedAfter);
   }
 

@@ -10,6 +10,7 @@ import { TeamWithAllStatsPlayerResponse } from '../../../../core/models/TeamWith
 import { AlertService } from '../../../../core/services/alert.service';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import { Router } from '@angular/router';
+import { GuestService } from '../../../../core/services/guest/guest.service';
 
 @Component({
     selector: 'app-players',
@@ -23,8 +24,8 @@ export class PlayersComponent implements OnChanges {
   private teamService = inject(TeamService);
   private alertService = inject(AlertService);
   private dashboardService = inject(DashboardService);
+  private guestService = inject(GuestService);
   private route = inject(Router);
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @Input() public participantId: number | null = null;
   @Input() public idTeam: number | null = null;
   @Input() public thereAreNotParticipants: boolean = false;
@@ -49,45 +50,19 @@ export class PlayersComponent implements OnChanges {
     }
 
     if (changes['code']) {
-      this.code = this.code;
+      this.code = changes['code'].currentValue;
     }
 
     if (changes['isGlobalTeam']) {
       this.isGlobalTeamPlayers = this.isGlobalTeam;
     }
+
+    if (changes['nameTournament']) {
+      this.nameTournament = changes['nameTournament'].currentValue;
+    }
+
   }
 
-  ngAfterViewInit() {
-    this.scrollContainer.nativeElement.addEventListener('wheel', (event) => {
-      event.preventDefault(); 
-      const scrollAmount = event.deltaY ;
-      this.smoothScroll(scrollAmount);
-    });
-  }
-  
-  private smoothScroll(amount: number) {
-    const start = this.scrollContainer.nativeElement.scrollTop;
-    const end = start + amount;
-    const duration = 750;
-    let startTime: number | null = null;
-  
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      this.scrollContainer.nativeElement.scrollTop = start + (end - start) * this.easeOutQuad(progress);
-  
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
-    };
-  
-    requestAnimationFrame(step);
-  }
-  
-  private easeOutQuad(t: number): number {
-    return t * (2 - t);
-  }
-  
   getPlayersGlobal(idTeam: number) {
     this.teamService.getTeam(idTeam).subscribe({
       next: (response) => {
@@ -107,7 +82,6 @@ export class PlayersComponent implements OnChanges {
       next: (response) => {
         if(!this.isGlobalTeam){
           this.participantTeam = response;
-          console.log('Equipo participante obtenido:', this.participantTeam);
         }
       },
       error: (error) => {
@@ -190,16 +164,16 @@ export class PlayersComponent implements OnChanges {
       this.alertService.errorAlert('Debes selecionar un torneo para ver los partidos.');
     }else if (this.participantId){
       this.alertService.loadingAlert('OBTENIENDO ULTIMOS PARTIDOS');
-        this.tournamentService.getMatchesAllForParticipant(this.code, this.participantId).subscribe({
+      console.log('Obteniendo ultimos partidos: ', this.participantTeam.idParticipant);
+      console.log('Obteniendo ultimos partidos: ', this.code);
+        this.tournamentService.getMatchesAllForParticipant(this.code, this.participantTeam.idParticipant).subscribe({
           next: (response: MatchResponse[]) => {
-            sessionStorage.setItem('matches', JSON.stringify(response));
-            localStorage.setItem('lastTournamentClicked', this.code);
-            localStorage.setItem('lastTournamentClickedName', this.nameTournament);
-            sessionStorage.setItem('teamNameMatches', this.participantTeam.name);
-            this.route.navigate(['admin/tournaments', this.code]).finally(() => {
-              this.dashboardService.setActiveTournamentComponent('lasts-matches');
-              this.alertService.closeLoadingAlert();
-            });
+            console.log('Ultimos partidos:', response);
+            this.tournamentService.setMatches(response);
+            this.tournamentService.setNameTeamToViewEvents(this.participantTeam.name);
+            this.dashboardService.setActiveDashboardAdminComponent('lasts-matches');
+            sessionStorage.setItem('lastTournamentClickedName', this.nameTournament);
+            this.alertService.closeLoadingAlert();
           }
         });
       }else{

@@ -29,9 +29,14 @@ export class LeaderboardComponent {
         this.tournament.participants = this.tournament.participants.filter(
           (participant) => participant.name.toLowerCase() !== 'free'
         );
-        this.tournament.participants.sort(
-          (a, b) => b.statistics.points - a.statistics.points
-        );
+        this.tournament.participants.sort((a, b) => {
+          if (b.statistics.points !== a.statistics.points) {
+            return b.statistics.points - a.statistics.points;
+          }
+          const goalDifferenceA = a.statistics.goalsFor - a.statistics.goalsAgainst;
+          const goalDifferenceB = b.statistics.goalsFor - b.statistics.goalsAgainst;
+          return goalDifferenceB - goalDifferenceA;
+        });
         this.loadStatistics();
         console.log(this.tournament.participants)
       },

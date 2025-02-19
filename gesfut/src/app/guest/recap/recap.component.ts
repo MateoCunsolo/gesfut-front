@@ -131,7 +131,6 @@ export class RecapComponent {
     }
 
     const targetDate = this.formatDate(targetDateTime);
-    const targetHour = this.formatHour(targetDateTime);
 
     if (!targetDate) {
       console.warn('⚠️ Fecha inválida, cancelando consulta.');
@@ -143,26 +142,27 @@ export class RecapComponent {
         const forecastDay = data.forecast.forecastday.find(
           (day: { date: string }) => day.date === targetDate
         );
-
+    
         if (forecastDay) {
           this.forecast = {
-            ...forecastDay.hour.find((h: { time: string }) =>
-              h.time.endsWith(`${targetHour}:00`)
-            ),
-            maxTemp: forecastDay.day.maxtemp_c,
+            date: forecastDay.date,
+            avgTemp: forecastDay.day.avgtemp_c,
+            maxTemp: forecastDay.day.maxtemp_c, 
             minTemp: forecastDay.day.mintemp_c,
+            wind_kph: forecastDay.day.maxwind_kph, 
+            chance_of_rain: forecastDay.day.daily_chance_of_rain, 
+            condition: forecastDay.day.condition 
           };
-
-          console.log(
-            `Pronóstico para ${targetDate} a las ${targetHour}:00 HS:`,
-            this.forecast
-          );
+          console.log('Fecha:', this.forecast.date),
+          console.log(`Pronóstico promedio para ${targetDate}:`, this.forecast);
         } else {
           console.warn('La fecha solicitada no está disponible en la API.');
-          this.isPreviousDayAvailable = true;
+          this.isPreviousDayAvailable = false;
+          this.forecast = null;
         }
       }
     });
+    
   }
 
   formatDate(dateTime: string): string {
@@ -345,4 +345,6 @@ export class RecapComponent {
     });
     return isLast;
   }
+
+  
 }

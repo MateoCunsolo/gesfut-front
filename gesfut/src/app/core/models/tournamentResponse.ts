@@ -17,13 +17,15 @@ export interface MatchResponse {
     events: EventResponse[];
     isFinished: boolean;
     dateTime: string,
-    description: string
+    description: string,
+    mvpPlayer: string;
 }
 
 export interface MatchDayResponse {
     idMatchDay: number;
     numberOfMatchDay: number;
     isFinished: boolean;
+    mvpPlayer: string;
     matches: MatchResponse[];
 }
 
