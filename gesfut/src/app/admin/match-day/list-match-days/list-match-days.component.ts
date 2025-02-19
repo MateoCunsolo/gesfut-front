@@ -63,11 +63,9 @@ export class ListMatchDaysComponent implements OnInit {
     if (typeof matchDay === 'number') {
       this.selectedMatchDay = matchDay;
       this.bindingSelect = this.selectedMatchDay;
-      alert(this.selectedMatchDay);
     }else{
       this.selectedMatchDay = parseInt((<HTMLInputElement>matchDay.target).value)
       this.bindingSelect = this.selectedMatchDay;
-      alert(this.selectedMatchDay);
     }
     this.matchDayStatus =
       this.tournament.matchDays[this.selectedMatchDay].isFinished;
