@@ -20,7 +20,7 @@ export class HeaderComponent {
   guest: boolean = false;
   code: string = '';
 
-  constructor(private sessionService: SessionService, private route: Router, private activatedRoute: ActivatedRoute, private dashboardService: DashboardService) {}
+  constructor(private sessionService: SessionService, private route: Router, private activatedRoute: ActivatedRoute, private dashboardService: DashboardService) { }
 
   changeComponent(component: string) {
     if (component === 'dashboard-principal') {
@@ -53,16 +53,21 @@ export class HeaderComponent {
 
 
   ngOnInit(): void {
+
     this.route.events.subscribe(() => {
-      const match = this.route.url.match(/\/([^/]+)$/);
-      this.code = match ? match[1] : '';
-      if (this.code.length > 0) {
-        this.guest = true;
-      }else{
+      if (this.route.url.includes('verify-email')) {
         this.guest = false;
+      }else{
+        const match = this.route.url.match(/\/([^/]+)$/);
+        this.code = match ? match[1] : '';
+        if (this.code.length > 0) {
+          this.guest = true;
+        } else {
+          this.guest = false;
+        }
       }
     });
-    
+
     if (this.route.url.includes('admin') && !this.route.url.includes('tournaments')) {
       this.isRouteTorunament = false;
       this.noIsAdmin = false;
