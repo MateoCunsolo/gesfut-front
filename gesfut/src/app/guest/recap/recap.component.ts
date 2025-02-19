@@ -30,7 +30,6 @@ export class RecapComponent {
   ) {
     this.route.paramMap.subscribe((params) => {
       const code = params.get('code');
-      console.log(code);
       if (code) {
         this.tournamentCode = code;
         this.loadLastMatchDay(code);
@@ -38,9 +37,16 @@ export class RecapComponent {
     });
   }
 
+  ngOnInit() {
+    this.tournamentService.currentTournament.subscribe({
+      next: (response) => {
+        this.lastMatchDay = response.matchDays[response.matchDays.length - 1];
+      },
+    });
+  }
+
   verifyNextMatchDay() {
     if (this.lastMatchDay) {
-      console.log('Verificando si la fecha siguiente tiene partidos cerrados...');
       if (
         this.lastMatchDay.isFinished &&
         this.lastMatchDay.matches.every((match) => match.isFinished)
@@ -290,11 +296,10 @@ export class RecapComponent {
         this.lastMatchDay = response.matchDays[index + 1];
         this.loadTopScorers();
         this.getForecast();
+        this.orderForDateMatchDay();
       },
     });
-    this.loadTopScorers();
-    this.getForecast();
-    this.orderForDateMatchDay();
+
   }
 
   previousMatchDay() {
