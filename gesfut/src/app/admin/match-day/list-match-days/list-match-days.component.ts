@@ -12,10 +12,11 @@ import { SessionService } from '../../../core/services/manager/session.service';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
 import { MatchDateResponse } from '../../../core/models/matchRequest';
 import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-list-match-days',
-  imports: [CommonModule, TimepickerDatepickerIntegrationExample],
+  imports: [CommonModule, TimepickerDatepickerIntegrationExample, FormsModule],
   templateUrl: './list-match-days.component.html',
   styleUrls: ['./list-match-days.component.scss']
 })
@@ -28,7 +29,7 @@ export class ListMatchDaysComponent implements OnInit {
   selectedMatchId: number = 0;
   isForAllMatches: boolean = false;
   playersMvpS: string[] = ['Seleccionar MVP'];
-
+  bindingSelect: number = 0;
   constructor(
     private dashboardService: DashboardService,
     private tournamentService: TournamentService,
@@ -58,8 +59,16 @@ export class ListMatchDaysComponent implements OnInit {
     });
   }
 
-  updateMatchDay(matchDay: number) {
-    this.selectedMatchDay = matchDay;
+  updateMatchDay(matchDay: number | Event) {
+    if (typeof matchDay === 'number') {
+      this.selectedMatchDay = matchDay;
+      this.bindingSelect = this.selectedMatchDay;
+      alert(this.selectedMatchDay);
+    }else{
+      this.selectedMatchDay = parseInt((<HTMLInputElement>matchDay.target).value)
+      this.bindingSelect = this.selectedMatchDay;
+      alert(this.selectedMatchDay);
+    }
     this.matchDayStatus =
       this.tournament.matchDays[this.selectedMatchDay].isFinished;
     console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)

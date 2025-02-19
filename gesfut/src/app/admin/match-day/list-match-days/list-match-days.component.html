@@ -13,7 +13,21 @@
   <div class="title-container">
     <div class="title-cont">
       <div class="matchDayStatus-container">
-        <h2 class="title play-bold">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+        
+        <h2 class="title">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+
+        <div class=" matchdays mobile">
+          <select name="selectedMatchDayOptional" id="selectedMatchDayOptional"
+          (change)="updateMatchDay($event)"
+          [(ngModel)]="bindingSelect"
+          >
+            <option [value]="1" disabled selected>SELECCIONAR LA FECHA</option>
+            @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
+            <option (click)="updateMatchDay(day.numberOfMatchDay)"  [value]="day.numberOfMatchDay">FECHA {{ day.numberOfMatchDay + 1 }}</option>
+            }
+          </select>
+        </div>
+
         <p [ngClass]="{ finished: matchDayStatus, progress: someMatchIsClosed() && !matchDayStatus, soon: !someMatchIsClosed() }">
           @if (this.tournament.matchDays[selectedMatchDay].isFinished) {
             FINALIZADA
@@ -24,10 +38,10 @@
           }
         </p>
       </div>
-      <div class="matchdays">
+      <div class="matchdays desktop">
         @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
         <button [ngClass]="{activeNumberClass: day.numberOfMatchDay === selectedMatchDay}"
-          class="base-button"
+          class="base-button font-button"
           (click)="updateMatchDay(day.numberOfMatchDay)"
         >
           {{ day.numberOfMatchDay + 1 }}

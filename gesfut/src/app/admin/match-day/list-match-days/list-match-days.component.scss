@@ -6,6 +6,7 @@ section {
   min-height: calc(100vh - 130px);
   color: var(--font-color);
   background-color: var(--bg-color);
+  padding-top: 25px;
 }
 
 @media (max-width: 1280px) {
@@ -44,14 +45,27 @@ section {
   }
 }
 
+.font-button{
+  font-size: 20px !important;
+}
+
+
 .matchdays {
   display: flex;
   flex-direction: row;
   gap: 8px;
   margin: 0;
   height: auto;
-  overflow-x: scroll;
+  overflow-x: auto;
   max-width: 50%;
+
+  &.mobile{
+    display: none;
+  }
+
+  &.desktop{
+    display: flex;
+  }
 
   @media screen and (max-width: 1280px) {
     max-width: 100%;
@@ -60,16 +74,31 @@ section {
     flex-wrap: wrap;
   }
 
-  @media (max-width: 576px) {
-    max-width: 100%;
-    overflow-x: hidden;
-    flex-wrap: wrap;
-    justify-content: start;
+  select{
+    font-size: var(--font-size-text);
     padding: 4px;
-    .matchdays > div {
-      flex-basis: calc(
-        100% - 8px
-      );
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    font-weight: bold;
+    width: 100%;
+    option{
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+  }
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    &.mobile{
+      display: flex;
+    }
+    &.desktop{
+      display: none;
     }
   }
 }
@@ -98,8 +127,12 @@ section {
 }
 
 .title {
-  font-size: 28px;
+  font-weight: bold;
   color: var(--primary-color);
+  font-size: 20px;
+  @media screen and (max-width: 576px) {
+    display: none !important;
+  }
 }
 
 hr {
@@ -400,22 +433,22 @@ hr {
 }
 
 .soon {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 2.5px 5px;
+  font-size: 20px !important;
+  color: var(--primary-color);
+  font-weight: bold;
 }
 
 .progress {
-  background-color: var(--secondary-color);
-  padding: 2.5px 5px;
+  font-size: 20px !important;
+  font-weight: bold;
+  color: var(--secondary-color);
+  border-radius: 5px;
 }
 
 .matchDayStatus-container {
   display: flex;
   justify-content: center !important;
   align-items: center !important;
-  gap: 6px !important;
-  width: auto !important;
   p {
     font-size: var(--font-size-text);
   }
@@ -443,5 +476,9 @@ hr {
     text-align: start !important;
     justify-items: start !important;
     align-items: start !important;
+  }
+  @media screen and (max-width: 576px) {
+    grid-template-rows: 1fr;
+    width: auto;
   }
 }
