@@ -47,6 +47,10 @@ export class CreatePrizeComponent {
     });
   }
 
+  back() {
+    this.prizeService.currentView.next('list');
+  }
+
   get prizes(): FormArray {
     return this.prizesForm.get('prizes') as FormArray;
   }

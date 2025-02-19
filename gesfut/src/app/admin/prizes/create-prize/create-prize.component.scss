@@ -89,9 +89,10 @@ form{
 
 .button-container{
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   padding: 16px 0;
   width: 96%;
+
 }
 
 .base-button{
@@ -105,3 +106,5 @@ form{
 .base-button i{
   font-size: var(--font-size-subtitle);
 }
+
+
