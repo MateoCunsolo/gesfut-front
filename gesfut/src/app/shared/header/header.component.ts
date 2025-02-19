@@ -3,12 +3,13 @@ import { SessionService } from '../../core/services/manager/session.service';
 import { Component } from '@angular/core';
 import { UserComponent } from '../../shared/user/user.component';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-header',
-    imports: [UserComponent],
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'] // Cambiado 'styleUrl' a 'styleUrls'
+  selector: 'app-header',
+  imports: [UserComponent],
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'] // Cambiado 'styleUrl' a 'styleUrls'
 })
 export class HeaderComponent {
   lastTournamentClickedName: string = '';
@@ -16,12 +17,13 @@ export class HeaderComponent {
   isRouteTorunament: boolean = false;
   name: string = '';
   noIsAdmin: boolean = true;
-  constructor(private sessionService: SessionService, private route: Router, private dashboardService:DashboardService){
+  guest: boolean = false;
+  code: string = '';
 
-  }
+  constructor(private sessionService: SessionService, private route: Router, private activatedRoute: ActivatedRoute, private dashboardService: DashboardService) {}
 
-  changeComponent(component:string){
-    if(component === 'dashboard-principal'){
+  changeComponent(component: string) {
+    if (component === 'dashboard-principal') {
       component = 'dashboard';
       this.dashboardService.setActiveDashboardAdminComponent(component);
       this.isRouteTorunament = false;
@@ -30,9 +32,9 @@ export class HeaderComponent {
     }
     this.dashboardService.haveParticipants$.subscribe({
       next: (response: boolean) => {
-        if(response){
+        if (response) {
           this.dashboardService.setActiveTournamentComponent('recap');
-        }else{
+        } else {
           this.dashboardService.setActiveTournamentComponent(component);
         }
       }
@@ -41,31 +43,37 @@ export class HeaderComponent {
   }
 
 
-  routeActive():boolean{
-    let flag : boolean = false;
-    if(this.route.url.includes('tournaments')){
+  routeActive(): boolean {
+    let flag: boolean = false;
+    if (this.route.url.includes('tournaments')) {
       flag = true;
     }
     return flag;
   }
 
-  
+
   ngOnInit(): void {
+    this.route.events.subscribe(() => {
+      const match = this.route.url.match(/\/([^/]+)$/);
+      this.code = match ? match[1] : '';
+      if (this.code.length > 0) {
+        this.guest = true;
+      }else{
+        this.guest = false;
+      }
+    });
     
-    if(this.route.url.includes('admin') && !this.route.url.includes('tournaments')){
+    if (this.route.url.includes('admin') && !this.route.url.includes('tournaments')) {
       this.isRouteTorunament = false;
       this.noIsAdmin = false;
-    }else{
+    } else {
       this.dashboardService.getNameTournament$.subscribe({
         next: (response: string) => {
-            this.lastTournamentClickedName = response;
-            this.isRouteTorunament = true
+          this.lastTournamentClickedName = response;
+          this.isRouteTorunament = true
         }
       });
     }
-
-
-    
 
     this.sessionService.userLoginOn.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
@@ -73,6 +81,7 @@ export class HeaderComponent {
     this.sessionService.userData.subscribe((userData) => {
       this.name = userData.name;
     });
+
   }
 
   onLogin(): void {
