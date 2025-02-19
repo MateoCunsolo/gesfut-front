@@ -12,10 +12,10 @@ import { TimepickerDatepickerIntegrationExample } from "../match-day/list-match-
 import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-initialize-tournament',
-    imports: [FormsModule, TimepickerDatepickerIntegrationExample, NgClass],
-    templateUrl: './initialize-tournament.component.html',
-    styleUrl: './initialize-tournament.component.scss'
+  selector: 'app-initialize-tournament',
+  imports: [FormsModule, TimepickerDatepickerIntegrationExample, NgClass],
+  templateUrl: './initialize-tournament.component.html',
+  styleUrl: './initialize-tournament.component.scss'
 })
 export class InitializeTournamentComponent {
   teams: TeamResponse[] = [];
@@ -25,7 +25,8 @@ export class InitializeTournamentComponent {
   searchTerm: string = '';
   date: string = '';
   showPicker: boolean = false;
-
+  minutes: number = 0;
+  days: number = 0;
 
   constructor(
     private adminService: AdminService,
@@ -76,7 +77,7 @@ export class InitializeTournamentComponent {
     });
   }
 
-  cancelPicker( event: Boolean) {
+  cancelPicker(event: Boolean) {
     this.showPicker = false;
   }
 
@@ -100,15 +101,18 @@ export class InitializeTournamentComponent {
       const initializeRequest = {
         tournamentCode: this.code,
         teams: ids,
-        startDate: this.date
+        startDate: this.date,
+        minutesPerMatch: this.minutes,
+        dayBetweenMatchDay: this.days
       };
+      console.log(initializeRequest);
       this.alertService.loadingAlert('Inicializando torneo...');
       this.adminService.initTournament(initializeRequest).subscribe({
         next: (response) => {
           this.alertService.successAlert('Torneo inicializado');
           setTimeout(() => {
             window.location.reload();
-          }, 1500);
+          }, 1000);
 
         },
         error: (err) => {
@@ -149,4 +153,76 @@ export class InitializeTournamentComponent {
     alert("¿Está seguro de que desea salir? Se perderán los cambios realizados");
     this.route.navigate(['/admin/tournaments/' + this.code]);
   }
+
+  sendMinutesAndDays({ minutes, days }: { minutes: number; days: number; }) {
+    this.minutes = minutes;
+    this.days = days;
+  }
+
+  splitDate(date: string) {
+    const dateSplitted = date.split('T');
+    const hours = dateSplitted[1].split(':')[0] + ':' + dateSplitted[1].split(':')[1];
+    const dateWithStrings = this.dateToString(dateSplitted[0]);
+    return { dateWithStrings, hours };
+  }
+
+  dateToString(date: string) {
+    const dateSplitted = date.split('-');
+    const year = dateSplitted[0];
+    const month = this.switchToMonth(dateSplitted[1]);
+    const day = dateSplitted[2];
+    return `${day} de ${month} de ${year}`;
+  }
+
+  switchToMonth(month: string): string {
+    switch (month) {
+      case '01': {
+        return 'Enero';
+      }
+      case '02': {
+        return 'Febrero';
+      }
+      case '03': {
+        return 'Marzo';
+      }
+      case '04': {
+        return 'Abril';
+      }
+      case '05': {
+        return 'Mayo';
+      }
+      case '06': {
+        return 'Junio';
+      }
+      case '07': {
+        return 'Julio';
+      }
+      case '08': {
+        return 'Agosto';
+      }
+      case '09': {
+        return 'Septiembre';
+      }
+      case '10': {
+        return 'Octubre';
+      }
+      case '11': {
+        return 'Noviembre';
+      }
+      case '12': {
+        return 'Diciembre';
+      }
+      default: {
+        return 'Invalid month';
+      }
+    }
+  }
+
+  cancelDate() {
+    this.date = '';
+    this.minutes = 0;
+    this.days = 0;
+    this.cancelPicker(true);
+  }
+
 }
