@@ -427,6 +427,10 @@ export class LoadResultComponent {
 
   removeRedCard(id: number) {
     const event = this.events.find((e) => e.id === id);
+    if(event.yellowCard === 2){
+      this.alertService.errorAlert('El jugador tiene 2 amarillas, le corresponde una roja.');
+      return;
+    }
     if (event && event.redCard > 0) {
       event.redCard--;
       this.analizeStats(event);
