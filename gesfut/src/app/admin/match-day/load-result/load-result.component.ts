@@ -249,6 +249,14 @@ export class LoadResultComponent {
     }
   }
 
+  isRedCard(){
+    if(this.statisticsForm.get('yellowCard')?.value > 1){
+      this.statisticsForm.get('redCard')?.setValue(1);
+    }else{
+      this.statisticsForm.get('redCard')?.setValue(0);
+    }
+  }
+
   isPlayerSelected() {
     if (this.statisticsForm.get('name')?.value === '') {
       this.desactivetStatics();
