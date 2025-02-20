@@ -49,7 +49,7 @@
   >
     <!-- Campo Nombre -->
     <div class="form-group input-icon">
-      <input type="text" formControlName="name" placeholder="Nombre" />
+      <input type="text" formControlName="name" placeholder="Nombre" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fas fa-user"></i>
       @if (playerForm.get('name')?.invalid && playerForm.get('name')?.touched) {
       <small>El nombre es requerido (mín. 2 caracteres).</small>
@@ -58,7 +58,7 @@
 
     <!-- Campo Apellido -->
     <div class="form-group input-icon">
-      <input type="text" formControlName="lastName" placeholder="Apellido" />
+      <input type="text" formControlName="lastName" placeholder="Apellido" [ngClass]="{ disabled: disbalechecks }"/>
       <i class="fas fa-user"></i>
       @if (playerForm.get('lastName')?.invalid &&
       playerForm.get('lastName')?.touched) {
@@ -68,7 +68,7 @@
 
     <!-- Campo Dorsal -->
     <div class="form-group input-icon">
-      <input type="number" formControlName="number" placeholder="Dorsal" />
+      <input type="number" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fa-solid fa-hashtag"></i>
       @if (playerForm.get('number')?.invalid &&
       playerForm.get('number')?.touched) {
@@ -101,18 +101,22 @@
         </div>
       </div>
     </div>
-    <button
+    <div class="grid-5">
+      <button
       type="button"
       class="base-button cancel"
-      style="width: 100px !important"
       (click)="cancelAddPlayer()"
     >
       CANCELAR
     </button>
-    @if (changeText) {
-    <button type="submit" class="base-button">REACTIVAR JUGADOR</button>
-    }@else {
-    <button type="submit" class="base-button">AGREGAR JUGADOR</button>
-    }
+    </div>
+    <div class="flex-buttons grid-6">
+ 
+      @if (changeText) {
+      <button type="submit" class="base-button add">REACTIVAR JUGADOR</button>
+      }@else {
+      <button type="submit" class="base-button add">AGREGAR JUGADOR</button>
+      }
+    </div>
   </form>
 </section>

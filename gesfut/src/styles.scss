@@ -56,11 +56,7 @@ small {
     font-size: 1.3rem;
 }
 
-@media screen and (max-width: 393px) {
-    html {
-        font-size: 50%;
-    }
-}
+
 
 /* ==================================== CHECKBOX ==================================== */
 
@@ -119,12 +115,6 @@ label {
 }
 
 
-// Responsive for 392px by 852px
-@media screen and (max-width: 393px) {
-    html {
-        font-size: 50%;
-    }
-}
 
 
 /* ==================================== INPUT CON ICON ==================================== */

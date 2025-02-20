@@ -1,4 +1,4 @@
-<section class="conteiner">
+<section class="conteiner" [ngClass]="{'container-in-global': isGlobal}">
   <div>
     <button class="back-button btn" (click)="back()">ATRAS</button>
     <h1 class="title">PARTIDOS DE {{ teamName.toUpperCase() }}</h1>

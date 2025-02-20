@@ -29,8 +29,10 @@ export class AddPlayerComponent implements OnChanges {
   @Input() teamIdParticipant: number = 0;
   @Input() teamIdGlobal: number = 0;
   @Input() codeTournament: string = '';
+  @Input() playerDeleted: { idPlayer: number, idPlayerParticipant: number } = { idPlayer: 0, idPlayerParticipant: 0 };
   @Output() public addPlayerToTeam = new EventEmitter<PlayerParticipantResponse>();
   @Output() public cancelAddPlayerEvent = new EventEmitter<void>();
+
   protected teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
   protected playersGlobal: PlayerResponse[] = [];
   protected selectedPlayerId: number = 0;
@@ -54,12 +56,17 @@ export class AddPlayerComponent implements OnChanges {
   
   async callPlayerGlobals() {
     try {
+
       const teamResponse = await this.teamService.getTeam(this.teamIdGlobal).toPromise();
       if (!teamResponse || teamResponse.players.length === 0) {
         this.therArePlayersToADD = false;
         return;
       }
-  
+      
+      if (this.teamIdParticipant === 0) {
+
+        return;
+      }
       this.tournamentService.getTournamentParticipantTeamByID(this.teamIdParticipant).subscribe({
         next: (response) => {
           this.teamParticipant = response || { playerParticipants: [] };
@@ -149,6 +156,14 @@ export class AddPlayerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
+    if(changes['playerDeleted']){
+      console.log('Jugador eliminado:', this.playerDeleted);
+      this.callPlayerGlobals();
+    }else{
+      console.log('No se ha eliminado ningún jugador: ACA');
+    }
+
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
       this.playersGlobal = [];
       this.inactivedPlayers = [];
@@ -226,6 +241,7 @@ export class AddPlayerComponent implements OnChanges {
     });
 
     if (flag) {
+      console.log('Jugador activado');
       return;
     }
 
@@ -233,8 +249,9 @@ export class AddPlayerComponent implements OnChanges {
       this.showErrors();
       return;
     }
+
     if (this.teamIdParticipant != 0 && this.selectedPlayerId == 0) {
-      if (this.route.url.includes('tournament')) {
+      if (this.route.url.includes('tournaments')) {
         this.showReConfirmAlert(1);
       } else {
         this.showMenuTwoOptions();
@@ -282,7 +299,6 @@ export class AddPlayerComponent implements OnChanges {
   }
 
   addPlayerToTournament(newPlayer: PlayerRequest) {
-    console.log('Codigo de torneo:', this.codeTournament);
     this.tournamentService.addPlayerToParticipant(this.codeTournament, this.teamIdParticipant, newPlayer).subscribe({
       next: (response) => {
         this.alertService.successAlert('Jugador agregado');
@@ -290,7 +306,7 @@ export class AddPlayerComponent implements OnChanges {
         this.selectedPlayerId = 0;
         if (response) {
           response.playerParticipants.forEach(playerParticipant => {
-            if (playerParticipant.playerName === newPlayer.name && playerParticipant.playerLastName === newPlayer.lastName) {
+            if (playerParticipant.shirtNumber === newPlayer.number){
               this.addPlayerToTeam.emit(playerParticipant);
             }
           });
@@ -311,10 +327,11 @@ export class AddPlayerComponent implements OnChanges {
           this.alertService.errorAlert('Faltan campos por llenar');
           return;
         }
-        console.log('Nuevo jugador:', newPlayer);
         if (option === 1) {
+          console.log('Agregando jugador al torneo:', newPlayer);
           this.addPlayerToTournament(newPlayer);
         } else {
+          console.log('Agregando jugador al equipo global:', newPlayer);
           this.addPlayerToGlobal(newPlayer);
         }
       }

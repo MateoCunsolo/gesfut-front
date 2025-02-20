@@ -13,10 +13,10 @@ import { Router } from '@angular/router';
 import { GuestService } from '../../../../core/services/guest/guest.service';
 
 @Component({
-    selector: 'app-players',
-    imports: [DeleteComponent, AddPlayerComponent],
-    templateUrl: './players.component.html',
-    styleUrl: './players.component.scss'
+  selector: 'app-players',
+  imports: [DeleteComponent, AddPlayerComponent],
+  templateUrl: './players.component.html',
+  styleUrl: './players.component.scss'
 })
 export class PlayersComponent implements OnChanges {
 
@@ -36,6 +36,7 @@ export class PlayersComponent implements OnChanges {
   protected participantTeam: ParticipantResponse = INITIAL_PARTICIPANT;
   protected participantGlobalStats = {} as TeamWithAllStatsPlayerResponse;
   protected flagAddPlayer: boolean = false;
+  protected playerDeleted: { idPlayer: number, idPlayerParticipant: number } = { idPlayer: 0, idPlayerParticipant: 0 };
 
   constructor() { }
 
@@ -80,7 +81,7 @@ export class PlayersComponent implements OnChanges {
   getPlayersParticipants(idParticipant: number) {
     this.tournamentService.getTournamentParticipantTeamByID(idParticipant).subscribe({
       next: (response) => {
-        if(!this.isGlobalTeam){
+        if (!this.isGlobalTeam) {
           this.participantTeam = response;
         }
       },
@@ -92,10 +93,15 @@ export class PlayersComponent implements OnChanges {
 
 
   deletePlayer(idPlayerGlobal: number) {
+    this.playerDeleted = {
+      idPlayer: idPlayerGlobal,
+      idPlayerParticipant: this.participantTeam.playerParticipants.find(player => player.playerId === idPlayerGlobal)?.id || 0
+    }
+    
     if (this.isGlobalTeam) {
       this.participantGlobalStats.playerParticipants = this.participantGlobalStats.playerParticipants.filter(player => player.playerId !== idPlayerGlobal);
       console.log('Jugadores globales eliminados:', this.participantGlobalStats);
-    } else {
+    } else { 
       this.participantTeam.playerParticipants = this.participantTeam.playerParticipants.filter(player => player.playerId !== idPlayerGlobal);
     }
   }
@@ -114,7 +120,7 @@ export class PlayersComponent implements OnChanges {
     } else {
       return this.participantTeam.idParticipant;
     }
-}
+  }
 
 
   mapPlayersGlobal(response: TeamResponse) {
@@ -160,26 +166,25 @@ export class PlayersComponent implements OnChanges {
   }
 
   toLastMatches() {
-    if(this.isGlobalTeam){
+    if (this.isGlobalTeam) {
       this.alertService.errorAlert('Debes selecionar un torneo para ver los partidos.');
-    }else if (this.participantId){
+    } else if (this.participantId) {
       this.alertService.loadingAlert('OBTENIENDO ULTIMOS PARTIDOS');
       console.log('Obteniendo ultimos partidos: ', this.participantTeam.idParticipant);
       console.log('Obteniendo ultimos partidos: ', this.code);
-        this.tournamentService.getMatchesAllForParticipant(this.code, this.participantTeam.idParticipant).subscribe({
-          next: (response: MatchResponse[]) => {
-            console.log('Ultimos partidos:', response);
-            this.tournamentService.setMatches(response);
-            this.tournamentService.setNameTeamToViewEvents(this.participantTeam.name);
-            this.dashboardService.setActiveDashboardAdminComponent('lasts-matches');
-            sessionStorage.setItem('lastTournamentClickedName', this.nameTournament);
-            this.alertService.closeLoadingAlert();
-          }
-        });
-      }else{
-        this.alertService.errorAlert('No se ha seleccionado un equipo');
-      }
+      this.tournamentService.getMatchesAllForParticipant(this.code, this.participantTeam.idParticipant).subscribe({
+        next: (response: MatchResponse[]) => {
+          console.log('Ultimos partidos:', response);
+          this.tournamentService.setMatches(response);
+          this.tournamentService.setNameTeamToViewEvents(this.participantTeam.name);
+          this.dashboardService.setActiveDashboardAdminComponent('lasts-matches');
+          sessionStorage.setItem('lastTournamentClickedName', this.nameTournament);
+          this.alertService.closeLoadingAlert();
+        }
+      });
+    } else {
+      this.alertService.errorAlert('No se ha seleccionado un equipo');
     }
-  
+  }
+
 }
-   
