@@ -83,6 +83,7 @@ export class PlayersComponent implements OnChanges {
       next: (response) => {
         if (!this.isGlobalTeam) {
           this.participantTeam = response;
+          console.log('Jugadores participantes obtenidos:', this.participantTeam);
         }
       },
       error: (error) => {
@@ -97,7 +98,7 @@ export class PlayersComponent implements OnChanges {
       idPlayer: idPlayerGlobal,
       idPlayerParticipant: this.participantTeam.playerParticipants.find(player => player.playerId === idPlayerGlobal)?.id || 0
     }
-    
+
     if (this.isGlobalTeam) {
       this.participantGlobalStats.playerParticipants = this.participantGlobalStats.playerParticipants.filter(player => player.playerId !== idPlayerGlobal);
       console.log('Jugadores globales eliminados:', this.participantGlobalStats);
@@ -157,6 +158,7 @@ export class PlayersComponent implements OnChanges {
       this.participantGlobalStats.playerParticipants.push(newPlayer);
       console.log('Jugadores globales después de agregar:', this.participantGlobalStats);
     } else {
+      console.log('Jugadores participantes antes de agregar:', this.participantTeam);
       this.participantTeam.playerParticipants.push(newPlayer);
     }
   }

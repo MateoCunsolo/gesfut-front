@@ -1,5 +1,5 @@
 <section class="containter-all">
-  @if (teamIdParticipant!=0 && therArePlayersToADD) {
+  @if (therArePlayersToADD) {
   <div class="playerExist">
     <select
       name="playersGlobales"
@@ -13,6 +13,7 @@
       <option value="{{ player.id }}">
         {{ player.name + " " + player.lastName }} - {{ player.number }}
         {{ existPlayerInTournament(player.id) ? "( INACTIVO )" : "" }}
+        {{ teamIdParticipant==0 ? "( RESTAURAR )" : "" }}
       </option>
       }
     </select>

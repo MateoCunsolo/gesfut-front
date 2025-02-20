@@ -64,42 +64,42 @@ export class AddPlayerComponent implements OnChanges {
       }
       
       if (this.teamIdParticipant === 0) {
-
-        return;
+        this.playersGlobal = teamResponse.players.filter(player => !player.status);
+        this.therArePlayersToADD = this.playersGlobal.length > 0;
+      }else{
+        this.tournamentService.getTournamentParticipantTeamByID(this.teamIdParticipant).subscribe({
+          next: (response) => {
+            this.teamParticipant = response || { playerParticipants: [] };
+    
+            // Extraer los IDs de los jugadores que ya están en el torneo
+            const existingPlayerIds = new Set(this.teamParticipant.playerParticipants.map(player => player.playerId));
+    
+            // Filtrar jugadores que NO están en el torneo
+            const newPlayers = teamResponse.players.filter(player => !existingPlayerIds.has(player.id));
+    
+            // Filtrar jugadores que están en el torneo pero tienen isActive === false
+            this.inactivedPlayers = this.teamParticipant.playerParticipants
+              .filter(player => !player.isActive)
+              .map(player => ({
+                id: player.id, // ID del jugador en el torneo para poder encontrarlo y activarlo
+                name: player.playerName,
+                lastName: player.playerLastName,
+                number: player.shirtNumber,
+                isCaptain: player.isCaptain,
+                isGoalKeeper: player.isGoalKeeper,
+                status: player.status
+              }));
+    
+            this.playersGlobal = [...newPlayers, ...this.inactivedPlayers];
+            this.therArePlayersToADD = this.playersGlobal.length > 0;
+    
+            console.log('Jugadores globales:', this.playersGlobal);
+          },
+          error: (error) => {
+            console.error('Error al obtener participante del equipo:', error);
+          }
+        });
       }
-      this.tournamentService.getTournamentParticipantTeamByID(this.teamIdParticipant).subscribe({
-        next: (response) => {
-          this.teamParticipant = response || { playerParticipants: [] };
-  
-          // Extraer los IDs de los jugadores que ya están en el torneo
-          const existingPlayerIds = new Set(this.teamParticipant.playerParticipants.map(player => player.playerId));
-  
-          // Filtrar jugadores que NO están en el torneo
-          const newPlayers = teamResponse.players.filter(player => !existingPlayerIds.has(player.id));
-  
-          // Filtrar jugadores que están en el torneo pero tienen isActive === false
-          this.inactivedPlayers = this.teamParticipant.playerParticipants
-            .filter(player => !player.isActive)
-            .map(player => ({
-              id: player.id, // ID del jugador en el torneo para poder encontrarlo y activarlo
-              name: player.playerName,
-              lastName: player.playerLastName,
-              number: player.shirtNumber,
-              isCaptain: player.isCaptain,
-              isGoalKeeper: player.isGoalKeeper,
-              status: player.status
-            }));
-  
-          this.playersGlobal = [...newPlayers, ...this.inactivedPlayers];
-          this.therArePlayersToADD = this.playersGlobal.length > 0;
-  
-          console.log('Jugadores globales:', this.playersGlobal);
-        },
-        error: (error) => {
-          console.error('Error al obtener participante del equipo:', error);
-        }
-      });
-  
     } catch (error) {
       console.error('Error al obtener jugadores globales:', error);
     }
@@ -110,12 +110,17 @@ export class AddPlayerComponent implements OnChanges {
 
   changePlayer(event: Event) {
     const selectedPlayerId = Number((event.target as HTMLSelectElement).value);
+    this.selectedPlayerId = selectedPlayerId;
     const player = this.playersGlobal.find(player => player.id === selectedPlayerId);
     
     if(this.teamParticipant.playerParticipants.find(player => player.id === selectedPlayerId)){
       this.changeText=true;
     }else{
       this.changeText=false;
+    }
+
+    if(this.playersGlobal.find(player => player.id === selectedPlayerId)){
+      this.changeText=true;
     }
 
 
@@ -167,15 +172,11 @@ export class AddPlayerComponent implements OnChanges {
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
       this.playersGlobal = [];
       this.inactivedPlayers = [];
-      this.therArePlayersToADD = false;
       this.selectedPlayerId = 0;
       this.clearValues();
       this.playerForm.get('teamId')?.setValue(this.teamIdParticipant);
-      if(this.teamIdParticipant != 0){
-        this.callPlayerGlobals();
-      }
+      this.callPlayerGlobals();
       this.verifyIfAreThereParticipantsForThisTeam();
-      console.log('teamIdGlobal:', this.teamIdGlobal);
     } else {
       console.log('No hay cambios');
     }
@@ -230,7 +231,42 @@ export class AddPlayerComponent implements OnChanges {
   }
 
 
+  changeGlobalPlayerStatus() {
+    this.teamService.changeStatusPlayerGlobal(this.selectedPlayerId, true).subscribe({
+      next: (response) => {
+        const player = this.playersGlobal.find(player => player.id === this.selectedPlayerId);
+        if (!player) {
+          console.error('No se encontró el jugador a activar');
+          return;
+        }  
+        const playerMapped = this.mapPlayerNoParticipants(player);
+        playerMapped.status = true;
+        playerMapped.isActive = false;
+        this.addPlayerToTeam.emit(playerMapped);
+        this.playersGlobal = this.playersGlobal.filter(player => player.id !== this.selectedPlayerId);
+        this.therArePlayersToADD = this.playersGlobal.length > 0;
+        this.clearValues();
+        this.selectedPlayerId = 0;
+        this.disbalechecks=false;
+        this.changeText=false;
+        this.alertService.successAlert('Jugador activado');
+      },
+      error: (error) => {
+        console.error('Error al activar jugador:', error);
+        this.alertService.errorAlert(error.error.error);
+      }
+    });
+  }
+
+
   addPlayer() {
+
+    if(this.teamIdParticipant === 0){
+      this.changeGlobalPlayerStatus();
+      return;
+    }
+
+
     let flag = false;
     const numberShirt = this.playerForm.get('number')?.value;
     this.inactivedPlayers.some(player => {

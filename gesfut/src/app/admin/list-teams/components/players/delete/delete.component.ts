@@ -105,6 +105,11 @@ export class DeleteComponent {
   }
 
   deleteFromGlobalCallService() {
+    if(!this.verificationsDelete()){
+      if(this.isCapitan) this.alertService.errorAlert('No puedes eliminar a un capitan');
+      if(this.isGoalKeeper) this.alertService.errorAlert('No puedes eliminar a un portero');
+      return;
+    }
     console.log('Eliminando jugador global:', this.idPlayer);
     this.teamService.changeStatusPlayerGlobal(this.idPlayer, false).subscribe({
       next:()=>{
