@@ -89,7 +89,14 @@
     </section>
 
     <section class="col-2-teams-tournament">
-      <h3 class="title-sec green">EQUIPOS AGREGADOS</h3>
+      <h3 class="title-sec green">EQUIPOS AGREGADOS
+        @if (teamsTournament.length<4) {
+          <span title="Minimo 4 equipos" class="count">{{teamsTournament.length}}/4</span>
+        }@else {
+          <span  class="count">{{teamsTournament.length}}</span>
+        }
+        
+      </h3>
       <div class="overflox">
         @for (item of teamsTournament; track $index) {
         <div class="team-section">
