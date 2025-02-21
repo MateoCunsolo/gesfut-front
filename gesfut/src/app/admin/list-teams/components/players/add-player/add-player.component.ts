@@ -109,28 +109,24 @@ export class AddPlayerComponent implements OnChanges {
   
 
   changePlayer(event: Event) {
+    this.changeText=false;
     const selectedPlayerId = Number((event.target as HTMLSelectElement).value);
     this.selectedPlayerId = selectedPlayerId;
     const player = this.playersGlobal.find(player => player.id === selectedPlayerId);
-    
-    if(this.teamParticipant.playerParticipants.find(player => player.id === selectedPlayerId)){
-      this.changeText=true;
-    }else{
-      this.changeText=false;
-    }
 
-    if(this.playersGlobal.find(player => player.id === selectedPlayerId)){
+    if(this.teamParticipant.playerParticipants.find(player => player.id === selectedPlayerId)?.isActive===false){
       this.changeText=true;
     }
 
-
+    if(this.playersGlobal.find(player => player.id === selectedPlayerId) && this.teamIdParticipant === 0){
+      this.changeText=true;
+    }
     this.playerForm.get('name')?.disable();
     this.playerForm.get('lastName')?.disable();
     this.playerForm.get('number')?.disable();
     this.playerForm.get('isCaptain')?.disable();
     this.playerForm.get('isGoalKeeper')?.disable();
     this.disbalechecks=true;
-
     if (player) {
       this.playerForm.get('name')?.setValue(player.name);
       this.playerForm.get('lastName')?.setValue(player.lastName);
@@ -170,6 +166,7 @@ export class AddPlayerComponent implements OnChanges {
     }
 
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
+      this.disbalechecks=false;
       this.playersGlobal = [];
       this.inactivedPlayers = [];
       this.selectedPlayerId = 0;
@@ -261,7 +258,7 @@ export class AddPlayerComponent implements OnChanges {
 
   addPlayer() {
 
-    if(this.teamIdParticipant === 0){
+    if(this.teamIdParticipant === 0 && this.changeText===true){
       this.changeGlobalPlayerStatus();
       return;
     }
@@ -298,12 +295,8 @@ export class AddPlayerComponent implements OnChanges {
     } else {
       this.showReConfirmAlert(0);
     }
-    this.playersGlobal = this.playersGlobal.filter(player => player.number !== this.playerForm.get('number')?.value);
-    if (this.playersGlobal.length === 0) {
-      this.therArePlayersToADD = false;
-    }
+   
     this.disbalechecks=false;
-    this.changeText=false;
   }
 
   showMenuTwoOptions() {
@@ -325,7 +318,14 @@ export class AddPlayerComponent implements OnChanges {
         let playerMaped = this.mapPlayerNoParticipants(response);
         console.log('Jugador mapeado:', playerMaped);
         this.addPlayerToTeam.emit(playerMaped);
-        this.playersGlobal.push(response);
+        if(this.teamIdParticipant != 0){
+          this.playersGlobal.push(response);
+        }
+        this.playersGlobal = this.playersGlobal.filter(player => player.number !== playerMaped.shirtNumber);
+        console.log('Jugadores globales filtrados:', this.playersGlobal);
+        if (this.playersGlobal.length === 0) {
+          this.therArePlayersToADD = false;
+        }
       },
       error: (error) => {
         console.error('Error al agregar jugador:', error);
@@ -346,6 +346,11 @@ export class AddPlayerComponent implements OnChanges {
               this.addPlayerToTeam.emit(playerParticipant);
             }
           });
+          this.playersGlobal = this.playersGlobal.filter(player => player.number !== newPlayer.number);
+          console.log('Jugadores globales filtrados:', this.playersGlobal);
+          if (this.playersGlobal.length === 0) {
+            this.therArePlayersToADD = false;
+          }
         }
       },
       error: (error) => {
