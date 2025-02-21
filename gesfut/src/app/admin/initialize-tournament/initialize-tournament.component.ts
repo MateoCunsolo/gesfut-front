@@ -225,4 +225,9 @@ export class InitializeTournamentComponent {
     this.cancelPicker(true);
   }
 
+  resetFilters() {
+    this.searchTerm = '';
+    this.teams = this.teamsFilters
+  }
+  
 }

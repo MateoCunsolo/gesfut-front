@@ -55,14 +55,16 @@
   <div class="grid-conteiner">
     <section class="col-1-teams-all">
       <h3 class="title-sec black">MIS EQUIPOS</h3>
-      <input
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="filterTeams()"
-        class="search-team"
-        type="text"
-        placeholder="BUSCAR EQUIPO"
-      />
-
+      <div style="display: flex; justify-content: space-between; gap: 5px; padding: 5px;">
+        <input
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="filterTeams()"
+          class="search-team"
+          type="text"
+          placeholder="BUSCAR EQUIPO"
+        />
+        <button class="restart-search" [ngClass]="{ 'restart-search-block': searchTerm.length>0}" (click)="resetFilters()">X</button>
+      </div>
       <div class="overflox">
         @for (item of teams; track $index) {
         <div class="team-section">
