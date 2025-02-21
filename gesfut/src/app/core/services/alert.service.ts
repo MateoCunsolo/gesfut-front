@@ -89,7 +89,7 @@ export class AlertService {
       title: title,
       text: text,
       icon: 'warning',
-      width: 'auto',
+      width: '300px',
       showCancelButton: true,
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--error-color)',

@@ -26,11 +26,6 @@ export class DeleteComponent {
   constructor() { }
 
   ngOnInit(): void {
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        this.isFinishedTournament = response.isFinished;
-      },
-    });
   }
 
 
@@ -42,10 +37,6 @@ export class DeleteComponent {
 
 
   reconfirmDelete(idPlayerParticipant: number) {
-    if (this.isFinishedTournament) {
-      this.alertService.errorAlert('El torneo ha finalizado');
-      return;
-    }
     if (this.isGlobalTeam) {
       this.deleteFromGlobal();
     } else {

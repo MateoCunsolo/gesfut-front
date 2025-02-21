@@ -39,7 +39,10 @@ export class PlayersTournamentComponent implements OnChanges {
 
   flagAddPlayer: boolean = false;
   isAuth: boolean = false;
-  playerDeleted: { idPlayer: number, idPlayerParticipant: number } = { idPlayer: 0, idPlayerParticipant: 0 };
+  playerDeleted: { idPlayer: number; idPlayerParticipant: number } = {
+    idPlayer: 0,
+    idPlayerParticipant: 0,
+  };
 
   constructor() {}
 
@@ -68,10 +71,6 @@ export class PlayersTournamentComponent implements OnChanges {
   }
 
   showFormAddPlayer() {
-    if (this.isFinishedTournament) {
-      this.alertService.errorAlert('El torneo ha finalizado');
-      return;
-    }
     this.flagAddPlayer = !this.flagAddPlayer;
   }
 
@@ -103,10 +102,7 @@ export class PlayersTournamentComponent implements OnChanges {
   }
 
   deleteTeam() {
-    if (this.isFinishedTournament) {
-      this.alertService.errorAlert('El torneo ha finalizado');
-      return;
-    }    this.alertService.infoAlert(
+    this.alertService.infoAlert(
       'ELIMINAR EQUIPO',
       'FUNCIONALIDAD NO IMPLEMENTADA'
     );
@@ -114,15 +110,18 @@ export class PlayersTournamentComponent implements OnChanges {
 
   addPlayerToTeam(player: PlayerParticipantResponse) {
     console.log('Agregando jugador desde la url del torneo:', player);
-  this.teamParticipant.playerParticipants.push(player);
-}
+    this.teamParticipant.playerParticipants.push(player);
+  }
 
   deletePlayer(playerId: number) {
     this.playerDeleted = {
       idPlayer: playerId,
-      idPlayerParticipant: this.teamParticipant.playerParticipants.find(player => player.playerId === playerId)?.id || 0
-    }
-    
+      idPlayerParticipant:
+        this.teamParticipant.playerParticipants.find(
+          (player) => player.playerId === playerId
+        )?.id || 0,
+    };
+
     this.teamParticipant.playerParticipants =
       this.teamParticipant.playerParticipants.filter(
         (player) => player.playerId !== playerId

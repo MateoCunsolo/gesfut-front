@@ -77,7 +77,7 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
 
   setView(view: string) {
     if(this.isFinished){
-      this.alertService.errorAlert('El torneo ha finalizado, no se pueden realizar cambios.');
+      this.alertService.infoAlertTop('El torneo ya ha finalizado.');
       return
     }
     console.log('Cambiando vista a:', view);
