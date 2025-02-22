@@ -30,6 +30,7 @@ export class CreateTeamComponent {
   private tournamentService = inject(TournamentService);
   private authService = inject(AuthService);
   private route = inject(Router);
+button: any;
   constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required],
