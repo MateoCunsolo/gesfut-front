@@ -9,10 +9,12 @@ import Swal from 'sweetalert2';
 import { AlertService } from '../../core/services/alert.service';
 import { Router, RouterModule } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { AuthService } from '../../core/services/manager/auth.service';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
     selector: 'app-create-team',
-    imports: [CommonModule, ExcelUploadComponent, ReactiveFormsModule, RouterModule],
+    imports: [CommonModule, ExcelUploadComponent, ReactiveFormsModule, RouterModule, SpinnerComponent],
     templateUrl: './create-team.component.html',
     styleUrl: './create-team.component.scss'
 })
@@ -23,8 +25,10 @@ export class CreateTeamComponent {
   inAdmin: boolean = false;
   inTournament: boolean = false;
   noPlayers: boolean = true;
+  isloading = false;
   private dashboardService = inject(DashboardService);
   private tournamentService = inject(TournamentService);
+  private authService = inject(AuthService);
   private route = inject(Router);
   constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
@@ -244,6 +248,7 @@ export class CreateTeamComponent {
       this.alertService.errorAlert("No se pueden repetir jugadores en un equipo.");
       return;
     }
+    this.isloading = true;
     this.teamService.createTeam(teamData).subscribe({
       next: (response) => {
         this.error = '';
@@ -253,10 +258,13 @@ export class CreateTeamComponent {
           this.tournamentService.setNewTeamToInitTournament(response);
         }
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
+        this.isloading = false;
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
         this.alertService.errorAlert(err.error.error);
+        this.authService.serverNotResponding(err);   
+        this.isloading = false;
       }
     });
   }

@@ -60,9 +60,17 @@
     </div>
     <div class="btn-container">
       <button class="back-button" type="button" (click)="changeComponent('dashboard')">ATRAS</button>
-      <button type="submit" class="base-button" [disabled]="noPlayers">
+
+      @if (isloading) {
+        <div class="spin">
+          <app-spinner ></app-spinner>
+        </div>
+      }@else {
+        <button type="submit" class="base-button" [disabled]="noPlayers">
         CREAR EQUIPO
-      </button>
+        </button>
+      }
+
     </div>
   </form>
 </section>

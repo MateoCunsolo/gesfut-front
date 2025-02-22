@@ -94,6 +94,7 @@ export class RegisterComponent {
       error: (err: HttpErrorResponse) => {
         this.alertService.errorAlert(err.error.error);
         this.isLoading = false;
+        this.authService.serverNotResponding(err);   
       },
     });
   }
