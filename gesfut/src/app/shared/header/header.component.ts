@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { UserComponent } from '../../shared/user/user.component';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
 
 @Component({
   selector: 'app-header',
@@ -20,9 +21,10 @@ export class HeaderComponent {
   guest: boolean = false;
   code: string = '';
 
-  constructor(private sessionService: SessionService, private route: Router, private activatedRoute: ActivatedRoute, private dashboardService: DashboardService) { }
+  constructor( private tournamentService: TournamentService,private sessionService: SessionService, private route: Router, private activatedRoute: ActivatedRoute, private dashboardService: DashboardService) { }
 
   changeComponent(component: string) {
+    this.tournamentService.setTeamsToInitTournament([]);
     if (component === 'dashboard-principal') {
       component = 'dashboard';
       this.dashboardService.setActiveDashboardAdminComponent(component);

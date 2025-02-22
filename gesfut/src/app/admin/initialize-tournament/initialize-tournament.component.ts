@@ -27,7 +27,7 @@ export class InitializeTournamentComponent {
   showPicker: boolean = false;
   minutes: number = 0;
   days: number = 0;
-
+  name = '';
   constructor(
     private adminService: AdminService,
     private route: Router,
@@ -50,6 +50,15 @@ export class InitializeTournamentComponent {
 
   ngOnInit(): void {
 
+    this.name = localStorage.getItem('lastTournamentClickedName') || '';
+
+    this.tournamentService.$currentTeamsToInitTournament.subscribe({
+      next: (response) => {
+        this.teamsTournament = response;
+      }
+    });
+
+  
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if (param.get('code')) {
@@ -66,7 +75,19 @@ export class InitializeTournamentComponent {
         })).sort((a, b) => a.name.localeCompare(b.name));
         this.teams = this.teams.filter(team => team.status === true);
         this.teamsFilters = [...this.teams];
-
+        this.tournamentService.$recentlyTeamCreated.subscribe({
+          next: (response) => {
+            if (response) {
+              let team = this.teams.find(team => team.name === response.name);
+              if (team) {
+              this.teamsTournament.push(team);
+              this.teams = this.teams.filter(t => t !== team);
+              this.teamsFilters = this.teamsFilters.filter(t => t !== team);
+            }
+          }
+          }
+        });
+    
       },
       error: (err) => {
         console.error(err);
@@ -75,6 +96,9 @@ export class InitializeTournamentComponent {
         console.log('TEAMS LOADED');
       }
     });
+
+
+
   }
 
   cancelPicker(event: Boolean) {
@@ -131,6 +155,7 @@ export class InitializeTournamentComponent {
   addTeam(team: TeamResponse) {
     if (!this.teamsTournament.includes(team)) {
       this.teamsTournament.push(team);
+      this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
       this.teams = this.teams.filter(t => t !== team);
       this.teamsFilters = this.teamsFilters.filter(t => t !== team);
     } else {

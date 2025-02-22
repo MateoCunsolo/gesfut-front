@@ -19,15 +19,15 @@
   <hr
     style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"
   />
-  @if (!showPicker && date) {
   <h2 class="title">FECHA DE INICIO</h2>
+  @if (!showPicker && date) {
   <div class="info-dates">
     <p>
-      <span> Fecha del partido inicial </span> {{ splitDate(date).hours }} hs el
+      <span> INCIO </span> {{ splitDate(date).hours }} hs el
       dia {{ splitDate(date).dateWithStrings }}
     </p>
-    <p><span> Minutos de duración de los partidos </span>{{ minutes }} min.</p>
-    <p><span> Intervalo entre jornadas </span>{{ days }} dias</p>
+    <p><span> DURACION DE PARTIDOS</span>{{ minutes }} min.</p>
+    <p><span> INTERVALO ENTRE JORNADAS </span>{{ days }} dias</p>
     <div class="buttons-date">
       <button (click)="showFormTimePicker()" class="edit">
         <i class="accordion-button fa-solid fa-pencil"></i>
@@ -54,7 +54,10 @@
   <h2 class="title">AGREGAR EQUIPOS AL TORNEO</h2>
   <div class="grid-conteiner">
     <section class="col-1-teams-all">
-      <h3 class="title-sec black">MIS EQUIPOS</h3>
+      <h3 class="title black">MIS EQUIPOS</h3>
+      <hr
+    style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"
+  />
       <div style="display: flex; justify-content: space-between; gap: 5px; padding: 5px;">
         <input
           [(ngModel)]="searchTerm"
@@ -89,14 +92,14 @@
     </section>
 
     <section class="col-2-teams-tournament">
-      <h3 class="title-sec green">EQUIPOS AGREGADOS
+      <h3 class="title black green">EQUIPOS AGREGADOS
         @if (teamsTournament.length<4) {
           <span title="Minimo 4 equipos" class="count">{{teamsTournament.length}}/4</span>
         }@else {
           <span  class="count">{{teamsTournament.length}}</span>
         }
-        
       </h3>
+      <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"/>
       <div class="overflox">
         @for (item of teamsTournament; track $index) {
         <div class="team-section">

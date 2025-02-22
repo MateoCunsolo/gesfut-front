@@ -198,7 +198,8 @@
 }
 
 .add-date {
-  width: 50%;
+  width: auto;
+  padding: 8px;
   background-color: var(--bg-color);
   border: solid var(--primary-color) 1px;
   color: var(--primary-color);
@@ -332,4 +333,17 @@
 .count{
   margin-left: 5px;
   color: var(--primary-color);
+}
+
+.black{
+  text-align: center;
+}
+
+.green{
+  color: var(--secondary-color);
+}
+
+.alg{
+  text-align: center;
+  width: 100%;
 }

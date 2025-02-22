@@ -8,6 +8,7 @@ import { ExcelUploadComponent } from '../excel-upload/excel-upload.component';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../core/services/alert.service';
 import { Router, RouterModule } from '@angular/router';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
 
 @Component({
     selector: 'app-create-team',
@@ -23,6 +24,7 @@ export class CreateTeamComponent {
   inTournament: boolean = false;
   noPlayers: boolean = true;
   private dashboardService = inject(DashboardService);
+  private tournamentService = inject(TournamentService);
   private route = inject(Router);
   constructor(private fb: FormBuilder, private teamService: TeamService, private alertService:AlertService) {
     this.teamForm = this.fb.group({
@@ -248,6 +250,7 @@ export class CreateTeamComponent {
         this.alertService.successAlert("Equipo creado!");
         if(this.inTournament){
           this.dashboardService.setActiveTournamentComponent('initialize');
+          this.tournamentService.setNewTeamToInitTournament(teamData);
         }
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
       },

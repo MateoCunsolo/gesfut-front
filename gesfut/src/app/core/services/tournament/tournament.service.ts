@@ -8,6 +8,7 @@ import { TournamentResponseShort } from '../../models/tournamentResponseShort';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
 import { SessionService } from '../manager/session.service';
 import { PlayerRequest } from '../../models/teamRequest';
+import { TeamResponse } from '../../models/teamResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,10 @@ export class TournamentService {
   $matches = this.matches.asObservable();
   teamName: BehaviorSubject<string> = new BehaviorSubject<string>('');
   $teamName = this.teamName.asObservable();
+  currentTeamsToInitTournament: BehaviorSubject<TeamResponse[]> = new BehaviorSubject<TeamResponse[]>([]);
+  $currentTeamsToInitTournament = this.currentTeamsToInitTournament.asObservable();
+  recentlyTeamCreated: BehaviorSubject<TeamResponse> = new BehaviorSubject<TeamResponse>({} as TeamResponse);
+  $recentlyTeamCreated = this.recentlyTeamCreated.asObservable();
 
   private sessionService = inject(SessionService);
   url = environment.apiUrl;
@@ -204,6 +209,14 @@ export class TournamentService {
   
   setNameTeamToViewEvents(teamName: string) {
     this.teamName.next(teamName);
+  }
+
+  setTeamsToInitTournament(teams: TeamResponse[]) {
+    this.currentTeamsToInitTournament.next(teams);
+  }
+
+  setNewTeamToInitTournament(team: TeamResponse) {
+    this.recentlyTeamCreated.next(team);
   }
 
 }
