@@ -71,7 +71,7 @@
       <div class="overflox">
         @for (item of teams; track $index) {
         <div class="team-section">
-          <li class="name">{{ item.name }}</li>
+          <li class="name">{{ item.name }} {{item.id}}</li>
           <div class="btn-teams">
             <svg
               class="icon"
@@ -103,7 +103,7 @@
       <div class="overflox">
         @for (item of teamsTournament; track $index) {
         <div class="team-section">
-          <li class="name">{{ item.name }}</li>
+          <li class="name">{{ item.name }} {{item.id}}</li>
           <div class="btn-teams">
             <svg
               class="icon"

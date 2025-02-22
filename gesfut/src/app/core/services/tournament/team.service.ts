@@ -17,9 +17,9 @@ export class TeamService {
 
   constructor(private http: HttpClient, private session: SessionService) { }
 
-  createTeam(request: TeamRequest): Observable<void> {
+  createTeam(request: TeamRequest): Observable<TeamResponse> {
     if (!this.session.isAuth()) {
-      return new Observable<void>();
+      return new Observable<TeamResponse>();
     }
 
     const token = sessionStorage.getItem('token');
@@ -28,7 +28,7 @@ export class TeamService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.post<void>(`${this.url}/create`, request, {
+    return this.http.post<TeamResponse>(`${this.url}/create`, request, {
       headers
     }).pipe(
       tap(() => console.log('Equipo creado exitosamente')),

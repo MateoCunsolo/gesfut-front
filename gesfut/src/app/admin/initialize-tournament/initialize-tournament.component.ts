@@ -58,7 +58,17 @@ export class InitializeTournamentComponent {
       }
     });
 
-  
+    this.tournamentService.$recentDate.subscribe({
+      next: (response) => {
+        if (response.days !== 0 && response.minutes !== 0) {
+          this.date = response.date;
+          this.days = response.days;
+          this.minutes = response.minutes;
+        }
+      }
+    });
+
+
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if (param.get('code')) {
@@ -75,19 +85,8 @@ export class InitializeTournamentComponent {
         })).sort((a, b) => a.name.localeCompare(b.name));
         this.teams = this.teams.filter(team => team.status === true);
         this.teamsFilters = [...this.teams];
-        this.tournamentService.$recentlyTeamCreated.subscribe({
-          next: (response) => {
-            if (response) {
-              let team = this.teams.find(team => team.name === response.name);
-              if (team) {
-              this.teamsTournament.push(team);
-              this.teams = this.teams.filter(t => t !== team);
-              this.teamsFilters = this.teamsFilters.filter(t => t !== team);
-            }
-          }
-          }
-        });
-    
+        this.getTeamRecentlyCreated();
+        this.filterTeamsTournament();
       },
       error: (err) => {
         console.error(err);
@@ -96,9 +95,31 @@ export class InitializeTournamentComponent {
         console.log('TEAMS LOADED');
       }
     });
+  }
 
+  getTeamRecentlyCreated() {
+    this.tournamentService.$recentlyTeamCreated.subscribe({
+      next: (response) => {
+        if (response) {
+          let team = this.teams.find(team => team.id === response.id);
+          if (team) {
+            this.teamsTournament.push(team);
+            this.teams = this.teams.filter(t => t.id !== team.id);
+            this.teamsFilters = [...this.teams];
+          }
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 
-
+  filterTeamsTournament() {
+    this.teams = this.teams.filter(team =>
+      !this.teamsTournament.some(t => t.id === team.id)
+    );
+    this.teamsFilters = [...this.teams];
   }
 
   cancelPicker(event: Boolean) {
@@ -117,6 +138,7 @@ export class InitializeTournamentComponent {
 
   timeChange(event: String) {
     this.date = (event as string);
+    this.tournamentService.setDateToInitTournament({ date: this.date, days: this.days, minutes: this.minutes });
   }
 
   initTournament() {
@@ -182,6 +204,7 @@ export class InitializeTournamentComponent {
   sendMinutesAndDays({ minutes, days }: { minutes: number; days: number; }) {
     this.minutes = minutes;
     this.days = days;
+    this.tournamentService.setDateToInitTournament({ date: this.date, days: this.days, minutes: this.minutes });
   }
 
   splitDate(date: string) {
@@ -254,5 +277,5 @@ export class InitializeTournamentComponent {
     this.searchTerm = '';
     this.teams = this.teamsFilters
   }
-  
+
 }

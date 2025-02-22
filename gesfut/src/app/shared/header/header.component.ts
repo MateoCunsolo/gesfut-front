@@ -25,6 +25,7 @@ export class HeaderComponent {
 
   changeComponent(component: string) {
     this.tournamentService.setTeamsToInitTournament([]);
+    this.tournamentService.setDateToInitTournament({ date: '', days: 0, minutes: 0 });
     if (component === 'dashboard-principal') {
       component = 'dashboard';
       this.dashboardService.setActiveDashboardAdminComponent(component);

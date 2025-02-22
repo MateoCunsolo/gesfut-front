@@ -245,12 +245,12 @@ export class CreateTeamComponent {
       return;
     }
     this.teamService.createTeam(teamData).subscribe({
-      next: () => {
+      next: (response) => {
         this.error = '';
         this.alertService.successAlert("Equipo creado!");
         if(this.inTournament){
           this.dashboardService.setActiveTournamentComponent('initialize');
-          this.tournamentService.setNewTeamToInitTournament(teamData);
+          this.tournamentService.setNewTeamToInitTournament(response);
         }
         this.dashboardService.setActiveDashboardAdminComponent('dashboard');
       },
