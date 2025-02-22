@@ -188,6 +188,7 @@ export class InitializeTournamentComponent {
   deleteTeam(team: TeamResponse) {
     this.teamsTournament = this.teamsTournament.filter(t => t !== team);
     this.teamsFilters.push(team);
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
     this.teams.push(team);
     this.teams.sort((a, b) => a.name.localeCompare(b.name));
   }
