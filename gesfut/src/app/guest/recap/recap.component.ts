@@ -37,13 +37,13 @@ export class RecapComponent {
     });
   }
 
-  ngOnInit() {
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        this.lastMatchDay = response.matchDays[response.matchDays.length - 1];
-      },
-    });
-  }
+  // ngOnInit() {
+  //   this.tournamentService.currentTournament.subscribe({
+  //     next: (response) => {
+  //       this.lastMatchDay = response.matchDays[response.matchDays.length - 1];
+  //     },
+  //   });
+  // }
 
   verifyNextMatchDay() {
     if (this.lastMatchDay) {

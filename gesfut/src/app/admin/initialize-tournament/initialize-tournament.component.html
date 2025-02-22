@@ -54,7 +54,9 @@
   <h2 class="title">AGREGAR EQUIPOS AL TORNEO</h2>
   <div class="grid-conteiner">
     <section class="col-1-teams-all">
-      <h3 class="title black">MIS EQUIPOS</h3>
+      <h3 class="title black">MIS EQUIPOS
+        <span class="count">{{teams.length}}</span>
+      </h3>
       <hr
     style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"
   />
@@ -96,10 +98,18 @@
         @if (teamsTournament.length<4) {
           <span title="Minimo 4 equipos" class="count">{{teamsTournament.length}}/4</span>
         }@else {
-          <span  class="count">{{teamsTournament.length}}</span>
+          <span  class="count">{{teamsTournament.length}}</span>         
         }
+        <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"/>
+        <div class="spans-add-delete-all">
+          <span class="count add-all"(click)="addAllTeams()">
+            AGREGAR TODOS
+          </span>
+          <span class="count delete-all"(click)="deleteAllTeams()">
+            ELIMINAR TODOS
+          </span>
+        </div>
       </h3>
-      <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"/>
       <div class="overflox">
         @for (item of teamsTournament; track $index) {
         <div class="team-section">

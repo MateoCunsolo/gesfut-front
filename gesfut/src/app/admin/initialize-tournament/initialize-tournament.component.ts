@@ -151,24 +151,31 @@ export class InitializeTournamentComponent {
         minutesPerMatch: this.minutes,
         dayBetweenMatchDay: this.days
       };
-      console.log(initializeRequest);
-      this.alertService.loadingAlert('Inicializando torneo...');
-      this.adminService.initTournament(initializeRequest).subscribe({
-        next: (response) => {
-          this.alertService.successAlert('Torneo inicializado');
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+      this.alertService.infoAlertTournament('INFORMACION DEL TORNEO', this.teamsTournament, this.splitDate(this.date).dateWithStrings, this.minutes, this.days)
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.alertService.loadingAlert('Inicializando torneo...');
+            this.adminService.initTournament(initializeRequest).subscribe({
+              next: () => {
+                this.alertService.successAlert('Torneo inicializado');
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
 
-        },
-        error: (err) => {
-          this.alertService.errorAlert(err.error.error);
-          console.error(err);
-        },
-        complete: () => {
-          console.log('TOURNAMENT INITIALIZED');
-        }
-      });
+              },
+              error: (err) => {
+                this.alertService.errorAlert(err.error.error);
+                console.error(err);
+              },
+              complete: () => {
+                console.log('TOURNAMENT INITIALIZED');
+              }
+            });
+          } else {
+            return;
+          }
+        });
+
     } else {
       this.alertService.errorAlert('El torneo debe tener al menos 4 equipos');
     }
@@ -191,6 +198,7 @@ export class InitializeTournamentComponent {
     this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
     this.teams.push(team);
     this.teams.sort((a, b) => a.name.localeCompare(b.name));
+    this.teamsFilters = this.teamsFilters.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   editTeam(team: TeamRequest) {
@@ -209,6 +217,9 @@ export class InitializeTournamentComponent {
   }
 
   splitDate(date: string) {
+    if (!date) {
+      return { dateWithStrings: '', hours: '' };
+    }
     const dateSplitted = date.split('T');
     const hours = dateSplitted[1].split(':')[0] + ':' + dateSplitted[1].split(':')[1];
     const dateWithStrings = this.dateToString(dateSplitted[0]);
@@ -278,5 +289,27 @@ export class InitializeTournamentComponent {
     this.searchTerm = '';
     this.teams = this.teamsFilters
   }
+
+  deleteAllTeams() {
+    this.teamsTournament.forEach(team => {
+      this.teamsFilters.push(team);
+      this.teams.push(team);
+    })
+    this.teamsTournament = [];
+    this.teams = this.teams.sort((a, b) => a.name.localeCompare(b.name));
+    this.teamsFilters = this.teamsFilters.sort((a, b) => a.name.localeCompare(b.name));
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+  }
+
+
+  addAllTeams() {
+    this.teams.forEach(team => {
+      this.teamsTournament.push(team);
+      this.teamsFilters = this.teamsFilters.filter(t => t !== team);
+    });
+    this.teams = [];
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+  }
+
 
 }
