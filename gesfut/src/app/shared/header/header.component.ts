@@ -5,6 +5,7 @@ import { UserComponent } from '../../shared/user/user.component';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { TeamResponse } from '../../core/models/teamResponse';
 
 @Component({
   selector: 'app-header',
@@ -26,6 +27,8 @@ export class HeaderComponent {
   changeComponent(component: string) {
     this.tournamentService.setTeamsToInitTournament([]);
     this.tournamentService.setDateToInitTournament({ date: '', days: 0, minutes: 0 });
+    const recetTeam = {} as TeamResponse;
+    this.tournamentService.setNewTeamToInitTournament(recetTeam)
     if (component === 'dashboard-principal') {
       component = 'dashboard';
       this.dashboardService.setActiveDashboardAdminComponent(component);

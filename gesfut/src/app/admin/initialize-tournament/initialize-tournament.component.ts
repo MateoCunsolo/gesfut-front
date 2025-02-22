@@ -40,6 +40,7 @@ export class InitializeTournamentComponent {
 
 
   changeComponent(component: string) {
+    this.tournamentService.setNewTeamToInitTournament({} as TeamResponse);
     this.dashboardService.setActiveTournamentComponent(component);
   }
 
@@ -67,7 +68,6 @@ export class InitializeTournamentComponent {
         }
       }
     });
-
 
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
