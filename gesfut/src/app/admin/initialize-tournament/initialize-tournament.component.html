@@ -23,11 +23,11 @@
   @if (!showPicker && date) {
   <div class="info-dates">
     <p>
-      <span> INCIO </span> {{ splitDate(date).hours }} hs el
-      dia {{ splitDate(date).dateWithStrings }}
+      <span> INCIO </span> {{ splitDate(date).hours }} HS EL DIA
+      {{ splitDate(date).dateWithStrings.toUpperCase() }}
     </p>
-    <p><span> DURACION DE PARTIDOS</span>{{ minutes }} min.</p>
-    <p><span> INTERVALO ENTRE JORNADAS </span>{{ days }} dias</p>
+    <p><span> DURACION DE PARTIDOS</span>{{ minutes }} MINUTOS</p>
+    <p><span> INTERVALO ENTRE JORNADAS </span>{{ days }} DIAS</p>
     <div class="buttons-date">
       <button (click)="showFormTimePicker()" class="edit">
         <i class="accordion-button fa-solid fa-pencil"></i>

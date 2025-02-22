@@ -211,26 +211,26 @@
 .info-dates {
   display: flex;
   justify-content: start;
-  align-items: top;
+  align-items: start;
   width: 100%;
   gap: 10px;
   p {
     padding: 0px 15px;
-    border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     text-align: center;
+    padding: 5px 10px;
     gap: 5px;
     span {
-      border: solid var(--primary-color) 1px;
       width: 100%;
-      text-align: center;
-      border-radius: 5px;
-      padding: 2.5px 15px;
       background-color: var(--secondary-color);
+      text-align: center;
+      padding: 2.5px 15px;
+      font-size: 16px !important;
+      color: black;
     }
   }
 
