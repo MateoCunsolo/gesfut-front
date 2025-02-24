@@ -13,11 +13,18 @@ import Swal from 'sweetalert2';
 export class UserComponent {
   isMenuOpen = false;
   name: string = '';
+  code: string = '';
+  isTournament = false;
   private alertService = inject(AlertService);
   constructor(private sessionService: SessionService, private route: Router) {
     this.sessionService.userData.subscribe((data) => {
       this.name = data.name;
     });
+  }
+
+  ngOnInit(): void {
+    this.code = localStorage.getItem('lastTournamentClicked') || '';
+    if (this.code) this.isTournament = true;
   }
 
   toggleMenu() {
@@ -54,9 +61,21 @@ export class UserComponent {
           this.route.navigateByUrl('/admin/faq');
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           this.alertService.infoAlert('gesfut.arg@gmail.com', 'Porfavor detalla correctamente el problema y si puedes envia fotos. Gracias por tu colaboración');
-        }else{
+        } else {
           this.alertService.infoAlertTop('No se ha seleccionado ninguna opción');
           this.route.navigateByUrl('/admin');
+        }
+      });
+  }
+
+  generateLink() {
+    this.alertService.saherdLinkAlert('LINK DEL TORNEO', 'http://localhost:4200/' + this.code).
+      then((result) => {
+        if (result.isConfirmed) {
+          this.alertService.loadingAlert('Copiando link al portapapeles...');
+          navigator.clipboard.writeText('http://localhost:4200/' + this.code).then(() => {
+            this.alertService.infoAlertTop('Link copiado al portapapeles');
+          });
         }
       });
   }

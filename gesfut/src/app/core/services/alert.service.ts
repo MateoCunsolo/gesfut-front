@@ -261,6 +261,27 @@ export class AlertService {
       width: '600px'
     });
   }
+
+  saherdLinkAlert(title: string, link: string) {
+    return Swal.fire({
+      title: title,
+      html: `
+        <div style="display: flex; flex-direction: column; text-align: left; font-size: 16px; gap: 10px;">
+          <p><strong>Link:</strong> ${link}</p>
+        </div>`,
+      confirmButtonText: 'COPIAR LINK',
+      showConfirmButton: true,
+      showCancelButton: true,
+      cancelButtonText: 'CERRAR',
+      width: '600px',
+      customClass: {
+        container: 'container-toast',
+        icon: 'toast-icon',
+        title: 'toast-title',
+        confirmButton: 'base-button',
+      },
+    });
+  }
   
   
 
