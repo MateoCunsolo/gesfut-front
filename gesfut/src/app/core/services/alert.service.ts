@@ -16,7 +16,9 @@ export class AlertService {
       icon: "success",
       title: title,
       showConfirmButton: false,
-      timer: 1600
+      timer: 1600,
+      scrollbarPadding: false,
+
     });
   }
 
@@ -266,18 +268,16 @@ export class AlertService {
     return Swal.fire({
       title: title,
       html: `
-        <div style="display: flex; flex-direction: column; text-align: left; font-size: 16px; gap: 10px;">
+        <div style="display: flex; flex-direction: column; text-align: center; font-size: 14px; gap: 10px; margin: 0;">
           <p><strong>Link:</strong> ${link}</p>
         </div>`,
       confirmButtonText: 'COPIAR LINK',
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'CERRAR',
+      scrollbarPadding: false,
       width: '600px',
       customClass: {
-        container: 'container-toast',
-        icon: 'toast-icon',
-        title: 'toast-title',
         confirmButton: 'base-button',
       },
     });

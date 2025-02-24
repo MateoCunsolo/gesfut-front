@@ -44,6 +44,11 @@ export class FaqComponent {
       open: false
     },
     {
+      question: '¿Cómo puedo compartir un torneo?',
+      answer: 'Puedes compartir un torneo a través de su link, lo podes generar apretando en el icono del usuario y seleccionando "Compartir torneo" . Debes si o si estar dentro de la seccion torneo para poder compartirlo.',
+      open: false
+    },
+    {
       question: '¿Cómo puede un jugador visualizar los resultados de los partidos?',
       answer: 'Un jugador puede acceder a la sección de resultados a traves del link que le enviara el administrador para ver la informacion del torneo completo.',
       open: false

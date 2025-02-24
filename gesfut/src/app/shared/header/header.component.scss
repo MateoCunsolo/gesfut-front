@@ -9,7 +9,6 @@ header {
     height: 80px;
     font-size: 1.5rem;
     width: 100%;
-  
     @media screen and (max-width: 768px) {
       font-size: var(--font-size-text);
       gap: 2px;
@@ -92,3 +91,6 @@ header {
     }
   }
   
+  .user{
+    width: auto;
+  }

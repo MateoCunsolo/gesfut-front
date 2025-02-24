@@ -102,9 +102,8 @@ export class UserComponent {
     this.alertService.saherdLinkAlert('LINK DEL TORNEO', 'http://localhost:4200/' + this.code).
       then((result) => {
         if (result.isConfirmed) {
-          this.alertService.loadingAlert('Copiando link al portapapeles...');
           navigator.clipboard.writeText('http://localhost:4200/' + this.code).then(() => {
-            this.alertService.infoAlertTop('Link copiado al portapapeles');
+            this.alertService.successAlert('Link copiado al portapapeles');
           });
         }
       });
