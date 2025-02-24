@@ -40,7 +40,7 @@ header {
     justify-content: start;
     align-items: start;
     gap: 10px;
-    width: auto;
+    width: 200px;
   
     @media screen and (max-width: 576px) {
       flex-direction: column;
@@ -67,6 +67,7 @@ header {
   
   .title-tournament {
     cursor: default;
+    width: 200px;
     @media screen and (max-width: 576px) {
       display: none;
     }
@@ -83,10 +84,10 @@ header {
   }
   
   .btn-login {
+    width: 200px;
     @media screen and (max-width: 768px) {
       padding: 5px 10px;
       font-size: 1.5rem;
       width: auto;
     }
   }
-  
