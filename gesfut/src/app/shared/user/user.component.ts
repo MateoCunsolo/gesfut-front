@@ -3,6 +3,7 @@ import { SessionService } from '../../core/services/manager/session.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../core/services/alert.service';
 import Swal from 'sweetalert2';
+import { TournamentService } from '../../core/services/tournament/tournament.service';
 
 @Component({
   selector: 'app-user',
@@ -16,15 +17,19 @@ export class UserComponent {
   code: string = '';
   isTournament = false;
   private alertService = inject(AlertService);
-  constructor(private sessionService: SessionService, private route: Router) {
+  constructor(private sessionService: SessionService, private route: Router, private tournamentService: TournamentService) {
     this.sessionService.userData.subscribe((data) => {
       this.name = data.name;
     });
   }
 
   ngOnInit(): void {
-    this.code = localStorage.getItem('lastTournamentClicked') || '';
-    if (this.code) this.isTournament = true;
+    this.tournamentService.currentTournament.subscribe({
+      next: (response) => {
+        this.code = response.code;
+        if (this.code.length>1) this.isTournament = true;
+      }
+    });
   }
 
   toggleMenu() {
