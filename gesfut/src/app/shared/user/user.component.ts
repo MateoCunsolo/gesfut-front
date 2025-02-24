@@ -1,9 +1,10 @@
 import { Component, HostListener, inject, OnDestroy } from '@angular/core';
 import { SessionService } from '../../core/services/manager/session.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AlertService } from '../../core/services/alert.service';
 import Swal from 'sweetalert2';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -16,21 +17,45 @@ export class UserComponent {
   name: string = '';
   code: string = '';
   isTournament = false;
+  private routerSubscription!: Subscription;
+  containsTournaments: boolean = false;
+
   private alertService = inject(AlertService);
-  constructor(private sessionService: SessionService, private route: Router, private tournamentService: TournamentService) {
+  constructor(private sessionService: SessionService, private route: Router, private tournamentService: TournamentService,private activatedRoute: ActivatedRoute) {
     this.sessionService.userData.subscribe((data) => {
       this.name = data.name;
     });
   }
 
+
   ngOnInit(): void {
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        this.code = response.code;
-        if (this.code.length>1) this.isTournament = true;
-      }
-    });
+    this.routerSubscription = this.route.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.checkUrl(event.urlAfterRedirects);
+      });
   }
+
+  checkUrl(url: string): void {
+    this.containsTournaments = url.includes('tournaments');
+    if (this.containsTournaments) {
+      this.isTournament = true;
+      this.tournamentService.currentTournament.subscribe({
+        next: (response) => {
+          this.code = response.code;
+        }
+      })
+    } else {
+      this.isTournament = false;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
