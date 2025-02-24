@@ -154,7 +154,6 @@ export class ListTournamentsComponent {
         (this.filter === 'finished' && tournament.isFinished && tournament.isActive) ||
         (this.filter === 'inProgress' && !tournament.isFinished && tournament.isActive) || 
         (this.filter === 'trash' && tournament.isActive === false);
-      console.log(`${tournament.name}:`, matchesSearch && matchesFilter);
       return matchesSearch && matchesFilter;
     });
     

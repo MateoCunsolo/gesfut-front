@@ -315,3 +315,10 @@ span{
 .quantity{
   text-wrap: none;
 }
+
+.modificable-stats{
+  cursor: pointer;
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
+}
