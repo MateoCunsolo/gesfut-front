@@ -159,18 +159,7 @@ export class TeamService {
 
     return this.http.get<TeamResponse>(`${this.url}/${idTeam}`, {
       headers
-    }).pipe(
-      tap((response) => {
-         return response.players.map(player => {
-          player.name = player.name.toUpperCase();
-          player.lastName = player.lastName.toUpperCase();
-          return player;
-         });
-      } ),
-      catchError((error: HttpErrorResponse) => {
-        console.error('Error al obtener el equipo', error);
-        return throwError(() => error);
-      }))
+    })
   }
 
 

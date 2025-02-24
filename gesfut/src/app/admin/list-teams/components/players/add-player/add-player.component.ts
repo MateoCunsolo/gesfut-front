@@ -64,6 +64,7 @@ export class AddPlayerComponent implements OnChanges {
       }
       
       if (this.teamIdParticipant === 0) {
+        
         this.playersGlobal = teamResponse.players.filter(player => !player.status);
         this.therArePlayersToADD = this.playersGlobal.length > 0;
       }else{

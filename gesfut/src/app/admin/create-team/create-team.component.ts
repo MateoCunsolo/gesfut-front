@@ -71,7 +71,7 @@ button: any;
 
   changeComponent(component: string) {
     this.dashboardService.setActiveDashboardAdminComponent(component)
-    this.dashboardService.setActiveTournamentComponent(component)
+    this.dashboardService.setActiveTournamentComponent('initialize');
   }
 
   toggleExcelUpload(): void {
