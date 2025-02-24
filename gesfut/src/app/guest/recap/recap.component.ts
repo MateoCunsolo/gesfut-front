@@ -110,19 +110,19 @@ export class RecapComponent {
     }));
 
     this.topScorers.sort((a, b) => b.goals - a.goals);
-    if (this.topScorers.length > 15) {
+    if (this.topScorers.length > 10) {
       this.previousSliceTopScores = [...this.topScorers];
-      this.topScorers = this.topScorers.slice(0, 15);
+      this.topScorers = this.topScorers.slice(0, 10);
       
     }
   }
 
 
   viewMoreTopScores(){
-    if(this.topScorers.length === 15){
+    if(this.topScorers.length === 10){
       this.topScorers = this.previousSliceTopScores;
     }else{
-      this.topScorers = this.topScorers.slice(0, 15);
+      this.topScorers = this.topScorers.slice(0, 10);
     }
   }
 
