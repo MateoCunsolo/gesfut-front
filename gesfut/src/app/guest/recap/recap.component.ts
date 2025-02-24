@@ -19,6 +19,7 @@ export class RecapComponent {
   tournamentCode!: string;
   lastMatchDay!: MatchDayResponse;
   topScorers: { playerName: string; goals: number }[] = [];
+  previousSliceTopScores: { playerName: string; goals: number }[] = [];
   forecast: any;
   loadingWeather: boolean = false;
   isPreviousDayAvailable: boolean = false;
@@ -109,6 +110,20 @@ export class RecapComponent {
     }));
 
     this.topScorers.sort((a, b) => b.goals - a.goals);
+    if (this.topScorers.length > 15) {
+      this.previousSliceTopScores = [...this.topScorers];
+      this.topScorers = this.topScorers.slice(0, 15);
+      
+    }
+  }
+
+
+  viewMoreTopScores(){
+    if(this.topScorers.length === 15){
+      this.topScorers = this.previousSliceTopScores;
+    }else{
+      this.topScorers = this.topScorers.slice(0, 15);
+    }
   }
 
   getForecast() {

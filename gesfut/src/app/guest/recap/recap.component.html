@@ -93,6 +93,14 @@
           </div>
         </div>
         }
+        <p (click)="viewMoreTopScores()" class="view-more">
+          @if (topScorers.length<=15) {
+            ver mas
+          }@else {
+            ver menos
+          }
+
+        </p>
       </div>
       } @else if(forecast && !lastMatchDay.isFinished) {
       <app-weather-card class="weather" [day]="forecast"></app-weather-card>
