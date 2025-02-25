@@ -49,7 +49,7 @@ export class DashboardComponent {
           this.flagIsMyTournament = false;
           localStorage.removeItem('lastTournamentClicked');
           localStorage.removeItem('lastTournamentClickedName');
-          window.location.href = window.location.href;
+          window.location.reload();
           console.log("No es mi torneo");
         }
       },
