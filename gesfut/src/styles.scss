@@ -104,8 +104,10 @@ small {
 }
 
 .checkbox-icon:hover {
-    border-color: var(--secondary-color);
-    background-color: var(--secondary-color);
+    @media screen and (min-width: 768px) {
+        border-color: var(--secondary-color);
+        background-color: var(--secondary-color);
+    }   
 }
 
 label {
