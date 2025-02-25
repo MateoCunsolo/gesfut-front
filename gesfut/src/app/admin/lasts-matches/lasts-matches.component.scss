@@ -2,8 +2,12 @@
     display: flex;
     flex-direction: column;
     padding: 16px;
-    min-height: calc(100vh - 160px);
+    min-height: calc(100vh - 130px);
     gap: 30px;
+}
+
+.container-in-global{
+   min-height: calc(100vh - 80px) !important;
 }
 
 .gap{

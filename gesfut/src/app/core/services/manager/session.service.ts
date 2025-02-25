@@ -4,6 +4,7 @@ import { AuthResponse } from '../../models/authResponse';
 import { Router } from '@angular/router';
 import {  map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../enviroments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +18,7 @@ export class SessionService {
     role: ''
   });
 
-  url: string = 'http://localhost:8080/api/v1/auth';
+  url: string = environment.apiUrl+'/auth';
 
 
   constructor(private router:Router, private http: HttpClient) {

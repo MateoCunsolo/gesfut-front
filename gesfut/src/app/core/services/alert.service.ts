@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import { ParticipantResponse } from '../models/tournamentResponse';
 import { Observable, Subject } from 'rxjs';
+import { TeamResponse } from '../models/teamResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,9 @@ export class AlertService {
       icon: "success",
       title: title,
       showConfirmButton: false,
-      timer: 1600
+      timer: 1600,
+      scrollbarPadding: false,
+
     });
   }
 
@@ -89,7 +92,7 @@ export class AlertService {
       title: title,
       text: text,
       icon: 'warning',
-      width: 'auto',
+      width: '300px',
       showCancelButton: true,
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--error-color)',
@@ -236,6 +239,50 @@ export class AlertService {
       }
     });
   }
+  
+  infoAlertTournament(title: string, teams: TeamResponse[], date: string, minutes: number, days: number) {
+    return Swal.fire({
+      icon: 'info',
+      title: title,
+      html: `
+        <div style="display: flex; flex-direction: column; text-align: left; font-size: 16px; gap: 10px;">
+          <p><strong>Equipos:</strong> ${teams.map(team => team.name).join(', ')}</p>
+          <p><strong>Fecha de inicio:</strong> ${date ? date : "Sin fecha"}</p>
+          <p><strong>Minutos por partido:</strong> ${minutes ? minutes : "Sin duración"}</p>
+          <p><strong>Días entre jornadas:</strong> ${days ? days : "Sin días"}</p>
+          *Tambien podras cargar las fecha en la seccion 'FECHAS' una vez que inicies el torneo.
+        </div>`,
+      confirmButtonText: 'INICIALIZAR',
+      showConfirmButton: true,
+      showCancelButton: true,
+      cancelButtonText: 'EDITAR',
+      customClass: {
+        confirmButton: 'base-button',
+        cancelButton: 'back-button',
+      },
+      width: '600px'
+    });
+  }
+
+  saherdLinkAlert(title: string, link: string) {
+    return Swal.fire({
+      title: title,
+      html: `
+        <div style="display: flex; flex-direction: column; text-align: center; font-size: 14px; gap: 10px; margin: 0;">
+          <p><strong>Link:</strong> ${link}</p>
+        </div>`,
+      confirmButtonText: 'COPIAR LINK',
+      showConfirmButton: true,
+      showCancelButton: true,
+      cancelButtonText: 'CERRAR',
+      scrollbarPadding: false,
+      width: '600px',
+      customClass: {
+        confirmButton: 'base-button',
+      },
+    });
+  }
+  
   
 
 }

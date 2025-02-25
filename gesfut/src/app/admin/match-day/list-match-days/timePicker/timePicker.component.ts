@@ -81,7 +81,9 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
 
       @if(isForAllMatches){
       <h3>Actualizar fecha de todos los partidos</h3>
-      }@else{
+      }@else if(isToInitTournament){
+      <h3>Seleccionar fecha del primer partido del torneo</h3>
+      }@else {
       <h3>Actualizar fecha del partido</h3>
       }
 
@@ -112,11 +114,18 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         <mat-timepicker-toggle [for]="timepicker" matSuffix />
       </mat-form-field>
 
-      @if(isForAllMatches){
+      @if(isForAllMatches || isToInitTournament){
       <mat-form-field>
         <mat-label>Duracion estimada del partido en minutos</mat-label>
         <input matInput type="number" min="45" [(ngModel)]="plusMinutes"/> </mat-form-field
       >}
+      
+      @if(isToInitTournament){
+        <mat-form-field>
+        <mat-label>Intervalo de dias entre jornadas</mat-label>
+        <input matInput type="number" min="7" [(ngModel)]="plusDays"/> </mat-form-field
+      >}
+      
 
       <button class="base-button" (click)="dateFunction()">CARGAR FECHA</button>
     </section>
@@ -155,6 +164,7 @@ export class TimepickerDatepickerIntegrationExample {
   private alertService = inject(AlertService);
   value: Date = new Date();
   plusMinutes: number = 60;
+  plusDays: number = 7;
   @Input() isToInitTournament: boolean = false;
   @Input() matchId: number = 0;
   @Input() matchDayId: number = 0;
@@ -162,6 +172,7 @@ export class TimepickerDatepickerIntegrationExample {
   @Output() cancelPicker = new EventEmitter<Boolean>();
   @Output() sendDate = new EventEmitter<string>();
   @Output() sendAllDates = new EventEmitter<MatchDateResponse[]>();
+  @Output() sendMinutesAndDays = new EventEmitter<{minutes: number, days: number}>();
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -199,6 +210,7 @@ export class TimepickerDatepickerIntegrationExample {
         this.updateOneMatchDate(localDateTime, this.matchId);
       }else if(this.isToInitTournament){
         this.sendDate.emit(localDateTime);
+        this.sendMinutesAndDays.emit({minutes: this.plusMinutes, days: this.plusDays});
         this.cancelPickerFunction();
       }
     } else

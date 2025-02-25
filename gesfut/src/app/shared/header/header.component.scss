@@ -9,7 +9,6 @@ header {
     height: 80px;
     font-size: 1.5rem;
     width: 100%;
-  
     @media screen and (max-width: 768px) {
       font-size: var(--font-size-text);
       gap: 2px;
@@ -40,7 +39,7 @@ header {
     justify-content: start;
     align-items: start;
     gap: 10px;
-    width: auto;
+    width: 200px;
   
     @media screen and (max-width: 576px) {
       flex-direction: column;
@@ -67,6 +66,8 @@ header {
   
   .title-tournament {
     cursor: default;
+    width: 200px;
+
     @media screen and (max-width: 576px) {
       display: none;
     }
@@ -90,3 +91,6 @@ header {
     }
   }
   
+  .user{
+    width: auto;
+  }

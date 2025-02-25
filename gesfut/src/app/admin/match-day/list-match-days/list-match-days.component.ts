@@ -49,8 +49,10 @@ export class ListMatchDaysComponent implements OnInit {
             undefined
           );
         this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay + 1 : 0;
+        this.bindingSelect = this.selectedMatchDay;
         if (this.selectedMatchDay === this.tournament.matchDays.length) {
           this.selectedMatchDay = this.tournament.matchDays.length - 1;
+          this.bindingSelect = this.selectedMatchDay;
           this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
         }
         this.sortMatchDays();
@@ -95,13 +97,13 @@ export class ListMatchDaysComponent implements OnInit {
 
   async toggleMatchDayStatus(status: boolean) {
     if (this.tournament.isFinished) {
-      this.alertService.errorAlert('El torneo ya ha finalizado');
+      this.alertService.infoAlertTop('El torneo ya ha finalizado.');
       return;
     }
     this.alertService
       .confirmAlert(
         '¿Estás seguro?',
-        'Esta acción no se puede deshacer',
+        'Reabrir la fecha te permitirá modificar los resultados.',
         'Confirmar'
       )
       .then((result) => {
@@ -131,6 +133,22 @@ export class ListMatchDaysComponent implements OnInit {
       }
       return;
     }
+
+    //ADVERTIR QUE ES LA ULTIMA FECHA 
+    if (this.selectedMatchDay === this.tournament.matchDays.length - 1 && !this.tournament.matchDays[this.selectedMatchDay].isFinished) {
+      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Esta es la última fecha del torneo, al cerrarla se dara por terminado el torneo y no se podra volver a abrir.', 'Confirmar')
+        .then((result) => {
+          if (result.isConfirmed) {
+            if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
+              this.closeMatchDayWithMvp(status);
+            } else {
+              this.openMatchDay(status);
+            }
+          }
+        });
+      return;
+    }
+
     if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
       this.closeMatchDayWithMvp(status);
     } else {

@@ -51,7 +51,7 @@
           </div>
 
           <div class="input-icon ">
-            <input  (click)="isPlayerSelected()"  formControlName="yellowCard" type="number" min="0" max="2"/>
+            <input (change)="isRedCard()"   (click)="isPlayerSelected()"  formControlName="yellowCard" type="number" min="0" max="2"/>
             <i class="fa-solid fa-square" id="yellow"></i>
           </div>
 
@@ -106,9 +106,9 @@
             <tr *ngFor="let event of events">
               <td>{{ event.team }}</td>
               <td>{{ event.name }}</td>
-              <td><span (click)="addGoals(event.id)" style="cursor: pointer;">+</span>{{ event.goals }}  <span (click)="removeGoal(event.id)" style="cursor: pointer;"> - </span></td>
-              <td><span (click)="addYellowCard(event.id)"style="cursor: pointer;">+</span> {{ event.yellowCard }}<span (click)="removeYellowCard(event.id)" style="cursor: pointer;"> - </span></td>
-              <td><span (click)="addRedCard(event.id)" style="cursor: pointer;">+</span>{{ event.redCard }}<span (click)="removeRedCard(event.id)" style="cursor: pointer;"> - </span></td>
+              <td><span (click)="addGoals(event.id)" class="modificable-stats">+</span>{{ event.goals }}  <span (click)="removeGoal(event.id)" class="modificable-stats"> - </span></td>
+              <td><span (click)="addYellowCard(event.id)" class="modificable-stats">+</span> {{ event.yellowCard }}<span (click)="removeYellowCard(event.id)"class="modificable-stats"> - </span></td>
+              <td><span (click)="addRedCard(event.id)" class="modificable-stats">+</span>{{ event.redCard }}<span (click)="removeRedCard(event.id)"class="modificable-stats"> - </span></td>
               <td>@if(event.mvp){
                 <i (click)="changeMvpStatus(event.id)" class="fa-solid fa-star"></i>
                 }@else {

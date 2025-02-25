@@ -8,6 +8,7 @@ import { TournamentResponseShort } from '../../models/tournamentResponseShort';
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
 import { SessionService } from '../manager/session.service';
 import { PlayerRequest } from '../../models/teamRequest';
+import { TeamResponse } from '../../models/teamResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,25 @@ export class TournamentService {
   $matches = this.matches.asObservable();
   teamName: BehaviorSubject<string> = new BehaviorSubject<string>('');
   $teamName = this.teamName.asObservable();
+  currentTeamsToInitTournament: BehaviorSubject<TeamResponse[]> = new BehaviorSubject<TeamResponse[]>([]);
+  $currentTeamsToInitTournament = this.currentTeamsToInitTournament.asObservable();
+  recentlyTeamCreated: BehaviorSubject<TeamResponse> = new BehaviorSubject<TeamResponse>({} as TeamResponse);
+  $recentlyTeamCreated = this.recentlyTeamCreated.asObservable();
+
+  recentDate: BehaviorSubject<{
+    date: string,
+    minutes: number,
+    days: number;
+  }> = new BehaviorSubject<{
+    date: string,
+    minutes: number,
+    days: number;
+  }>({
+    date: '',
+    minutes: 0,
+    days: 0
+  });
+  $recentDate = this.recentDate.asObservable();
 
   private sessionService = inject(SessionService);
   url = environment.apiUrl;
@@ -56,7 +76,8 @@ export class TournamentService {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      }}).pipe(
+      }
+    }).pipe(
       tap({
         next: (response: boolean) => {
           return response;
@@ -65,7 +86,7 @@ export class TournamentService {
           return throwError(() => error)
         }
       })
-      );
+    );
   }
 
 
@@ -201,9 +222,21 @@ export class TournamentService {
   setMatches(matches: MatchResponse[]) {
     this.matches.next(matches);
   }
-  
+
   setNameTeamToViewEvents(teamName: string) {
     this.teamName.next(teamName);
+  }
+
+  setTeamsToInitTournament(teams: TeamResponse[]) {
+    this.currentTeamsToInitTournament.next(teams);
+  }
+
+  setNewTeamToInitTournament(team: TeamResponse) {
+    this.recentlyTeamCreated.next(team);
+  }
+
+  setDateToInitTournament({date, minutes, days}: {date: string, minutes: number, days: number}) {
+    this.recentDate.next({date, minutes, days});
   }
 
 }

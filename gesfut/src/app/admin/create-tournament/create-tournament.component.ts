@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ChangeDetectionStrategy } from '@angular/core';
 
@@ -7,9 +7,12 @@ import { TournamentRequest } from '../../core/models/tournamentRequest';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
+import { AuthService } from '../../core/services/manager/auth.service';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
     selector: 'app-create-tournament',
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, SpinnerComponent],
     templateUrl: './create-tournament.component.html',
     styleUrl: './create-tournament.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,13 +20,16 @@ import { AlertService } from '../../core/services/alert.service';
 
 export class CreateTournamentComponent {
   createTournamentForm: FormGroup;
-
+  isloding = false;
   constructor(
     private dashboardService: DashboardService,
     private adminService: AdminService,
     private alertService: AlertService,
     private fb: FormBuilder, 
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
+
   ) {
     this.createTournamentForm = this.fb.group({
       name: ['', [
@@ -44,7 +50,7 @@ export class CreateTournamentComponent {
   onSubmit() {
     if (this.createTournamentForm.valid) {
       const tournament: TournamentRequest = { name: this.name?.value };
-      console.log("torneo antes del llamado: " + tournament);
+      this.isloding = true;
       this.adminService.createTournament(tournament).subscribe({
         next: (response) => {
           localStorage.setItem('lastTournamentClicked', response.toString());
@@ -53,9 +59,17 @@ export class CreateTournamentComponent {
           this.router.navigate([`/admin/tournaments/${response}`]);
           this.dashboardService.setHaveParticipants(false);
         },
-        error: (err) => {
-          console.error('Error al crear el torneo:', err);
-        }
+        error:(err: HttpErrorResponse) => {
+          this.isloding = false;
+            try {
+              const errorObj = JSON.parse(err.error);
+              this.alertService.errorAlert(errorObj.error);
+            } catch (parseError) {
+              this.alertService.errorAlert('Ocurrió un error inesperado.');
+            }
+            this.authService.serverNotResponding(err);
+            this.cd.markForCheck(); 
+          }
       });
     } else {
       if (this.createTournamentForm.get('name')?.errors?.['required']) {
@@ -67,8 +81,6 @@ export class CreateTournamentComponent {
       } else if (this.createTournamentForm.get('name')?.errors?.['pattern']) {
         this.alertService.errorAlert('El nombre del torneo no puede contener espacios al inicio o al final');
       }
-      
-
       this.createTournamentForm.markAllAsTouched();
     }
   }

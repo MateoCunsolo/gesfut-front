@@ -1,6 +1,8 @@
 <div class="container">
     <h2 class="title">CARGAR JUGADORES DESDE UN EXCEL</h2>
-    <button class="base-button" (click)="showFormatExcel()">DESCARGAR FORMATO REQUERIDO</button>
-    <input type="file" (change)="onFileChange($event)" />
+    <div class="excel-upload-container">
+      <button type="button" class="base-button" (click)="showFormatExcel()">DESCARGAR FORMATO REQUERIDO</button>
+      <input type="file" (change)="onFileChange($event)" />
+    </div>
   </div>
   

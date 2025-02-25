@@ -19,6 +19,7 @@ export class RecapComponent {
   tournamentCode!: string;
   lastMatchDay!: MatchDayResponse;
   topScorers: { playerName: string; goals: number }[] = [];
+  previousSliceTopScores: { playerName: string; goals: number }[] = [];
   forecast: any;
   loadingWeather: boolean = false;
   isPreviousDayAvailable: boolean = false;
@@ -30,7 +31,6 @@ export class RecapComponent {
   ) {
     this.route.paramMap.subscribe((params) => {
       const code = params.get('code');
-      console.log(code);
       if (code) {
         this.tournamentCode = code;
         this.loadLastMatchDay(code);
@@ -38,9 +38,16 @@ export class RecapComponent {
     });
   }
 
+  // ngOnInit() {
+  //   this.tournamentService.currentTournament.subscribe({
+  //     next: (response) => {
+  //       this.lastMatchDay = response.matchDays[response.matchDays.length - 1];
+  //     },
+  //   });
+  // }
+
   verifyNextMatchDay() {
     if (this.lastMatchDay) {
-      console.log('Verificando si la fecha siguiente tiene partidos cerrados...');
       if (
         this.lastMatchDay.isFinished &&
         this.lastMatchDay.matches.every((match) => match.isFinished)
@@ -103,6 +110,20 @@ export class RecapComponent {
     }));
 
     this.topScorers.sort((a, b) => b.goals - a.goals);
+    if (this.topScorers.length > 10) {
+      this.previousSliceTopScores = [...this.topScorers];
+      this.topScorers = this.topScorers.slice(0, 10);
+      
+    }
+  }
+
+
+  viewMoreTopScores(){
+    if(this.topScorers.length === 10){
+      this.topScorers = this.previousSliceTopScores;
+    }else{
+      this.topScorers = this.topScorers.slice(0, 10);
+    }
   }
 
   getForecast() {
@@ -290,11 +311,10 @@ export class RecapComponent {
         this.lastMatchDay = response.matchDays[index + 1];
         this.loadTopScorers();
         this.getForecast();
+        this.orderForDateMatchDay();
       },
     });
-    this.loadTopScorers();
-    this.getForecast();
-    this.orderForDateMatchDay();
+
   }
 
   previousMatchDay() {
@@ -335,11 +355,10 @@ export class RecapComponent {
     let isLast = false;
     this.tournamentService.currentTournament.subscribe({
       next: (response) => {
-        if (
-          this.lastMatchDay.numberOfMatchDay + 1 ==
-          response.matchDays.length
-        ) {
-          isLast = true;
+        if(this.lastMatchDay){
+          if (this.lastMatchDay.numberOfMatchDay + 1 == response.matchDays.length){
+            isLast = true;
+          }
         }
       },
     });

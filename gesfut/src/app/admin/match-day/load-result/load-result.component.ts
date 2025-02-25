@@ -63,11 +63,11 @@ export class LoadResultComponent {
       next: (edit: boolean) => {
         if (edit) {
           this.isEditMatch = true;
-        }else{
+        } else {
           this.isEditMatch = false;
         }
       },
-    }) 
+    })
 
     this.matchDayService.currentMatch.subscribe({
       next: (match: MatchDetailedResponse) => {
@@ -137,12 +137,12 @@ export class LoadResultComponent {
   loadStatistics() {
     if (this.statisticsForm.valid) {
       //si no cargo ninguna estadistica retornar error:
-      if(
+      if (
         this.statisticsForm.get('goals')?.value === 0 &&
         this.statisticsForm.get('yellowCard')?.value === 0 &&
         this.statisticsForm.get('redCard')?.value === 0 &&
         this.statisticsForm.get('mvp')?.value === false
-      ){
+      ) {
         this.alertService.errorAlert('Debes cargar al menos una estadística del jugador.');
         return;
       }
@@ -185,7 +185,7 @@ export class LoadResultComponent {
   }
 
   saveEvents() {
-    if(this.thereAreMoreThanOneMvp(this.events)){
+    if (this.thereAreMoreThanOneMvp(this.events)) {
       this.alertService.errorAlert('Solo puede haber un MVP por partido');
       return;
     }
@@ -249,6 +249,14 @@ export class LoadResultComponent {
     }
   }
 
+  isRedCard(){
+    if(this.statisticsForm.get('yellowCard')?.value > 1){
+      this.statisticsForm.get('redCard')?.setValue(1);
+    }else{
+      this.statisticsForm.get('redCard')?.setValue(0);
+    }
+  }
+
   isPlayerSelected() {
     if (this.statisticsForm.get('name')?.value === '') {
       this.desactivetStatics();
@@ -281,7 +289,7 @@ export class LoadResultComponent {
   mapEventsAndAgruopStatics(events: EventResponse[]): any[] {
     const groupedEvents = events.reduce((acumuletor, event) => {
       const { idPlayerParticipant, playerName, teamName, type, quantity } = event;
-  
+
       if (!acumuletor[idPlayerParticipant]) {
         acumuletor[idPlayerParticipant] = {
           id: idPlayerParticipant,
@@ -301,10 +309,10 @@ export class LoadResultComponent {
       if (type === "MVP") acumuletor[idPlayerParticipant].mvp = true;
       return acumuletor;
     }, {} as Record<number, any>);
-  
+
     return Object.values(groupedEvents);
   }
-  
+
 
   whoWins() {
     if (this.currentMatch.homeGoals > this.currentMatch.awayGoals) {
@@ -361,13 +369,28 @@ export class LoadResultComponent {
 
   addYellowCard(id: number) {
     const event = this.events.find((e) => e.id === id);
+
+    if (event.yellowCard == 2) {
+      this.alertService.errorAlert('No puedes tener más de 2 tarjetas amarillas');
+      return;
+    }
+
     if (event) {
       event.yellowCard++;
     }
+
+    if (event.yellowCard == 2) {
+      this.events.find((e) => e.id === id).redCard = 1;
+    }
+
   }
 
   addRedCard(id: number) {
     const event = this.events.find((e) => e.id === id);
+    if (event.redCard == 1) {
+      this.alertService.errorAlert('No puedes tener más de 1 tarjeta roja');
+      return;
+    }
     if (event) {
       event.redCard++;
     }
@@ -386,7 +409,7 @@ export class LoadResultComponent {
     if (event && event.goals > 0) {
       event.goals--;
       this.analizeStats(event);
-    }else{
+    } else {
       this.noLessThanZero();
     }
 
@@ -403,21 +426,26 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event && event.yellowCard > 0) {
       event.yellowCard--;
+      this.events.find((e) => e.id === id).redCard = 0;
       this.analizeStats(event);
-    }else{
+    } else {
       this.noLessThanZero();
     }
   }
 
   removeRedCard(id: number) {
     const event = this.events.find((e) => e.id === id);
+    if(event.yellowCard === 2){
+      this.alertService.errorAlert('El jugador tiene 2 amarillas, le corresponde una roja.');
+      return;
+    }
     if (event && event.redCard > 0) {
       event.redCard--;
       this.analizeStats(event);
-    }else{
+    } else {
       this.noLessThanZero();
     }
-    
+
   }
 
   noLessThanZero() {
@@ -426,11 +454,11 @@ export class LoadResultComponent {
 
 
   analizeStats(event: any) {
-    if(event.yellowCard === 0
+    if (event.yellowCard === 0
       && event.redCard === 0
       && event.goals === 0
       && event.mvp === false
-    ){
+    ) {
       this.events = this.events.filter((e) => e !== event);
     }
   }
