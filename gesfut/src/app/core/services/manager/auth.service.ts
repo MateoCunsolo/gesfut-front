@@ -15,17 +15,21 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { RegisterRequest } from '../../models/registerRequest';
 import { SessionService } from './session.service';
 import { Token } from '@angular/compiler';
+import { AlertService } from '../alert.service';
+import { environment } from '../../../../enviroments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  url: string = 'http://localhost:8080/api/v1/auth';
+  url: string = environment.apiUrl+'/auth';
 
 
   constructor(
     private router: Router,
     private http: HttpClient,
-    private sessionService: SessionService) { }
+    private sessionService: SessionService,
+    private alertService: AlertService
+  ) { }
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.url}/login`, credentials).pipe(
@@ -87,6 +91,12 @@ export class AuthService {
 
   resendEmail(email: string): Observable<void> {
     return this.http.post<void>(`${this.url}/resend-verification/${email}`, {});
+  }
+
+  serverNotResponding(error: HttpErrorResponse): void {
+    if (error.status === 0) {
+      this.alertService.errorAlert('Error al conectar con el servidor. Intentelo más tarde.');
+    }
   }
 
 

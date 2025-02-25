@@ -33,7 +33,7 @@ export class DashboardComponent {
       this.flagIsMyTournament = false;
       // this.router.navigate(['/admin']);
     }
-      this.isMyTournament(this.lastTournamentClicked);
+    if(this.lastTournamentClicked !== '') this.isMyTournament(this.lastTournamentClicked);
   }
 
   changeComponent(component:string) {
@@ -47,7 +47,6 @@ export class DashboardComponent {
           this.flagIsMyTournament = true;
         }else{
           this.flagIsMyTournament = false;
-          //recargar la pagina:
           localStorage.removeItem('lastTournamentClicked');
           localStorage.removeItem('lastTournamentClickedName');
           window.location.reload();

@@ -1,4 +1,4 @@
-<section class="conteiner">
+<section class="conteiner" [ngClass]="{'container-in-global': isGlobal}">
   <div>
     <button class="back-button btn" (click)="back()">ATRAS</button>
     <h1 class="title">PARTIDOS DE {{ teamName.toUpperCase() }}</h1>
@@ -18,13 +18,13 @@
         </div>
         }@else{
         <div class="versus">
-          <p [ngClass]="{ teamName: teamName === item.homeTeam }">
+          <p [ngClass]="{ teamName: teamName === item.homeTeam || nameTeam === item.homeTeam }">
             {{ item.homeTeam }}
           </p>
           <p>{{ item.homeGoals }}</p>
           <span>-</span>
           <p>{{ item.awayGoals }}</p>
-          <p [ngClass]="{ teamName: teamName === item.awayTeam }">
+          <p [ngClass]="{ teamName: teamName === item.awayTeam || nameTeam === item.awayTeam }">
             {{ item.awayTeam }}
           </p>
         </div>
@@ -45,7 +45,7 @@
       </article>
 
       @if (viewEventsFlag && $index === matchIndex) {
-      <app-list-events [match]="matches[$index]" [isTeamNameClicked]="teamName">
+      <app-list-events [match]="matches[$index]" [isTeamNameClicked]="nameTeam">
       </app-list-events>
       }
     </div>

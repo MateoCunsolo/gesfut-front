@@ -6,6 +6,9 @@
   <!-- Opciones del Usuario -->
   @if (isMenuOpen) {
     <div class="user-menu">
+      @if (isTournament) {
+        <button (click)="generateLink()">Compartir torneo</button>
+      }
       <button (click)="toChangePasswordWithPassword()">Cambiar contraseña</button>
       <button (click)="help()">Ayuda</button>
       <button mat-raised-button (click)="onLogout()" class="logout">Cerrar sesion</button>

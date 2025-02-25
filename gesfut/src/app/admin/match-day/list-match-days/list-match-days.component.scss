@@ -428,8 +428,9 @@ hr {
 }
 
 .finished {
-  background-color: var(--terciary-color);
-  padding: 2.5px 5px;
+  color: var(--terciary-color);
+  font-size: 20px !important;
+  font-weight: bold;
 }
 
 .soon {

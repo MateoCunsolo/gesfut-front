@@ -67,8 +67,9 @@ export class RegisterComponent {
       return;
     }
       try {
+      this.isLoading = true;
       const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
-      
+      console.log(isValidEmail);
       if (!isValidEmail) {
         this.alertService.errorAlert('Email no válido');
         this.isLoading = false;
@@ -93,6 +94,7 @@ export class RegisterComponent {
       error: (err: HttpErrorResponse) => {
         this.alertService.errorAlert(err.error.error);
         this.isLoading = false;
+        this.authService.serverNotResponding(err);   
       },
     });
   }

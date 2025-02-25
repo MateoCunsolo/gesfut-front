@@ -26,11 +26,6 @@ export class DeleteComponent {
   constructor() { }
 
   ngOnInit(): void {
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        this.isFinishedTournament = response.isFinished;
-      },
-    });
   }
 
 
@@ -42,10 +37,6 @@ export class DeleteComponent {
 
 
   reconfirmDelete(idPlayerParticipant: number) {
-    if (this.isFinishedTournament) {
-      this.alertService.errorAlert('El torneo ha finalizado');
-      return;
-    }
     if (this.isGlobalTeam) {
       this.deleteFromGlobal();
     } else {
@@ -105,6 +96,11 @@ export class DeleteComponent {
   }
 
   deleteFromGlobalCallService() {
+    if(!this.verificationsDelete()){
+      if(this.isCapitan) this.alertService.errorAlert('No puedes eliminar a un capitan');
+      if(this.isGoalKeeper) this.alertService.errorAlert('No puedes eliminar a un portero');
+      return;
+    }
     console.log('Eliminando jugador global:', this.idPlayer);
     this.teamService.changeStatusPlayerGlobal(this.idPlayer, false).subscribe({
       next:()=>{

@@ -54,6 +54,7 @@ export class LoginComponent {
           this.redActive = true;
           this.tryLogin = true;
           this.isLoading = false;
+          this.authService.serverNotResponding(error);
         }
       );
     }else{

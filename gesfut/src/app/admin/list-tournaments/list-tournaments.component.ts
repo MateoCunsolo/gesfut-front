@@ -147,33 +147,19 @@ export class ListTournamentsComponent {
 
 
   applyFilters(): void {
-    if (this.tournaments.length > 0) {
-      if (this.filter === 'trash') {
-        this.filteredTournaments = this.tournaments.filter(tournament => !tournament.isActive);
-        this.haveTournaments = this.filteredTournaments.length > 0;
-      } else if (this.filter === 'all') {
-        this.filteredTournaments = this.tournaments.filter(tournament => tournament.isActive);
-        this.haveTournaments = this.filteredTournaments.length > 0;
-      } else if (this.filter === 'finished') {
-        this.filteredTournaments = this.tournaments.filter(tournament => tournament.isFinished && tournament.isActive);
-        this.haveTournaments = this.filteredTournaments.length > 0;
-      } else if (this.filter === 'inProgress') {
-        this.filteredTournaments = this.tournaments.filter(tournament => !tournament.isFinished && tournament.isActive);
-        this.haveTournaments = this.filteredTournaments.length > 0;
-      }
-    }
-
     this.filteredTournaments = this.tournaments.filter(tournament => {
       const matchesSearch = tournament.name.toLowerCase().includes(this.searchQuery.toLowerCase());
       const matchesFilter =
         (this.filter === 'all' && tournament.isActive) ||
         (this.filter === 'finished' && tournament.isFinished && tournament.isActive) ||
-        (this.filter === 'inProgress' && !tournament.isFinished) ||
+        (this.filter === 'inProgress' && !tournament.isFinished && tournament.isActive) || 
         (this.filter === 'trash' && tournament.isActive === false);
-      console.log(matchesSearch && matchesFilter);
       return matchesSearch && matchesFilter;
-    })
+    });
+    
+    this.haveTournaments = this.filteredTournaments.length > 0;
   }
+  
 
   onSearchChange(event: Event): void {
     const input = event.target as HTMLInputElement;

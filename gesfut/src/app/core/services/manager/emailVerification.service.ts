@@ -9,18 +9,15 @@ import { environment } from '../../../../enviroments/environment';
 })
 export class EmailVerificationService {
   private API_KEY = environment.apiKeyEmailVerification;
-  private API_URL = `${environment.baseUrlEmailVerification}=${this.API_KEY}&smtp=1&format=1&email=`;
+  private API_URL = environment.baseUrlEmailVerification;
   constructor(private http: HttpClient) {}
   validateEmail(email: string): Observable<boolean> {
-    console.log(this.API_URL);
-    return this.http.get<any>(`${this.API_URL}${email}`).pipe(
+    return this.http.get<any>(`${this.API_URL}${email}&api_key=${this.API_KEY}`).pipe(
       map((response) => {
-        console.log(response);
-        return (
-          response.mx_found &&     
-          response.score > 0.3    
-        );
-      })
-    );
+        if (response.data.status === 'valid') {
+          return true;
+        }
+        return false;
+    }));
   }
 }

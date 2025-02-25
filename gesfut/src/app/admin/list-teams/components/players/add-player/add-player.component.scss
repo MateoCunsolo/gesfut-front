@@ -6,6 +6,8 @@
     padding: 10px;
     gap: 20px;
 
+
+    
     input{
         font-size: 1.3rem;
         padding: 0px 0px 0px 50px;
@@ -13,6 +15,18 @@
 
     i{
         font-size: 1.8rem;
+    }
+
+
+    @media screen and (max-width: 768px){
+        grid-template-columns: 1fr;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    @media screen and (max-width: 576px){
+        padding: 20px;
     }
 }
 
@@ -43,13 +57,28 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
 }
 
+
+
 .cancel{
     background-color: var(--bg-color);
     color: var(--primary-color);
     border: solid 1px var(--primary-color);
-    width: 25%;
-    position: relative;
-    left: 75%;
+    width: 100%;
+    padding: 8px;
+    @media screen and (max-width: 768px){
+        padding: 6px;
+        font-size: 12px;
+        margin-top: -50px;
+    }
+}
+
+.add{
+    width: 100%;
+    padding: 8px;
+    @media screen and (max-width: 768px){
+        padding: 6px;
+        font-size: 14px;
+    }
 }
 
 .cancel:hover{
@@ -69,7 +98,6 @@ input[type="number"]::-webkit-outer-spin-button {
     justify-content: start;
     flex-direction: row;
     gap: 5px;
-
     button{
         background-color: var(--bg-color);
         color: var(--primary-color);
@@ -84,7 +112,7 @@ input[type="number"]::-webkit-outer-spin-button {
 select{
     font-size: 1.3rem;
     padding: 0px 10px 0px 10PX;
-    width: 30%;
+    width: 50%;
     height: 25px;
     border: solid 1px var(--primary-color);
     border-radius: 5px;
@@ -92,6 +120,10 @@ select{
     color: var(--primary-color);
     cursor: pointer;
     outline: none;
+    @media screen and (max-width: 768px){
+        width: 100%;
+        
+    }
 }
 
 .player-list{
@@ -174,8 +206,18 @@ select{
 .disabled{
     background-color: var(--bg-color) !important;
     cursor: not-allowed !important; 
+    font-weight: bold;
 }
 
 .disabled:hover{
     background-color: none !important;
+}
+
+@media screen and (max-width: 768px) {
+    .grid-5 {
+        order: 2;
+    }
+    .grid-6 {
+        order: 1;
+    }
 }

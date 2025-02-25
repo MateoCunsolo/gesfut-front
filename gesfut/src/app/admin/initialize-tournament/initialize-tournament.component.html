@@ -1,74 +1,145 @@
 @if (showPicker) {
-    <app-time-picker 
-    class="oculto"
-    [ngClass]="{ show: showPicker }"
-    [matchId]="0" 
-    (sendDate)="timeChange($event)"
-    (cancelPicker)="cancelPicker($event)"
-    [isToInitTournament]="true"
-    [isForAllMatches]="false"
-    ></app-time-picker>
+<app-time-picker
+  class="oculto"
+  [ngClass]="{ show: showPicker }"
+  [matchId]="0"
+  (sendDate)="timeChange($event)"
+  (cancelPicker)="cancelPicker($event)"
+  (sendMinutesAndDays)="sendMinutesAndDays($event)"
+  [isToInitTournament]="true"
+  [isForAllMatches]="false"
+></app-time-picker>
 }
 
 <section class="center" [ngClass]="{ blur: showPicker }">
-    <button class="back-button " (click)="changeComponent('dashboard')">ATRAS</button>
-    <h2 class="title">
-        SELECIONAR EQUIPOS PARA EL INICIO DEL TORNEO
-    </h2>
-    <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px;">
-    @if (!showPicker && date) {
-        <p class="title">FECHA DEL PARTIDO INICIAL: {{date}}</p>
-    }@else{
-        <button (click)="showFormTimePicker()" class="base-button">AGREGAR FECHA DEL PARTIDO INICIAL</button>
-    }
-    <div class="grid-conteiner">
-
-        <section class="col-1-teams-all">
-            <h3 class="title-sec black">MIS EQUIPOS</h3>
-            <input [(ngModel)]="searchTerm" (ngModelChange)="filterTeams()" class="search-team" type="text"
-                placeholder="BUSCAR EQUIPO">
-
-            <div class="overflox">
-                @for (item of teams; track $index) {
-                <div class="team-section">
-                    <li class="name">{{item.name}}</li>
-                    <div class="btn-teams">
-                        <svg class="icon" (click)="addTeam(item)" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                            <path fill="#2a6a49"
-                                d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
-                        </svg>
-
-                    </div>
-                </div>
-                }
-            </div>
-        </section>
-
-        <section class="col-2-teams-tournament">
-            <h3 class="title-sec green">EQUIPOS AGREGADOS</h3>
-            <div class="overflox">  
-                @for (item of teamsTournament; track $index) {
-                <div class="team-section">
-                    <li class="name">{{item.name}}</li>
-                    <div class="btn-teams">
-                        <svg class="icon" (click)="deleteTeam(item)" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                            <path fill="#2a6a49"
-                                d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
-                        </svg>
-                    </div>
-                </div>
-                }
-            </div>
-        </section>
-
-
+  <button class="back-button" (click)="changeComponent('dashboard')">
+    ATRAS
+  </button>
+  <h2 class="title center-title">INICIALIZADOR DEL TORNEO</h2>
+  <hr
+    style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"
+  />
+  <h2 class="title">FECHA DE INICIO</h2>
+  @if (!showPicker && date) {
+  <div class="info-dates">
+    <p>
+      <span> INCIO </span> {{ splitDate(date).hours }} HS EL DIA
+      {{ splitDate(date).dateWithStrings.toUpperCase() }}
+    </p>
+    <p><span> DURACION DE PARTIDOS</span>{{ minutes }} MINUTOS</p>
+    <p><span> INTERVALO ENTRE JORNADAS </span>{{ days }} DIAS</p>
+    <div class="buttons-date">
+      <button (click)="showFormTimePicker()" class="edit">
+        <i class="accordion-button fa-solid fa-pencil"></i>
+      </button>
+      <button (click)="cancelDate()" class="delete">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+            <path
+              fill="#2a6a49"
+              d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
+            />
+          </svg>
+      </button>
     </div>
-
-    <section class="buttons">
-        <button class="back-button create-btn" (click)="addNewTeamToTournament()">AGREGAR EQUIPO NUEVO</button>
-        <button class="base-button init-btn" (click)="initTournament()">INICIALIZAR JORNADAS</button>
+  </div>
+  }@else{
+  <button (click)="showFormTimePicker()" class="base-button add-date">
+    AGREGAR FECHA DEL PARTIDO INICIAL
+  </button>
+  }
+  <hr
+    style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"
+  />
+  <h2 class="title">AGREGAR EQUIPOS AL TORNEO</h2>
+  <div class="grid-conteiner">
+    <section class="col-1-teams-all">
+      <h3 class="title black">MIS EQUIPOS
+        <span class="count">{{teams.length}}</span>
+      </h3>
+      <hr
+    style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"
+  />
+      <div style="display: flex; justify-content: space-between; gap: 5px; padding: 5px;">
+        <input
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="filterTeams()"
+          class="search-team"
+          type="text"
+          placeholder="BUSCAR EQUIPO"
+        />
+        <button class="restart-search" [ngClass]="{ 'restart-search-block': searchTerm.length>0}" (click)="resetFilters()">X</button>
+      </div>
+      <div class="overflox">
+        @for (item of teams; track $index) {
+        <div class="team-section">
+          <li class="name">{{ item.name }}</li>
+          <div class="btn-teams">
+            <svg
+              class="icon"
+              (click)="addTeam(item)"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                fill="#2a6a49"
+                d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"
+              />
+            </svg>
+          </div>
+        </div>
+        }
+      </div>
     </section>
 
+    <section class="col-2-teams-tournament">
+      <h3 class="title black green">EQUIPOS AGREGADOS
+        @if (teamsTournament.length<4) {
+          <span title="Minimo 4 equipos" class="count">{{teamsTournament.length}}/4</span>
+        }@else {
+          <span  class="count">{{teamsTournament.length}}</span>         
+        }
+        <hr style="width: 100%; margin: 5px 0px; border: solid rgb(218, 218, 218) 2px"/>
+        <div class="spans-add-delete-all">
+          <span class="count add-all"(click)="addAllTeams()">
+            AGREGAR TODOS
+          </span>
+          <span class="count delete-all"(click)="deleteAllTeams()">
+            ELIMINAR TODOS
+          </span>
+        </div>
+      </h3>
+      <div class="overflox">
+        @for (item of teamsTournament; track $index) {
+        <div class="team-section">
+          <li class="name">{{ item.name }}</li>
+          <div class="btn-teams">
+            <svg
+              class="icon"
+              (click)="deleteTeam(item)"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+            >
+              <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                fill="#2a6a49"
+                d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
+              />
+            </svg>
+          </div>
+        </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <section class="buttons">
+    <button class="back-button create-btn" (click)="addNewTeamToTournament()">
+      AGREGAR EQUIPO NUEVO
+    </button>
+    <button class="base-button init-btn" (click)="initTournament()">
+      INICIALIZAR JORNADAS
+    </button>
+  </section>
 </section>

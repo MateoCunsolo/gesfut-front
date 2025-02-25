@@ -7,19 +7,20 @@ import { ParticipantResponse, PlayerParticipantResponse } from '../../models/tou
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
 import { PlayerResponse, TeamResponse } from '../../models/teamResponse';
 import { TeamWithAllStatsPlayerResponse } from '../../models/TeamWithAllStatsPlayerResponse';
+import { environment } from '../../../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService {
 
-  url: string = "http://localhost:8080/api/v1/teams";
+  url: string = environment.apiUrl+'/teams';
 
   constructor(private http: HttpClient, private session: SessionService) { }
 
-  createTeam(request: TeamRequest): Observable<void> {
+  createTeam(request: TeamRequest): Observable<TeamResponse> {
     if (!this.session.isAuth()) {
-      return new Observable<void>();
+      return new Observable<TeamResponse>();
     }
 
     const token = sessionStorage.getItem('token');
@@ -28,7 +29,7 @@ export class TeamService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.post<void>(`${this.url}/create`, request, {
+    return this.http.post<TeamResponse>(`${this.url}/create`, request, {
       headers
     }).pipe(
       tap(() => console.log('Equipo creado exitosamente')),
@@ -159,18 +160,7 @@ export class TeamService {
 
     return this.http.get<TeamResponse>(`${this.url}/${idTeam}`, {
       headers
-    }).pipe(
-      tap((response) => {
-         return response.players.map(player => {
-          player.name = player.name.toUpperCase();
-          player.lastName = player.lastName.toUpperCase();
-          return player;
-         });
-      } ),
-      catchError((error: HttpErrorResponse) => {
-        console.error('Error al obtener el equipo', error);
-        return throwError(() => error);
-      }))
+    })
   }
 
 

@@ -68,10 +68,12 @@
   top: 50px;
   min-width: 100%;
   border-radius: 0px;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 130px);
   background-color: var(--bg-color);
   color: var(--primary-color);
-
+  z-index: 1;
+  box-shadow: 0 0 5px var(--primary-color);
+  border-bottom: var(--primary-color) 2px solid;
   @media screen and (max-width: 768px) {
     width: 80%;
   }

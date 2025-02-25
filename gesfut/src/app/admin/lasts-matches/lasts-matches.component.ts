@@ -27,21 +27,24 @@ export class LastsMatchesComponent {
   private tournamentServices = inject(TournamentService);
   private guestService = inject(GuestService);
   private alertService = inject(AlertService);
-
+  protected isGlobal:boolean = true;
+  protected nameTeam:string = '';
   ngOnInit() {
 
     this.tournamentServices.$teamName.subscribe({
       next: (response) => {
-        //si la ruta contiente touranaments/
         if(this.route.url.includes('tournaments/')){
           this.teamName = response;
+          this.isGlobal = false;
         }else if (this.route.url.includes('admin')) {
+          this.nameTeam = response;
           this.teamName = response +' EN '+ sessionStorage.getItem('lastTournamentClickedName');
         }else{
           this.teamName = response;
         }
       },
     });
+
 
     this.tournamentServices.$matches.subscribe({
       next: (response) => {
