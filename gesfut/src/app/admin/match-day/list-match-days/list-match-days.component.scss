@@ -385,6 +385,7 @@ hr {
   font-weight: bold;
   font-size: var(--font-size-text);
   border: solid 1px var(--primary-color);
+  cursor: default;
 }
 
 .title-hour {
@@ -488,4 +489,10 @@ hr {
     grid-template-rows: 1fr;
     width: auto;
   }
+}
+
+.thereIsDateOrTOurnamentIsFinished:hover{
+  cursor: default;
+  color: var(--secondary-color);
+  background-color: var(--primary-color) !important;
 }

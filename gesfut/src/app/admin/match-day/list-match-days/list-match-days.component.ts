@@ -301,6 +301,10 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   chargeAllDates() {
+    if(this.tournament.isFinished){
+      this.alertService.infoAlertTop('El torneo ya ha finalizado.');
+      return;
+    }
     this.isForAllMatches = true;
     this.showPicker = true;
     this.selectedMatchId = 0;
