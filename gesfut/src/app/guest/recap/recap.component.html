@@ -6,14 +6,17 @@
       <div class="tags-matchDay">
         <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
         @if (isTheFirst()) {
-        <p class="status prox" (click)="nextMatchDay()">{{returnText()}}</p>
+        <p class="status prox" (click)="nextMatchDay()">{{ returnText() }}</p>
         }@else if(!isTheLast()) {
-          <p class="status prox" (click)="nextOrBackMatchDay()">{{returnText()}}</p>
+        <p class="status prox" (click)="nextOrBackMatchDay()">
+          {{ returnText() }}
+        </p>
         }@else{
-          <p class="status prox" (click)="previousMatchDay()">{{returnText()}}</p>
+        <p class="status prox" (click)="previousMatchDay()">
+          {{ returnText() }}
+        </p>
         }
       </div>
-      
     </h2>
     }@else{
     <h2 class="title play-bold">Cargando...</h2>
@@ -21,41 +24,40 @@
     <hr />
   </div>
 
+  @if(lastMatchDay){
   <div class="dashboard-container">
     <div class="matches-container">
-      @if(this.lastMatchDay){ @for (match of lastMatchDay.matches; track
-      match.id) {
+      @for (match of lastMatchDay.matches; track match.id) {
       <div class="match">
         @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
-        @if(match.homeTeam === 'Free'){
-          @if (!lastMatchDay.isFinished) {
-            <p class="status">FINALIZADO</p>
-          }
-          <p class="free-match">
+        @if(match.homeTeam === 'Free'){ @if (!lastMatchDay.isFinished) {
+        <p class="status">FINALIZADO</p>
+        }
+        <p class="free-match">
           {{ match.awayTeam.toUpperCase() }} TIENE FECHA LIBRE
         </p>
-        }@else{
-          @if (!lastMatchDay.isFinished) {
-            <p class="status">FINALIZADO</p>
-          }
-          <p class="free-match">
+        }@else{ @if (!lastMatchDay.isFinished) {
+        <p class="status">FINALIZADO</p>
+        }
+        <p class="free-match">
           {{ match.homeTeam.toUpperCase() }} TIENE FECHA LIBRE
         </p>
-        } }@else{ @if (match.isFinished) {
-          @if (!lastMatchDay.isFinished) {
-            <p class="status">FINALIZADO</p>
-          }
-          <div class="versus">
+        } }@else{ @if (match.isFinished) { @if (!lastMatchDay.isFinished) {
+        <p class="status">FINALIZADO</p>
+        }
+        <div class="versus">
           <p>{{ match.homeTeam.toUpperCase() }}</p>
           <p>{{ match.homeGoals }}</p>
           <p>{{ match.awayGoals }}</p>
           <p>{{ match.awayTeam.toUpperCase() }}</p>
         </div>
         }@else {
-          <p class="status prox">
-            {{ match.dateTime ? returnHour(match.dateTime) + ' hs': 'PRÓXIMAMENTE' }}
-          </p>
-                    <div class="versus">
+        <p class="status prox">
+          {{
+            match.dateTime ? returnHour(match.dateTime) + " hs" : "PRÓXIMAMENTE"
+          }}
+        </p>
+        <div class="versus">
           <p>{{ match.homeTeam.toUpperCase() }}</p>
           <p>-</p>
           <p>-</p>
@@ -63,23 +65,21 @@
         </div>
         } }
       </div>
-      } }@else{
-      <ng-template #noMatches>
-        <p>No hay partidos programados para esta jornada.</p>
-      </ng-template>
       }
     </div>
-    
     <div class="top-scorers-container">
       @if (lastMatchDay.isFinished) {
       <div class="mvp-container">
-        <div class="mvp">
-          MVP
-        </div>
-        <p>{{lastMatchDay.mvpPlayer ? lastMatchDay.mvpPlayer : "NO HAY MVP SELECIONADO"}}</p>
+        <div class="mvp">MVP</div>
+        <p>
+          {{
+            lastMatchDay.mvpPlayer
+              ? lastMatchDay.mvpPlayer
+              : "NO HAY MVP SELECIONADO"
+          }}
+        </p>
       </div>
-      }
-      @if(topScorers.length > 0) {
+      } @if(topScorers.length > 0) {
       <div class="table-header">
         <div class="table-cell">JUGADOR</div>
         <div class="table-cell" title="GOLES">⚽</div>
@@ -92,17 +92,11 @@
             {{ scorer.goals }}
           </div>
         </div>
-        }
-        @if (topScorers.length>=10) {
+        } @if (topScorers.length>=10) {
         <p (click)="viewMoreTopScores()" class="view-more">
-          @if (topScorers.length<=10) {
-            ver mas
-          }@else {
-            ver menos
-          }
+          @if (topScorers.length<=10) { ver mas }@else { ver menos }
         </p>
         }
-
       </div>
       } @else if(forecast && !lastMatchDay.isFinished) {
       <app-weather-card class="weather" [day]="forecast"></app-weather-card>
@@ -110,10 +104,17 @@
       <p class="title">Cargando clima...</p>
       <app-spinner></app-spinner>
       }@else if(isPreviousDayAvailable && !lastMatchDay.isFinished) {
-        <p>La fecha es anterior al dia actual. No es posible visuallizar el clima.</p>
+      <p>
+        La fecha es anterior al dia actual. No es posible visuallizar el clima.
+      </p>
       }@else if(!lastMatchDay.isFinished) {
-        <p>No se puede visualizar el clima.</p>
+      <p>No se puede visualizar el clima.</p>
       }
     </div>
   </div>
+  }@else{
+  <ng-template #noMatches>
+    <p>No hay partidos programados para esta jornada.</p>
+  </ng-template>
+  }
 </section>

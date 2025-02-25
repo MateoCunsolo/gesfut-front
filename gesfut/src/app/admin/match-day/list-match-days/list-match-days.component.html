@@ -59,16 +59,16 @@
         <p class=" titles title-versus">
           PARTIDOS
         </p>
-        <div class="titles title-hour">
+        <div  [ngClass]="{thereIsDateOrTOurnamentIsFinished: tournament.isFinished || tournament.matchDays[selectedMatchDay].matches[0].dateTime}" class="titles title-hour">
           @if (tournament.matchDays[selectedMatchDay].matches[0].dateTime != null) {
             <p>FECHA</p>
           }@else if(isAuth()) {
-            <p (click)="chargeAllDates()" >CARGAR FECHAS</p>
+            <p (click)="chargeAllDates()">CARGAR FECHAS</p>
           }@else {
             <p>FECHA</p>
           }
         </div>
-        <div class="titles title-complex">
+        <div  [ngClass]="{thereIsDateOrTOurnamentIsFinished: tournament.isFinished || tournament.matchDays[selectedMatchDay].matches[0].dateTime}" class="titles">
           <p>CANCHA</p>
         </div>
       </div>
