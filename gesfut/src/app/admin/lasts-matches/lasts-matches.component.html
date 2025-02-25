@@ -45,7 +45,7 @@
       </article>
 
       @if (viewEventsFlag && $index === matchIndex) {
-      <app-list-events [match]="matches[$index]" [isTeamNameClicked]="nameTeam">
+      <app-list-events [match]="matches[$index]" [isTeamNameClicked]="nameTeam || teamName">
       </app-list-events>
       }
     </div>
