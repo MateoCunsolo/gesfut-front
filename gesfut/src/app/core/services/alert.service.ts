@@ -18,7 +18,6 @@ export class AlertService {
       showConfirmButton: false,
       timer: 1600,
       scrollbarPadding: false,
-
     });
   }
 
@@ -31,6 +30,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
+      scrollbarPadding: false,
       customClass: {
         container: 'container-toast',
         icon: 'toast-icon',
@@ -48,6 +48,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
+      scrollbarPadding: false,
       customClass: {
         container: 'container-toast',
         icon: 'toast-icon',
@@ -65,6 +66,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
+      scrollbarPadding: false,
       customClass: {
         container: 'container-toast',
         icon: 'toast-icon',
@@ -76,6 +78,7 @@ export class AlertService {
   loadingAlert(title: string) {
     Swal.fire({
       title: title,
+      scrollbarPadding: false,
       didOpen: () => {
         Swal.showLoading();
       },
@@ -97,7 +100,8 @@ export class AlertService {
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--error-color)',
       cancelButtonText: 'CANCELAR',
-      confirmButtonText: confirmButtonText.toLocaleUpperCase()
+      confirmButtonText: confirmButtonText.toLocaleUpperCase(),
+      scrollbarPadding: false,
     });
   }
 
@@ -111,7 +115,8 @@ export class AlertService {
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--primary-color)',
       confirmButtonText: firstOption.toLocaleUpperCase(),
-      cancelButtonText: secondOption.toLocaleUpperCase()
+      cancelButtonText: secondOption.toLocaleUpperCase(),
+      scrollbarPadding: false,
     });
 
   }
@@ -120,7 +125,8 @@ export class AlertService {
     Swal.fire({
       icon: 'info',
       title: title,
-      text: text
+      text: text,
+      scrollbarPadding: false,
     });
   }
 
@@ -134,6 +140,7 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonText: 'CERRAR FECHA',
       cancelButtonText: cancelText,
+      scrollbarPadding: false,
       inputValidator: (value) => {
         if (!value) {
           return 'Debes seleccionar una opción';
@@ -152,6 +159,7 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
+      scrollbarPadding: false,
       inputValidator: (value) => {
         if (!value) {
           return 'Debes ingresar un valor';
@@ -171,6 +179,7 @@ export class AlertService {
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
       focusCancel: true,
+      scrollbarPadding: false,
       preConfirm: () => {
         const date = (document.getElementById('date') as HTMLInputElement).value;
         const description = (document.getElementById('description') as HTMLInputElement).value;
@@ -193,6 +202,7 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
+      scrollbarPadding: false,
       inputValidator: (value) => {
         if (!value) {
           return '¡La descripción no puede estar vacía!';
@@ -217,6 +227,7 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
+      scrollbarPadding: false,
       inputAttributes: {
         min: '1', // Puedes cambiar esto para restringir valores negativos
         step: '1' // Define si se permiten decimales (cambiar a '0.01' para permitir decimales)
@@ -256,6 +267,7 @@ export class AlertService {
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'EDITAR',
+      scrollbarPadding: false,
       customClass: {
         confirmButton: 'base-button',
         cancelButton: 'back-button',
