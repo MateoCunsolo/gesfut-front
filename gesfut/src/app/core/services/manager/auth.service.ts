@@ -16,11 +16,12 @@ import { RegisterRequest } from '../../models/registerRequest';
 import { SessionService } from './session.service';
 import { Token } from '@angular/compiler';
 import { AlertService } from '../alert.service';
+import { environment } from '../../../../enviroments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  url: string = 'http://localhost:8080/api/v1/auth';
+  url: string = environment.apiUrl+'/auth';
 
 
   constructor(

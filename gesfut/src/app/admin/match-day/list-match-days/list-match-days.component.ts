@@ -49,8 +49,10 @@ export class ListMatchDaysComponent implements OnInit {
             undefined
           );
         this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay + 1 : 0;
+        this.bindingSelect = this.selectedMatchDay;
         if (this.selectedMatchDay === this.tournament.matchDays.length) {
           this.selectedMatchDay = this.tournament.matchDays.length - 1;
+          this.bindingSelect = this.selectedMatchDay;
           this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
         }
         this.sortMatchDays();

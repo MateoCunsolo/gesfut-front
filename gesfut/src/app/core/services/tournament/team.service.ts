@@ -7,13 +7,14 @@ import { ParticipantResponse, PlayerParticipantResponse } from '../../models/tou
 import { ParticipantShortResponse } from '../../models/participantShortResponse';
 import { PlayerResponse, TeamResponse } from '../../models/teamResponse';
 import { TeamWithAllStatsPlayerResponse } from '../../models/TeamWithAllStatsPlayerResponse';
+import { environment } from '../../../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService {
 
-  url: string = "http://localhost:8080/api/v1/teams";
+  url: string = environment.apiUrl+'/teams';
 
   constructor(private http: HttpClient, private session: SessionService) { }
 
