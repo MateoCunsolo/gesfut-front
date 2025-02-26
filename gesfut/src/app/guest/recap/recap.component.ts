@@ -235,7 +235,7 @@ export class RecapComponent {
     return match[1].padStart(2, '0'); // Extrae la hora en formato HH
   }
 
-  getMatchDayStatus() {
+  getMatchDayStatus() { 
     let date: any;
     if (this.lastMatchDay.matches[0].dateTime == null) {
       date = '( no hay horarios definidos )';
@@ -246,23 +246,37 @@ export class RecapComponent {
     if (
       this.lastMatchDay.isFinished &&
       this.lastMatchDay.matches.every((match) => match.isFinished)
+      && !this.lastMatchDay.isPlayOff
     ) {
       return (
         'RESUMEN DE LA FECHA Nº' + (this.lastMatchDay.numberOfMatchDay + 1)
+      );
+    }else if(this.lastMatchDay.isFinished && this.lastMatchDay.isPlayOff){
+      return (
+        'RESUMEN DEL PLAYOFFS'
       );
     }
 
     const anyMatchFinished = this.lastMatchDay.matches.some(
       (match) => match.isFinished
     );
-    if (anyMatchFinished && !this.lastMatchDay.isFinished) {
+    if (anyMatchFinished && !this.lastMatchDay.isFinished && !this.lastMatchDay.isPlayOff) {
       return (
         'FECHA Nº' +
         (this.lastMatchDay.numberOfMatchDay + 1) +
         ' JUGANDOSE ACTUALMENTE'
       );
-    }
+    }else if(anyMatchFinished && !this.lastMatchDay.isFinished && this.lastMatchDay.isPlayOff){
+      return (
+        'PLAYOFFS JUGANDOSE ACTUALMENTE'
+      );
 
+    }
+    if(this.lastMatchDay.isPlayOff){
+      return (
+        'PROXIMO PLAYOFFS'
+      );  
+    }
     return (
       'PRÓXIMA FECHA Nº' + (this.lastMatchDay.numberOfMatchDay + 1) + ' ' + date
     );

@@ -128,7 +128,6 @@
             }
           </select>
         </div>
-
         <p
           [ngClass]="{
             finished: matchDayStatus,
@@ -137,8 +136,18 @@
           }"
         >
           @if (this.tournament.matchDays[selectedMatchDay].isFinished) {
-          FINALIZADA }@else if (someMatchIsClosed()) { EN CURSO }@else {
-          PRÓXIMAMENTE }
+            @if (this.tournament.matchDays[selectedMatchDay].isPlayOff) {
+              FINALIZADOS
+            }@else {
+              FINALIZADA
+            }
+          }@else if (someMatchIsClosed()) 
+          { 
+            EN CURSO 
+          }
+          @else {
+            PRÓXIMAMENTE
+          }
         </p>
       </div>
       <div class="matchdays desktop">
