@@ -9,7 +9,7 @@
   (sendAllDates)="updateAllDates($event)"
 ></app-time-picker>
 
-<button (click)="closeAllMatches()">CLOSE ALL MATCHES</button>
+<!-- <button (click)="closeAllMatches()">CLOSE ALL MATCHES</button> -->
 <div
   class="oculto select-container"
   [ngClass]="{ 'select-container': showGeneratePlayOffs }"
@@ -172,6 +172,7 @@
     tournament.matchDays[selectedMatchDay].matches.length > 0){
     <div class="match">
       <p class="titles title-versus">PARTIDOS</p>
+
       <div
         [ngClass]="{
           thereIsDateOrTOurnamentIsFinished:
@@ -189,13 +190,14 @@
         <p>FECHA</p>
         }
       </div>
+
       <div
         [ngClass]="{
           thereIsDateOrTOurnamentIsFinished:
             tournament.isFinished ||
             tournament.matchDays[selectedMatchDay].matches[0].dateTime
         }"
-        class="titles"
+        class="titles title-complex"
       >
         <p>CANCHA</p>
       </div>

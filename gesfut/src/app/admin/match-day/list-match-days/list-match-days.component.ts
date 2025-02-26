@@ -493,14 +493,21 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  closeAllMatches() { 
-    for(let i=0; i<this.tournament.matchDays.length; i++){
-      this.tournament.matchDays[i].matches.forEach((match) => {
-        this.matchDaysService.saveEvents([], match.id);
-      });
+  async closeAllMatches() { 
+    for (let i = 0; i < this.tournament.matchDays.length; i++) {
+      const promises = this.tournament.matchDays[i].matches.map((match) => 
+        new Promise<void>((resolve) => {
+          setTimeout(() => {
+            this.matchDaysService.saveEvents([], match.id);
+            resolve();
+          }, 1500);
+        })
+      );
+  
+      await Promise.all(promises);
       this.closeMatchDay(true);
     }
   }
-
+  
  
 }
