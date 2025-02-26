@@ -9,38 +9,144 @@
   (sendAllDates)="updateAllDates($event)"
 ></app-time-picker>
 
-<section [ngClass]="{ blur: showPicker }">
+<button (click)="closeAllMatches()">CLOSE ALL MATCHES</button>
+<div
+  class="oculto select-container"
+  [ngClass]="{ 'select-container': showGeneratePlayOffs }"
+>
+  <div class="select-grid">
+    <!-- Equipos Totales -->
+    <div class="select-column">
+      <h3 class="noQualify">
+        EQUIPOS DEL TORNEO
+        <span>
+          {{
+            tournamentParticipantCopy.length > 0
+              ? tournamentParticipantCopy.length
+              : ""
+          }}
+        </span>
+      </h3>
+      <input type="text" placeholder="Buscar..." (input)="searchTeam($event)" />
+      <hr class="hr-select" />
+      <div class="teams-container">
+        @for (team of tournamentParticipantCopy; track team.idParticipant) {
+        <div class="team-container-select">
+          <p>
+            {{ team.name }}
+            <span class="points">{{ team.statistics.points }} pts.</span>
+          </p>
+          <svg
+            class="icon"
+            (click)="addTeamQualify(team)"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+          >
+            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+            <path
+              fill="#2a6a49"
+              d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"
+            />
+          </svg>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Equipos Clasificados -->
+    <div class="select-column">
+      <h3 class="qualify">
+        EQUIPOS CLASIFICADOS
+        <span> {{ teamsQualify.length > 0 ? teamsQualify.length : "" }} </span>
+      </h3>
+      <hr class="hr-select" />
+      <div class="teams-container">
+        @for (team of teamsQualify; track team.idParticipant) {
+        <div class="team-container-select">
+          <p>{{ team.name }}</p>
+          <svg
+            class="icon"
+            (click)="deleteTeamQualify(team)"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+          >
+            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+            <path
+              fill="#2a6a49"
+              d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
+            />
+          </svg>
+        </div>
+        }@empty {
+        <p style="width: 100%; text-align: center">
+          No hay equipos agregados...
+        </p>
+        <p style="width: 100%; text-align: center">
+          Puedes generar los cruces segun la tabla.
+        </p>
+        <button
+          class="base-button per-leaderboard"
+          (click)="addTeamsPerTable()"
+        >
+          GENERAR POR TABLA
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+  <div style="display: flex; gap: 20px">
+    <button class="back-button" (click)="cancel()">CANCELAR</button>
+    <button class="base-button" (click)="generatePlayOffs()">
+      GENERAR PLAYOFFS
+    </button>
+  </div>
+</div>
+
+<section [ngClass]="{ blur: showPicker || showGeneratePlayOffs }">
   <div class="title-container">
     <div class="title-cont">
       <div class="matchDayStatus-container">
-        
-        <h2 class="title">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+        @if (tournament.matchDays[selectedMatchDay].isPlayOff) {
+          <h2 class="title">PLAYOFFS</h2>          
+        }@else {
+          <h2 class="title">FECHA N° {{ selectedMatchDay + 1 }}</h2>
+        }
 
-        <div class=" matchdays mobile">
-          <select name="selectedMatchDayOptional" id="selectedMatchDayOptional"
-          (change)="updateMatchDay($event)"
-          [(ngModel)]="bindingSelect"
+        <div class="matchdays mobile">
+          <select
+            name="selectedMatchDayOptional"
+            id="selectedMatchDayOptional"
+            (change)="updateMatchDay($event)"
+            [(ngModel)]="bindingSelect"
           >
             <option [value]="" disabled selected>SELECCIONAR LA FECHA</option>
-            @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
-            <option [value]="day.numberOfMatchDay">FECHA {{ day.numberOfMatchDay + 1 }}</option>
+            @for (day of this.tournament.matchDays; track day.numberOfMatchDay)
+            {
+            <option [value]="day.numberOfMatchDay">
+              FECHA {{ day.numberOfMatchDay + 1 }}
+            </option>
             }
           </select>
         </div>
 
-        <p [ngClass]="{ finished: matchDayStatus, progress: someMatchIsClosed() && !matchDayStatus, soon: !someMatchIsClosed() }">
+        <p
+          [ngClass]="{
+            finished: matchDayStatus,
+            progress: someMatchIsClosed() && !matchDayStatus,
+            soon: !someMatchIsClosed()
+          }"
+        >
           @if (this.tournament.matchDays[selectedMatchDay].isFinished) {
-            FINALIZADA
-          }@else if (someMatchIsClosed()) {
-            EN CURSO
-          }@else {
-            PRÓXIMAMENTE
-          }
+          FINALIZADA }@else if (someMatchIsClosed()) { EN CURSO }@else {
+          PRÓXIMAMENTE }
         </p>
       </div>
       <div class="matchdays desktop">
         @for (day of this.tournament.matchDays; track day.numberOfMatchDay) {
-        <button [ngClass]="{activeNumberClass: day.numberOfMatchDay === selectedMatchDay}"
+        <button
+          [ngClass]="{
+            activeNumberClass: day.numberOfMatchDay === selectedMatchDay
+          }"
           class="base-button font-button"
           (click)="updateMatchDay(day.numberOfMatchDay)"
         >
@@ -50,32 +156,49 @@
       </div>
     </div>
   </div>
-  <hr class="hr"/>
+  <hr class="hr" />
   <div class="matches">
     @if(this.tournament && this.tournament.matchDays.length > 0){
     @if(tournament.matchDays[selectedMatchDay].matches &&
     tournament.matchDays[selectedMatchDay].matches.length > 0){
-      <div class="match">
-        <p class=" titles title-versus">
-          PARTIDOS
-        </p>
-        <div  [ngClass]="{thereIsDateOrTOurnamentIsFinished: tournament.isFinished || tournament.matchDays[selectedMatchDay].matches[0].dateTime}" class="titles title-hour">
-          @if (tournament.matchDays[selectedMatchDay].matches[0].dateTime != null) {
-            <p>FECHA</p>
-          }@else if(isAuth()) {
-            <p (click)="chargeAllDates()">CARGAR FECHAS</p>
-          }@else {
-            <p>FECHA</p>
-          }
-        </div>
-        <div  [ngClass]="{thereIsDateOrTOurnamentIsFinished: tournament.isFinished || tournament.matchDays[selectedMatchDay].matches[0].dateTime}" class="titles">
-          <p>CANCHA</p>
-        </div>
+    <div class="match">
+      <p class="titles title-versus">PARTIDOS</p>
+      <div
+        [ngClass]="{
+          thereIsDateOrTOurnamentIsFinished:
+            tournament.isFinished ||
+            tournament.matchDays[selectedMatchDay].matches[0].dateTime
+        }"
+        class="titles title-hour"
+      >
+        @if (tournament.matchDays[selectedMatchDay].matches[0].dateTime != null)
+        {
+        <p>FECHA</p>
+        }@else if(isAuth()) {
+        <p (click)="chargeAllDates()">CARGAR FECHAS</p>
+        }@else {
+        <p>FECHA</p>
+        }
       </div>
+      <div
+        [ngClass]="{
+          thereIsDateOrTOurnamentIsFinished:
+            tournament.isFinished ||
+            tournament.matchDays[selectedMatchDay].matches[0].dateTime
+        }"
+        class="titles"
+      >
+        <p>CANCHA</p>
+      </div>
+    </div>
     <ng-container
       *ngFor="let match of tournament.matchDays[selectedMatchDay].matches"
     >
+    @if (tournament.matchDays[selectedMatchDay].isPlayOff) {
+      <h3 class="p-id-vs-info">GANADOR DEL PARTIDO <span class="nextMatch">{{match.id}}</span> JUEGA VS EL GANADOR DEL PARTIDO <span class="nextMatch">{{match.vsMatchIdWhoWin}}</span></h3>
+    }
       <div class="match">
+     
         @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
         @if(match.homeTeam === 'Free'){
         <p class="free-match">
@@ -87,32 +210,38 @@
         </p>
         } }@else{
         <div class="versus">
-          <p>{{ match.homeTeam.toUpperCase() }}</p>
-          <p>{{ match.homeGoals }}</p>
-          <p>{{ match.awayGoals }}</p>
-          <p>{{ match.awayTeam.toUpperCase() }}</p>
+          @if (tournament.matchDays[selectedMatchDay].isPlayOff) {
+            <p class="withId"><span>{{match.id}}</span> {{ match.homeTeam.toUpperCase()}}</p>
+          }@else {
+            <p>{{ match.homeTeam.toUpperCase()}}</p>
+          }
+          <p>  {{ match.homeGoals }}</p>
+          <p>  {{ match.awayGoals }}</p>
+          <p>{{ match.awayTeam.toUpperCase()}}</p>
         </div>
 
-        <div class="hour" [ngClass]="{noAuth : !isAuth()  || this.matchDayStatus}" >
-          
+        <div
+          class="hour"
+          [ngClass]="{ noAuth: !isAuth() || this.matchDayStatus }"
+        >
           @if (match.dateTime != null) {
-            <p>{{ match.dateTime.toUpperCase() }}</p>
+          <p>{{ match.dateTime.toUpperCase() }}</p>
           }@else {
-            <p>FECHA SIN DEFINIR</p>
-          }
-
-          @if (!this.matchDayStatus && isAuth()) {
-            <i
+          <p>FECHA SIN DEFINIR</p>
+          } @if (!this.matchDayStatus && isAuth()) {
+          <i
             (click)="sendMatchId(match.id, 1)"
             class="icon fa-solid fa-pen-to-square"
           ></i>
           }
-     
         </div>
-        <div class="complex" [ngClass]="{noAuth : !isAuth() || this.matchDayStatus}">
-          <p>{{match.description}}</p>
+        <div
+          class="complex"
+          [ngClass]="{ noAuth: !isAuth() || this.matchDayStatus }"
+        >
+          <p>{{ match.description }}</p>
           @if (!this.matchDayStatus && isAuth()) {
-            <i
+          <i
             (click)="sendMatchId(match.id, 2)"
             class="icon fa-solid fa-pen-to-square"
           ></i>
@@ -140,19 +269,44 @@
     </ng-template>
     }
   </div>
-  <hr class="hr">
+  <hr class="hr" />
   <div class="btn-container">
-    @if(isAuth()){ @if(this.matchDayStatus){
-    <button
-      class="base-button edit-button"
-      (click)="toggleMatchDayStatus(false)"
-    >
-      REABRIR FECHA
-    </button>
-    }@else{
-    <button class="base-button" (click)="closeMatchDay(true)">
-      FINALIZAR FECHA
-    </button>
-    } }
+    @if(isAuth()){ 
+        @if(this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
+          <button class="base-button edit-button" (click)="toggleMatchDayStatus(false)">
+            REABRIR FECHA
+          </button>
+          @if (!tournament.matchDays[selectedMatchDay+1]) {
+            <button class="base-button" (click)="showGeneratePlayOffsFunction()">
+              GENERAR PLAYOFFS
+            </button>
+          }
+        }@else if(!this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
+          <button class="base-button" (click)="closeMatchDay(true)">
+            CERRAR FECHA
+          </button>
+        }@else if(this.matchDayStatus && tournament.matchDays[selectedMatchDay].isPlayOff){
+          <button class="base-button edit-button" (click)="toggleMatchDayStatus(false)">
+            REABRIR PLAYOFFS
+          </button>
+          @if (this.matchDayStatus && tournament.matchDays[selectedMatchDay].matches.length>1
+            && !tournament.matchDays[selectedMatchDay+1]
+          ) {
+            <button class="base-button" (click)="generatePlayOffsNoTeams()">
+              GENERAR PLAYOFFS
+            </button>
+          }
+        }@else if (!this.matchDayStatus && tournament.matchDays[selectedMatchDay].isPlayOff &&
+        tournament.matchDays[selectedMatchDay].matches.length>1
+        ) {
+          <button class="base-button" (click)="closeMatchDay(true)">
+            CERRAR PLAYOFFS
+          </button>
+        }@else {
+          <button class="base-button" (click)="closeMatchDay(true)">
+            CERRAR TORNEO
+          </button>
+        }
+  }
   </div>
 </section>

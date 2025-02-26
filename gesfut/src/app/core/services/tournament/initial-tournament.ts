@@ -52,6 +52,7 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
           numberOfMatchDay: 0,
           isFinished: false,
           mvpPlayer: '',
+          isPlayOff: false,
           matches: [
               {
                   id: 0,
@@ -73,7 +74,8 @@ export const INITIAL_TOURNAMENT: TournamentResponseFull = {
                   isFinished: false,
                   dateTime: '',
                   description: '',
-                  mvpPlayer: ''
+                  mvpPlayer: '',
+                  vsMatchIdWhoWin: 0
               }
           ]
       }
@@ -146,7 +148,8 @@ export const INITIAL_DETAILED_MATCH: MatchDetailedResponse = {
       playerName: "Player 1"
   } as EventResponse],
   isFinished: false,
-  mvpPlayer: "Player 1"
+  mvpPlayer: "Player 1",
+  vsMatchIdWhoWin: 0
 };
 
 

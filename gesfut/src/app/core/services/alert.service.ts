@@ -17,7 +17,7 @@ export class AlertService {
       title: title,
       showConfirmButton: false,
       timer: 1600,
-      scrollbarPadding: false,
+      scrollbarPadding: true,
     });
   }
 
@@ -30,7 +30,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
-      scrollbarPadding: false,
+      scrollbarPadding: true,
       customClass: {
         container: 'container-toast',
         icon: 'toast-icon',
@@ -159,7 +159,7 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
-      scrollbarPadding: false,
+      scrollbarPadding: true,
       inputValidator: (value) => {
         if (!value) {
           return 'Debes ingresar un valor';

@@ -146,7 +146,7 @@ export class MatchDaysService {
             )
             .subscribe({
               next: () => {
-                this.alertService.successAlert('Partido guardado!');
+                // this.alertService.successAlert('Partido guardado!');
                 this.dashboardService.setActiveTournamentComponent(
                   'match-days'
                 );
