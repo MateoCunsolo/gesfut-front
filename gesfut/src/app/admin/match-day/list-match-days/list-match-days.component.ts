@@ -482,6 +482,9 @@ export class ListMatchDaysComponent implements OnInit {
       next: () => {
         this.alertService.successAlert("Playoffs generados correctamente");
         this.showGeneratePlayOffs = false;
+        this.teamsQualify = [];
+        this.tournamentParticipantCopy = [];
+        this.matchDayStatus = false;
       },
       error: (error: HttpErrorResponse) => {
         this.alertService.errorAlert(error.error.error);
@@ -491,11 +494,12 @@ export class ListMatchDaysComponent implements OnInit {
 
 
   closeAllMatches() { 
-
-    this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match) => {
+    for(let i=0; i<this.tournament.matchDays.length; i++){
+      this.tournament.matchDays[i].matches.forEach((match) => {
         this.matchDaysService.saveEvents([], match.id);
-          this.closeMatchDay(true); 
       });
+      this.closeMatchDay(true);
+    }
   }
 
  
