@@ -194,7 +194,7 @@
     <ng-container
       *ngFor="let match of tournament.matchDays[selectedMatchDay].matches"
     >
-    @if (tournament.matchDays[selectedMatchDay].isPlayOff) {
+    @if (tournament.matchDays[selectedMatchDay].isPlayOff && match.vsMatchIdWhoWin){
       <h3 class="p-id-vs-info">GANADOR DEL PARTIDO <span class="nextMatch">{{match.id}}</span> JUEGA VS EL GANADOR DEL PARTIDO <span class="nextMatch">{{match.vsMatchIdWhoWin}}</span></h3>
     }
       <div class="match">
@@ -210,8 +210,10 @@
         </p>
         } }@else{
         <div class="versus">
-          @if (tournament.matchDays[selectedMatchDay].isPlayOff) {
+          @if (tournament.matchDays[selectedMatchDay].isPlayOff && match.vsMatchIdWhoWin){
             <p class="withId"><span>{{match.id}}</span> {{ match.homeTeam.toUpperCase()}}</p>
+          }@else if(tournament.matchDays[selectedMatchDay].matches.length === 1){
+            <p class="withId"><span class="final">FINAL</span> {{ match.homeTeam.toUpperCase()}}</p>
           }@else {
             <p>{{ match.homeTeam.toUpperCase()}}</p>
           }
