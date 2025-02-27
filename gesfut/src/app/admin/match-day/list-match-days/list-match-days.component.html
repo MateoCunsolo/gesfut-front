@@ -123,7 +123,11 @@
             @for (day of this.tournament.matchDays; track day.numberOfMatchDay)
             {
             <option [value]="day.numberOfMatchDay">
-              FECHA {{ day.numberOfMatchDay + 1 }}
+              @if (day.isPlayOff) {
+                PLAYOFFS
+              }@else {
+                FECHA {{ day.numberOfMatchDay + 1 }}
+              }
             </option>
             }
           </select>
