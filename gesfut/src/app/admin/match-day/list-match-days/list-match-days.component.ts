@@ -111,6 +111,18 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   async toggleMatchDayStatus(status: boolean) {
+
+    if(!status){
+    if(this.tournament.matchDays[this.tournament.matchDays.length - 1].isPlayOff
+      && this.tournament.matchDays[this.selectedMatchDay].isPlayOff
+      && this.tournament.matchDays[this.selectedMatchDay].isFinished
+    ){
+        this.alertService.infoAlertTop('Ya se ha generado la final.');
+        return;
+    }
+  }
+
+
     if (this.tournament.isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
       this.alertService.infoAlertTop('El torneo ya ha finalizado.');
       return;
