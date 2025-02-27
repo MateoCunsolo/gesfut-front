@@ -57,6 +57,13 @@ export class LoadResultComponent {
 
     this.breakpointObserver.observe(['(max-width: 767px)']).subscribe(result => {
       this.isMobile = result.matches;
+      
+      // Si la pantalla se agranda, cierra el modal automáticamente
+      if (!this.isMobile && this.editStatsModal) {
+        this.editStatsModal = false;
+        this.eventSelect = 0;
+        console.log("Pantalla agrandada, cerrando modal...");
+      }
     });
 
     this.statisticsForm = this.fb.group({
@@ -90,6 +97,7 @@ export class LoadResultComponent {
   }
 
   ngOnInit() {
+
     this.matchDayService.editResult.subscribe({
       next: (edit: boolean) => {
         if (edit) {

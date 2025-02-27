@@ -318,7 +318,7 @@ span{
 
 .modificable-stats{
   cursor: pointer;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 767px) {
     display: none;
   }
 }
@@ -357,7 +357,7 @@ span{
     border-radius: 5px;
   }
 
-  @media screen and (max-width: 600px) {    
+  @media screen and (max-width: 767px) {    
     button{
       width: 100%;
     }
@@ -399,7 +399,7 @@ span{
   color: var(--bg-color);
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 767px) {
   .edit-stats-player-modal{
     padding: 10px;
   }
