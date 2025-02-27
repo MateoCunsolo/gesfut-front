@@ -22,15 +22,30 @@
       <tbody>
         <tr
           *ngFor="let team of tournament.participants; let i = index"
-          [ngClass]="{ winner: tournament.isFinished && i == 0 }"
+          [ngClass]="{ winner: tournament.isFinished && team.idParticipant == idChampionOfTournament 
+          || tournament.isFinished && team.idParticipant == idChampionOfPlayoffs }"
         >
           <td>{{ i + 1 }}</td>
-          @if (tournament.isFinished && i==0) {
-          <td class="campeon">
-            <span class="tag-winner">CAMPEON</span>
-            {{ team.name.toUpperCase() }}
-            <span class="tag-winner">CAMPEON</span>
+          @if (tournament.isFinished && team.idParticipant == idChampionOfTournament 
+          || tournament.isFinished && team.idParticipant == idChampionOfPlayoffs) {
+          <td class="campeon" (click)="showTeamDetails(team.idParticipant)">
+            @if (tournament.isFinished) {
+              @if (team.idParticipant == idChampionOfTournament) {
+                <span class="tag-winner">CAMPEÓN</span>
+                {{ team.name.toUpperCase() }}
+                <span class="tag-winner">CAMPEÓN</span>
+              } @else if (team.idParticipant == idChampionOfPlayoffs) {
+                <span class="tag-winner">CAMPEÓN DE PLAYOFFS</span>
+                {{ team.name.toUpperCase() }}
+                <span class="tag-winner">CAMPEÓN DE PLAYOFFS</span>
+              } @else {
+                {{ team.name.toUpperCase() }}
+              }
+            } @else {
+              {{ team.name.toUpperCase() }}
+            }
           </td>
+          
           }@else {
           <td>{{ team.name.toUpperCase() }}</td>
           }
@@ -45,96 +60,90 @@
         </tr>
       </tbody>
     </table>
-
   </div>
 
   <div class="title-container">
     <h3 class="title play-bold stats-players-title">GOLEADORES Y TARJETAS</h3>
-    <hr class="hr-stats">
+    <hr class="hr-stats" />
   </div>
   @if (topScorers.length>0 || topYellowCards.length>0 || topRedCards.length>0) {
   <div class="statistics-container">
     @if (topScorers.length>0) {
-      <div class="overflow-y">
-        <table>
-          <thead>
-            <tr>
-              <th>JUGADOR</th>
-              <th class="titles-show" title="GOLES">⚽</th>
-              <th>EQUIPO</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let player of topScorers">
-              <td>{{ player.playerName }}</td>
-              <td>{{ player.goals }}</td>
-              <td>{{ player.teamName }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="overflow-y">
+      <table>
+        <thead>
+          <tr>
+            <th>JUGADOR</th>
+            <th class="titles-show" title="GOLES">⚽</th>
+            <th>EQUIPO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let player of topScorers">
+            <td>{{ player.playerName }}</td>
+            <td>{{ player.goals }}</td>
+            <td>{{ player.teamName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     }@else {
-      <div class="no-statistics-container">
-        <p class="no-statistics">
-          No hay estadísticas de goleadores para mostrar.
-        </p>
-      </div>
+    <div class="no-statistics-container">
+      <p class="no-statistics">
+        No hay estadísticas de goleadores para mostrar.
+      </p>
+    </div>
+    } @if (topYellowCards.length>0) {
+    <div class="overflow-y">
+      <table>
+        <thead>
+          <tr>
+            <th>JUGADOR</th>
+            <th class="titles-show" title="TARJETAS AMARILLAS RECIBIDAS">🟨</th>
+            <th>EQUIPO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let player of topYellowCards">
+            <td>{{ player.playerName }}</td>
+            <td>{{ player.yellowCards }}</td>
+            <td>{{ player.teamName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    }@else {
+    <div class="no-statistics-container">
+      <p class="no-statistics">
+        No hay estadísticas de tarjetas amarillas para mostrar.
+      </p>
+    </div>
+    } @if (topRedCards.length>0) {
+    <div class="overflow-y">
+      <table>
+        <thead>
+          <tr>
+            <th>JUGADOR</th>
+            <th class="titles-show" title="TARJETAS ROJAS RECIBIDAS">🟥</th>
+            <th>EQUIPO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let player of topRedCards">
+            <td>{{ player.playerName }}</td>
+            <td>{{ player.redCards }}</td>
+            <td>{{ player.teamName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    }@else {
+    <div class="no-statistics-container">
+      <p class="no-statistics">
+        No hay estadísticas de tarjetas rojas para mostrar.
+      </p>
+    </div>
     }
-    
-    @if (topYellowCards.length>0) {
-      <div class="overflow-y">
-        <table>
-          <thead>
-            <tr>
-              <th>JUGADOR</th>
-              <th class="titles-show" title="TARJETAS AMARILLAS RECIBIDAS">🟨</th>
-              <th>EQUIPO</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let player of topYellowCards">
-              <td>{{ player.playerName }}</td>
-              <td>{{ player.yellowCards }}</td>
-              <td>{{ player.teamName }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    }@else {
-      <div class="no-statistics-container">
-        <p class="no-statistics">
-          No hay estadísticas de tarjetas amarillas para mostrar.
-        </p>
-      </div>
-    } 
-    
-    @if (topRedCards.length>0) {
-      <div class="overflow-y">
-        <table>
-          <thead>
-            <tr>
-              <th>JUGADOR</th>
-              <th class="titles-show" title="TARJETAS ROJAS RECIBIDAS">🟥</th>
-              <th>EQUIPO</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let player of topRedCards">
-              <td>{{ player.playerName }}</td>
-              <td>{{ player.redCards }}</td>
-              <td>{{ player.teamName }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    }@else {
-      <div class="no-statistics-container">
-        <p class="no-statistics">
-          No hay estadísticas de tarjetas rojas para mostrar.
-        </p>
-      </div>
-    }
-
   </div>
 
   } @else {
@@ -147,6 +156,4 @@
   </div>
 
   }
-
-
 </section>
