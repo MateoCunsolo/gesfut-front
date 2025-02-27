@@ -1,6 +1,7 @@
 import { DashboardService } from './../../../core/services/dashboard.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   FormBuilder,
   FormGroup,
@@ -37,12 +38,27 @@ export class LoadResultComponent {
   homeWin: boolean = false;
   statisticsForm: FormGroup;
   isEditMatch: boolean = false;
+  editStatsModal: boolean = false;
+  editStatsForm: FormGroup;
+  playerNameSelect: string = '';
+  yellowCardSelect: number = 0;
+  redCardSelect: number = 0;
+  goalsSelect: number = 0;
+  mvpSelect: boolean = false;
+  eventSelect: number = 0;
+  isMobile: boolean = false;
   constructor(
     private matchDayService: MatchDaysService,
     private fb: FormBuilder,
     private DashboardService: DashboardService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private breakpointObserver: BreakpointObserver
   ) {
+
+    this.breakpointObserver.observe(['(max-width: 767px)']).subscribe(result => {
+      this.isMobile = result.matches;
+    });
+
     this.statisticsForm = this.fb.group({
       id: [0],
       name: ['', Validators.required],
@@ -56,6 +72,21 @@ export class LoadResultComponent {
       redCard: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
       mvp: [false],
     });
+
+    this.editStatsForm = this.fb.group({
+      id: [0],
+      name: ['', Validators.required],
+      shirt: [0],
+      team: ['', Validators.required],
+      goals: [0, [Validators.required, Validators.min(0)]],
+      yellowCard: [
+        0,
+        [Validators.required, Validators.min(0), Validators.max(2)],
+      ],
+      redCard: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
+      mvp: [false],
+    });
+
   }
 
   ngOnInit() {
@@ -459,7 +490,16 @@ export class LoadResultComponent {
       && event.goals === 0
       && event.mvp === false
     ) {
-      this.events = this.events.filter((e) => e !== event);
+      if(!this.isMobile){
+        this.events = this.events.filter((e) => e !== event);
+      }
+    }
+  }
+
+  changeEditStats(eventIndex: number) {
+    if (this.isMobile) {
+      this.editStatsModal = !this.editStatsModal;
+      this.eventSelect = eventIndex;
     }
   }
 }

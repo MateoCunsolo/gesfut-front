@@ -1,17 +1,74 @@
-<section>
+<div class="oculto" [ngClass]="{'edit-stats-player-modal': editStatsModal}">
+<h2>EDITOR DE ESTADISTICAS</h2>
+
+  <p>{{ events[eventSelect]?.name }} - {{events[eventSelect]?.team}}</p>
+  
+  <p class="stats-edits">
+    GOLES
+    <span class="span-container">
+      <span (click)="removeGoal(events[eventSelect].id)"> - </span>
+      {{ events[eventSelect]?.goals }}
+      <span (click)="addGoals(events[eventSelect].id)"> + </span>
+    </span>
+  </p>
+
+  <p class="stats-edits">
+    AMARILLAS
+    <span class="span-container">
+      <span (click)="removeYellowCard(events[eventSelect].id)"> - </span>
+      {{ events[eventSelect]?.yellowCard }}
+      <span (click)="addYellowCard(events[eventSelect].id)"> + </span>
+    </span>
+  </p>
+
+  <p class="stats-edits">
+    ROJAS
+    <span class="span-container">
+      <span (click)="removeRedCard(events[eventSelect].id)"> - </span>
+      {{ events[eventSelect]?.redCard }}
+      <span (click)="addRedCard(events[eventSelect].id)"> + </span>
+    </span>
+  </p>
+
+  <p class="stats-edits">
+    MVP
+    <span class="span-container">
+      <span 
+        class="mvp-option" 
+        [ngClass]="{ 'selected': events[eventSelect]?.mvp }" 
+        (click)="changeMvpStatus(events[eventSelect].id)">
+        SI
+      </span>
+      <span 
+        class="mvp-option" 
+        [ngClass]="{ 'selected': !events[eventSelect]?.mvp }" 
+        (click)="changeMvpStatus(events[eventSelect].id)">
+        NO
+      </span>
+    </span>
+  </p>
+  
+
+  <button class="back-button" (click)="changeEditStats(0)">CERRAR</button>
+</div>
+
+
+<section [ngClass]="{blur : editStatsModal}" >
   <div class="title-container">
     <h2 class="title play-bold">
-      FECHA #{{
-        currentMatch.numberOfMatchDay + 1
-      }}
+      FECHA #{{ currentMatch.numberOfMatchDay + 1 }}
     </h2>
     <hr />
   </div>
   <div class="versus">
-    <p [ngClass]="{win:homeWin, loss: awayWin, draw: (!awayWin && !homeWin)}">{{ currentMatch.homeTeam.name.toUpperCase() }}</p>
-    <p >{{ currentMatch.homeGoals }}</p>
-    <p >{{ currentMatch.awayGoals }}</p>
-    <p [ngClass]="{win:awayWin, loss:homeWin, draw: (!awayWin && !homeWin)}">{{ currentMatch.awayTeam.name.toUpperCase() }}</p>
+    <p [ngClass]="{ win: homeWin, loss: awayWin, draw: !awayWin && !homeWin }">
+      {{ currentMatch.homeTeam.name.toUpperCase() }}
+    </p>
+    <p>{{ currentMatch.homeGoals }}</p>
+    <p>{{ currentMatch.awayGoals }}</p>
+    <p [ngClass]="{ win: awayWin, loss: homeWin, draw: !awayWin && !homeWin }">
+      {{ currentMatch.awayTeam.name.toUpperCase() }}
+    </p>
   </div>
   <article>
     <!-- Form para buscar el jugador y agregar eventos -->
@@ -30,7 +87,7 @@
           <select (click)="isTeamSelected()" formControlName="name">
             <option value="" disabled selected>SELECCIONE UN JUGADOR</option>
             <option *ngFor="let player of filteredPlayers" [ngValue]="player">
-              {{ player.playerName }} {{player.playerLastName}}
+              {{ player.playerName }} {{ player.playerLastName }}
             </option>
           </select>
         </div>
@@ -45,32 +102,57 @@
         </div> -->
 
         <div class="event-type-container">
-          <div class="input-icon ">
-            <input (click)="isPlayerSelected()" formControlName="goals" type="number" min="0" />
+          <div class="input-icon">
+            <input
+              (click)="isPlayerSelected()"
+              formControlName="goals"
+              type="number"
+              min="0"
+            />
             <i class="fa-solid fa-g"></i>
           </div>
 
-          <div class="input-icon ">
-            <input (change)="isRedCard()"   (click)="isPlayerSelected()"  formControlName="yellowCard" type="number" min="0" max="2"/>
+          <div class="input-icon">
+            <input
+              (change)="isRedCard()"
+              (click)="isPlayerSelected()"
+              formControlName="yellowCard"
+              type="number"
+              min="0"
+              max="2"
+            />
             <i class="fa-solid fa-square" id="yellow"></i>
           </div>
 
-          <div class="input-icon ">
-            <input  (click)="isPlayerSelected()"  formControlName="redCard" type="number" min="0" max="1"/>
+          <div class="input-icon">
+            <input
+              (click)="isPlayerSelected()"
+              formControlName="redCard"
+              type="number"
+              min="0"
+              max="1"
+            />
             <i class="fa-solid fa-square" id="red"></i>
           </div>
 
           <div class="form-group">
             <p>MVP</p>
             <label class="checkbox-icon">
-              <input (click)="isPlayerSelected()"  type="checkbox" formControlName="mvp" />
+              <input
+                (click)="isPlayerSelected()"
+                type="checkbox"
+                formControlName="mvp"
+              />
               <i class="fa-solid fa-star"></i>
             </label>
           </div>
-
         </div>
 
-        <button type="submit" class="base-button" [disabled]="statisticsForm.invalid">
+        <button
+          type="submit"
+          class="base-button"
+          [disabled]="statisticsForm.invalid"
+        >
           AGREGAR ESTADISTICAS
         </button>
       </form>
@@ -81,9 +163,9 @@
     <div class="events-container">
       <div class="container-box">
         @if (events.length<1 && isEditMatch) {
-          <h3>NO HAY ESTADISTICAS INGRESADAS EL PARTIDO HABIA SIDO EMPATE </h3>
+        <h3>NO HAY ESTADISTICAS INGRESADAS EL PARTIDO HABIA SIDO EMPATE</h3>
         }@else if(events.length<1 && !isEditMatch){
-        <h3>NO HAY ESTADISTICAS INGRESADAS </h3>
+        <h3>NO HAY ESTADISTICAS INGRESADAS</h3>
         }@else {
         <h3>ESTADISTICAS INGESADAS</h3>
         }
@@ -103,19 +185,59 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let event of events">
+            <tr *ngFor="let event of events; let i = index">
               <td>{{ event.team }}</td>
-              <td>{{ event.name }}</td>
-              <td><span (click)="addGoals(event.id)" class="modificable-stats">+</span>{{ event.goals }}  <span (click)="removeGoal(event.id)" class="modificable-stats"> - </span></td>
-              <td><span (click)="addYellowCard(event.id)" class="modificable-stats">+</span> {{ event.yellowCard }}<span (click)="removeYellowCard(event.id)"class="modificable-stats"> - </span></td>
-              <td><span (click)="addRedCard(event.id)" class="modificable-stats">+</span>{{ event.redCard }}<span (click)="removeRedCard(event.id)"class="modificable-stats"> - </span></td>
-              <td>@if(event.mvp){
-                <i (click)="changeMvpStatus(event.id)" class="fa-solid fa-star"></i>
+              <td (click)="changeEditStats(i)">{{ event.name }}</td>
+              <td (click)="changeEditStats(i)">
+                <span (click)="addGoals(event.id)" class="modificable-stats"
+                  >+</span
+                >{{ event.goals }}
+                <span (click)="removeGoal(event.id)" class="modificable-stats">
+                  -
+                </span>
+              </td>
+              <td (click)="changeEditStats(i)">
+                <span
+                  (click)="addYellowCard(event.id)"
+                  class="modificable-stats"
+                  >+</span
+                >
+                {{ event.yellowCard
+                }}<span
+                  (click)="removeYellowCard(event.id)"
+                  class="modificable-stats"
+                >
+                  -
+                </span>
+              </td>
+              <td (click)="changeEditStats(i)">
+                <span (click)="addRedCard(event.id)" class="modificable-stats"
+                  >+</span
+                >{{ event.redCard
+                }}<span
+                  (click)="removeRedCard(event.id)"
+                  class="modificable-stats"
+                >
+                  -
+                </span>
+              </td>
+              <td>
+                @if(event.mvp){
+                <i
+                  (click)="changeMvpStatus(event.id)"
+                  class="fa-solid fa-star"
+                ></i>
                 }@else {
-                <p style="cursor:pointer;" (click)="changeMvpStatus(event.id)">NO</p>
+                <p style="cursor: pointer" (click)="changeMvpStatus(event.id)">
+                  NO
+                </p>
                 }
               </td>
-              <td><p (click)="deleteEvent(event)"><i class="fa-solid fa-trash-can"></i></p></td>
+              <td>
+                <p (click)="deleteEvent(event)">
+                  <i class="fa-solid fa-trash-can"></i>
+                </p>
+              </td>
             </tr>
           </tbody>
         </table>
