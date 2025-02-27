@@ -98,14 +98,34 @@ export class UserComponent {
       });
   }
 
-  generateLink() {
-    this.alertService.saherdLinkAlert('LINK DEL TORNEO', 'http://localhost:4200/' + this.code).
-      then((result) => {
-        if (result.isConfirmed) {
-          navigator.clipboard.writeText('http://localhost:4200/' + this.code).then(() => {
-            this.alertService.successAlert('Link copiado al portapapeles');
-          });
+  async generateLink() {
+    const link = `http://localhost:4200/${this.code}`;
+    
+    try {
+      const result = await this.alertService.saherdLinkAlert('LINK DEL TORNEO', link);
+      
+      if (result.isConfirmed) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(link);
+          this.alertService.successAlert('Link copiado al portapapeles');
+        } else {
+          this.copyToClipboardFallback(link);
         }
-      });
+      }
+    } catch (error) {
+      console.error('Error al copiar el enlace', error);
+      this.copyToClipboardFallback(link);
+    }
   }
+  
+  copyToClipboardFallback(text: string) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    this.alertService.successAlert('Link copiado al portapapeles');
+  }
+  
 }

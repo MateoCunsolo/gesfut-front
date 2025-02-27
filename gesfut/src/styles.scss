@@ -302,3 +302,9 @@ label {
 .titles-show{
     cursor: default;
 }
+
+
+//no dejar seleccionar texto
+html{
+    user-select: none;
+}
