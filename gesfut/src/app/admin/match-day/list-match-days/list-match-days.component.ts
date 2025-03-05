@@ -114,6 +114,7 @@ export class ListMatchDaysComponent implements OnInit {
 
     if (!status) {
       if (this.tournament.matchDays[this.tournament.matchDays.length - 1].isPlayOff
+        && (this.tournament.matchDays[this.tournament.matchDays.length - 1].matches.length == 1)
         && this.tournament.matchDays[this.selectedMatchDay].isPlayOff
         && this.tournament.matchDays[this.selectedMatchDay].isFinished
       ) {
@@ -144,7 +145,6 @@ export class ListMatchDaysComponent implements OnInit {
     console.log('Iniciando la función closeMatchDay');
 
     this.playersMvpS = [];
-    this.playersMvpS.push('Seleccionar MVP');
     console.log('playersMvpS inicializado:', this.playersMvpS);
 
     if (this.selectedMatchDay != 0) {
@@ -214,6 +214,7 @@ export class ListMatchDaysComponent implements OnInit {
 
   closeMatchDayWithMvp(status: boolean) {
     let playerMvp = '';
+    this.playersMvpS = ['Seleccionar MVP'];
     this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match) => {
       if (match.mvpPlayer != null && match.mvpPlayer !== '') {
         this.playersMvpS.push(match.mvpPlayer);
