@@ -31,9 +31,9 @@
           <td class="campeon" (click)="showTeamDetails(team.idParticipant)">
             @if (tournament.isFinished) {
               @if (team.idParticipant == idChampionOfTournament) {
-                <span class="tag-winner">CAMPEÓN</span>
+                <span class="tag-winner">CAMPEÓN DE TABLA</span>
                 {{ team.name.toUpperCase() }}
-                <span class="tag-winner">CAMPEÓN</span>
+                <span class="tag-winner">CAMPEÓN DE TABLA</span>
               } @else if (team.idParticipant == idChampionOfPlayoffs) {
                 <span class="tag-winner">CAMPEÓN DE PLAYOFFS</span>
                 {{ team.name.toUpperCase() }}

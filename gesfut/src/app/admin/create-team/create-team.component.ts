@@ -94,7 +94,7 @@ button: any;
     if (this.players.length < 3) {
       Swal.fire({
         title: '¡Atención!',
-        text: 'El equipo debe tener al menos un jugador.',
+        text: 'El equipo debe tener al menos 2 jugadores.',
         icon: 'warning',
         confirmButtonText: 'Entendido'
       });
@@ -212,7 +212,7 @@ button: any;
 
   loadTeamData(data: any[]) {
       if (data.length > 0) {
-        const team = data[0]; // Asumiendo que el primer equipo es el que quieres cargar
+        const team = data[0];
         let colorHex = this.returnColorHex(team.color);
         this.teamForm.patchValue({
           name: team.name,

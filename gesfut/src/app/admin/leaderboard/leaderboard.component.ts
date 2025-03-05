@@ -71,12 +71,14 @@ export class LeaderboardComponent {
   noContainerMatchDayPlayoffs() {
     const lastMatchDay = this.tournament.matchDays[this.tournament.matchDays.length - 1];
     if (lastMatchDay.isPlayOff && lastMatchDay.matches.length <= 1) {
-      this.idChampionOfPlayoffs = lastMatchDay.matches[0].homeGoals > lastMatchDay.matches[0].awayGoals ? this.findTeam(lastMatchDay.matches[0].homeTeam) : this.findTeam(lastMatchDay.matches[0].awayTeam);
-      this.tournament.participants.forEach((team) => {
-        if (team.idParticipant == this.idChampionOfPlayoffs) {
-          console.log("El campeon de los playoffs: " + team.name);
-        }
-      })
+      if(lastMatchDay.matches[0].events.length != 0){
+        this.idChampionOfPlayoffs = lastMatchDay.matches[0].homeGoals > lastMatchDay.matches[0].awayGoals ? this.findTeam(lastMatchDay.matches[0].homeTeam) : this.findTeam(lastMatchDay.matches[0].awayTeam);
+        this.tournament.participants.forEach((team) => {
+          if (team.idParticipant == this.idChampionOfPlayoffs) {
+            console.log("El campeon de los playoffs: " + team.name);
+          }
+        });
+      }
     }
 
     this.tournament.matchDays.forEach((matchDay) => {

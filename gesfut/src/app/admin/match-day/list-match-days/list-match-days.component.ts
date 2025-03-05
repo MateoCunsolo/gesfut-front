@@ -112,15 +112,15 @@ export class ListMatchDaysComponent implements OnInit {
 
   async toggleMatchDayStatus(status: boolean) {
 
-    if(!status){
-    if(this.tournament.matchDays[this.tournament.matchDays.length - 1].isPlayOff
-      && this.tournament.matchDays[this.selectedMatchDay].isPlayOff
-      && this.tournament.matchDays[this.selectedMatchDay].isFinished
-    ){
+    if (!status) {
+      if (this.tournament.matchDays[this.tournament.matchDays.length - 1].isPlayOff
+        && this.tournament.matchDays[this.selectedMatchDay].isPlayOff
+        && this.tournament.matchDays[this.selectedMatchDay].isFinished
+      ) {
         this.alertService.infoAlertTop('Ya se ha generado la final.');
         return;
+      }
     }
-  }
 
 
     if (this.tournament.isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
@@ -141,31 +141,40 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   closeMatchDay(status: boolean) {
+    console.log('Iniciando la función closeMatchDay');
 
     this.playersMvpS = [];
     this.playersMvpS.push('Seleccionar MVP');
+    console.log('playersMvpS inicializado:', this.playersMvpS);
 
     if (this.selectedMatchDay != 0) {
+      console.log('Verificando la fecha seleccionada:', this.selectedMatchDay);
       if (!this.tournament.matchDays[this.selectedMatchDay - 1].isFinished) {
         this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
+        console.log('No se ha finalizado la fecha anterior');
         return;
       }
     }
 
-    if (this.tournament.matchDays[this.selectedMatchDay].matches.some(match => !match.isFinished)) {
-      const match = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
-      if (match?.homeTeam.toLowerCase() === 'free' || match?.awayTeam.toLowerCase() === 'free') {
-        match.isFinished = true;
+    const unfinishedMatch = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
+    if (unfinishedMatch) {
+      console.log('Partido no cerrado encontrado:', unfinishedMatch);
+      if (unfinishedMatch.homeTeam.toLowerCase() === 'free' || unfinishedMatch.awayTeam.toLowerCase() === 'free') {
+        unfinishedMatch.isFinished = true;
+        console.log('Partido marcado como cerrado:', unfinishedMatch);
       } else {
-        this.alertService.errorAlert('El partido: ' + match?.homeTeam + ' vs ' + match?.awayTeam + ' no fue cerrado.');
+        this.alertService.errorAlert('El partido: ' + unfinishedMatch.homeTeam + ' vs ' + unfinishedMatch.awayTeam + ' no fue cerrado.');
+        console.log('El partido no se cerró correctamente:', unfinishedMatch.homeTeam, unfinishedMatch.awayTeam);
+        return;
       }
-      return;
     }
 
     //ADVERTIR QUE ES LA ULTIMA FECHA 
     if (this.selectedMatchDay === this.tournament.matchDays.length - 1 && !this.tournament.matchDays[this.selectedMatchDay].isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
+      console.log('Última fecha del torneo, mostrando advertencia');
       this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Esta es la última fecha del torneo, al cerrarla se dara por terminado el torneo y no se podra volver a abrir.', 'Confirmar')
         .then((result) => {
+          console.log('Resultado de la confirmación:', result);
           if (result.isConfirmed) {
             if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
               this.closeMatchDayWithMvp(status);
@@ -177,12 +186,15 @@ export class ListMatchDaysComponent implements OnInit {
       return;
     }
 
-    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
+    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null && match.mvpPlayer !== '')) {
+      console.log('Cerrando fecha con MVP');
       this.closeMatchDayWithMvp(status);
     } else {
+      console.log('Abriendo nueva fecha');
       this.openMatchDay(status);
     }
   }
+
 
 
   openMatchDay(status: boolean) {
@@ -203,10 +215,11 @@ export class ListMatchDaysComponent implements OnInit {
   closeMatchDayWithMvp(status: boolean) {
     let playerMvp = '';
     this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match) => {
-      if (match.mvpPlayer != null) {
+      if (match.mvpPlayer != null && match.mvpPlayer !== '') {
         this.playersMvpS.push(match.mvpPlayer);
       }
     });
+    console.log('playersMvpS:', this.playersMvpS);
     this.alertService.selectOptionsAlert('SELECCIONE EL MVP DE LA FECHA', this.playersMvpS, "CERRAR SIN MVP")
       .then((result) => {
         if (result.isConfirmed && result.value !== undefined) {
@@ -505,9 +518,9 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  async closeAllMatches() { 
+  async closeAllMatches() {
     for (let i = 0; i < this.tournament.matchDays.length; i++) {
-      const promises = this.tournament.matchDays[i].matches.map((match) => 
+      const promises = this.tournament.matchDays[i].matches.map((match) =>
         new Promise<void>((resolve) => {
           setTimeout(() => {
             this.matchDaysService.saveEvents([], match.id);
@@ -515,11 +528,11 @@ export class ListMatchDaysComponent implements OnInit {
           }, 1500);
         })
       );
-  
+
       await Promise.all(promises);
       this.closeMatchDay(true);
     }
   }
-  
- 
+
+
 }
