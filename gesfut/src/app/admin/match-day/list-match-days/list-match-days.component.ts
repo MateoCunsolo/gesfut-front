@@ -403,6 +403,7 @@ export class ListMatchDaysComponent implements OnInit {
         this.alertService.successAlert("Playoffs generados correctamente");
         this.showGeneratePlayOffs = false;
         this.teamsQualify = [];
+        this.matchDayStatus = false;
       },
       error: (error: HttpErrorResponse) => {
         this.alertService.errorAlert(error.error.error);
