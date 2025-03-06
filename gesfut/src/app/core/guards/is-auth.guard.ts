@@ -7,10 +7,11 @@ export const isAuthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   const isAuthenticated = sessionService.isAuth();
-  const token = sessionStorage.getItem('token');
-  if (isAuthenticated || token) {
-    router.navigate(['/admin']);
-    return false;
+
+  if (isAuthenticated) {
+    router.navigate(['/admin']); // Redirige a la ruta deseada si ya está autenticado
+    return false; // Bloquea el acceso a rutas de auth
   }
-  return true;
+
+  return true; // Permite el acceso si no está autenticado
 };

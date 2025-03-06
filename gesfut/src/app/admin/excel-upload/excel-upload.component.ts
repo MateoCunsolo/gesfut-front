@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
     selector: 'app-excel-upload',
@@ -9,6 +10,7 @@ import * as XLSX from 'xlsx';
     styleUrls: ['./excel-upload.component.scss']
 })
 export class ExcelUploadComponent {
+  private alertService = inject(AlertService);
   @Output() dataLoaded = new EventEmitter<any>();
 
   showFormatExcel() {
@@ -26,6 +28,13 @@ export class ExcelUploadComponent {
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
+
+    if (file.name.split('.').pop() !== 'xlsx') {
+      this.alertService.errorAlert('El archivo debe ser de tipo Excel');
+      event.target.value = '';
+      file.value = '';
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = (e: any) => {
@@ -55,12 +64,20 @@ export class ExcelUploadComponent {
           name: player['NOMBRE'],
           lastName: player['APELLIDO'],
           number: player['DORSAL'],
-          isCaptain: player['CAPITAN'] === 'TRUE' || player['CAPITAN'] === true,
-          isGoalKeeper: player['ARQUERO'] === 'TRUE' || player['ARQUERO'] === true
+          isCaptain: player['CAPITAN'] == 'SI' || player['CAPITAN'] == 'TRUE',
+          isGoalKeeper: player['ARQUERO'] == 'SI' || player['ARQUERO'] == 'TRUE'
         });
       });
 
       const jsonData = Object.values(teams);
+
+      if(jsonData.length === 0) {
+        this.alertService.errorAlert('No se encontraron datos en el archivo');
+        event.target.value = '';
+        file.value = '';
+        return;
+      }
+
       this.dataLoaded.emit(jsonData);
     };
     reader.readAsArrayBuffer(file);

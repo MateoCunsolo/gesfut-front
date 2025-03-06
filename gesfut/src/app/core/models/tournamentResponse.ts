@@ -19,6 +19,7 @@ export interface MatchResponse {
     dateTime: string,
     description: string,
     mvpPlayer: string;
+    vsMatchIdWhoWin: number;
 }
 
 export interface MatchDayResponse {
@@ -26,6 +27,7 @@ export interface MatchDayResponse {
     numberOfMatchDay: number;
     isFinished: boolean;
     mvpPlayer: string;
+    isPlayOff: boolean;
     matches: MatchResponse[];
 }
 

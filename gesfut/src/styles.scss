@@ -202,7 +202,8 @@ label {
     background-color: var(--bg-color);
     color: var(--primary-color);
     border: solid 1px var(--primary-color);
-    width: 75px;
+    width: 100px;
+    text-align: center;
 }
 
 .back-button:hover{
@@ -300,4 +301,10 @@ label {
 
 .titles-show{
     cursor: default;
+}
+
+
+//no dejar seleccionar texto
+html{
+    user-select: none;
 }

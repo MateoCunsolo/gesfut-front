@@ -18,10 +18,10 @@ import { NamesTeamsComponent } from '../../admin/list-teams/names-teams.componen
 import { RecapComponent } from '../../guest/recap/recap.component';
 
 @Component({
-    selector: 'app-admin-tournament-page',
-    imports: [CommonModule, AddPlayerComponent, NavbarComponent, CreateTeamComponent, RecapComponent,ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, PrizeDashboardComponent],
-    templateUrl: './admin-tournament-page.component.html',
-    styleUrl: './admin-tournament-page.component.scss'
+  selector: 'app-admin-tournament-page',
+  imports: [CommonModule, AddPlayerComponent, NavbarComponent, CreateTeamComponent, RecapComponent, ListTeamsTournamentsComponent, TournamentDashboardComponent, InitializeTournamentComponent, ListMatchDaysComponent, LoadResultComponent, LastsMatchesComponent, LeaderboardComponent, PrizeDashboardComponent],
+  templateUrl: './admin-tournament-page.component.html',
+  styleUrl: './admin-tournament-page.component.scss'
 })
 export class AdminTournamentPageComponent implements AfterViewInit {
 
@@ -37,7 +37,6 @@ export class AdminTournamentPageComponent implements AfterViewInit {
   ) { }
 
   ngOnInit() {
-
     this.dashboardService.setNameTournament(localStorage.getItem('lastTournamentClickedName') || '');
 
     this.activedRoute.paramMap.subscribe((paramMap) => {
@@ -67,7 +66,17 @@ export class AdminTournamentPageComponent implements AfterViewInit {
     this.dashboardService.activeTournamentComponent$.subscribe((component: string) => {
       this.activeComponent = component;
     })
+
+    this.dashboardService.haveParticipants$.subscribe({
+      next: (response: boolean) => {
+        this.flag = response;
+        if (this.flag) {
+          this.isLoading = false;
+        }
+      }
+    });
   }
+
 
   ngAfterViewInit() {
     this.dashboardService.activeTournamentComponent$.subscribe((component: string) => {
