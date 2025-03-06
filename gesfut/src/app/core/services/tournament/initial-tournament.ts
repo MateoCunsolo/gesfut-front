@@ -149,7 +149,7 @@ export const INITIAL_DETAILED_MATCH: MatchDetailedResponse = {
   } as EventResponse],
   isFinished: false,
   mvpPlayer: "Player 1",
-  vsMatchIdWhoWin: 0
+  vsMatchIdWhoWin: null
 };
 
 

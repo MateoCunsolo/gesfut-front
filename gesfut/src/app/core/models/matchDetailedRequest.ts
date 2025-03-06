@@ -10,5 +10,5 @@ export interface MatchDetailedResponse {
     events: EventResponse[];  // Puedes reemplazar `any` con el tipo adecuado si tienes la estructura de los eventos.
     isFinished: boolean;
     mvpPlayer: string;
-    vsMatchIdWhoWin: number;
+    vsMatchIdWhoWin: number | null;
   }

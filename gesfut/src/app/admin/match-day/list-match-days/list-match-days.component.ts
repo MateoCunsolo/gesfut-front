@@ -118,8 +118,10 @@ export class ListMatchDaysComponent implements OnInit {
         && this.tournament.matchDays[this.selectedMatchDay].isPlayOff
         && this.tournament.matchDays[this.selectedMatchDay].isFinished
       ) {
-        this.alertService.infoAlertTop('Ya se ha generado la final.');
-        return;
+        if (this.selectedMatchDay !== this.tournament.matchDays.length - 1) {
+          this.alertService.infoAlertTop('Ya se ha generado la final.');
+          return;
+        }
       }
     }
 

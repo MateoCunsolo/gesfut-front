@@ -224,6 +224,13 @@ export class LoadResultComponent {
   }
 
   saveEvents() {
+    if(this.currentMatch.vsMatchIdWhoWin != null){
+      if(this.currentMatch.homeGoals == this.currentMatch.awayGoals){
+        this.alertService.errorAlert('El partido no puede terminar en empate, es playoff.');
+        return;
+      } 
+    }
+
     if (this.thereAreMoreThanOneMvp(this.events)) {
       this.alertService.errorAlert('Solo puede haber un MVP por partido');
       return;
