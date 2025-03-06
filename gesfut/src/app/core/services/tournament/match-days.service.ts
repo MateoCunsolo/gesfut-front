@@ -105,6 +105,7 @@ export class MatchDaysService {
   setActiveMatch(id: number) {
     this.getMatchDetailed(id).subscribe({
       next: (response: MatchDetailedResponse) => {
+        console.log(response);
         this.currentMatch.next(response);
         this.dashboardService.setActiveTournamentComponent('load-result');
       },
@@ -146,7 +147,7 @@ export class MatchDaysService {
             )
             .subscribe({
               next: () => {
-                this.alertService.successAlert('Partido guardado!');
+                // this.alertService.successAlert('Partido guardado!');
                 this.dashboardService.setActiveTournamentComponent(
                   'match-days'
                 );

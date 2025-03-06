@@ -54,6 +54,15 @@ export class TournamentService {
         next: (response: TournamentResponseFull) => {
           response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
           response.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
+          response.participants.sort((a, b) => {
+            if (a.statistics.points === b.statistics.points) {
+              if (a.statistics.goalsFor - a.statistics.goalsAgainst === b.statistics.goalsFor - b.statistics.goalsAgainst) {
+                return b.statistics.goalsFor - a.statistics.goalsFor;
+              }
+              return b.statistics.goalsFor - b.statistics.goalsAgainst - a.statistics.goalsFor - a.statistics.goalsAgainst;
+            }
+            return b.statistics.points - a.statistics.points;
+          });
           this.currentTournament.next(response)
           return response;
         },
@@ -211,6 +220,28 @@ export class TournamentService {
       }))
   }
 
+  generatePlayOffs(teamsIdQualify: Number[], code: string): Observable<void> {
+    const url = `${this.url}/tournaments/generate-playoffs/${code}`;
+    return this.http.put<void>(url, teamsIdQualify, { 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      }
+    }).pipe(
+      tap({
+        next: () => {
+          this.getTournamentFull(code).subscribe({
+            next: (response) => {
+              this.currentTournament.next(response);
+            }
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          return throwError(() => error)
+        }
+      }));
+  }
+
   setLastTeamClicked(id: number) {
     this.lastTeamClicked.next(id);
   }
@@ -235,8 +266,8 @@ export class TournamentService {
     this.recentlyTeamCreated.next(team);
   }
 
-  setDateToInitTournament({date, minutes, days}: {date: string, minutes: number, days: number}) {
-    this.recentDate.next({date, minutes, days});
+  setDateToInitTournament({ date, minutes, days }: { date: string, minutes: number, days: number }) {
+    this.recentDate.next({ date, minutes, days });
   }
 
 }

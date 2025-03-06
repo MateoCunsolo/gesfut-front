@@ -157,11 +157,14 @@ export class InitializeTournamentComponent {
             this.alertService.loadingAlert('Inicializando torneo...');
             this.adminService.initTournament(initializeRequest).subscribe({
               next: () => {
-                this.alertService.successAlert('Torneo inicializado');
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
-
+                this.tournamentService.getTournamentFull(this.code).subscribe({
+                  next: (response) => {
+                    this.tournamentService.currentTournament.next(response);
+                    this.dashboardService.setActiveTournamentComponent('recap');
+                    this.dashboardService.setHaveParticipants(true);
+                    this.alertService.successAlert('Torneo inicializado correctamente');
+                  }
+                });
               },
               error: (err) => {
                 this.alertService.errorAlert(err.error.error);

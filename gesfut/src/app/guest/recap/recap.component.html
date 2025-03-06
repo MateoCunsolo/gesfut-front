@@ -4,7 +4,8 @@
     <h2 class="title play-bold">
       {{ getMatchDayStatus() }}
       <div class="tags-matchDay">
-        <p *ngIf="lastMatchDay.isFinished" class="status">FINALIZADA</p>
+        <p *ngIf="lastMatchDay.isFinished && !lastMatchDay.isPlayOff" class="status">FINALIZADA</p>
+        <p *ngIf="lastMatchDay.isFinished && lastMatchDay.isPlayOff" class="status">FINALIZADO</p>
         @if (isTheFirst()) {
         <p class="status prox" (click)="nextMatchDay()">{{ returnText() }}</p>
         }@else if(!isTheLast()) {
