@@ -31,13 +31,18 @@ export class LeaderboardComponent {
   this.tournamentService.currentTournament.subscribe({
     next: (response) => {
       this.code = response.code;
-      this.tournamentService.getTournamentFull(this.code).subscribe({
-        next: (response: TournamentResponseFull) => {
-          this.tournament = response;
-          this.noContainerMatchDayPlayoffs();
-          this.loadStatistics();
-        }
-      });
+      this.tournament = response;
+      if(response.matchDays.some((matchDay) => matchDay.isPlayOff)){
+        this.tournamentService.getTournamentFull(this.code).subscribe({
+          next: (response: TournamentResponseFull) => {
+            this.tournament = response;
+            this.noContainerMatchDayPlayoffs();
+            this.loadStatistics();
+          }
+        });
+      }else{
+        this.loadStatistics();
+      }
     }
   }).unsubscribe();
 
@@ -127,6 +132,8 @@ export class LeaderboardComponent {
             }
           });
         });
+      }else{
+        console.log("No hay partidos de playoffs");
       }
     });
 
@@ -134,13 +141,18 @@ export class LeaderboardComponent {
 
     this.tournament.participants.sort((a, b) => {
       if (a.statistics.points === b.statistics.points) {
-        if (a.statistics.goalsFor - a.statistics.goalsAgainst === b.statistics.goalsFor - b.statistics.goalsAgainst) {
+        const diffA = a.statistics.goalsFor - a.statistics.goalsAgainst;
+        const diffB = b.statistics.goalsFor - b.statistics.goalsAgainst;
+        
+        if (diffA === diffB) {
           return b.statistics.goalsFor - a.statistics.goalsFor;
         }
-        return b.statistics.goalsFor - b.statistics.goalsAgainst - a.statistics.goalsFor - a.statistics.goalsAgainst;
+        
+        return diffB - diffA;
       }
       return b.statistics.points - a.statistics.points;
     });
+    
 
     this.idChampionOfTournament = this.tournament.participants[0].idParticipant;
     console.log("El campeon del torneo es: " + this.tournament.participants[0].name);

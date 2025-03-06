@@ -87,7 +87,9 @@
           <select (click)="isTeamSelected()" formControlName="name">
             <option value="" disabled selected>SELECCIONE UN JUGADOR</option>
             <option *ngFor="let player of filteredPlayers" [ngValue]="player">
-              {{ player.playerName }} {{ player.playerLastName }}
+              {{player.shirtNumber}} - 
+              {{' '+player.playerName }} {{ player.playerLastName }} {{player.isGoalKeeper? '🧤': ''}} 
+              {{player.isCaptain? '©️': ''}}
             </option>
           </select>
         </div>

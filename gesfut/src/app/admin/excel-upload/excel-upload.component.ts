@@ -17,9 +17,13 @@ export class ExcelUploadComponent {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([
       ['NOMBRE', 'APELLIDO', 'DORSAL', 'CAPITAN', 'ARQUERO', 'EQUIPO', 'COLOR_CAMISETA'],
-      ['MATEO', 'CUNSOLO', 10, 'TRUE', 'FALSE', 'RIVER', 'ROJO'],
-      ['RONALDO', 'NAZZARIO', 9, 'FALSE', 'FALSE', 'RIVER', 'ROJO'],
-      ['DIBU', 'MARTINEZ', 24, 'FALSE', 'TRUE', 'RIVER', 'ROJO']
+      ['MATEO', 'CUNSOLO', 8, 'TRUE', 'FALSE', 'UTN MDP', 'AZUL'],
+      ['RONALDO', 'NAZZARIO', 9, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
+      ['LIONEL', 'MESSI', 30, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
+      ['CRISTIANO', 'RONALDO', 7, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
+      ['EMILIANO', 'MARTINEZ', 23, 'FALSE', 'TRUE', 'UTN MDP', 'AZUL'],
+      ['RAFEL', 'TORESANI', 6, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
+      ['DIEGO', 'MARADONA', 10, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL']
     ]);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Formato');
     XLSX.writeFile(workbook, 'formato_jugadores.xlsx');

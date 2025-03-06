@@ -1,4 +1,4 @@
-<section class="conteiner" [ngClass]="{'container-in-global': isGlobal}">
+<section class="conteiner" [ngClass]="{ 'container-in-global': isGlobal }">
   <div>
     <button class="back-button btn" (click)="back()">ATRAS</button>
     <h1 class="title">PARTIDOS DE {{ teamName.toUpperCase() }}</h1>
@@ -18,13 +18,21 @@
         </div>
         }@else{
         <div class="versus">
-          <p [ngClass]="{ teamName: teamName === item.homeTeam || nameTeam === item.homeTeam }">
+          <p
+            [ngClass]="{
+              teamName: teamName === item.homeTeam || nameTeam === item.homeTeam
+            }"
+          >
             {{ item.homeTeam }}
           </p>
           <p>{{ item.homeGoals }}</p>
           <span>-</span>
           <p>{{ item.awayGoals }}</p>
-          <p [ngClass]="{ teamName: teamName === item.awayTeam || nameTeam === item.awayTeam }">
+          <p
+            [ngClass]="{
+              teamName: teamName === item.awayTeam || nameTeam === item.awayTeam
+            }"
+          >
             {{ item.awayTeam }}
           </p>
         </div>
@@ -32,20 +40,25 @@
 
         <button
           class="base-button"
+          [disabled]="someIsFree($index)"
           [ngClass]="{
             hidden: viewEventsFlag && $index === matchIndex,
-            noFinished: !item.isFinished
+            noFinished: !item.isFinished || someIsFree($index)
           }"
           (click)="viewEvents($index)"
         >
           @if (viewEventsFlag && $index === matchIndex) { OCULTAR EVENTOS }
-          @else if (item.isFinished) { VER EVENTOS } @else { PARTIDO NO
-          FINALIZADO }
+          @else if (item.isFinished && !someIsFree($index)) { VER EVENTOS } 
+          @else if( !item.isFinished && !someIsFree($index)) { PARTIDO NO FINALIZADO }
+          @else { FECHA LIBRE }
         </button>
       </article>
 
       @if (viewEventsFlag && $index === matchIndex) {
-      <app-list-events [match]="matches[$index]" [isTeamNameClicked]="nameTeam || teamName">
+      <app-list-events
+        [match]="matches[$index]"
+        [isTeamNameClicked]="nameTeam || teamName"
+      >
       </app-list-events>
       }
     </div>
