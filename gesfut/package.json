@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start:pwa": "node tools/serve-pwa.mjs",
+    "test:pwa": "node tools/test-pwa.mjs",
+    "test:result-editor": "node tools/test-result-editor.mjs"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +23,9 @@
     "@angular/platform-browser": "^19.1.4",
     "@angular/platform-browser-dynamic": "^19.1.4",
     "@angular/router": "^19.1.4",
+    "@angular/service-worker": "19.1.4",
+    "@fontsource/play": "5.3.0",
+    "@fortawesome/fontawesome-free": "6.5.0",
     "@sweetalert2/ngx-sweetalert2": "^13.0.0",
     "jsonwebtoken": "^9.0.2",
     "rxjs": "~7.8.0",
@@ -33,6 +39,7 @@
     "@angular/cli": "^19.1.5",
     "@angular/compiler-cli": "^19.1.4",
     "@types/jasmine": "~5.1.0",
+    "esbuild": "0.24.2",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

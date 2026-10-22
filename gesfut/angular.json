@@ -32,6 +32,9 @@
               }
             ],
             "styles": [
+              "node_modules/@fontsource/play/400.css",
+              "node_modules/@fontsource/play/700.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.scss",
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
@@ -47,11 +50,12 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -71,7 +75,10 @@
               "buildTarget": "gesfut:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
