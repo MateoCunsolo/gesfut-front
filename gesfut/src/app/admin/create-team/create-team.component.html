@@ -87,7 +87,7 @@
           <app-spinner ></app-spinner>
         </div>
       }@else {
-        <button type="submit" class="base-button" [disabled]="noPlayers">{{ inTournament ? 'Crear y agregar al torneo' : 'Crear equipo' }}</button>
+        <button type="submit" class="base-button" [disabled]="noPlayers || isloading" [attr.aria-busy]="isloading">{{ isloading ? 'Guardando…' : inTournament ? 'Crear y agregar al torneo' : 'Crear equipo' }}</button>
       }
 
     </div>

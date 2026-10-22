@@ -66,7 +66,7 @@ export class CreateTournamentComponent {
               const errorObj = JSON.parse(err.error);
               this.alertService.errorAlert(errorObj.error);
             } catch (parseError) {
-              this.alertService.errorAlert('Ocurrió un error inesperado.');
+              this.alertService.errorAlert(err.status === 0 ? 'No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo: el nombre sigue cargado.' : 'No se pudo crear el torneo. Intentá de nuevo.');
             }
             this.authService.serverNotResponding(err);
             this.cd.markForCheck(); 

@@ -273,6 +273,7 @@ button: any;
   }
     
   onSubmit() {
+    if (this.isloading) return; // Loop 8: doble toque enviaba el equipo dos veces
     if (this.teamForm.invalid) {
       this.alertService.errorAlert("Por favor, rellene todos los campos.");
       return;
@@ -295,9 +296,8 @@ button: any;
         this.isloading = false;
       },
       error: (err: HttpErrorResponse) => {
-        console.log(err);
-        this.alertService.errorAlert(err.error.error);
-        this.authService.serverNotResponding(err);   
+        if (err.status === 0) this.alertService.errorAlert('No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo: los datos siguen cargados.');
+        else { this.alertService.errorAlert(err.error?.error || 'No se pudo crear el equipo.'); this.authService.serverNotResponding(err); }   
         this.isloading = false;
       }
     });
