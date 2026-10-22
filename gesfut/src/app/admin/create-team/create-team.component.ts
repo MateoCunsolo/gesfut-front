@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { AuthService } from '../../core/services/manager/auth.service';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
+import { httpErrorMessage } from '../../core/utils/http-error';
 
 @Component({
     selector: 'app-create-team',
@@ -109,7 +110,7 @@ button: any;
     const names = data.map((team: any) => team.name).join(', ');
     this.alertService.confirmAlert('Importar ' + data.length + ' equipos', 'El archivo tiene ' + data.length + ' equipos: ' + names + '. Se van a crear todos.', 'Crear equipos')
       .then((result) => {
-        if (!result.isConfirmed) return;
+        if (!result.isConfirmed || this.isloading) return;
         const teams = data.map((team: any) => ({ name: String(team.name ?? '').trim(), color: this.returnColorHex(team.color), players: team.players }));
         this.isloading = true;
         this.teamService.createMultipleTeams(teams).subscribe({
@@ -122,10 +123,8 @@ button: any;
           },
           error: (err: HttpErrorResponse) => {
             this.isloading = false;
-            let message = 'No se pudieron crear los equipos.';
-            try { message = (typeof err.error === 'string' ? JSON.parse(err.error) : err.error)?.error || message; } catch { /* texto plano */ }
-            this.alertService.errorAlert(message);
-            this.authService.serverNotResponding(err);
+            this.alertService.errorAlert(httpErrorMessage(err, 'No se pudieron crear los equipos.') + ' No se cre\u00f3 ninguno.');
+            if (err.status !== 0) this.authService.serverNotResponding(err);
           }
         });
       });

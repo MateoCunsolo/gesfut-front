@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 // xlsx (~550 KB) se carga solo al usarlo, para no pesar en la vista publica.
 const loadXlsx = () => import('xlsx');
 import { AlertService } from '../../core/services/alert.service';
+import { EXCEL_MAX_BYTES, parseTeamRows } from '../../core/utils/excel-teams';
 
 @Component({
     selector: 'app-excel-upload',
@@ -35,56 +36,40 @@ export class ExcelUploadComponent {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (file.name.split('.').pop() !== 'xlsx') {
+    if (String(file.name.split('.').pop()).toLowerCase() !== 'xlsx') {
       this.alertService.errorAlert('El archivo debe ser de tipo Excel');
       event.target.value = '';
       file.value = '';
       return;
     }
 
+    if (file.size > EXCEL_MAX_BYTES) {
+      this.alertService.errorAlert('El archivo pesa m\u00e1s de 2 MB. Dividilo en partes m\u00e1s chicas.');
+      event.target.value = '';
+      return;
+    }
+
     const reader = new FileReader();
+    reader.onerror = () => { this.alertService.errorAlert('No pudimos leer el archivo. Prob\u00e1 de nuevo.'); event.target.value = ''; };
     reader.onload = async (e: any) => {
       const XLSX = await loadXlsx();
       const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-
-      // Leer la primera hoja
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-
-      // Convertir hoja a JSON
-      const rawData = XLSX.utils.sheet_to_json(sheet);
-
-      // Transformar la estructura de los datos
-      const teams: Record<string, any> = {};
-      rawData.forEach((player: any) => {
-        const teamName = player['EQUIPO'];
-        if (!teams[teamName]) {
-          teams[teamName] = {
-            name: teamName,
-            color: player['COLOR_CAMISETA'],
-            players: []
-          };
-        }
-
-        teams[teamName].players.push({
-          name: player['NOMBRE'],
-          lastName: player['APELLIDO'],
-          number: player['DORSAL'],
-          isCaptain: player['CAPITAN'] == 'SI' || player['CAPITAN'] == 'TRUE',
-          isGoalKeeper: player['ARQUERO'] == 'SI' || player['ARQUERO'] == 'TRUE'
-        });
-      });
-
-      const jsonData = Object.values(teams);
-
-      if(jsonData.length === 0) {
-        this.alertService.errorAlert('No se encontraron datos en el archivo');
+      let parsed;
+      try {
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        parsed = parseTeamRows(XLSX.utils.sheet_to_json(sheet, { defval: '' }) as Record<string, unknown>[]);
+      } catch {
+        this.alertService.errorAlert('El archivo no es un Excel v\u00e1lido.');
         event.target.value = '';
-        file.value = '';
         return;
       }
-
+      event.target.value = '';
+      if (parsed.errors.length) {
+        this.alertService.listAlert('Revis\u00e1 el archivo: no se import\u00f3 nada', parsed.errors);
+        return;
+      }
+      const jsonData = parsed.teams;
       this.dataLoaded.emit(jsonData);
     };
     reader.readAsArrayBuffer(file);

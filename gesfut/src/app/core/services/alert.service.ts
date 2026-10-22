@@ -288,6 +288,13 @@ export class AlertService {
     });
   }
 
+  /** Loop 10: lista de problemas (por ejemplo, filas invalidas del Excel); el texto se escapa. */
+  listAlert(title: string, lines: string[], max = 8) {
+    const shown = lines.slice(0, max).map(l => '<li>' + escapeHtml(l) + '</li>').join('');
+    const more = lines.length > max ? '<p>Y ' + (lines.length - max) + ' m\u00e1s.</p>' : '';
+    return Swal.fire({ icon: 'error', titleText: title, html: '<ul style="text-align:left">' + shown + '</ul>' + more, confirmButtonText: 'Entendido', scrollbarPadding: false, customClass: { confirmButton: 'base-button' } });
+  }
+
   saherdLinkAlert(title: string, link: string) {
     return Swal.fire({
       titleText: title,
