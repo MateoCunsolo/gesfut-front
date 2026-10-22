@@ -157,7 +157,14 @@ export class ListMatchDaysComponent implements OnInit {
 
   roundLabel = roundLabel;
 
+  private pendingCloseKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha';
+  closeSuccessText(status: boolean): string {
+    if (!status) return 'Fecha reabierta';
+    return this.pendingCloseKind === 'torneo' ? '¡Torneo finalizado!' : this.pendingCloseKind === 'playoffs' ? 'Instancia de playoffs cerrada' : 'Fecha cerrada';
+  }
+
   closeMatchDay(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
+    this.pendingCloseKind = closeKind;
     console.log('Iniciando la función closeMatchDay');
 
     this.playersMvpS = [];
@@ -179,7 +186,7 @@ export class ListMatchDaysComponent implements OnInit {
         unfinishedMatch.isFinished = true;
         console.log('Partido marcado como cerrado:', unfinishedMatch);
       } else {
-        this.alertService.errorAlert('El partido: ' + unfinishedMatch.homeTeam + ' vs ' + unfinishedMatch.awayTeam + ' no fue cerrado.');
+        this.alertService.errorAlert('Falta cargar el resultado de ' + unfinishedMatch.homeTeam + ' vs ' + unfinishedMatch.awayTeam + '. Cargalo antes de cerrar.');
         console.log('El partido no se cerró correctamente:', unfinishedMatch.homeTeam, unfinishedMatch.awayTeam);
         return;
       }
@@ -224,7 +231,7 @@ export class ListMatchDaysComponent implements OnInit {
       .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, '')
       .subscribe({
         next: () => {
-          this.alertService.successAlert(status ? 'Fecha cerrada!' : 'Fecha abierta!');
+          this.alertService.successAlert(this.closeSuccessText(status));
           this.matchDayStatus = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
@@ -243,7 +250,7 @@ export class ListMatchDaysComponent implements OnInit {
       }
     });
     console.log('playersMvpS:', this.playersMvpS);
-    this.alertService.selectOptionsAlert('SELECCIONE EL MVP DE LA FECHA', this.playersMvpS, "CERRAR SIN MVP")
+    this.alertService.selectOptionsAlert('Elegí el MVP de la fecha', this.playersMvpS, "Cerrar sin MVP")
       .then((result) => {
         if (result.isConfirmed && result.value !== undefined) {
           const playerMvp = this.playersMvpS[result.value];
@@ -252,7 +259,7 @@ export class ListMatchDaysComponent implements OnInit {
               .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, playerMvp)
               .subscribe({
                 next: () => {
-                  this.alertService.successAlert(status ? 'Fecha cerrada!' : 'Fecha abierta!');
+                  this.alertService.successAlert(this.closeSuccessText(status));
                   this.matchDayStatus = false;
                 },
                 error: (errorResponse: HttpErrorResponse) => {

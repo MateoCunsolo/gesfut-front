@@ -1,3 +1,5 @@
+import { roundLabelForMatchDay } from '../../../core/utils/round-label';
+import { TournamentService } from '../../../core/services/tournament/tournament.service';
 import { DashboardService } from './../../../core/services/dashboard.service';
 import { Component, DestroyRef, HostListener, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -27,6 +29,8 @@ import { AlertService } from '../../../core/services/alert.service';
   styleUrls: ['./load-result.component.scss'],
 })
 export class LoadResultComponent {
+  private roundTournament = inject(TournamentService);
+  roundOf(n: number): string { return roundLabelForMatchDay(n, this.roundTournament.currentTournament.value?.matchDays); }
   private destroyRef = inject(DestroyRef);
   readonly saving = inject(MatchDaysService).saving;
   tiebreakWinnerId: number | null = null;

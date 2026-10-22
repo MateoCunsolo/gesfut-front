@@ -8,7 +8,7 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
     <article class="match-card" [class.draft]="draft" [class.compact]="compact">
       @if (compact) {
       <div class="match-meta">
-        <span class="match-status" [class.finished]="match.isFinished">{{ isBye ? 'Fecha libre' : match.isFinished ? 'Finalizado' : 'Programado' }}</span>
+        <span class="match-status" [class.finished]="match.isFinished">{{ showRound && roundLabel ? roundLabel + ' · ' : '' }}{{ isBye ? 'Fecha libre' : match.isFinished ? 'Finalizado' : 'Programado' }}</span>
         <span class="match-date">{{ match.dateTime || 'Horario por confirmar' }}@if (match.description) { · {{ venueLabel }} }</span>
       </div>
       @if (isBye) {
@@ -117,6 +117,8 @@ export class MatchCardComponent {
   @Input() draft = false;
   /** Variante densa para listados (inicio, calendario, historial). */
   @Input() compact = false;
+  /** Loop 3: en historiales mezclados (Últimos partidos) muestra la ronda junto al estado. */
+  @Input() showRound = false;
   get isBye(): boolean { return this.match.homeTeam === 'Free' || this.match.awayTeam === 'Free'; }
   get venueLabel(): string { const text = this.match.description?.trim() || ''; return /^cancha\b/i.test(text) ? text : 'Cancha ' + text; }
   initials(name:string):string { return name.trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase(); }

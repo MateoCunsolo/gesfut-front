@@ -1,3 +1,4 @@
+import { roundLabelForMatchDay } from '../../core/utils/round-label';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchCardComponent } from '../../shared/match-card/match-card.component';
 import { Component, inject, DestroyRef } from '@angular/core';
@@ -19,6 +20,7 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
   styleUrl: './lasts-matches.component.scss',
 })
 export class LastsMatchesComponent {
+  roundOf(n: number): string { return roundLabelForMatchDay(n, this.tournamentServices.currentTournament.value?.matchDays); }
   private readonly destroyRef = inject(DestroyRef);
   matches: MatchResponse[] = [];
   matchIndex: number = 0;
