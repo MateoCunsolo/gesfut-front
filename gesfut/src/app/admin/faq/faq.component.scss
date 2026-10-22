@@ -1,49 +1,16 @@
-.faq-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 35px;
-    padding: 20px;
-    min-height: calc(100vh - 80px);
-  }
-  
-  .faq-item {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    width: 100%;
-
-}
-  
-  .faq-question {
-    width: 100%;
-    background-color: transparent;
-    color: var(--primary-color);
-    padding: 10px;
-    text-align: left;
-    border: none;
-    cursor: pointer;
-    font-size: var(--font-size-text);
-  }
-  
-  .faq-answer {
-    padding: 10px;
-    background: white;
-    color: var(--primary-color);
-    font-size: var(--font-size-text);
-  }
-  
-
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-  }
-
-  .back-button{
-    margin: 15px 0px 0px 15px;
-  }
-/* Shared responsive form rhythm */
-:host{display:block;min-width:0;}section{max-width:100%;height:auto;min-height:0;}input:not([type=checkbox]):not([type=radio]),select,textarea{max-width:100%;font-size:1.6rem;color:var(--ink);min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--surface);} .title{font-size:clamp(2rem,4vw,2.8rem);line-height:1.25;color:var(--ink);margin-bottom:16px;} .btn-container,.buttons,.button-container{flex-wrap:wrap;gap:12px;height:auto;}.base-button,.back-button,.btn{min-height:48px;border-radius:10px;font-size:1.4rem;line-height:1.4;}.error{font-size:1.3rem;}.input-icon i{font-size:1.8rem;left:16px;}.input-icon input{padding-left:44px;}.form-group{min-width:0;}.center-title{overflow-wrap:anywhere;}
-@media(max-width:767px){section{width:100%;padding-left:0;padding-right:0;}.title-container{width:100%;}.form,form{max-width:100%;height:auto;}.btn-container,.buttons,.button-container{width:100%;}.base-button,.back-button{white-space:normal;}.grid-conteiner{display:grid;grid-template-columns:1fr;gap:20px;}.col-1-teams-all,.col-2-teams-tournament{width:100%;}.icon{min-width:44px;min-height:44px;padding:10px;}.overflox{max-height:45dvh;}.info-dates{flex-wrap:wrap;}.team-name{overflow-wrap:anywhere;}}
+/* Auditoria 22/10 (#14): patron de pagina estandar con tokens de DESIGN.md (sin colores nuevos). */
+:host{display:block;min-width:0;}
+.faq-page{max-width:760px;margin:0 auto;padding:16px 16px 32px;display:grid;gap:16px;}
+.crumb{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;margin-left:-8px;background:none;border:0;border-radius:10px;color:var(--primary-color);font:inherit;font-size:1.4rem;font-weight:700;cursor:pointer;}
+.crumb:hover{background:var(--primary-soft);}
+.faq-head .title{font-size:clamp(2.2rem,4vw,2.8rem);line-height:1.25;color:var(--ink);margin:0 0 8px;text-align:left;}
+.lead{margin:0;color:var(--muted);font-size:1.6rem;line-height:1.5;}
+.faq-list{display:grid;border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden;}
+.faq-item+.faq-item{border-top:1px solid var(--line);}
+.faq-h{margin:0;font-size:inherit;}
+.faq-question{width:100%;min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;background:none;border:0;text-align:left;color:var(--ink);font:inherit;font-size:1.6rem;font-weight:700;line-height:1.4;cursor:pointer;}
+.faq-question:hover{background:var(--primary-soft);}
+.faq-question i{flex:none;color:var(--primary-color);transition:transform .2s;}
+.open .faq-question i{transform:rotate(180deg);}
+.faq-answer{margin:0;padding:0 16px 16px;color:var(--muted);font-size:1.6rem;line-height:1.6;}
+@media(prefers-reduced-motion:reduce){.faq-question i{transition:none;}}

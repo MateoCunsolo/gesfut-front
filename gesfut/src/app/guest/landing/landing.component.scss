@@ -1,1 +1,25 @@
-.landing{position:relative;max-width:1120px;min-height:65dvh;margin:0 auto;padding:56px 20px 40px;overflow:hidden;}.landing h1{font-size:clamp(3.2rem,5vw,6.4rem);line-height:1.12;letter-spacing:-.03em;margin:16px 0 24px;max-width:700px;}.landing em{font-style:normal;color:var(--primary-color);}.landing>p{font-size:1.7rem;color:var(--muted);max-width:540px;line-height:1.6;}.start{width:auto;margin-top:28px;display:flex;align-items:center;gap:16px;}.pitch{position:relative;margin-top:40px;height:160px;max-width:480px;border:2px solid #2a6a4940;border-radius:8px;background:var(--primary-soft);overflow:hidden;}.pitch-half{height:100%;position:absolute;left:50%;border-left:2px solid #2a6a4940;}.pitch-circle{position:absolute;border:2px solid #2a6a4940;border-radius:50%;width:72px;height:72px;top:50%;left:50%;transform:translate(-50%,-50%);}.pitch-area{position:absolute;width:48px;height:96px;border:2px solid #2a6a4940;top:50%;transform:translateY(-50%);}.pitch-area.left{left:-2px;}.pitch-area.right{right:-2px;}@media(min-width:1000px){.landing{padding:80px 24px;min-height:72dvh;}.pitch{position:absolute;right:24px;top:100px;width:300px;height:440px;max-width:none;opacity:.7;transform:rotate(-8deg);}.landing h1{position:relative;z-index:1;}.pitch-half{height:0;width:100%;top:50%;left:0;border-top:2px solid #2a6a4940;}.pitch-area.left{left:50%;top:0;transform:translateX(-50%);width:160px;height:56px;}.pitch-area.right{left:50%;top:auto;bottom:-2px;transform:translateX(-50%);width:160px;height:56px;}}
+/* Auditoria 22/10 (#20): preview SVG con tokens de DESIGN.md y acceso publico por codigo. */
+.landing{max-width:1120px;margin:0 auto;padding:48px 20px 40px;display:grid;gap:32px;align-items:center;}
+.landing h1{font-size:clamp(3.2rem,5vw,6.4rem);line-height:1.12;letter-spacing:-.03em;margin:16px 0 24px;max-width:700px;}
+.landing em{font-style:normal;color:var(--primary-color);}
+.copy>p{font-size:1.7rem;color:var(--muted);max-width:540px;line-height:1.6;margin:0;}
+.start{width:auto;margin-top:24px;display:flex;align-items:center;gap:16px;}
+.lookup{margin-top:32px;max-width:480px;display:grid;gap:8px;}
+.lookup-label{font-weight:700;color:var(--ink);font-size:1.5rem;}
+.lookup-row{display:flex;flex-wrap:wrap;gap:8px;}
+.lookup-row input{flex:1 1 200px;min-width:0;min-height:48px;padding:0 16px;font:inherit;font-size:1.6rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;}
+.lookup-row input[aria-invalid=true]{border-color:var(--error-color);}
+.lookup-row .back-button{min-height:48px;border-radius:10px;}
+.lookup-help{margin:0;color:var(--muted);font-size:1.3rem;}
+.preview{width:100%;max-width:360px;justify-self:center;font-family:inherit;}
+.preview .card{fill:var(--surface);stroke:var(--line);stroke-width:2;}
+.preview .soft{fill:var(--primary-soft);}
+.preview .line{stroke:var(--line);stroke-width:1;}
+.preview .label{fill:var(--muted);font-size:13px;}
+.preview .team{fill:var(--ink);font-size:16px;font-weight:700;}
+.preview .score,.preview .pts{fill:var(--primary-color);font-size:18px;font-weight:700;}
+.preview .score{font-size:24px;}
+.preview .pos{fill:var(--muted);font-size:14px;font-weight:700;}
+.preview .dot{fill:var(--primary-color);}
+@media(min-width:1000px){.landing{grid-template-columns:1.3fr 1fr;padding:80px 24px;min-height:72dvh;}.preview{max-width:400px;}}
+.landing svg.preview{width:100%;height:auto;}.lookup .lookup-label{justify-content:flex-start;}

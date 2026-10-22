@@ -1,15 +1,19 @@
-<button (click)="toAdminDashboard()" class="back-button">Volver</button>
-<section class="faq-container">
-    <h2 class="title">Preguntas Frecuentes</h2>
-    @for (faq of faqs; track faq) {
-      <div class="faq-item">
-        <button (click)="toggleFaq(faq)" class="faq-question">
-          {{ faq.question }}
-        </button>
-        @if (faq.open) {
-          <p class="faq-answer">{{ faq.answer }}</p>
-        }
+<section class="faq-page">
+  <button type="button" class="crumb" (click)="toAdminDashboard()"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver al panel central</button>
+  <header class="faq-head">
+    <h1 class="title">Preguntas frecuentes</h1>
+    <p class="lead">Respuestas cortas sobre torneos, partidos, premios y cómo compartir.</p>
+  </header>
+  <div class="faq-list">
+    @for (faq of faqs; track faq.question; let i = $index) {
+      <div class="faq-item" [class.open]="faq.open">
+        <h2 class="faq-h">
+          <button type="button" class="faq-question" [attr.aria-expanded]="!!faq.open" [attr.aria-controls]="'faq-answer-' + i" (click)="toggleFaq(faq)">
+            <span>{{ faq.question }}</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+        </h2>
+        @if (faq.open) { <p class="faq-answer" [id]="'faq-answer-' + i">{{ faq.answer }}</p> }
       </div>
     }
-  </section>
-  
+  </div>
+</section>
