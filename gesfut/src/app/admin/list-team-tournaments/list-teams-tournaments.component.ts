@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,11 +15,12 @@ import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-list-team-tournaments',
-  imports: [NgClass, CommonModule, FormsModule, PlayersTournamentComponent],
+  imports: [CommonModule, FormsModule, PlayersTournamentComponent],
   templateUrl: './list-teams-tournaments.component.html',
   styleUrl: './list-teams-tournaments.component.scss'
 })
 export class ListTeamsTournamentsComponent {
+  private readonly destroyRef = inject(DestroyRef);
 
   private dashboardService = inject(DashboardService);
   private tournamentService = inject(TournamentService);
@@ -37,7 +39,7 @@ export class ListTeamsTournamentsComponent {
   constructor() { }
 
   ngOnInit() {
-    this.tournamentService.currentTournament.subscribe({
+    this.tournamentService.currentTournament.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.tournament = response;
         this.participants = response.participants;
@@ -55,7 +57,7 @@ export class ListTeamsTournamentsComponent {
       }
     });
 
-    this.tournamentService.getLastTeamClicked().subscribe({
+    this.tournamentService.getLastTeamClicked().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.lastClicked = response;
         if (this.participants.length > 0) {

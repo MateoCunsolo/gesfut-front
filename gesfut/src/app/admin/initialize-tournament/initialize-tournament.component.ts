@@ -9,11 +9,11 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { AlertService } from '../../core/services/alert.service';
 import { TimepickerDatepickerIntegrationExample } from "../match-day/list-match-days/timePicker/timePicker.component";
-import { NgClass } from '@angular/common';
+
 
 @Component({
   selector: 'app-initialize-tournament',
-  imports: [FormsModule, TimepickerDatepickerIntegrationExample, NgClass],
+  imports: [FormsModule, TimepickerDatepickerIntegrationExample],
   templateUrl: './initialize-tournament.component.html',
   styleUrl: './initialize-tournament.component.scss'
 })
@@ -147,9 +147,9 @@ export class InitializeTournamentComponent {
       const initializeRequest = {
         tournamentCode: this.code,
         teams: ids,
-        startDate: this.date,
-        minutesPerMatch: this.minutes,
-        dayBetweenMatchDay: this.days
+        startDate: this.date || null,
+        minutesPerMatch: this.date ? this.minutes : null,
+        dayBetweenMatchDay: this.date ? this.days : null
       };
       this.alertService.infoAlertTournament('INFORMACION DEL TORNEO', this.teamsTournament, this.splitDate(this.date).dateWithStrings, this.minutes, this.days)
         .then((result) => {
@@ -185,23 +185,22 @@ export class InitializeTournamentComponent {
   }
 
   addTeam(team: TeamResponse) {
-    if (!this.teamsTournament.includes(team)) {
+    if (!this.teamsTournament.some(item => item.id === team.id)) {
       this.teamsTournament.push(team);
       this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
       this.teams = this.teams.filter(t => t !== team);
       this.teamsFilters = this.teamsFilters.filter(t => t !== team);
     } else {
-      alert('El equipo ya está en la lista del torneo');
+      return;
     }
   }
 
   deleteTeam(team: TeamResponse) {
-    this.teamsTournament = this.teamsTournament.filter(t => t !== team);
-    this.teamsFilters.push(team);
+    this.teamsTournament = this.teamsTournament.filter(t => t.id !== team.id);
+    if (!this.teamsFilters.some(t => t.id === team.id)) this.teamsFilters = [...this.teamsFilters, team];
+    this.teamsFilters.sort((a, b) => a.name.localeCompare(b.name));
     this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
-    this.teams.push(team);
-    this.teams.sort((a, b) => a.name.localeCompare(b.name));
-    this.teamsFilters = this.teamsFilters.sort((a, b) => a.name.localeCompare(b.name));
+    this.filterTeams();
   }
 
   editTeam(team: TeamRequest) {
@@ -286,22 +285,20 @@ export class InitializeTournamentComponent {
     this.minutes = 0;
     this.days = 0;
     this.cancelPicker(true);
+    this.tournamentService.setDateToInitTournament({ date: '', days: 0, minutes: 0 });
   }
 
   resetFilters() {
     this.searchTerm = '';
-    this.teams = this.teamsFilters
+    this.teams = [...this.teamsFilters];
   }
 
   deleteAllTeams() {
-    this.teamsTournament.forEach(team => {
-      this.teamsFilters.push(team);
-      this.teams.push(team);
-    })
+    this.teamsFilters = [...new Map([...this.teamsFilters, ...this.teamsTournament].map(team => [team.id, team])).values()]
+      .sort((a, b) => a.name.localeCompare(b.name));
     this.teamsTournament = [];
-    this.teams = this.teams.sort((a, b) => a.name.localeCompare(b.name));
-    this.teamsFilters = this.teamsFilters.sort((a, b) => a.name.localeCompare(b.name));
     this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+    this.filterTeams();
   }
 
 
@@ -316,3 +313,4 @@ export class InitializeTournamentComponent {
 
 
 }
+

@@ -66,9 +66,9 @@ export class CreatePrizeComponent {
     }
   }
 
-  removePrize() {
+  removePrize(index: number) {
     if (this.prizes.length > 0) {
-      this.prizes.removeAt(this.prizes.length - 1);
+      this.prizes.removeAt(index);
     }
   }
 

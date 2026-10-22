@@ -66,20 +66,22 @@ export class RegisterComponent {
       this.alertService.errorAlert('Formulario inválido');
       return;
     }
-      try {
-      this.isLoading = true;
-      const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
-      console.log(isValidEmail);
-      if (!isValidEmail) {
-        this.alertService.errorAlert('Email no válido');
-        this.isLoading = false;
-        return;
-      }
-    } catch (err) {
-      this.alertService.errorAlert('Error al verificar el email');
-      this.isLoading = false;
-      return;
-    }
+    
+    // FUE COMENTADO PORQUE LA API YA NO ADMITE LA VERIFICACIÓN DE EMAIL, SUPERAMOS EL LIMITE DE USOS 50/50
+    //   try {
+    //   this.isLoading = true;
+    //   const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
+    //   console.log(isValidEmail);
+    //   if (!isValidEmail) {
+    //     this.alertService.errorAlert('Email no válido');
+    //     this.isLoading = false;
+    //     return;
+    //   }
+    // } catch (err) {
+    //   this.alertService.errorAlert('Error al verificar el email');
+    //   this.isLoading = false;
+    //   return;
+    // }
   
     this.isLoading = true;
     this.authService.register(credentials).subscribe({

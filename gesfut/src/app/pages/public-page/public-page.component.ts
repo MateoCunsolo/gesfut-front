@@ -1,8 +1,11 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GuestService } from './../../core/services/guest/guest.service';
-import { Component, HostListener } from '@angular/core';
+import { TournamentNavComponent } from '../../shared/tournament-nav/tournament-nav.component';
+import { Component, HostListener, DestroyRef, inject } from '@angular/core';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription, defer } from 'rxjs';
+import { LoadErrorKind, loadErrorKind, retryTransient } from '../../core/utils/load-retry';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
 import {
   INITIAL_TOURNAMENT,
@@ -23,11 +26,12 @@ import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
     selector: 'app-public-page',
-    imports: [ListMatchDaysComponent, LeaderboardComponent, ListTeamsTournamentsComponent, LastsMatchesComponent, PrizeDashboardComponent, RecapComponent],
+    imports: [TournamentNavComponent, ListMatchDaysComponent, LeaderboardComponent, ListTeamsTournamentsComponent, LastsMatchesComponent, PrizeDashboardComponent, RecapComponent],
     templateUrl: './public-page.component.html',
     styleUrl: './public-page.component.scss'
 })
 export class PublicPageComponent {
+  private readonly destroyRef = inject(DestroyRef);
   currentTournament: BehaviorSubject<TournamentResponseFull> =
     new BehaviorSubject<TournamentResponseFull>(INITIAL_TOURNAMENT);
   currentListTournaments: BehaviorSubject<TournamentResponseShort[]> =
@@ -40,6 +44,10 @@ export class PublicPageComponent {
 
   isMobile: boolean = false;
   menuOpen: boolean = false;
+  loadError = false;
+  loadErrorKind: LoadErrorKind = 'offline';
+  private loadSubscription?: Subscription;
+  loadingTournament = true;
   tournamentName: string = 'Cargando nombre...';
   constructor(
     private tournamentService: TournamentService,
@@ -52,30 +60,46 @@ export class PublicPageComponent {
 
   ngOnInit() {
      
-    this.dashboardService.getNameTournament$.subscribe({
+    this.dashboardService.getNameTournament$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: string) => {
         this.tournamentName = response;
       }
     });
 
-    this.activedRoute.paramMap.subscribe((paramMap) => {
+    this.activedRoute.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
       const code = paramMap.get('code');
       if (code) {
         this.code = code;
+        this.loadTournament();
       }
     });
 
-    this.tournamentService.getTournamentFull(this.code).subscribe({
-      next: (response: TournamentResponseFull) => {
-        this.currentTournament.next(response);
-        this.dashboardService.setNameTournament(response.name);
-      },
-    });
-
-    this.guestService.activeComponent$.subscribe({
+    this.guestService.activeComponent$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.currentActiveComponent = response;
       },
+    });
+  }
+
+
+  loadTournament(forceRefresh = false): void {
+    this.loadingTournament = true;
+    this.loadError = false;
+    this.loadSubscription?.unsubscribe();
+    this.loadSubscription = defer(() => this.tournamentService.getTournamentFull(this.code, forceRefresh)).pipe(
+      retryTransient()
+    ).subscribe({
+      next: (response: TournamentResponseFull) => {
+        this.currentTournament.next(response);
+        this.dashboardService.setNameTournament(response.name);
+        this.loadingTournament = false;
+      },
+      error: (error: unknown) => {
+        this.loadingTournament = false;
+        this.loadError = true;
+        this.loadErrorKind = loadErrorKind(error);
+        this.tournamentName = 'Torneo';
+      }
     });
   }
 

@@ -1,4 +1,7 @@
 <section class="containter-all">
+  <header><h3 #formHeading tabindex="-1">Agregar jugador</h3>
+    @if(destinationName) {<p class="destination">{{destinationName}}</p>}
+  </header>
   @if (therArePlayersToADD) {
   <div class="playerExist">
     <select
@@ -8,7 +11,7 @@
       [value]="0"
       (change)="changePlayer($event)"
     >
-      <option value="0">AGREGAR JUGADOR EXISTENTE</option>
+      <option value="0">Elegir jugador existente</option>
       @for (player of playersGlobal; track $index) {
       <option value="{{ player.id }}">
         {{ player.name + " " + player.lastName }} - {{ player.number }}
@@ -30,7 +33,7 @@
         [value]="0"
         (change)="changePlayer($event)"
       >
-        <option value="0">AGREGAR JUGADOR EXISTENTE</option>
+        <option value="0">Elegir jugador existente</option>
         @for (player of playersGlobal; track $index) {
         <option value="{{ player.id }}">
           {{ player.name + " " + player.lastName }} - {{ player.number }}
@@ -50,7 +53,7 @@
   >
     <!-- Campo Nombre -->
     <div class="form-group input-icon">
-      <input type="text" formControlName="name" placeholder="Nombre" [ngClass]="{ disabled: disbalechecks }" />
+      <input aria-label="Nombre" type="text" formControlName="name" placeholder="Nombre" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fas fa-user"></i>
       @if (playerForm.get('name')?.invalid && playerForm.get('name')?.touched) {
       <small>El nombre es requerido (mín. 2 caracteres).</small>
@@ -59,7 +62,7 @@
 
     <!-- Campo Apellido -->
     <div class="form-group input-icon">
-      <input type="text" formControlName="lastName" placeholder="Apellido" [ngClass]="{ disabled: disbalechecks }"/>
+      <input aria-label="Apellido" type="text" formControlName="lastName" placeholder="Apellido" [ngClass]="{ disabled: disbalechecks }"/>
       <i class="fas fa-user"></i>
       @if (playerForm.get('lastName')?.invalid &&
       playerForm.get('lastName')?.touched) {
@@ -69,7 +72,7 @@
 
     <!-- Campo Dorsal -->
     <div class="form-group input-icon">
-      <input type="number" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
+      <input aria-label="Dorsal" type="number" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fa-solid fa-hashtag"></i>
       @if (playerForm.get('number')?.invalid &&
       playerForm.get('number')?.touched) {
@@ -81,23 +84,23 @@
     <div class="mini-group">
       <div class="check-group">
         <div class="form-group">
-          <label class="checkbox-icon" [ngClass]="{ disabled: disbalechecks }">
-            <input
+          <label class="player-role-choice" [ngClass]="{ disabled: disbalechecks }">
+            <input aria-label="Capitán"
               type="checkbox"
               formControlName="isCaptain"
               [ngClass]="{ disabled: disbalechecks }"
             />
-            <i class="fa-solid fa-c"></i>
+            <span>Capitán</span>
           </label>
         </div>
         <div class="form-group">
-          <label class="checkbox-icon" [ngClass]="{ disabled: disbalechecks }">
-            <input
+          <label class="player-role-choice" [ngClass]="{ disabled: disbalechecks }">
+            <input aria-label="Arquero"
               type="checkbox"
               formControlName="isGoalKeeper"
               [ngClass]="{ disabled: disbalechecks }"
             />
-            <i class="fa-solid fa-hand"></i>
+            <span>Arquero</span>
           </label>
         </div>
       </div>
@@ -107,16 +110,14 @@
       type="button"
       class="base-button cancel"
       (click)="cancelAddPlayer()"
-    >
-      CANCELAR
-    </button>
+    >Cancelar</button>
     </div>
     <div class="flex-buttons grid-6">
  
       @if (changeText) {
-      <button type="submit" class="base-button add">REACTIVAR JUGADOR</button>
+      <button type="submit" class="base-button add">Reactivar jugador</button>
       }@else {
-      <button type="submit" class="base-button add">AGREGAR JUGADOR</button>
+      <button type="submit" class="base-button add">Agregar jugador</button>
       }
     </div>
   </form>

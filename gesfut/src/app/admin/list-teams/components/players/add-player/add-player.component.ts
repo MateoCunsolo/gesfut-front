@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, afterNextRender, ElementRef, ViewChild, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertService } from '../../../../../core/services/alert.service';
@@ -11,6 +11,7 @@ import { forkJoin, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { INITIAL_PARTICIPANT } from '../../../../../core/services/tournament/initial-tournament';
 import { NgClass } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-player',
@@ -26,6 +27,8 @@ export class AddPlayerComponent implements OnChanges {
   private teamService = inject(TeamService);
   private tournamentService = inject(TournamentService);
   private route = inject(Router);
+  @Input() destinationName = '';
+  @ViewChild('formHeading') formHeading?: ElementRef<HTMLElement>;
   @Input() teamIdParticipant: number = 0;
   @Input() teamIdGlobal: number = 0;
   @Input() codeTournament: string = '';
@@ -43,6 +46,11 @@ export class AddPlayerComponent implements OnChanges {
   changeText: boolean = false;
 
   constructor() {
+    afterNextRender(() => {
+      const heading = this.formHeading?.nativeElement;
+      heading?.scrollIntoView({block: 'start', behavior: 'instant'});
+      heading?.focus({preventScroll: true});
+    });
     this.playerForm = this.fb.group({
       teamId: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -304,7 +312,7 @@ export class AddPlayerComponent implements OnChanges {
     this.alertService.twoOptionsAlert('Agregar jugador', 'Elije de donde quieres agregar al jugador', 'Equipo Global', 'Torneo Actual').then((result) => {
       if (result.isConfirmed) {
         this.showReConfirmAlert(0);
-      } else {
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
         this.showReConfirmAlert(1);
       }
     });

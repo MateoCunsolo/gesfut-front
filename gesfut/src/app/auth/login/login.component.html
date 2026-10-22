@@ -1,7 +1,7 @@
 <section>
   <div class="form">
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <h2 class="title">INICIA SESION</h2>
+      <h2 class="title">Ingresar a Gesfut</h2>
       <div class="error-message">
         <!-- @if (error) {
           <p class="error">{{ error }}</p>
@@ -9,7 +9,7 @@
       </div>
 
       <div class="form-group input-icon">
-        <input id="email" type="email" formControlName="email" placeholder="Correo electrónico" />
+        <input id="email" type="email" aria-label="Correo electrónico" autocomplete="username" inputmode="email" formControlName="email" placeholder="Correo electrónico" />
         <i class="fas fa-envelope"></i>
       </div>
       <div class="error-message">
@@ -22,7 +22,7 @@
       </div>
 
       <div class="form-group input-icon">
-        <input id="password" type="password" formControlName="password" placeholder="Contraseña" />
+        <input id="password" type="password" aria-label="Contraseña" autocomplete="current-password" formControlName="password" placeholder="Contraseña" />
         <i class="fas fa-lock"></i>
       </div>
 
@@ -38,13 +38,11 @@
       @if (isLoading) {
         <app-spinner></app-spinner>
       } @else {
-        <button class="base-button" type="submit">INGRESAR</button>
+        <button class="base-button" type="submit">Ingresar</button>
       }
       
-      <a class="link" (click)="toRegister()">No tenes cuenta? Registrate aca!</a>
-      @if (tryLogin) {
-        <a class="link" (click)="toForgotPassword()">Olvide mi contraseña.</a>
-      }
+      <button type="button" class="link" (click)="toRegister()">Crear una cuenta</button>
+      <button type="button" class="link" (click)="toForgotPassword()">Olvidé mi contraseña</button>
     </form>
   </div>
 </section>

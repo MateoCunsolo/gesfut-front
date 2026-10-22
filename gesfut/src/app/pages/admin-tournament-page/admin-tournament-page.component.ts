@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, defer, EMPTY, forkJoin, Subject, switchMap, tap } from 'rxjs';
+import { LoadErrorKind, loadErrorKind, retryTransient } from '../../core/utils/load-retry';
 import { NavbarComponent } from "../../admin/navbar/navbar.component";
 import { TournamentDashboardComponent } from "../../admin/tournament-dashboard/tournament-dashboard.component";
 import { InitializeTournamentComponent } from "../../admin/initialize-tournament/initialize-tournament.component";
@@ -23,7 +26,12 @@ import { RecapComponent } from '../../guest/recap/recap.component';
   templateUrl: './admin-tournament-page.component.html',
   styleUrl: './admin-tournament-page.component.scss'
 })
-export class AdminTournamentPageComponent implements AfterViewInit {
+export class AdminTournamentPageComponent  {
+  @ViewChild(LoadResultComponent) resultEditor?: LoadResultComponent;
+
+  canLeave(): boolean | Promise<boolean> {
+    return this.resultEditor?.canLeave() ?? true;
+  }
 
   activeComponent = '';
   flag: boolean = false;
@@ -36,53 +44,53 @@ export class AdminTournamentPageComponent implements AfterViewInit {
     private activedRoute: ActivatedRoute
   ) { }
 
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly reload = new Subject<string>();
+  loadError = false;
+  loadErrorKind: LoadErrorKind = 'offline';
+  private forceRefresh = false;
+
   ngOnInit() {
-    this.dashboardService.setNameTournament(localStorage.getItem('lastTournamentClickedName') || '');
+    this.dashboardService.activeTournamentComponent$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(component => this.activeComponent = component);
+    this.dashboardService.haveParticipants$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(value => this.flag = value);
 
-    this.activedRoute.paramMap.subscribe((paramMap) => {
-      const code = paramMap.get('code');
-      if (code) {
+    this.reload.pipe(
+      tap(code => {
         this.code = code;
-      }
-    });
-
-    this.tournamentService.getTournamentShort(this.code).subscribe({
-      next: (response) => {
-        this.flag = response.haveParticipants;
-        if (response.haveParticipants) {
-          this.dashboardService.setActiveTournamentComponent('recap');
-        }
-        this.dashboardService.setHaveParticipants(response.haveParticipants);
+        this.isLoading = true;
+        this.loadError = false;
+        this.dashboardService.setNameTournament('');
+      }),
+      switchMap(code => defer(() => forkJoin({
+        short: this.tournamentService.getTournamentShort(code),
+        full: this.tournamentService.getTournamentFull(code, this.forceRefresh)
+      })).pipe(retryTransient(), catchError((error: unknown) => {
+        this.loadError = true;
+        this.loadErrorKind = loadErrorKind(error);
         this.isLoading = false;
-      }
+        return EMPTY;
+      }))),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(({short, full}) => {
+      this.dashboardService.setNameTournament(full.name);
+      this.dashboardService.setHaveParticipants(short.haveParticipants);
+      this.dashboardService.setActiveTournamentComponent(short.haveParticipants ? 'recap' : 'dashboard');
+      this.isLoading = false;
     });
 
-    this.tournamentService.getTournamentFull(this.code).subscribe({
-      next: (response) => {
-        this.tournamentService.currentTournament.next(response);
-      }
-    });
-
-    this.dashboardService.activeTournamentComponent$.subscribe((component: string) => {
-      this.activeComponent = component;
-    })
-
-    this.dashboardService.haveParticipants$.subscribe({
-      next: (response: boolean) => {
-        this.flag = response;
-        if (this.flag) {
-          this.isLoading = false;
-        }
-      }
+    this.activedRoute.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const code = params.get('code');
+      if (code) this.reload.next(code);
     });
   }
 
-
-  ngAfterViewInit() {
-    this.dashboardService.activeTournamentComponent$.subscribe((component: string) => {
-      this.activeComponent = component;
-    })
+  retryLoad() {
+    this.forceRefresh = true;
+    this.reload.next(this.code);
+    this.forceRefresh = false;
   }
-
 }
-

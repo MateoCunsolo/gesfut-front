@@ -1,61 +1,6 @@
-<section class="main">
-    <div class="section-table">
-      <div class="hmx">
-        <table class="table">
-          <thead>
-            <th>#</th>
-            <th>JUGADOR</th>
-            <th class="stats" title="Cantidad de Goles que marco">G</th>
-            <th class="stats" title="Cantidad de amarillas que recibio">🟨</th>
-            <th class="stats" title="Cantidad de rojas que recibio">🟥</th>
-            <th class="stats" title="Cantidad de veces que fue MOST VALUE PLAYER">MVP</th>
-            <th class="stats" title="Esta suspendido para la proxima fecha?">ESTADO</th>
-          </thead>
-          <tbody>
-            @for (player of teamParticipant.playerParticipants; track $index) {
-            
-              @if (player.isActive) {
-                <tr>
-                  <td>{{ player.shirtNumber }}</td>
-                  <td class="player">
-                    {{ player.playerName + " " + player.playerLastName }}
-                    @if (player.isCaptain) {
-                    <span title="MVP" class="titles-show captain">🌟</span>
-                    } @if (player.isGoalKeeper) {
-                    <span title="ARQUERO" class="titles-show goalkeeper icon">🧤</span>
-                    }
-                  </td>
-                  <td>{{ player.goals }}</td>
-                  <td>{{ player.yellowCards }}</td>
-                  <td>{{ player.redCards }}</td>
-                  <td>{{ player.isMvp }}</td>
-                  @if (player.isSuspended) {
-                    <td class="titles-show" title="Suspendido">🟥</td>
-                    }@else {
-                    <td class="titles-show" title="No suspendido">🟩</td>
-                    }
-                  <td class="no-line">
-                    @if (isAuth) {
-                    <app-delete-player
-                      [idPlayerParticipant]="player.id"
-                      [name]="player.playerName + ', ' + player.playerLastName"
-                      [isGlobalTeam]="false"
-                      [isCapitan]="player.isCaptain"
-                      [isGoalKeeper]="player.isGoalKeeper"
-                      [idPlayer]="player.playerId"
-                      (deletePlayer)="deletePlayer($event)"
-                    ></app-delete-player>}
-                  </td>
-                </tr>
-              }
-            }
-          </tbody>
-        </table>
-      </div>
-    </div>
-  
-    @if (flagAddPlayer && isAuth) {
+<section class="main"><div class="player-list">@for(player of teamParticipant.playerParticipants;track player.id){@if(player.isActive){<article class="player-row"><div class="player-identity"><span class="shirt-number">{{player.shirtNumber}}</span><div><h4>{{player.playerName}} {{player.playerLastName}}</h4><div class="player-role">@if(player.isCaptain){<span>Capitán</span>}@if(player.isGoalKeeper){<span>Arquero</span>}@if(player.isSuspended){<span class="suspended">Suspendido</span>}</div></div>@if(isAuth){<app-delete-player [idPlayerParticipant]="player.id" [name]="player.playerName + ', ' + player.playerLastName" [isGlobalTeam]="false" [isCapitan]="player.isCaptain" [isGoalKeeper]="player.isGoalKeeper" [idPlayer]="player.playerId" (deletePlayer)="deletePlayer($event)"/>}</div><dl class="player-stats"><div><dt>Goles</dt><dd>{{player.goals}}</dd></div><div><dt>Amarillas</dt><dd>{{player.yellowCards}}</dd></div><div><dt>Rojas</dt><dd>{{player.redCards}}</dd></div><div><dt>MVP</dt><dd>{{player.isMvp}}</dd></div></dl></article>}}@empty{<div class="empty-state">Este equipo todavía no tiene jugadores.</div>}</div>    @if (flagAddPlayer && isAuth) {
     <app-add-player
+    [destinationName]="teamParticipant.name"
     [teamIdGlobal]="returnIfIsGlobalOrNot()"
     [teamIdParticipant]="areThereParticipanForThisTeam()"
     (addPlayerToTeam)="addPlayerToTeam($event)"
@@ -66,11 +11,11 @@
     }@else {
     <div class="buttons">
         @if (isAuth) {
-        <button class="btn" (click)="showFormAddPlayer()">AGREGAR JUGADOR</button>
+        <button class="base-button" (click)="showFormAddPlayer()">Agregar jugador</button>
         }
-      <button class="btn" (click)="toLastMatches()">ULTIMOS PARTIDOS</button>
+      <button class="button-secondary" (click)="toLastMatches()">Últimos partidos</button>
       @if (isAuth) {
-        <button class="btn" (click)="deleteTeam()">ELIMINAR EQUIPO</button>
+        <button class="button-secondary button-danger" (click)="deleteTeam()">Eliminar equipo</button>
     }
     </div>
   

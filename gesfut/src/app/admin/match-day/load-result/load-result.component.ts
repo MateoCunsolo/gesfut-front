@@ -1,5 +1,6 @@
 import { DashboardService } from './../../../core/services/dashboard.service';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
@@ -26,6 +27,9 @@ import { AlertService } from '../../../core/services/alert.service';
   styleUrls: ['./load-result.component.scss'],
 })
 export class LoadResultComponent {
+  private destroyRef = inject(DestroyRef);
+  readonly saving = inject(MatchDaysService).saving;
+  tiebreakWinnerId: number | null = null;
   currentMatch: MatchDetailedResponse = INITIAL_DETAILED_MATCH;
   searchQuery: string = '';
   filteredTeams: ParticipantResponse[] = [];
@@ -38,6 +42,7 @@ export class LoadResultComponent {
   homeWin: boolean = false;
   statisticsForm: FormGroup;
   isEditMatch: boolean = false;
+  entryOpen = true;
   editStatsModal: boolean = false;
   editStatsForm: FormGroup;
   playerNameSelect: string = '';
@@ -55,7 +60,7 @@ export class LoadResultComponent {
     private breakpointObserver: BreakpointObserver
   ) {
 
-    this.breakpointObserver.observe(['(max-width: 767px)']).subscribe(result => {
+    this.breakpointObserver.observe(['(max-width: 767px)']).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => {
       this.isMobile = result.matches;
       
       // Si la pantalla se agranda, cierra el modal automáticamente
@@ -97,8 +102,22 @@ export class LoadResultComponent {
   }
 
   ngOnInit() {
+    this.statisticsForm.get('team')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(team => {
+      this.selectedTeam = team;
+      this.updateFilteredPlayers();
+      this.statisticsForm.get('name')?.setValue('');
+    });
+    this.statisticsForm.get('name')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(player => {
+      this.selectedPlayer = player || null;
+      if (player) { this.activateStatics(); this.disableMvpIfNeeded(); }
+      else this.desactivetStatics();
+    });
+    this.statisticsForm.get('yellowCard')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      if (value === 2) this.statisticsForm.get('redCard')?.setValue(1);
+    });
+    this.desactivetStatics();
 
-    this.matchDayService.editResult.subscribe({
+    this.matchDayService.editResult.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (edit: boolean) => {
         if (edit) {
           this.isEditMatch = true;
@@ -108,9 +127,13 @@ export class LoadResultComponent {
       },
     })
 
-    this.matchDayService.currentMatch.subscribe({
+    this.matchDayService.currentMatch.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (match: MatchDetailedResponse) => {
-        this.currentMatch = match;
+        this.currentMatch = structuredClone(match);
+        this.events = [];
+        this.eventsCopy = [];
+        this.tiebreakWinnerId = this.currentMatch.tiebreakWinnerId ?? null;
+        this.statisticsForm.reset({id:0,name:'',shirt:0,team:'',goals:0,yellowCard:0,redCard:0,mvp:false});
         this.filteredTeams = [
           this.currentMatch.homeTeam,
           this.currentMatch.awayTeam,
@@ -125,19 +148,9 @@ export class LoadResultComponent {
           this.eventsCopy = this.events.map((event) => ({ ...event }));
         }
 
-        this.statisticsForm.get('team')?.valueChanges.subscribe((team) => {
-          this.selectedTeam = team;
-          this.updateFilteredPlayers();
-          this.statisticsForm.get('name')?.setValue('');
-        });
-
-        this.statisticsForm.get('name')?.valueChanges.subscribe((player) => {
-          this.selectedPlayer = player;
-          this.activateStatics();
-        });
-
         this.disableMvpIfNeeded();
         this.whoWins();
+        this.entryOpen = !this.isEditMatch || this.events.length === 0;
       },
     });
   }
@@ -194,6 +207,12 @@ export class LoadResultComponent {
         id: selectedPlayer?.id,
       };
 
+      const existing = this.events.find(event => event.id === newEvent.id);
+      if ((existing?.yellowCard || 0) + newEvent.yellowCard > 2 || (existing?.redCard || 0) + newEvent.redCard > 1) {
+        this.alertService.errorAlert('Este jugador ya tiene tarjetas registradas. Corregilas desde el registro del partido.');
+        return;
+      }
+      if ((existing?.yellowCard || 0) + newEvent.yellowCard === 2) newEvent.redCard = existing?.redCard ? 0 : 1;
       if (this.currentMatch.homeTeam.name === newEvent.team) {
         this.currentMatch.homeGoals += newEvent.goals;
       } else {
@@ -224,12 +243,17 @@ export class LoadResultComponent {
   }
 
   saveEvents() {
-    if(this.currentMatch.vsMatchIdWhoWin != null){
-      if(this.currentMatch.homeGoals == this.currentMatch.awayGoals){
-        this.alertService.errorAlert('El partido no puede terminar en empate, es playoff.');
-        return;
-      } 
+    if (this.saving()) return;
+    if (this.selectedPlayer && (this.statisticsForm.get('goals')?.value || this.statisticsForm.get('yellowCard')?.value || this.statisticsForm.get('redCard')?.value || this.statisticsForm.get('mvp')?.value)) {
+      this.alertService.errorAlert('Agregá las estadísticas del jugador al registro antes de guardar el partido.');
+      return;
     }
+    const tiedPlayoff = this.currentMatch.isPlayOff && this.currentMatch.homeGoals === this.currentMatch.awayGoals;
+    if (tiedPlayoff && !this.tiebreakWinnerId) {
+      this.alertService.errorAlert('Seleccioná quién ganó el desempate.');
+      return;
+    }
+    if (!tiedPlayoff) this.tiebreakWinnerId = null;
 
     if (this.thereAreMoreThanOneMvp(this.events)) {
       this.alertService.errorAlert('Solo puede haber un MVP por partido');
@@ -237,14 +261,14 @@ export class LoadResultComponent {
     }
     if (this.matchDayService.editResult.value === true) {
       console.log('es editando');
-      if (this.eventsAreEquals()) {
+      if (this.eventsAreEquals() && this.tiebreakWinnerId === (this.currentMatch.tiebreakWinnerId ?? null)) {
         this.DashboardService.setActiveTournamentComponent('match-days');
       } else {
-        this.matchDayService.saveEditEvents(this.events, this.currentMatch.id);
+        this.matchDayService.saveEditEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId);
       }
     } else {
       console.log('es primera carga');
-      this.matchDayService.saveEvents(this.events, this.currentMatch.id);
+      this.matchDayService.saveEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId);
     }
   }
 
@@ -256,12 +280,7 @@ export class LoadResultComponent {
           JSON.stringify(event) === JSON.stringify(this.eventsCopy[index])
       );
 
-    if (areEqual) {
-      console.log('EVENTOS IGUALES');
-      this.DashboardService.setActiveTournamentComponent('match-days');
-      return true;
-    }
-    return false;
+    return areEqual;
   }
 
   async deleteEvent(event: any) {
@@ -298,8 +317,6 @@ export class LoadResultComponent {
   isRedCard(){
     if(this.statisticsForm.get('yellowCard')?.value > 1){
       this.statisticsForm.get('redCard')?.setValue(1);
-    }else{
-      this.statisticsForm.get('redCard')?.setValue(0);
     }
   }
 
@@ -379,7 +396,39 @@ export class LoadResultComponent {
     return this.events.some((event) => event.mvp === true);
   }
 
-  btnBack() {
+  get hasPendingChanges(): boolean {
+    const draft = this.statisticsForm.getRawValue();
+    return !this.eventsAreEquals()
+      || this.tiebreakWinnerId !== (this.currentMatch.tiebreakWinnerId ?? null)
+      || !!(this.selectedPlayer && (draft.goals || draft.yellowCard || draft.redCard || draft.mvp));
+  }
+
+  private exitConfirmation?: Promise<boolean>;
+
+  canLeave(): Promise<boolean> {
+    if (this.saving()) return Promise.resolve(false);
+    if (!this.hasPendingChanges) return Promise.resolve(true);
+    if (!this.exitConfirmation) {
+      this.exitConfirmation = this.alertService.confirmAlert(
+        '¿Salir sin guardar?',
+        'Los cambios de este partido se van a descartar.',
+        'Salir sin guardar'
+      ).then(result => result.isConfirmed && !this.saving())
+        .finally(() => this.exitConfirmation = undefined);
+    }
+    return this.exitConfirmation;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnload(event: BeforeUnloadEvent) {
+    if (this.hasPendingChanges || this.saving()) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
+  async btnBack() {
+    if (!await this.canLeave()) return;
     this.matchDayService.editResult.next(false);
     this.DashboardService.setActiveTournamentComponent('match-days');
   }
@@ -389,7 +438,7 @@ export class LoadResultComponent {
     this.events[index].goals = event.goals;
     this.events[index].yellowCard = event.yellowCard;
     this.events[index].redCard = event.redCard;
-    this.events[index].mvp = event.mvp;
+    this.events[index].mvp = this.events[index].mvp || event.mvp;
   }
 
   toGroupStaticsForPlayer(event: any) {
@@ -397,7 +446,7 @@ export class LoadResultComponent {
     this.events[index].goals += event.goals;
     this.events[index].yellowCard += event.yellowCard;
     this.events[index].redCard += event.redCard;
-    this.events[index].mvp = event.mvp;
+    this.events[index].mvp = this.events[index].mvp || event.mvp;
   }
 
   addGoals(id: number) {
@@ -445,7 +494,10 @@ export class LoadResultComponent {
   changeMvpStatus(id: number) {
     const event = this.events.find((e) => e.id === id);
     if (event) {
-      event.mvp = !event.mvp;
+      const selected = !event.mvp;
+        this.events.forEach(item => item.mvp = false);
+        event.mvp = selected;
+        this.disableMvpIfNeeded();
       this.analizeStats(event);
     }
   }
@@ -457,6 +509,7 @@ export class LoadResultComponent {
       this.analizeStats(event);
     } else {
       this.noLessThanZero();
+      return;
     }
 
     if (this.currentMatch.homeTeam.name === event.team) {
@@ -472,7 +525,7 @@ export class LoadResultComponent {
     const event = this.events.find((e) => e.id === id);
     if (event && event.yellowCard > 0) {
       event.yellowCard--;
-      this.events.find((e) => e.id === id).redCard = 0;
+      if (event.yellowCard === 1) event.redCard = 0;
       this.analizeStats(event);
     } else {
       this.noLessThanZero();
@@ -500,15 +553,8 @@ export class LoadResultComponent {
 
 
   analizeStats(event: any) {
-    if (event.yellowCard === 0
-      && event.redCard === 0
-      && event.goals === 0
-      && event.mvp === false
-    ) {
-      if(!this.isMobile){
-        this.events = this.events.filter((e) => e !== event);
-      }
-    }
+    // Un registro en cero se puede volver a editar o eliminar explícitamente.
+    this.disableMvpIfNeeded();
   }
 
   changeEditStats(eventIndex: number) {

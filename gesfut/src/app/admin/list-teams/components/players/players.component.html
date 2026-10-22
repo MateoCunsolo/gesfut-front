@@ -23,19 +23,19 @@
                 <td class="player">
                   {{ player.playerName + " " + player.playerLastName }}
                   @if (player.isCaptain) {
-                  <span class="captain">🌟</span>
+                  <span class="role-label">Capitán</span>
                   } @if (player.isGoalKeeper) {
-                  <span class="goalkeeper icon">🧤</span>
+                  <span class="role-label">Arquero</span>
                   }
                 </td>
-                <td>{{ player.goals }}</td>
-                <td>{{ player.yellowCards }}</td>
-                <td>{{ player.redCards }}</td>
-                <td>{{ player.isMvp }}</td>
+                <td data-label="Goles">{{ player.goals }}</td>
+                <td data-label="Amarillas">{{ player.yellowCards }}</td>
+                <td data-label="Rojas">{{ player.redCards }}</td>
+                <td data-label="MVP">{{ player.isMvp }}</td>
                 @if (player.isSuspended) {
-                <td title="Suspendido">🟥</td>
+                <td class="status-cell"><span class="status-badge status-badge--danger">Suspendido</span></td>
                 }@else {
-                <td title="No suspendido">🟩</td>
+                <td class="status-cell"><span class="status-badge">Habilitado</span></td>
                 }
                 <td class="no-line">
                   <app-delete-player
@@ -59,15 +59,15 @@
                 <td class="player">
                   {{ player.playerName + " " + player.playerLastName }}
                   @if (player.isCaptain) {
-                  <span class="captain">🌟</span>
+                  <span class="role-label">Capitán</span>
                   } @if (player.isGoalKeeper) {
-                  <span class="goalkeeper icon">🧤</span>
+                  <span class="role-label">Arquero</span>
                   }
                 </td>
-                <td>{{ player.goals }}</td>
-                <td>{{ player.yellowCards }}</td>
-                <td>{{ player.redCards }}</td>
-                <td>{{ player.isMvp }}</td>
+                <td data-label="Goles">{{ player.goals }}</td>
+                <td data-label="Amarillas">{{ player.yellowCards }}</td>
+                <td data-label="Rojas">{{ player.redCards }}</td>
+                <td data-label="MVP">{{ player.isMvp }}</td>
                 <td class="no-line">
                   <app-delete-player
                     [idPlayerParticipant]="player.id"
@@ -90,6 +90,7 @@
 
   @if (flagAddPlayer) {
   <app-add-player
+  [destinationName]="isGlobalTeam ? participantGlobalStats.name : participantTeam.name + (nameTournament ? ' · ' + nameTournament : '')"
   [teamIdGlobal]="returnIfIsGlobalOrNot()"
   [teamIdParticipant]="areThereParticipanForThisTeam()"
   (addPlayerToTeam)="addPlayerToTeam($event)"
@@ -99,9 +100,9 @@
   ></app-add-player>
   }@else {
   <div class="buttons">
-    <button class="btn" (click)="showFormAddPlayer()">AGREGAR JUGADOR</button>
-    <button class="btn" (click)="toLastMatches()">ULTIMOS PARTIDOS</button>
-    <button class="btn" (click)="deleteTeam()">ELIMINAR EQUIPO</button>
+    <button class="base-button" (click)="showFormAddPlayer()">Agregar jugador</button>
+    <button class="button-secondary" (click)="toLastMatches()">Últimos partidos</button>
+    <button class="button-secondary button-danger" (click)="deleteTeam()">Eliminar equipo</button>
   </div>
 
   }

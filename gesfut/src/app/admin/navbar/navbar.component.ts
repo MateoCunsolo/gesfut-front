@@ -1,3 +1,4 @@
+import { TournamentNavComponent } from '../../shared/tournament-nav/tournament-nav.component';
 import { Component, HostListener } from '@angular/core';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { CommonModule } from '@angular/common';  // Asegúrate de importar CommonModule
@@ -7,7 +8,7 @@ import { SessionService } from '../../core/services/manager/session.service';
 
 @Component({
     selector: 'app-navbar',
-    imports: [CommonModule],
+    imports: [CommonModule, TournamentNavComponent],
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss']
 })
@@ -15,12 +16,14 @@ export class NavbarComponent {
 
   isMobile: boolean = false;
   menuOpen: boolean = false;
+  activeComponent = 'recap';
   tournamentName: string = '';
   constructor(private dashboardService: DashboardService, private sessionService:SessionService) {
     this.checkScreenSize();
   }
 
   ngOnInit() {
+    this.dashboardService.activeTournamentComponent$.subscribe(value => this.activeComponent = value);
     this.dashboardService.getNameTournament$.subscribe({
       next: (response: string) => {
         this.tournamentName = response;

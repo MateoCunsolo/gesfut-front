@@ -12,7 +12,8 @@ export const ADMIN_ROUTES: Routes = [
   },
   {
     path: 'tournaments/:code',
-    component: AdminTournamentPageComponent
+    component: AdminTournamentPageComponent,
+    canDeactivate: [(component: AdminTournamentPageComponent) => component.canLeave()]
     /* canActivate: [tournamentExistsGuard] */
   },
   {

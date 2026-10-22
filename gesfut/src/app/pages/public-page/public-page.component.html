@@ -1,31 +1,18 @@
-
-@if (isMobile) {
-  <div class="menu-hamburguesa">
-    <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
-    <label for="btn-menu" class="icon-menu"></label>
-    <nav class="menu" [class.open]="menuOpen">
-      <a (click)="changeComponent('recap')">INICIO</a>
-      <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
-      <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
-      <a (click)="changeComponent('match-days')">FECHAS</a>
-      <a (click)="changeComponent('prizes')">PREMIOS</a>
-    </nav>
-    <p class="childLogo">{{tournamentName}}</p>
-    <input type="checkbox" id="btn-menu" (change)="toggleMenu()" [checked]="menuOpen">
-    <label></label>
-
-  </div>
+<app-tournament-nav [name]="tournamentName" [active]="currentActiveComponent" (sectionChange)="changeComponent($event)" />
+@if (loadError) {
+  <section class="connection-error" role="alert">
+    @if (loadErrorKind === 'not-found') {
+    <h2>No encontramos este torneo</h2>
+    <p>Revisá que el link esté completo o pedí uno nuevo al organizador.</p>
+    } @else {
+    <h2>No pudimos cargar el torneo</h2>
+    <p>Comprobá tu conexión y que el torneo esté disponible.</p>
+    <button type="button" class="base-button" (click)="loadTournament(true)">Reintentar</button>
+    }
+  </section>
+} @else if (loadingTournament) {
+  <p class="connection-error" role="status">Cargando torneo…</p>
 } @else {
-  <nav class="nav-bar">
-    <a (click)="changeComponent('recap')">INICIO</a>
-    <a (click)="changeComponent('list-teams-tournament')">EQUIPOS</a>
-    <a (click)="changeComponent('leaderboard')">CLASIFICACION</a>
-    <a (click)="changeComponent('match-days')">FECHAS</a>
-    <a (click)="changeComponent('prizes')">PREMIOS</a>
-  </nav>
-}
-
-
 @if(currentActiveComponent == 'match-days'){
   <app-list-match-days></app-list-match-days>
 }
@@ -43,4 +30,6 @@
 }
 @if (currentActiveComponent == 'lasts-matches') {
   <app-lasts-matches></app-lasts-matches>
+}
+
 }

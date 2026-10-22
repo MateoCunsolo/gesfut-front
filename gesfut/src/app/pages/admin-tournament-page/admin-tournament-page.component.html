@@ -1,10 +1,21 @@
-@if(isLoading) {
+@if(loadError) {
+<section class="connection-error" role="alert">
+  @if (loadErrorKind === 'not-found') {
+  <h2>No encontramos este torneo</h2>
+  <p>Revisá que el link esté completo o volvé a tus torneos.</p>
+  } @else {
+  <h2>No pudimos cargar el torneo</h2>
+  <p>Comprobá la conexión y volvé a intentarlo.</p>
+  <button type="button" class="base-button" (click)="retryLoad()">Reintentar</button>
+  }
+</section>
+} @else if(isLoading) {
 <!-- Muestra un componente o mensaje de carga -->
 <div class="loading-container">
   <div class="spinner"></div>
   <p>Cargando datos del torneo...</p>
 </div>
-} @else { @if(flag) {
+} @else { @if(flag && activeComponent !== 'load-result') {
 <app-navbar></app-navbar>
 }
 <!-- Componentes principales basados en el valor de activeComponent -->

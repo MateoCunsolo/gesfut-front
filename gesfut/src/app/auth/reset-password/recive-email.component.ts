@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
   <section>
       <div class="form">
         <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
-          <h2 class="title">CAMBIAR CONTRASEÑA</h2>
+          <h2 class="title">Recuperar contraseña</h2>
           <div class="error-message">
             <!-- @if (error) {
             <p class="error">{{ error }}</p>
@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
           </div>
           <div class="form-group input-icon">
             <input
-              id="email"
+              aria-label="Correo electrónico" autocomplete="email" id="email"
               type="email"
               formControlName="email"
               placeholder="Correo electrónico"
@@ -67,7 +67,7 @@ export class ReciveEmailComponent {
     private router: Router
   ) {
     this.emailForm = this.fb.group({
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 

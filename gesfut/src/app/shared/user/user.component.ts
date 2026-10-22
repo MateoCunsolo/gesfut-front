@@ -65,9 +65,11 @@ export class UserComponent {
     this.route.navigateByUrl('/admin/change-password');
   }
 
-  onLogout(): void {
-    this.sessionService.clearUserSession();
-    this.route.navigateByUrl('/');
+  async onLogout(): Promise<void> {
+    // El guard del editor puede cancelar la salida; conservar la sesión en ese caso.
+    if (await this.route.navigateByUrl('/')) {
+      this.sessionService.clearUserSession();
+    }
   }
 
   @HostListener('document:click', ['$event'])
@@ -99,7 +101,7 @@ export class UserComponent {
   }
 
   async generateLink() {
-    const link = `http://localhost:4200/${this.code}`;
+    const link = new URL(`/${encodeURIComponent(this.code)}`, window.location.origin).href;
     
     try {
       const result = await this.alertService.saherdLinkAlert('LINK DEL TORNEO', link);

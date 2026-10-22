@@ -1,10 +1,10 @@
-<button class="back-button position" (click)="changeComponent('dashboard')">ATRAS</button>
+<button class="back-button position" (click)="changeComponent('dashboard')">Volver</button>
 
 <div class="center">
 
   <section class="form-section">
-    <h2>CREACION DEL TORNEO</h2>
-    <p>Requesitos y validaciones del nombre</p>
+    <h2 class="title">Crear torneo</h2>
+    <p>Elegí un nombre que los equipos puedan reconocer.</p>
     <ul>
       <li>El nombre del torneo es obligatorio</li>
       <li>Debe tener entre 3 y 50 caracteres</li>
@@ -14,7 +14,7 @@
     <form [formGroup]="createTournamentForm" (ngSubmit)="onSubmit()">
 
       <div class="form-group input-icon">
-        <input formControlName="name" type="text" placeholder="Ingrese nombre del torneo" />
+        <input aria-label="Ingrese nombre del torneo" formControlName="name" type="text" placeholder="Ingrese nombre del torneo" />
         <i class="fa-solid fa-trophy"></i>
       </div>
 
@@ -31,7 +31,7 @@
       }
 
       @if (createTournamentForm.get('name')?.hasError('pattern')) {
-      <small>El nombre no puede contener espacios</small>
+      <small>Usá letras, números y espacios.</small>
       }
 
       @if (createTournamentForm.get('name')?.valid) {
@@ -42,7 +42,7 @@
         <app-spinner></app-spinner>
       }@else{
         <section class="buttons">
-          <button class="btn-create" type="submit">CREAR TORNEO</button>
+          <button class="btn-create" type="submit" [disabled]="createTournamentForm.invalid">Crear torneo</button>
         </section>
       }
     </form>

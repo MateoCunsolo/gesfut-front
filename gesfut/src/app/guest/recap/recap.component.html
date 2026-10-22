@@ -1,121 +1,18 @@
 <section>
-  <div class="title-container">
-    @if(lastMatchDay){
-    <h2 class="title play-bold">
-      {{ getMatchDayStatus() }}
-      <div class="tags-matchDay">
-        <p *ngIf="lastMatchDay.isFinished && !lastMatchDay.isPlayOff" class="status">FINALIZADA</p>
-        <p *ngIf="lastMatchDay.isFinished && lastMatchDay.isPlayOff" class="status">FINALIZADO</p>
-        @if (isTheFirst()) {
-        <p class="status prox" (click)="nextMatchDay()">{{ returnText() }}</p>
-        }@else if(!isTheLast()) {
-        <p class="status prox" (click)="nextOrBackMatchDay()">
-          {{ returnText() }}
-        </p>
-        }@else{
-        <p class="status prox" (click)="previousMatchDay()">
-          {{ returnText() }}
-        </p>
-        }
-      </div>
-    </h2>
-    }@else{
-    <h2 class="title play-bold">Cargando...</h2>
-    }
-    <hr />
-  </div>
-
-  @if(lastMatchDay){
-  <div class="dashboard-container">
-    <div class="matches-container">
-      @for (match of lastMatchDay.matches; track match.id) {
-      <div class="match">
-        @if(match.homeTeam === 'Free' || match.awayTeam === 'Free'){
-        @if(match.homeTeam === 'Free'){ @if (!lastMatchDay.isFinished) {
-        <p class="status">FINALIZADO</p>
-        }
-        <p class="free-match">
-          {{ match.awayTeam.toUpperCase() }} TIENE FECHA LIBRE
-        </p>
-        }@else{ @if (!lastMatchDay.isFinished) {
-        <p class="status">FINALIZADO</p>
-        }
-        <p class="free-match">
-          {{ match.homeTeam.toUpperCase() }} TIENE FECHA LIBRE
-        </p>
-        } }@else{ @if (match.isFinished) { @if (!lastMatchDay.isFinished) {
-        <p class="status">FINALIZADO</p>
-        }
-        <div class="versus">
-          <p>{{ match.homeTeam.toUpperCase() }}</p>
-          <p>{{ match.homeGoals }}</p>
-          <p>{{ match.awayGoals }}</p>
-          <p>{{ match.awayTeam.toUpperCase() }}</p>
-        </div>
-        }@else {
-        <p class="status prox">
-          {{
-            match.dateTime ? returnHour(match.dateTime) + " hs" : "PRÓXIMAMENTE"
-          }}
-        </p>
-        <div class="versus">
-          <p>{{ match.homeTeam.toUpperCase() }}</p>
-          <p>-</p>
-          <p>-</p>
-          <p>{{ match.awayTeam.toUpperCase() }}</p>
-        </div>
-        } }
-      </div>
-      }
+  @if(lastMatchDay) {
+    <header class="page-heading recap-heading"><h2>{{lastMatchDay.isPlayOff ? 'Eliminatorias' : 'Fecha ' + (lastMatchDay.numberOfMatchDay + 1)}}</h2>
+      @if(!isTheLast() || !isTheFirst()) { <button type="button" class="button-secondary" (click)="nextOrBackMatchDay()">{{returnText() === 'VER PROXIMA FECHA' ? 'Ver próxima fecha' : 'Ver fecha anterior'}} <i [class]="returnText() === 'VER PROXIMA FECHA' ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left'" aria-hidden="true"></i></button> }
+    </header>
+    <div class="recap-layout"><div class="match-feed">
+      @for(match of lastMatchDay.matches; track match.id) { <app-match-card [match]="match" [roundLabel]="'Fecha ' + (lastMatchDay.numberOfMatchDay + 1)" /> }
+      @empty { <div class="empty-state"><h3>Todavía no hay partidos</h3><p>Los próximos encuentros aparecerán acá.</p></div> }
     </div>
-    <div class="top-scorers-container">
-      @if (lastMatchDay.isFinished) {
-      <div class="mvp-container">
-        <div class="mvp">MVP</div>
-        <p>
-          {{
-            lastMatchDay.mvpPlayer
-              ? lastMatchDay.mvpPlayer
-              : "NO HAY MVP SELECIONADO"
-          }}
-        </p>
-      </div>
-      } @if(topScorers.length > 0) {
-      <div class="table-header">
-        <div class="table-cell">JUGADOR</div>
-        <div class="table-cell" title="GOLES">⚽</div>
-      </div>
-      <div class="top-scorers-table">
-        @for(scorer of topScorers; track scorer.playerName) {
-        <div class="table-row">
-          <div class="table-cell">{{ scorer.playerName.toUpperCase() }}</div>
-          <div class="table-cell">
-            {{ scorer.goals }}
-          </div>
-        </div>
-        } @if (topScorers.length>=10) {
-        <p (click)="viewMoreTopScores()" class="view-more">
-          @if (topScorers.length<=10) { ver mas }@else { ver menos }
-        </p>
-        }
-      </div>
-      } @else if(forecast && !lastMatchDay.isFinished) {
-      <app-weather-card class="weather" [day]="forecast"></app-weather-card>
-      } @else if(loadingWeather && !lastMatchDay.isFinished) {
-      <p class="title">Cargando clima...</p>
-      <app-spinner></app-spinner>
-      }@else if(isPreviousDayAvailable && !lastMatchDay.isFinished) {
-      <p>
-        La fecha es anterior al dia actual. No es posible visuallizar el clima.
-      </p>
-      }@else if(!lastMatchDay.isFinished) {
-      <p>No se puede visualizar el clima.</p>
+    <aside class="recap-aside">
+      @if(lastMatchDay.mvpPlayer) { <div class="spotlight"><span class="eyebrow">Jugador de la fecha</span><h3>{{lastMatchDay.mvpPlayer}}</h3><i class="fa-solid fa-star" aria-hidden="true"></i></div> }
+      @if(topScorers.length) { <h3 class="aside-title">Goleadores de la fecha</h3><ol class="scorer-list">@for(scorer of topScorers;track scorer.playerName){<li><span>{{scorer.playerName}}</span><strong>{{scorer.goals}} <span class="sr-only">goles</span></strong></li>}</ol>
+        @if(previousSliceTopScores.length > 10){<button type="button" class="button-secondary" (click)="viewMoreTopScores()">{{topScorers.length === 10 ? 'Ver todos' : 'Ver menos'}}</button>}
       }
-    </div>
-  </div>
-  }@else{
-  <ng-template #noMatches>
-    <p>No hay partidos programados para esta jornada.</p>
-  </ng-template>
-  }
+      @if(forecast && !lastMatchDay.isFinished) {<app-weather-card [day]="forecast" />}
+    </aside></div>
+  } @else { <div class="empty-state"><h3>El torneo se está preparando</h3><p>Cuando se programe la primera fecha, vas a encontrar los partidos acá.</p></div> }
 </section>

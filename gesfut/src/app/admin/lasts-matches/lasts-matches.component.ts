@@ -1,4 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatchCardComponent } from '../../shared/match-card/match-card.component';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { MatchResponse } from '../../core/models/tournamentResponse';
 import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,11 +14,12 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 
 @Component({
   selector: 'app-lasts-matches',
-  imports: [NgClass, ListEventsComponent],
+  imports: [MatchCardComponent],
   templateUrl: './lasts-matches.component.html',
   styleUrl: './lasts-matches.component.scss',
 })
 export class LastsMatchesComponent {
+  private readonly destroyRef = inject(DestroyRef);
   matches: MatchResponse[] = [];
   matchIndex: number = 0;
   teamName: string = '';
@@ -31,7 +34,7 @@ export class LastsMatchesComponent {
   protected nameTeam:string = '';
   ngOnInit() {
 
-    this.tournamentServices.$teamName.subscribe({
+    this.tournamentServices.$teamName.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         if(this.route.url.includes('tournaments/')){
           this.teamName = response;
@@ -46,7 +49,7 @@ export class LastsMatchesComponent {
     });
 
 
-    this.tournamentServices.$matches.subscribe({
+    this.tournamentServices.$matches.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.matches = response;
         this.matches.sort((a: MatchResponse, b: MatchResponse) => {

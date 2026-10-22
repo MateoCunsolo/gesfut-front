@@ -1,6 +1,8 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatchCardComponent } from '../../../shared/match-card/match-card.component';
 import { MatchDayResponse, ParticipantResponse } from '../../../core/models/tournamentResponse';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { TournamentResponseFull } from '../../../core/models/tournamentResponse';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { TournamentService } from '../../../core/services/tournament/tournament.service';
@@ -17,11 +19,12 @@ import { TeamResponse } from '../../../core/models/teamResponse';
 
 @Component({
   selector: 'app-list-match-days',
-  imports: [CommonModule, TimepickerDatepickerIntegrationExample, FormsModule],
+  imports: [MatchCardComponent, CommonModule, TimepickerDatepickerIntegrationExample, FormsModule],
   templateUrl: './list-match-days.component.html',
   styleUrls: ['./list-match-days.component.scss']
 })
 export class ListMatchDaysComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
 
   searchTeam(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase().trim();
@@ -54,7 +57,7 @@ export class ListMatchDaysComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tournamentService.currentTournament.subscribe({
+    this.tournamentService.currentTournament.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: TournamentResponseFull) => {
         this.tournament = response;
         const lastFinishedMatchDay = this.tournament.matchDays

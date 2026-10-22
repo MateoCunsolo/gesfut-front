@@ -56,3 +56,6 @@ input[type="file"] {
         flex-direction: column;
     }
 }
+/* Shared responsive form rhythm */
+:host{display:block;min-width:0;}section{max-width:100%;height:auto;min-height:0;}input:not([type=checkbox]):not([type=radio]),select,textarea{max-width:100%;font-size:1.6rem;color:var(--ink);min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--surface);} .title{font-size:clamp(2rem,4vw,2.8rem);line-height:1.25;color:var(--ink);margin-bottom:16px;} .btn-container,.buttons,.button-container{flex-wrap:wrap;gap:12px;height:auto;}.base-button,.back-button,.btn{min-height:48px;border-radius:10px;font-size:1.4rem;line-height:1.4;}.error{font-size:1.3rem;}.input-icon i{font-size:1.8rem;left:16px;}.input-icon input{padding-left:44px;}.form-group{min-width:0;}.center-title{overflow-wrap:anywhere;}
+@media(max-width:767px){section{width:100%;padding-left:0;padding-right:0;}.title-container{width:100%;}.form,form{max-width:100%;height:auto;}.btn-container,.buttons,.button-container{width:100%;}.base-button,.back-button{white-space:normal;}.grid-conteiner{display:grid;grid-template-columns:1fr;gap:20px;}.col-1-teams-all,.col-2-teams-tournament{width:100%;}.icon{min-width:44px;min-height:44px;padding:10px;}.overflox{max-height:45dvh;}.info-dates{flex-wrap:wrap;}.team-name{overflow-wrap:anywhere;}}

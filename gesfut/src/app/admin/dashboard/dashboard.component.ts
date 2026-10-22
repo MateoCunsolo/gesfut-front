@@ -7,7 +7,7 @@ import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-dashboard',
-    imports: [NgIf],
+    imports: [],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

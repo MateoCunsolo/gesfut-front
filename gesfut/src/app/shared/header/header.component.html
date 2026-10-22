@@ -1,26 +1,7 @@
 <header>
-
-  <section class="logo">
-    <h2 (click)="changeComponent('dashboard')">GESFUT</h2>
-    @if (routeActive()) {
-    <p class="p-panel" (click)="changeComponent('dashboard-principal')">
-      Volver al panel central
-    </p>
-    }   
-  </section>
-
-  @if(isRouteTorunament || noIsAdmin) {
-  <p class="title-tournament">{{ lastTournamentClickedName.toUpperCase() }}</p>
-  }
-  
-  
-  @if (!isLoggedIn && !guest) {
-  <button class="btn-login" (click)="onLogin()">INICIAR SESION</button>
-  } @else if (isLoggedIn) {
-  <app-user class="user"></app-user>
-  }@else {
-    <div></div>
-  }
-
-
+  <div class="brand"><button type="button" class="wordmark" (click)="changeComponent('dashboard')">GESFUT<span class="brand-dot" aria-hidden="true"></span></button>
+    @if(routeActive()) { <button type="button" class="panel-link" (click)="changeComponent('dashboard-principal')"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver al panel central</button> }
+  </div>
+  @if (!isLoggedIn && !guest) { <button class="btn-login" (click)="onLogin()">Ingresar</button> }
+  @else if (isLoggedIn) { <app-user /> }
 </header>

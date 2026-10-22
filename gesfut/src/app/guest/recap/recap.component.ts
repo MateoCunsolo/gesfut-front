@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatchCardComponent } from '../../shared/match-card/match-card.component';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { MatchDaysService } from '../../core/services/tournament/match-days.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatchDayResponse } from '../../core/models/tournamentResponse';
@@ -11,11 +13,12 @@ import { PublicPageComponent } from '../../pages/public-page/public-page.compone
 
 @Component({
   selector: 'app-recap',
-  imports: [WeatherCardComponent, SpinnerComponent, NgIf],
+  imports: [MatchCardComponent, WeatherCardComponent],
   templateUrl: './recap.component.html',
   styleUrl: './recap.component.scss',
 })
 export class RecapComponent {
+  private destroyRef = inject(DestroyRef);
   tournamentCode!: string;
   lastMatchDay!: MatchDayResponse;
   topScorers: { playerName: string; goals: number }[] = [];
@@ -29,7 +32,7 @@ export class RecapComponent {
     private weatherService: WeatherService,
     private tournamentService: TournamentService
   ) {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const code = params.get('code');
       if (code) {
         this.tournamentCode = code;
@@ -47,41 +50,21 @@ export class RecapComponent {
   // }
 
   verifyNextMatchDay() {
-    if (this.lastMatchDay) {
-      if (
-        this.lastMatchDay.isFinished &&
-        this.lastMatchDay.matches.every((match) => match.isFinished)
-      ) {
-        this.tournamentService.currentTournament.subscribe({
-          next: (response) => {
-            //ecntrar el index del matchday actual
-            const index = response.matchDays.findIndex(
-              (matchDay) => matchDay.idMatchDay === this.lastMatchDay.idMatchDay
-            );
-            //ahora ver si la fecha siguiente tiene algun partido cerrado
-            if(response.matchDays[index + 1]){
-              if (response.matchDays[index + 1].matches.some((match) => match.isFinished)){
-                console.log('La fecha siguiente tiene partidos cerrados.');
-                this.lastMatchDay = response.matchDays[index + 1];
-                this.loadTopScorers();
-                this.getForecast();
-                this.orderForDateMatchDay();
-              } else {
-                console.log('La fecha siguiente no tiene partidos cerrados.');
-              }
-            }else{
-              console.log('No hay fecha siguiente.');
-            }
-          },
-        });
-      }
+    const days = this.tournamentService.currentTournament.value.matchDays;
+    const index = days.findIndex(day => day.idMatchDay === this.lastMatchDay?.idMatchDay);
+    const next = days[index + 1];
+    if (index >= 0 && this.lastMatchDay.isFinished && next?.matches.some(match => match.isFinished)) {
+      this.lastMatchDay = structuredClone(next);
+      this.loadTopScorers();
+      this.getForecast();
+      this.orderForDateMatchDay();
     }
   }
 
   loadLastMatchDay(code: string) {
-    this.matchDaysService.getLastPlayedMatchDay(code).subscribe({
+    this.matchDaysService.getLastPlayedMatchDay(code).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: MatchDayResponse) => {
-        this.lastMatchDay = response;
+        this.lastMatchDay = structuredClone(response);
         this.loadTopScorers();
         this.getForecast();
         this.verifyNextMatchDay();
@@ -91,6 +74,7 @@ export class RecapComponent {
   }
 
   loadTopScorers() {
+    this.previousSliceTopScores = [];
     const playerGoals: { [key: string]: number } = {};
     this.lastMatchDay.matches.forEach((match) => {
       match.events.forEach((event) => {
@@ -140,7 +124,7 @@ export class RecapComponent {
     }
 
     const location = 'Mar del Plata';
-    const targetDateTime = this.lastMatchDay.matches[0].dateTime;
+    const targetDateTime = this.lastMatchDay.matches[0]?.dateTime;
 
     if (!targetDateTime) {
       console.warn(
@@ -158,7 +142,7 @@ export class RecapComponent {
       return;
     }
 
-    this.weatherService.getForecast(location, 14).subscribe((data) => {
+    this.weatherService.getForecast(location, 14).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       if (data && data.forecast && data.forecast.forecastday) {
         const forecastDay = data.forecast.forecastday.find(
           (day: { date: string }) => day.date === targetDate
@@ -237,10 +221,10 @@ export class RecapComponent {
 
   getMatchDayStatus() { 
     let date: any;
-    if (this.lastMatchDay.matches[0].dateTime == null) {
+    if (this.lastMatchDay.matches[0]?.dateTime == null) {
       date = '( no hay horarios definidos )';
     } else {
-      date = this.lastMatchDay.matches[0].dateTime.split('|')[0].toUpperCase();
+      date = this.lastMatchDay.matches[0]?.dateTime.split('|')[0].toUpperCase();
     }
 
     if (
@@ -288,7 +272,7 @@ export class RecapComponent {
 
   returnHour(dateTime: string) {
     const dateTimeString = dateTime;
-    const time = dateTimeString.split('|')[1].trim().split(' ')[0];
+    const time = dateTimeString?.split('|')[1]?.trim().split(' ')[0] || '';
     return time;
   }
 
@@ -315,36 +299,19 @@ export class RecapComponent {
     }
   }
 
-  nextMatchDay() {
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        //ecntrar el index del matchday actual
-        const index = response.matchDays.findIndex(
-          (matchDay) => matchDay.idMatchDay === this.lastMatchDay.idMatchDay
-        );
-        this.lastMatchDay = response.matchDays[index + 1];
-        this.loadTopScorers();
-        this.getForecast();
-        this.orderForDateMatchDay();
-      },
-    });
-
-  }
-
-  previousMatchDay() {
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        //ecntrar el index del matchday actual
-        const index = response.matchDays.findIndex(
-          (matchDay) => matchDay.idMatchDay === this.lastMatchDay.idMatchDay
-        );
-        this.lastMatchDay = response.matchDays[index - 1];
-      },
-    });
+  private moveMatchDay(offset: number) {
+    const days = this.tournamentService.currentTournament.value.matchDays;
+    const index = days.findIndex(day => day.idMatchDay === this.lastMatchDay?.idMatchDay);
+    const next = days[index + offset];
+    if (index < 0 || !next) return;
+    this.lastMatchDay = structuredClone(next);
     this.loadTopScorers();
     this.getForecast();
     this.orderForDateMatchDay();
   }
+
+  nextMatchDay() { this.moveMatchDay(1); }
+  previousMatchDay() { this.moveMatchDay(-1); }
 
   returnText() {
     if (
@@ -366,18 +333,7 @@ export class RecapComponent {
   }
 
   isTheLast(): boolean {
-    let isLast = false;
-    this.tournamentService.currentTournament.subscribe({
-      next: (response) => {
-        if(this.lastMatchDay){
-          if (this.lastMatchDay.numberOfMatchDay + 1 == response.matchDays.length){
-            isLast = true;
-          }
-        }
-      },
-    });
-    return isLast;
+    const days = this.tournamentService.currentTournament.value.matchDays;
+    return !this.lastMatchDay || days.findIndex(day => day.idMatchDay === this.lastMatchDay.idMatchDay) === days.length - 1;
   }
-
-  
 }

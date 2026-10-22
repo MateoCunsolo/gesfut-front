@@ -1,13 +1,13 @@
 import { Routes} from '@angular/router';
-import { LandingComponent } from './guest/landing/landing.component';
+
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
 import { isAuthGuard } from './core/guards/is-auth.guard';
-import { PublicPageComponent } from './pages/public-page/public-page.component';
+
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
-        path: '', component: LandingComponent,
+        path: '', loadComponent: () => import('./guest/landing/landing.component').then(m => m.LandingComponent),
         canActivate: [isAuthGuard]
     },
     {
@@ -19,7 +19,7 @@ export const routes: Routes = [
         canActivate: [adminAuthGuard]
     },
     {
-      path: ':code', component: PublicPageComponent
+      path: ':code', loadComponent: () => import('./pages/public-page/public-page.component').then(m => m.PublicPageComponent)
     }
    
 ];
