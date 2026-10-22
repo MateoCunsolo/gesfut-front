@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../../core/utils/http-error';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
@@ -20,6 +21,7 @@ import { currentTournamentCode } from '../../../core/utils/route-code';
     styleUrl: './create-prize.component.scss'
 })
 export class CreatePrizeComponent {
+  saving = false;
   prizesForm: FormGroup;
   category: string = '';
 
@@ -75,6 +77,7 @@ export class CreatePrizeComponent {
   }
 
   submitForm() {
+    if (this.saving) return; // Loop 9: doble toque mandaba los premios dos veces
 
     if (this.validateDuplicatedPosition()) {
       this.alertService.errorAlert("Hay puestos duplicados. Corrija antes de enviar.");
@@ -92,13 +95,15 @@ export class CreatePrizeComponent {
         code: formValue.code,
       };
 
+      this.saving = true;
       this.prizeService.sendPrizes(prizesRequest).subscribe({
         next: () => {
+          this.saving = false;
           this.alertService.successAlert('Premios agregados!');
         },
         error: (err: HttpErrorResponse) => {
-
-          this.alertService.errorAlert(err.error.error);
+          this.saving = false;
+          this.alertService.errorAlert(httpErrorMessage(err, 'No se pudieron guardar los premios.') + ' Lo que escribiste sigue en pantalla.');
         },
       });
     }else{

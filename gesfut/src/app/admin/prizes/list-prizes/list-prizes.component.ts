@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../../core/utils/http-error';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { currentTournamentCode } from '../../../core/utils/route-code';
 import { PrizeService } from '../../../core/services/tournament/prize.service';
@@ -101,8 +102,7 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
                 );
               },
               error: (err: HttpErrorResponse) => {
-                console.log(err);
-                this.alertService.errorAlert(err.error.error);
+                this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo eliminar el premio.'));
               },
             });
       });
@@ -124,7 +124,8 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
           if(prizeFound){
             prizeFound.description = description;
           }
-        }
+        },
+        error: (err: HttpErrorResponse) => this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo actualizar el premio.'))
       })
     }
   }

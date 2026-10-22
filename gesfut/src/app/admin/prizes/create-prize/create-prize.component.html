@@ -40,7 +40,7 @@
     </div>
     <div class="button-container">
       <button type="button" (click)="back()" class="base-button back-button">Cancelar</button>
-      <button type="submit" class="base-button">Guardar</button>
+      <button type="submit" class="base-button" [disabled]="saving" [attr.aria-busy]="saving">{{ saving ? 'Guardando…' : 'Guardar' }}</button>
     </div>
   </form>
 </section>

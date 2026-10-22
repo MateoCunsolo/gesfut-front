@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../../core/utils/http-error';
 import { roundLabel } from '../../../core/utils/round-label';
 import { compareStandings } from '../../../core/utils/standings';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -164,6 +165,7 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   closeMatchDay(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
+    if (this.closing) return;
     this.pendingCloseKind = closeKind;
     console.log('Iniciando la función closeMatchDay');
 
@@ -226,18 +228,28 @@ export class ListMatchDaysComponent implements OnInit {
 
 
 
-  openMatchDay(status: boolean) {
+  /** Loop 9: un solo envio a la vez (doble toque) y mensaje claro sin red. */
+  closing = false;
+  private sendClose(status: boolean, mvp: string) {
+    if (this.closing) return;
+    this.closing = true;
     this.matchDaysService
-      .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, '')
+      .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, mvp)
       .subscribe({
         next: () => {
+          this.closing = false;
           this.alertService.successAlert(this.closeSuccessText(status));
           this.matchDayStatus = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.alertService.errorAlert(errorResponse.error.error);
+          this.closing = false;
+          this.alertService.errorAlert(httpErrorMessage(errorResponse, status ? 'No se pudo cerrar la fecha. Intent\u00e1 de nuevo.' : 'No se pudo reabrir la fecha. Intent\u00e1 de nuevo.'));
         }
       });
+  }
+
+  openMatchDay(status: boolean) {
+    this.sendClose(status, '');
   }
 
 
@@ -255,23 +267,12 @@ export class ListMatchDaysComponent implements OnInit {
         if (result.isConfirmed && result.value !== undefined) {
           const playerMvp = this.playersMvpS[result.value];
           if (playerMvp && playerMvp !== 'Seleccionar MVP') {
-            this.matchDaysService
-              .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, playerMvp)
-              .subscribe({
-                next: () => {
-                  this.alertService.successAlert(this.closeSuccessText(status));
-                  this.matchDayStatus = false;
-                },
-                error: (errorResponse: HttpErrorResponse) => {
-                  this.alertService.errorAlert(errorResponse.error.error);
-                }
-              });
+            this.sendClose(status, playerMvp);
           } else {
             this.alertService.errorAlert('Debe seleccionar un MVP');
           }
-        } else if (result.dismiss === Swal.DismissReason.backdrop) {
-          return;
-        } else {
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Loop 9: solo el boton "Cerrar sin MVP" cierra sin MVP; Esc, X o un segundo dialogo no cierran la fecha.
           this.openMatchDay(status);
         }
       });
