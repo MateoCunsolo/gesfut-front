@@ -1,0 +1,6 @@
+/* Complementos compartidos de las vistas de acceso (09-12, 20). Solo espaciado/tipografía, sin colores nuevos. */
+.intro,.field-help{font-size:1.4rem;line-height:1.5;color:var(--muted);margin:0;overflow-wrap:anywhere;}
+.field-help{margin-top:-6px;}
+.result-state{display:flex;flex-direction:column;gap:12px;}
+.result-state .base-button{margin-top:8px;}
+.result-icon{font-size:2.8rem;color:var(--primary-color);}

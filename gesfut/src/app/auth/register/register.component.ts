@@ -26,6 +26,15 @@ export class RegisterComponent {
   error: String = '';
   registerForm: FormGroup;
   protected isLoading = false;
+  /** Mostrar/Ocultar contraseña. */
+  showPassword = false;
+
+  /** Validación después de interactuar: el error aparece al salir del campo o al intentar enviar. */
+  showError(field: string): boolean {
+    const c = this.registerForm.controls[field];
+    return !!c && c.invalid && (c.touched || c.dirty && this.submitted);
+  }
+  private submitted = false;
 
   private emailValidator(control: { value: string }) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -62,8 +71,9 @@ export class RegisterComponent {
   async onSubmit() {
     const credentials: RegisterRequest = this.registerForm.value;
     
+    this.submitted = true;
     if (this.registerForm.invalid) {
-      this.alertService.errorAlert('Formulario inválido');
+      this.registerForm.markAllAsTouched();
       return;
     }
     
