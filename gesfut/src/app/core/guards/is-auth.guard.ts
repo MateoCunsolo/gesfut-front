@@ -6,6 +6,7 @@ export const isAuthGuard: CanActivateFn = (route, state) => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
 
+  if (sessionService.loggingOut) return true; // Recorrido 22/10: el logout debe poder llegar a la landing
   const isAuthenticated = sessionService.isAuth();
 
   if (isAuthenticated) {

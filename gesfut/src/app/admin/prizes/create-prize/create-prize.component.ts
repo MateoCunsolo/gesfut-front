@@ -11,6 +11,7 @@ import { PrizeService } from '../../../core/services/tournament/prize.service';
 import { PrizesRequest } from '../../../core/models/prizesRequest';
 import { AlertService } from '../../../core/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { currentTournamentCode } from '../../../core/utils/route-code';
 
 @Component({
     selector: 'app-create-prize',
@@ -32,7 +33,8 @@ export class CreatePrizeComponent {
       code: [''],
     });
 
-    const storedCode = localStorage.getItem('lastTournamentClicked');
+    // Loop 1 22/10: el código sale de la URL del torneo abierto (antes localStorage: vacío o de otro torneo).
+    const storedCode = currentTournamentCode();
     if (storedCode) {
       this.prizesForm.patchValue({ code: storedCode });
     }

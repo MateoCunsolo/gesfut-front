@@ -1,3 +1,4 @@
+import { compareStandings } from '../../../core/utils/standings';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchCardComponent } from '../../../shared/match-card/match-card.component';
 import { MatchDayResponse, ParticipantResponse } from '../../../core/models/tournamentResponse';
@@ -135,8 +136,9 @@ export class ListMatchDaysComponent implements OnInit {
     }
 
 
-    if (this.tournament.isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
-      this.alertService.infoAlertTop('El torneo ya ha finalizado.');
+    // Recorrido 22/10: el backend permite reabrir mientras no haya playoffs generados después de esta fecha.
+    if (this.tournament.matchDays.some((day, i) => i > this.selectedMatchDay && day.isPlayOff)) {
+      this.alertService.infoAlertTop('No se puede reabrir: ya hay playoffs generados después de esta fecha.');
       return;
     }
     this.alertService
@@ -183,7 +185,7 @@ export class ListMatchDaysComponent implements OnInit {
     //ADVERTIR QUE ES LA ULTIMA FECHA 
     if (this.selectedMatchDay === this.tournament.matchDays.length - 1 && !this.tournament.matchDays[this.selectedMatchDay].isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
       console.log('Última fecha del torneo, mostrando advertencia');
-      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Esta es la última fecha del torneo, al cerrarla se dara por terminado el torneo y no se podra volver a abrir.', 'Confirmar')
+      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Es la última fecha de la fase regular. Al cerrarla el torneo queda finalizado; después podés generar playoffs, o reabrir la fecha si necesitás corregir algo mientras no haya playoffs.', 'Confirmar')
         .then((result) => {
           console.log('Resultado de la confirmación:', result);
           if (result.isConfirmed) {
@@ -201,8 +203,9 @@ export class ListMatchDaysComponent implements OnInit {
       console.log('Cerrando fecha con MVP');
       this.closeMatchDayWithMvp(status);
     } else {
-      console.log('Abriendo nueva fecha');
-      this.openMatchDay(status);
+      // Recorrido 22/10: confirmar también el cierre sin MVP.
+      this.alertService.confirmAlert('¿Cerrar la fecha?', 'Ningún partido tiene MVP elegido, así que la fecha se cerrará sin jugador de la fecha.', 'Cerrar fecha')
+        .then((result) => { if (result.isConfirmed) this.openMatchDay(status); });
     }
   }
 
@@ -488,31 +491,15 @@ export class ListMatchDaysComponent implements OnInit {
     this.orderTeamNoQualify();
     this.teamsQualify = this.tournamentParticipantCopy.slice(0, numTeams);
     this.tournamentParticipantCopy = this.tournamentParticipantCopy.slice(numTeams);
-    this.tournamentParticipantCopy.sort((a, b) => b.statistics.points - a.statistics.points);
+    this.tournamentParticipantCopy.sort((a, b) => compareStandings(a.statistics, b.statistics));
   };
 
   orderTeamQulify() {
-    this.teamsQualify.sort((a, b) => {
-      if (a.statistics.points === b.statistics.points) {
-        if (a.statistics.goalsFor - a.statistics.goalsAgainst === b.statistics.goalsFor - b.statistics.goalsAgainst) {
-          return b.statistics.goalsFor - a.statistics.goalsFor;
-        }
-        return b.statistics.goalsFor - b.statistics.goalsAgainst - a.statistics.goalsFor - a.statistics.goalsAgainst;
-      }
-      return b.statistics.points - a.statistics.points;
-    });
+    this.teamsQualify.sort((a, b) => compareStandings(a.statistics, b.statistics));
   }
 
   orderTeamNoQualify() {
-    this.tournamentParticipantCopy.sort((a, b) => {
-      if (a.statistics.points === b.statistics.points) {
-        if (a.statistics.goalsFor - a.statistics.goalsAgainst === b.statistics.goalsFor - b.statistics.goalsAgainst) {
-          return b.statistics.goalsFor - a.statistics.goalsFor;
-        }
-        return b.statistics.goalsFor - b.statistics.goalsAgainst - a.statistics.goalsFor - a.statistics.goalsAgainst;
-      }
-      return b.statistics.points - a.statistics.points;
-    });
+    this.tournamentParticipantCopy.sort((a, b) => compareStandings(a.statistics, b.statistics));
   }
 
   generatePlayOffsNoTeams() {

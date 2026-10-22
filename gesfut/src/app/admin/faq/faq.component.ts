@@ -50,7 +50,7 @@ export class FaqComponent {
     },
     {
       question: '¿Cómo puede un jugador visualizar los resultados de los partidos?',
-      answer: 'Un jugador puede acceder a la sección de resultados a traves del link que le enviara el administrador para ver la informacion del torneo completo.',
+      answer: 'Un jugador puede acceder a la sección de resultados a través del link que le envíe el administrador para ver la información del torneo completo.',
       open: false
     }
   ];

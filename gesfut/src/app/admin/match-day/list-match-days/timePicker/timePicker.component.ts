@@ -13,7 +13,24 @@ import { FormsModule } from '@angular/forms';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { provideNativeDateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { provideNativeDateAdapter, MAT_DATE_LOCALE, DateAdapter, NativeDateAdapter } from '@angular/material/core';
+import { Injectable } from '@angular/core';
+
+/** Recorrido 22/10: aceptar fechas escritas a mano como dd/mm/aaaa. */
+@Injectable()
+export class EsDateAdapter extends NativeDateAdapter {
+  override parse(value: any, parseFormat?: any): Date | null {
+    if (typeof value === 'string') {
+      const m = value.trim().match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+      if (m) {
+        const year = Number(m[3]) < 100 ? 2000 + Number(m[3]) : Number(m[3]);
+        const date = new Date(year, Number(m[2]) - 1, Number(m[1]));
+        return date.getMonth() === Number(m[2]) - 1 ? date : null;
+      }
+    }
+    return super.parse(value, parseFormat);
+  }
+}
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TournamentService } from '../../../../core/services/tournament/tournament.service';
 import { MatchDaysService } from '../../../../core/services/tournament/match-days.service';
@@ -23,7 +40,7 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
 /** @title Timepicker integration with datepicker */
 @Component({
   selector: 'app-time-picker',
-  providers: [provideNativeDateAdapter(), {provide: MAT_DATE_LOCALE, useValue: 'es-AR'}],
+  providers: [provideNativeDateAdapter(), {provide: DateAdapter, useClass: EsDateAdapter}, {provide: MAT_DATE_LOCALE, useValue: 'es-AR'}],
   imports: [
     CdkTrapFocus,
     MatFormFieldModule,
@@ -53,7 +70,7 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         }@else {
         <mat-label>Elegir fecha</mat-label>
         }
-        <input matInput [matDatepicker]="datepicker" [(ngModel)]="value" />
+        <input matInput [matDatepicker]="datepicker" [(ngModel)]="dateValue" [min]="(isToInitTournament || isForAllMatches) ? minDate : null" />
         <mat-datepicker #datepicker />
         <mat-datepicker-toggle [for]="datepicker" matSuffix />
       </mat-form-field>
@@ -67,7 +84,7 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         <input
           matInput
           [matTimepicker]="timepicker"
-          [(ngModel)]="value"
+          [(ngModel)]="timeValue"
           [ngModelOptions]="{ updateOn: 'blur' }"
         />
         <mat-timepicker #timepicker />
@@ -134,7 +151,16 @@ export class TimepickerDatepickerIntegrationExample {
 
   private matchDayServices = inject(MatchDaysService);
   private alertService = inject(AlertService);
-  value: Date = new Date();
+  /** Recorrido 22/10: fecha y hora en modelos separados (elegir el día ya no pisa la hora con 00:00). */
+  minDate: Date = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+  dateValue: Date | null = new Date();
+  timeValue: Date | null = (() => { const d = new Date(); d.setHours(20, 0, 0, 0); return d; })();
+  get value(): Date | null {
+    if (!this.dateValue || !this.timeValue) return null;
+    const d = new Date(this.dateValue), t = new Date(this.timeValue);
+    if (isNaN(d.getTime()) || isNaN(t.getTime())) return null;
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), t.getHours(), t.getMinutes(), 0, 0);
+  }
   plusMinutes: number = 60;
   plusDays: number = 7;
   @Input() isToInitTournament: boolean = false;
@@ -173,8 +199,13 @@ export class TimepickerDatepickerIntegrationExample {
   }
 
   dateFunction() {
-    if (this.value) {
-      let localDateTime = this.converDateToISO(this.value);
+    const chosen = this.value;
+    if (chosen && (this.isToInitTournament || this.isForAllMatches) && chosen.getTime() < this.minDate.getTime()) {
+      this.alertService.errorAlert('Elegí una fecha de hoy en adelante.');
+      return;
+    }
+    if (chosen) {
+      let localDateTime = this.converDateToISO(chosen);
       if (this.isForAllMatches && this.plusMinutes) {
         this.infoAlertsAndContinue(localDateTime, this.matchDayId, this.plusMinutes);
       } else if(!this.isToInitTournament) {

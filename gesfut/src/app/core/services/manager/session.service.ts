@@ -19,6 +19,10 @@ export class SessionService {
   });
 
   url: string = environment.apiUrl+'/auth';
+  /** Recorrido 22/10: true mientras se cierra sesión, para que isAuthGuard deje pasar a la landing. */
+  loggingOut = false;
+  /** Recorrido 22/10: la sesión se descartó por vencida o inválida (no por logout). */
+  sessionExpired = false;
 
 
   constructor(private router:Router, private http: HttpClient) {
@@ -109,6 +113,7 @@ getItems(response:boolean) {
   }
 
   private removeStoredSession(): void {
+    if (sessionStorage.getItem('token')) this.sessionExpired = true;
     ['token', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
     this.currentUserLoginOn.next(false);
     this.currentUserData.next({ name: '', lastName: '', token: '', role: '' });

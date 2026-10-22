@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { currentTournamentCode } from '../../../core/utils/route-code';
 import { PrizeService } from '../../../core/services/tournament/prize.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -19,9 +20,7 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
   prizes: Prize[] = [];
   categorySubscription: Subscription | undefined;
   isFinished: boolean = false;
-  currentTournament: string | null = localStorage.getItem(
-    'lastTournamentClicked'
-  );
+  currentTournament: string | null = currentTournamentCode() // Loop 1 22/10: de la URL, no de localStorage;
 
   constructor(
     private prizeService: PrizeService,

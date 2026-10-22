@@ -13,6 +13,8 @@ export const adminAuthGuard: CanActivateFn = () => {
     return true; 
   }
 
-  router.navigate(['/']);
+  // Recorrido 22/10: si la sesión venció, ir al login con aviso en vez de la landing.
+  if (sessionService.sessionExpired) router.navigate(['/auth/login'], { queryParams: { expired: '1' } });
+  else router.navigate(['/']);
   return false;
 };

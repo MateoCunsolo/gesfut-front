@@ -4,6 +4,13 @@ import { catchError, tap, throwError } from 'rxjs';
 import { PwaService } from '../services/pwa.service';
 import { environment } from '../../../enviroments/environment';
 
+/** Recorrido 22/10: un 503 con mensaje propio del backend (p. ej. no se pudo enviar el correo) no es "servidor caído". */
+function hasAppError(error: HttpErrorResponse): boolean {
+  const body = error.error;
+  if (body && typeof body === 'object' && typeof body.error === 'string') return true;
+  return typeof body === 'string' && body.includes('"error"');
+}
+
 export const pwaConnectionInterceptor: HttpInterceptorFn = (request, next) => {
   const pwa = inject(PwaService);
   const apiBase = new URL(environment.apiUrl, 'http://localhost').href.replace(/\/$/, '');
@@ -19,7 +26,7 @@ export const pwaConnectionInterceptor: HttpInterceptorFn = (request, next) => {
   return next(request).pipe(
     tap(() => pwa.serverUnavailable.set(false)),
     catchError(error => {
-      if (error instanceof HttpErrorResponse && [0, 502, 503, 504].includes(error.status)) pwa.serverUnavailable.set(true);
+      if (error instanceof HttpErrorResponse && [0, 502, 503, 504].includes(error.status) && !hasAppError(error)) pwa.serverUnavailable.set(true);
       return throwError(() => error);
     })
   );

@@ -2,6 +2,7 @@
   <div class="form">
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <h1 class="title">Ingresar a Gesfut</h1>
+    @if (expiredNotice) { <p class="form-hint" role="status">Tu sesión venció. Ingresá de nuevo para seguir.</p> }
       <div class="error-message">
         <!-- @if (error) {
           <p class="error">{{ error }}</p>

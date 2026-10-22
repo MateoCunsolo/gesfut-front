@@ -18,6 +18,13 @@ export class TeamService {
 
   constructor(private http: HttpClient, private session: SessionService) { }
 
+  /** Recorrido 22/10: alta de varios equipos desde un Excel (POST /teams/create-multiple). */
+  createMultipleTeams(request: TeamRequest[]): Observable<string> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+    return this.http.post(`${this.url}/create-multiple`, request, { headers, responseType: 'text' });
+  }
+
   createTeam(request: TeamRequest): Observable<TeamResponse> {
     if (!this.session.isAuth()) {
       return new Observable<TeamResponse>();

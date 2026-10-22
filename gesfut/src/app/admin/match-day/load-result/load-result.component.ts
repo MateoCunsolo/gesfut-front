@@ -177,6 +177,8 @@ export class LoadResultComponent {
     } else {
       this.filteredPlayers = [];
     }
+    // Recorrido 22/10: ordenar por dorsal.
+    this.filteredPlayers = [...this.filteredPlayers].sort((a, b) => (a.shirtNumber ?? 0) - (b.shirtNumber ?? 0));
   }
 
   onSearch() {

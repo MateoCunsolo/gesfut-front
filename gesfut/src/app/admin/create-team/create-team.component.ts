@@ -105,7 +105,38 @@ button: any;
 
   }
 
+  importMultipleTeams(data: any[]) {
+    const names = data.map((team: any) => team.name).join(', ');
+    this.alertService.confirmAlert('Importar ' + data.length + ' equipos', 'El archivo tiene ' + data.length + ' equipos: ' + names + '. Se van a crear todos.', 'Crear equipos')
+      .then((result) => {
+        if (!result.isConfirmed) return;
+        const teams = data.map((team: any) => ({ name: String(team.name ?? '').trim(), color: this.returnColorHex(team.color), players: team.players }));
+        this.isloading = true;
+        this.teamService.createMultipleTeams(teams).subscribe({
+          next: () => {
+            this.isloading = false;
+            this.showExcelUpload = false;
+            this.alertService.successAlert(teams.length + ' equipos creados');
+            if (this.inTournament) this.dashboardService.setActiveTournamentComponent('initialize');
+            this.dashboardService.setActiveDashboardAdminComponent('dashboard');
+          },
+          error: (err: HttpErrorResponse) => {
+            this.isloading = false;
+            let message = 'No se pudieron crear los equipos.';
+            try { message = (typeof err.error === 'string' ? JSON.parse(err.error) : err.error)?.error || message; } catch { /* texto plano */ }
+            this.alertService.errorAlert(message);
+            this.authService.serverNotResponding(err);
+          }
+        });
+      });
+  }
+
   returnColorHex(color: string): string {
+    // Recorrido 22/10: aceptar colores hex (#RGB o #RRGGBB) además de los nombres.
+    const raw = String(color ?? '').trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(raw)) return raw.toUpperCase();
+    if (/^#[0-9a-fA-F]{3}$/.test(raw)) return ('#' + raw.slice(1).split('').map(x => x + x).join('')).toUpperCase();
+    color = raw.toUpperCase();
     switch (color) {
       case 'ROJO': return '#FF0000';
       case 'AZUL': return '#0000FF';
@@ -211,6 +242,8 @@ button: any;
   }
 
   loadTeamData(data: any[]) {
+      // Recorrido 22/10: un Excel con varios equipos crea todos (antes solo tomaba el primero, en silencio).
+      if (data.length > 1) { this.importMultipleTeams(data); return; }
       if (data.length > 0) {
         const team = data[0];
         let colorHex = this.returnColorHex(team.color);

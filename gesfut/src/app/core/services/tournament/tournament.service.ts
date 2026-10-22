@@ -10,6 +10,7 @@ import { ParticipantShortResponse } from '../../models/participantShortResponse'
 import { SessionService } from '../manager/session.service';
 import { PlayerRequest } from '../../models/teamRequest';
 import { TeamResponse } from '../../models/teamResponse';
+import { compareStandings } from '../../utils/standings';
 
 @Injectable({
   providedIn: 'root'
@@ -79,15 +80,7 @@ export class TournamentService {
       map((response: TournamentResponseFull) => {
           response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
           response.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
-          response.participants.sort((a, b) => {
-            if (a.statistics.points === b.statistics.points) {
-              if (a.statistics.goalsFor - a.statistics.goalsAgainst === b.statistics.goalsFor - b.statistics.goalsAgainst) {
-                return b.statistics.goalsFor - a.statistics.goalsFor;
-              }
-              return b.statistics.goalsFor - b.statistics.goalsAgainst - a.statistics.goalsFor - a.statistics.goalsAgainst;
-            }
-            return b.statistics.points - a.statistics.points;
-          });
+          response.participants.sort((a, b) => compareStandings(a.statistics, b.statistics));
           return response;
       })
     );

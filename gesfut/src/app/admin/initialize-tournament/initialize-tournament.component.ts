@@ -151,7 +151,7 @@ export class InitializeTournamentComponent {
         minutesPerMatch: this.date ? this.minutes : null,
         dayBetweenMatchDay: this.date ? this.days : null
       };
-      this.alertService.infoAlertTournament('INFORMACION DEL TORNEO', this.teamsTournament, this.splitDate(this.date).dateWithStrings, this.minutes, this.days)
+      this.alertService.infoAlertTournament('INFORMACIÓN DEL TORNEO', this.teamsTournament, this.splitDate(this.date).dateWithStrings, this.minutes, this.days)
         .then((result) => {
           if (result.isConfirmed) {
             this.alertService.loadingAlert('Inicializando torneo...');
@@ -294,6 +294,12 @@ export class InitializeTournamentComponent {
   }
 
   deleteAllTeams() {
+    // Recorrido 22/10: pedir confirmación antes de vaciar la selección.
+    this.alertService.confirmAlert('¿Quitar todos los equipos?', 'La selección quedará vacía. Podés volver a agregarlos desde la lista.', 'Quitar todos')
+      .then((result) => { if (result.isConfirmed) this.doDeleteAllTeams(); });
+  }
+
+  private doDeleteAllTeams() {
     this.teamsFilters = [...new Map([...this.teamsFilters, ...this.teamsTournament].map(team => [team.id, team])).values()]
       .sort((a, b) => a.name.localeCompare(b.name));
     this.teamsTournament = [];

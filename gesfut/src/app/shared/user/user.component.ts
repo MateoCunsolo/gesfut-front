@@ -65,9 +65,14 @@ export class UserComponent {
   }
 
   async onLogout(): Promise<void> {
-    // El guard del editor puede cancelar la salida; conservar la sesiÃ³n en ese caso.
-    if (await this.route.navigateByUrl('/')) {
-      this.sessionService.clearUserSession();
+    // El guard del editor puede cancelar la salida; conservar la sesión en ese caso.
+    this.sessionService.loggingOut = true;
+    try {
+      if (await this.route.navigateByUrl('/')) {
+        this.sessionService.clearUserSession();
+      }
+    } finally {
+      this.sessionService.loggingOut = false;
     }
   }
 
@@ -83,7 +88,7 @@ export class UserComponent {
     this.alertService
       .twoOptionsAlert(
         'AYUDA',
-        'ELIGUE QUE QUIERES HACER',
+        'Elegí qué querés hacer',
         'PREGUNTAS FRECUENTES',
         'ENVIAR CORREO'
       )
@@ -91,9 +96,9 @@ export class UserComponent {
         if (result.isConfirmed) {
           this.route.navigateByUrl('/admin/faq');
         } else if (String(result.dismiss) === 'cancel' /* Swal.DismissReason.cancel, sin importar sweetalert2 en el bundle inicial */) {
-          this.alertService.infoAlert('gesfut.arg@gmail.com', 'Porfavor detalla correctamente el problema y si puedes envia fotos. Gracias por tu colaboraciÃ³n');
+          this.alertService.infoAlert('gesfut.arg@gmail.com', 'Por favor, detallá el problema y, si podés, enviá capturas. Gracias por tu colaboración.');
         } else {
-          this.alertService.infoAlertTop('No se ha seleccionado ninguna opciÃ³n');
+          this.alertService.infoAlertTop('No elegiste ninguna opción.');
           this.route.navigateByUrl('/admin');
         }
       });

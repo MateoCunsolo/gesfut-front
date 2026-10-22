@@ -97,7 +97,9 @@ export class ReciveEmailComponent {
       next: () => { this.sending = false; this.sentTo = email; },
       error: (err) => {
         this.sending = false;
-        this.sendError = err?.status === 0
+        this.sendError = err?.status === 503
+          ? 'No pudimos enviar el correo en este momento. Probá de nuevo en unos minutos.'
+          : err?.status === 0
           ? 'No pudimos conectar con el servidor. Probá de nuevo en un momento.'
           : (err?.error?.error || 'No pudimos enviar el enlace. Revisá el correo e intentá de nuevo.');
       },

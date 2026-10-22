@@ -22,6 +22,8 @@ export class LoginComponent {
   redActive = false;
   protected tryLogin = false;
   protected isLoading = false;
+  /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
+  protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
