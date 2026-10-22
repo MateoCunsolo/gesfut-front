@@ -68,7 +68,7 @@ export class CreateTournamentComponent {
             } catch (parseError) {
               this.alertService.errorAlert(err.status === 0 ? 'No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo: el nombre sigue cargado.' : 'No se pudo crear el torneo. Intentá de nuevo.');
             }
-            this.authService.serverNotResponding(err);
+            if (err.status !== 0) this.authService.serverNotResponding(err); // Loop 11: sin red pisaba el mensaje propio
             this.cd.markForCheck(); 
           }
       });
