@@ -5,6 +5,7 @@ import { createEnvironmentInjector, runInInjectionContext, signal } from '@angul
 import { FormBuilder } from '@angular/forms';
 import { BehaviorSubject, of } from 'rxjs';
 import { LoadResultComponent } from '../src/app/admin/match-day/load-result/load-result.component';
+import { TournamentService } from '../src/app/core/services/tournament/tournament.service';
 import { MatchDaysService } from '../src/app/core/services/tournament/match-days.service';
 import { INITIAL_DETAILED_MATCH } from '../src/app/core/services/tournament/initial-tournament';
 
@@ -16,7 +17,7 @@ function fixture(){
   match.homeTeam.playerParticipants=[player];
   const service={currentMatch:new BehaviorSubject(match),editResult:new BehaviorSubject(false),saving:signal(false),saveEvents(){},saveEditEvents(){}};
   const errors:string[]=[];
-  const injector=createEnvironmentInjector([{provide:MatchDaysService,useValue:service}],null as any);
+  const injector=createEnvironmentInjector([{provide:MatchDaysService,useValue:service},{provide:TournamentService,useValue:{currentTournament:new BehaviorSubject<any>(null)}}],null as any);
   const component=runInInjectionContext(injector,()=>new LoadResultComponent(service as any,new FormBuilder(),{setActiveTournamentComponent(){}} as any,{errorAlert:(message:string)=>errors.push(message)} as any,{observe:()=>of({matches:true})} as any));
   component.ngOnInit();
   const choose=()=>{component.statisticsForm.get('team')!.setValue(component.currentMatch.homeTeam);component.statisticsForm.get('name')!.setValue(component.currentMatch.homeTeam.playerParticipants[0]);};

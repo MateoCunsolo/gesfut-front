@@ -18,19 +18,19 @@
         <i class="fa-solid fa-trophy"></i>
       </div>
 
-      @if (createTournamentForm.get('name')?.hasError('required')) {
+      @if ((createTournamentForm.get('name')?.touched || createTournamentForm.get('name')?.dirty) && createTournamentForm.get('name')?.hasError('required')) {
       <small>El nombre es obligatorio.</small>
       }
 
-      @if (createTournamentForm.get('name')?.hasError('minlength')) {
+      @if ((createTournamentForm.get('name')?.touched || createTournamentForm.get('name')?.dirty) && createTournamentForm.get('name')?.hasError('minlength')) {
       <small>El nombre debe tener al menos 3 caracteres.</small>
       }
 
-      @if (createTournamentForm.get('name')?.hasError('maxlength')) {
+      @if ((createTournamentForm.get('name')?.touched || createTournamentForm.get('name')?.dirty) && createTournamentForm.get('name')?.hasError('maxlength')) {
       <small>El nombre debe tener menos de 50 caracteres.</small>
       }
 
-      @if (createTournamentForm.get('name')?.hasError('pattern')) {
+      @if ((createTournamentForm.get('name')?.touched || createTournamentForm.get('name')?.dirty) && createTournamentForm.get('name')?.hasError('pattern')) {
       <small>Usá letras, números y espacios.</small>
       }
 
