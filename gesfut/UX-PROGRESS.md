@@ -80,3 +80,38 @@ No guardar partidos, crear jugadores ni resetear la base para comprobar diseño.
 - 28 Editor: en edición el registro va primero en celular; resumen (marcador, tarjetas, MVP) y estado de cambios antes de guardar.
 - Regresión de bloque 4 corregida: match-card compacto no mostraba las acciones (dos ng-content en ramas @if).
 - Verificado: ng build prod, tests front (incluye nuevo tools/test-p1-parciales.mjs, 5/5), capturas 390 con login de prueba.
+
+## Auditoría 22/10 — correcciones (backup: Documents\Codex\2026-10-13\cu\work\antes-fix-auditoria)
+
+| # | Arreglo | Verificación |
+|---|---------|--------------|
+| 1 (P0) | `POST /api/email/send` solo ADMIN (`@PreAuthorize`) | sin token y con MANAGER → 403 (work\pw\verify-be.mjs) |
+| 3 (P1) | Registro no devuelve 500 si falla el SMTP (log WARN); `MailException` → 503 con mensaje | sign-up → 201; resend con SMTP caído → 503 |
+| 4 (P1) | Links de verificación/reset usan `app.frontend.url` o el primer origen https de `FE_URL` (antes `localhost:4200`) | revisión de código; build + 19 tests backend OK |
+| 5 (P1) | `changeStatusPlayerParticipant` usa `environment.apiUrl` | tools/test-auditoria-22-10.mjs |
+| 6 (P1) | Crear torneo: guard `isloding` + botón deshabilitado | tools/test-auditoria-22-10.mjs |
+| 7 (P1) | `change-status-team` con `@PreAuthorize`; mover fecha ajena ya daba 403 (el 500 no se reprodujo con body válido) | U2 → 403 |
+| 8 (P1) | UUID inválido → 404 "No encontramos un torneo con ese código."; sin token → 401 | GET /tournaments/no-existe-xyz → 404 |
+| 9 (P2) | Playoffs: "El ganador juega contra el ganador de A – B" (sin IDs) | test-auditoria |
+| 10 (P2) | h1 en login, registro, recuperar, restablecer, verificar, cambiar contraseña y ayuda | audit.mjs: h1=1 en todas |
+| 11 (P2) | Verificar: texto claro en vez de "Token inválido" | captura 12-verificar despues |
+| 12 (P2) | `/admin/**` → "Página no encontrada" con link al panel | captura 99-404 despues |
+| 19 (P2) | alt en ícono del clima | axe: 0 violaciones |
+| 21 (P3) | Sin placeholder truncado en contraseña de registro | test-auditoria |
+| 23 (P3) | Doble envío de resultado → 409 "El resultado ya fue cargado" | 409 + 201 (work\pw\p23.mjs); test ResultIntegrity actualizado |
+| 24 (P3) | Footer "Gestión" | test-auditoria |
+| extra | Se quitó el `printf` del token de reset y un `println` de equipo en logs | revisión de código |
+
+### Auditoría 22/10 — segunda tanda (backup: work\antes-fix-4-items)
+
+| # | Arreglo | Verificación |
+|---|---------|--------------|
+| 15 | Bundle inicial 659 → 434 kB: subset de Font Awesome (`tools/build-fa-subset.mjs` → `src/styles/fa-subset.css`), tema Material como bundle diferido `material-theme.css` cargado por el selector de horario, sweetalert2 con import dinámico en `alert.service` y fuera de `user.component`. Colores sin cambios | `ng build` sin warning de presupuesto; flows.mjs: timepicker carga el tema; test-auditoria |
+| 22 | Tabla ≤480px: nombre en una línea con ellipsis, nombre completo en title/aria-label | captura 02-publico-tabla-320 final |
+| 16 | Crear equipo: todos los errores de validación juntos | POST inválido → 400 con nombre, color y jugadores |
+| 14 | Ayuda: patrón de página (volver, h1 izquierda, bajada), acordeón compacto con aria-expanded, solo tokens | faq.mjs: abre y aria-expanded=true; captura 21-ayuda final |
+| 7 (seguridad) | `anyRequest().authenticated()`; públicos solo auth, lecturas GET de torneo/fechas/premios/equipos/partidos, OPTIONS y /error | verify-sec.mjs: 11 GET públicos 200 sin token; endpoints privados y /v3/api-docs 403; login, registro, reset OK; túnel 200 |
+| 18 | "Free" ya estaba oculto en Mis equipos (filtro en admin.service); sigue funcionando para fechas libres | flows.mjs: Mis equipos sin "Free" |
+| 20 | Landing: preview SVG con tokens y acceso público "¿Te compartieron un torneo?" (código o link) | flows.mjs: código inválido muestra error; link → página pública |
+| extra | Login con email inexistente daba 500 → 404 "El email ingresado no existe." | verify-sec.mjs |
+| 17 | Cerrado sin cambio: los 0-0 son reales (confirmado por Mateo) | — |
