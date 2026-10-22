@@ -32,6 +32,14 @@ export class LastsMatchesComponent {
   private alertService = inject(AlertService);
   protected isGlobal:boolean = true;
   protected nameTeam:string = '';
+  /** Filtro local Jugados / Próximos (por defecto, jugados más recientes primero). */
+  filter: 'played' | 'upcoming' = 'played';
+  get played(): MatchResponse[] { return this.matches.filter(m => m.isFinished && !this.isByeMatch(m)).slice().reverse(); }
+  get upcoming(): MatchResponse[] { return this.matches.filter(m => !m.isFinished && !this.isByeMatch(m)); }
+  /** Cabecera: equipo y torneo por separado (antes "EQUIPO EN TORNEO"). */
+  get teamLabel(): string { return this.nameTeam || this.teamName; }
+  get tournamentLabel(): string { return this.nameTeam ? (sessionStorage.getItem('lastTournamentClickedName') || '') : ''; }
+  private isByeMatch(m: MatchResponse): boolean { return m.homeTeam?.toLowerCase() === 'free' || m.awayTeam?.toLowerCase() === 'free'; }
   ngOnInit() {
 
     this.tournamentServices.$teamName.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({

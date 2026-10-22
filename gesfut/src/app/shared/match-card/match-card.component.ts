@@ -5,7 +5,32 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
   selector: 'app-match-card',
   standalone: true,
   template: `
-    <article class="match-card" [class.draft]="draft">
+    <article class="match-card" [class.draft]="draft" [class.compact]="compact">
+      @if (compact) {
+      <div class="match-meta">
+        <span class="match-status" [class.finished]="match.isFinished">{{ isBye ? 'Fecha libre' : match.isFinished ? 'Finalizado' : 'Programado' }}</span>
+        <span class="match-date">{{ match.dateTime || 'Horario por confirmar' }}@if (match.description) { · {{ venueLabel }} }</span>
+      </div>
+      @if (isBye) {
+        <p class="bye-line"><strong>{{ match.homeTeam === 'Free' ? match.awayTeam : match.homeTeam }}</strong> descansa en esta fecha</p>
+      } @else {
+        <div class="rows" [attr.aria-label]="match.homeTeam + ' contra ' + match.awayTeam + (match.isFinished ? ', ' + match.homeGoals + ' a ' + match.awayGoals : ', pendiente')">
+          <div class="row"><span class="team-mark" aria-hidden="true">{{ initials(match.homeTeam) }}</span><span class="team-name">{{ match.homeTeam }}</span><strong class="goals">{{ match.isFinished ? match.homeGoals : '' }}</strong></div>
+          <div class="row"><span class="team-mark" aria-hidden="true">{{ initials(match.awayTeam) }}</span><span class="team-name">{{ match.awayTeam }}</span><strong class="goals">{{ match.isFinished ? match.awayGoals : '' }}</strong></div>
+          @if (!match.isFinished) { <span class="vs-compact" aria-hidden="true">vs</span> }
+        </div>
+        @if (match.tiebreakWinnerId) { <p class="definition">Definido por desempate</p> }
+        @if (match.isFinished) {
+          <details class="match-detail">
+            <summary>Detalle del partido <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+            @for (event of match.events; track event.id) {
+              <div class="event-line"><span class="event-symbol" aria-hidden="true">{{ symbol(event.type) }}</span><span><strong>{{ event.playerName }}</strong><small>{{ event.teamName }}</small></span><span class="event-quantity">{{ event.quantity }}</span></div>
+            } @empty { <p class="empty-detail">No se registraron eventos individuales.</p> }
+            @if (match.mvpPlayer) { <p class="mvp">Jugador destacado: {{ match.mvpPlayer }}</p> }
+          </details>
+        }
+      }
+      } @else {
       <div class="match-meta">
         <span class="match-status" [class.finished]="match.isFinished">{{ draft ? 'Resultado sin guardar' : isBye ? 'Fecha libre' : match.isFinished ? 'Finalizado' : 'Programado' }}</span>
         <span class="match-date">{{ match.dateTime || roundLabel }}</span>
@@ -33,6 +58,8 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
           </details>
         }
       }
+      }
+      <!-- Un único punto de proyección: con dos puntos ng-content en ramas @if, Angular proyecta solo en el último. -->
       <div class="match-actions"><ng-content /></div>
     </article>
   `,
@@ -68,12 +95,28 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
     .match-actions:not(:empty) { padding:0 16px 16px; }
     .draft { border-color:var(--primary-color); }
     @media(min-width:768px) { .team-name {font-size:1.6rem;} .score {font-size:3.6rem;} .match-meta {font-size:1.3rem;} }
+    /* Variante compacta (bloque 4): misma información, menos altura. */
+    .compact .match-meta { padding:10px 12px 0; gap:8px; }
+    .compact .rows { position:relative; display:grid; gap:6px; padding:8px 12px 10px; }
+    .compact .row { display:grid; grid-template-columns:28px minmax(0,1fr) auto; gap:10px; align-items:center; min-height:32px; }
+    .compact .team-mark { width:28px; height:28px; border-radius:8px; font-size:1.2rem; }
+    .compact .team-name { min-height:0; font-size:1.5rem; line-height:1.25; }
+    .compact .goals { min-width:24px; text-align:right; font-size:2rem; line-height:1; color:var(--ink); font-variant-numeric:tabular-nums; }
+    .compact .vs-compact { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:1.3rem; font-weight:700; color:var(--muted); }
+    .compact .definition { text-align:left; padding:0 12px 8px; }
+    .compact .bye-line { padding:8px 12px 12px; font-size:1.4rem; color:var(--muted); }
+    .compact .bye-line strong { color:var(--ink); }
+    .compact summary { padding:10px 12px; }
+    .compact .match-actions:not(:empty) { padding:0 12px 12px; }
+    @media(min-width:768px) { .compact .team-name {font-size:1.5rem;} }
   `
 })
 export class MatchCardComponent {
   @Input({required:true}) match!: MatchResponse;
   @Input() roundLabel = '';
   @Input() draft = false;
+  /** Variante densa para listados (inicio, calendario, historial). */
+  @Input() compact = false;
   get isBye(): boolean { return this.match.homeTeam === 'Free' || this.match.awayTeam === 'Free'; }
   get venueLabel(): string { const text = this.match.description?.trim() || ''; return /^cancha\b/i.test(text) ? text : 'Cancha ' + text; }
   initials(name:string):string { return name.trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase(); }

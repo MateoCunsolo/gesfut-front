@@ -1,5 +1,7 @@
 import {
   Component,
+  ElementRef,
+  ViewChild,
   inject,
   Input,
   OnChanges,
@@ -38,6 +40,20 @@ export class PlayersTournamentComponent implements OnChanges {
   @Input() code: string = '';
 
   flagAddPlayer: boolean = false;
+  /** Nombre del torneo cargado por código (contexto visible en el alta). */
+  tournamentName = '';
+  /** Al cancelar el alta, el foco vuelve al botón "Agregar jugador" que la abrió. */
+  private focusAddTriggerPending = false;
+  @ViewChild('addPlayerTrigger') set addPlayerTrigger(el: ElementRef<HTMLButtonElement> | undefined) {
+    if (el && this.focusAddTriggerPending) {
+      this.focusAddTriggerPending = false;
+      setTimeout(() => {
+        el.nativeElement.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+        el.nativeElement.focus({ preventScroll: true });
+      });
+    }
+  }
+
   isAuth: boolean = false;
   playerDeleted: { idPlayer: number; idPlayerParticipant: number } = {
     idPlayer: 0,
@@ -51,6 +67,7 @@ export class PlayersTournamentComponent implements OnChanges {
     this.tournamentService.currentTournament.subscribe({
       next: (response) => {
         this.isFinishedTournament = response.isFinished;
+        this.tournamentName = response?.name ?? '';
       },
     });
   }
@@ -72,6 +89,11 @@ export class PlayersTournamentComponent implements OnChanges {
 
   showFormAddPlayer() {
     this.flagAddPlayer = !this.flagAddPlayer;
+  }
+
+  cancelAddPlayer() {
+    this.focusAddTriggerPending = true;
+    this.flagAddPlayer = false;
   }
 
   toLastMatches() {
