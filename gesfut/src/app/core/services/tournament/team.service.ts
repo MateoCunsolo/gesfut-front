@@ -1,3 +1,4 @@
+import { map, shareReplay } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PlayerRequest, TeamRequest } from '../../models/teamRequest';
@@ -20,12 +21,14 @@ export class TeamService {
 
   /** Recorrido 22/10: alta de varios equipos desde un Excel (POST /teams/create-multiple). */
   createMultipleTeams(request: TeamRequest[]): Observable<string> {
+    this.invalidateTeam();
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
     return this.http.post(`${this.url}/create-multiple`, request, { headers, responseType: 'text' });
   }
 
   createTeam(request: TeamRequest): Observable<TeamResponse> {
+    this.invalidateTeam();
     if (!this.session.isAuth()) {
       return new Observable<TeamResponse>();
     }
@@ -113,6 +116,7 @@ export class TeamService {
 
   // Método para cambiar el estado de un equipo
   changeStatusTeam(idTeam: number, status: boolean): Observable<string> {
+    this.invalidateTeam(idTeam);
     if (!this.session.isAuth()) {
       return new Observable<string>();
     }
@@ -137,6 +141,7 @@ export class TeamService {
 
 
   addPlayerToTeam(idTeam: number, playerRequest: PlayerRequest): Observable<PlayerResponse> {
+    this.invalidateTeam(idTeam);
     if (!this.session.isAuth()) {
       return throwError(() => new Error('Usuario no autenticado'));
     }
@@ -159,6 +164,20 @@ export class TeamService {
     );
   }
 
+
+  // Loop 4: cache del color por equipo; se invalida en cada escritura sobre el equipo.
+  private colorCache = new Map<number, Observable<string>>();
+  getTeamColor(idTeam: number): Observable<string> {
+    let color$ = this.colorCache.get(idTeam);
+    if (!color$) {
+      color$ = this.getTeam(idTeam).pipe(map(r => r.color), shareReplay(1), catchError(err => { this.colorCache.delete(idTeam); return throwError(() => err); }));
+      this.colorCache.set(idTeam, color$);
+    }
+    return color$;
+  }
+  invalidateTeam(idTeam?: number): void {
+    if (idTeam === undefined) this.colorCache.clear(); else this.colorCache.delete(idTeam);
+  }
 
   getTeam(idTeam: number): Observable<TeamResponse> {
     const headers = new HttpHeaders({

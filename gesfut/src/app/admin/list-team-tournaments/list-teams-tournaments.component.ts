@@ -1,4 +1,3 @@
-import { Observable, map, shareReplay } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, inject, DestroyRef } from '@angular/core';
 import { NgClass } from '@angular/common';
@@ -104,15 +103,9 @@ export class ListTeamsTournamentsComponent {
     }
   }
 
-  // Loop 3: el color se pedía dos veces por visita (GET /teams/:id duplicado); se comparte y cachea por equipo.
-  private static colorCache = new Map<number, Observable<string>>();
+  // Loop 3/4: el color sale del cache de TeamService (una sola request, se invalida al editar el equipo).
   getTeamColor(idTeam: number) {
-    let color$ = ListTeamsTournamentsComponent.colorCache.get(idTeam);
-    if (!color$) {
-      color$ = this.teamService.getTeam(idTeam).pipe(map(r => r.color), shareReplay(1));
-      ListTeamsTournamentsComponent.colorCache.set(idTeam, color$);
-    }
-    color$.subscribe({
+    this.teamService.getTeamColor(idTeam).subscribe({
       next: (color) => {
         this.colorSelected = color;
       },

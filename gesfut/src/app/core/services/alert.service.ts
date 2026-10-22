@@ -12,6 +12,11 @@ import { ParticipantResponse } from '../models/tournamentResponse';
 import { Observable, Subject } from 'rxjs';
 import { TeamResponse } from '../models/teamResponse';
 
+/** Loop 4: SweetAlert2 interpreta title/html/opciones como HTML; los datos del usuario se escapan. */
+export function escapeHtml(value: unknown): string {
+  return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,7 +27,7 @@ export class AlertService {
   successAlert(title: string) {
     Swal.fire({
       icon: "success",
-      title: title,
+      titleText: title,
       showConfirmButton: false,
       timer: 1600,
       scrollbarPadding: true,
@@ -33,7 +38,7 @@ export class AlertService {
     Swal.fire({
       toast: true,
       icon: 'success',
-      title: title,
+      titleText: title,
       position: 'top-end',
       showConfirmButton: false,
       timer: 3000,
@@ -51,7 +56,7 @@ export class AlertService {
     Swal.fire({
       toast: true,
       icon: 'error',
-      title: err,
+      titleText: err,
       position: 'top-end',
       showConfirmButton: false,
       timer: 3000,
@@ -69,7 +74,7 @@ export class AlertService {
     Swal.fire({
       toast: true,
       icon: 'info',
-      title: title,
+      titleText: title,
       position: 'top-end',
       showConfirmButton: false,
       timer: 3000,
@@ -85,7 +90,7 @@ export class AlertService {
 
   loadingAlert(title: string) {
     Swal.fire({
-      title: title,
+      titleText: title,
       scrollbarPadding: false,
       didOpen: () => {
         Swal.showLoading();
@@ -100,7 +105,7 @@ export class AlertService {
 
   confirmAlert(title: string, text: string, confirmButtonText: string) {
     return Swal.fire({
-      title: title,
+      titleText: title,
       text: text,
       icon: 'warning',
       showCancelButton: true,
@@ -114,7 +119,7 @@ export class AlertService {
 
   twoOptionsAlert(title: string, text: string, firstOption: string, secondOption: string) {
     return Swal.fire({
-      title: title,
+      titleText: title,
       text: text,
       icon: 'warning',
       showConfirmButton: true,
@@ -131,7 +136,7 @@ export class AlertService {
   infoAlert(title: string, text: string) {
     Swal.fire({
       icon: 'info',
-      title: title,
+      titleText: title,
       text: text,
       scrollbarPadding: false,
     });
@@ -140,10 +145,10 @@ export class AlertService {
 
   selectOptionsAlert(title: string, options: string[], cancelText: string) {
     return Swal.fire({
-      title: title,
+      titleText: title,
       input: 'select',
       text: 'Se mostrarán aquellos jugadores que hayan sido elegidos como MVP en sus partidos.',
-      inputOptions: options,
+      inputOptions: options.map(escapeHtml),
       showCancelButton: true,
       confirmButtonText: 'Cerrar fecha',
       cancelButtonText: cancelText,
@@ -161,7 +166,7 @@ export class AlertService {
 
   inputAlert(title: string) {
     return Swal.fire({
-      title: title,
+      titleText: title,
       input: 'text',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -201,9 +206,9 @@ export class AlertService {
     });
   }
 
-  updateTextAreaAlert(title:String, currentValue: string = ''): Promise<string | null> {
+  updateTextAreaAlert(title:string, currentValue: string = ''): Promise<string | null> {
     return Swal.fire({
-      title: title,
+      titleText: title,
       input: 'textarea',
       inputValue: currentValue,
       inputPlaceholder: 'Escribe la nueva descripción...',
@@ -229,7 +234,7 @@ export class AlertService {
   
   updateNumberInputAlert(title: string): Promise<number | null> {
     return Swal.fire({
-      title: title,
+      titleText: title,
       input: 'number',
       inputPlaceholder: 'Ingresa un número...',
       showCancelButton: true,
@@ -262,11 +267,11 @@ export class AlertService {
   infoAlertTournament(title: string, teams: TeamResponse[], date: string, minutes: number, days: number) {
     return Swal.fire({
       icon: 'info',
-      title: title,
+      titleText: title,
       html: `
         <div class="alert-summary">
-          <p><strong>Equipos:</strong> ${teams.map(team => team.name).join(', ')}</p>
-          <p><strong>Fecha de inicio:</strong> ${date ? date : "Sin fecha"}</p>
+          <p><strong>Equipos:</strong> ${teams.map(team => escapeHtml(team.name)).join(', ')}</p>
+          <p><strong>Fecha de inicio:</strong> ${date ? escapeHtml(date) : "Sin fecha"}</p>
           <p><strong>Minutos por partido:</strong> ${minutes ? minutes : "Sin duración"}</p>
           <p><strong>Días entre jornadas:</strong> ${days ? days : "Sin días"}</p>
           <small>También podés programar los horarios desde Partidos después de iniciar el torneo.</small>
@@ -285,7 +290,7 @@ export class AlertService {
 
   saherdLinkAlert(title: string, link: string) {
     return Swal.fire({
-      title: title,
+      titleText: title,
       input: 'text',
       inputValue: link,
       inputAttributes: { readonly: 'true', 'aria-label': 'Enlace del torneo' },

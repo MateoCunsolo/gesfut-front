@@ -142,8 +142,9 @@ getItems(response:boolean) {
   }
 
   validateToken(token:string): Observable<boolean> {
-    return this.http.post<boolean>(`${this.url}/validate-token/${token}`, null, {
-      headers: { 'Content-Type': 'application/json' }
+    // Loop 4: el token va en el header, nunca en la URL.
+    return this.http.post<boolean>(`${this.url}/validate-token`, null, {
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
     });
   }
 
