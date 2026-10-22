@@ -1,3 +1,4 @@
+import { roundLabel } from '../../../core/utils/round-label';
 import { compareStandings } from '../../../core/utils/standings';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchCardComponent } from '../../../shared/match-card/match-card.component';
@@ -154,7 +155,9 @@ export class ListMatchDaysComponent implements OnInit {
       });
   }
 
-  closeMatchDay(status: boolean) {
+  roundLabel = roundLabel;
+
+  closeMatchDay(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
     console.log('Iniciando la función closeMatchDay');
 
     this.playersMvpS = [];
@@ -204,7 +207,12 @@ export class ListMatchDaysComponent implements OnInit {
       this.closeMatchDayWithMvp(status);
     } else {
       // Recorrido 22/10: confirmar también el cierre sin MVP.
-      this.alertService.confirmAlert('¿Cerrar la fecha?', 'Ningún partido tiene MVP elegido, así que la fecha se cerrará sin jugador de la fecha.', 'Cerrar fecha')
+      const copy = closeKind === 'torneo'
+        ? { title: '¿Cerrar el torneo?', text: 'El torneo quedará finalizado. Ningún partido tiene MVP elegido.', button: 'Cerrar torneo' }
+        : closeKind === 'playoffs'
+          ? { title: '¿Cerrar esta instancia de playoffs?', text: 'Ningún partido tiene MVP elegido. Después podés generar la siguiente instancia.', button: 'Cerrar playoffs' }
+          : { title: '¿Cerrar la fecha?', text: 'Ningún partido tiene MVP elegido, así que la fecha se cerrará sin jugador de la fecha.', button: 'Cerrar fecha' };
+      this.alertService.confirmAlert(copy.title, copy.text, copy.button)
         .then((result) => { if (result.isConfirmed) this.openMatchDay(status); });
     }
   }

@@ -1,10 +1,10 @@
 <section>
   @if(lastMatchDay) {
-    <header class="page-heading recap-heading"><h2>{{lastMatchDay.isPlayOff ? 'Eliminatorias' : 'Fecha ' + (lastMatchDay.numberOfMatchDay + 1)}}</h2>
+    <header class="page-heading recap-heading"><h2>{{roundLabel(lastMatchDay)}}</h2>
       @if(!isTheLast() || !isTheFirst()) { <button type="button" class="button-secondary" (click)="nextOrBackMatchDay()">{{returnText() === 'VER PROXIMA FECHA' ? 'Ver próxima fecha' : 'Ver fecha anterior'}} <i [class]="returnText() === 'VER PROXIMA FECHA' ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left'" aria-hidden="true"></i></button> }
     </header>
     <div class="recap-layout"><div class="match-feed">
-      @for(match of lastMatchDay.matches; track match.id) { <app-match-card [match]="match" [compact]="true" [roundLabel]="'Fecha ' + (lastMatchDay.numberOfMatchDay + 1)" /> }
+      @for(match of lastMatchDay.matches; track match.id) { <app-match-card [match]="match" [compact]="true" [roundLabel]="roundLabel(lastMatchDay)" /> }
       @empty { <div class="empty-state"><h3>Todavía no hay partidos</h3><p>Los próximos encuentros aparecerán acá.</p></div> }
     </div>
     <aside class="recap-aside">

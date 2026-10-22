@@ -108,8 +108,8 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
       });
   }
 
-  async updatePrizeDescription(position:number){
-    let description = await this.alertService.updateTextAreaAlert("Ingrese la nueva descripción.");
+  async updatePrizeDescription(position:number, currentDescription: string = ''){
+    let description = await this.alertService.updateTextAreaAlert("Editá la descripción del premio", currentDescription);
     if(description && this.currentTournament){
       let request: updatePrizeDescription = {
         description: description,

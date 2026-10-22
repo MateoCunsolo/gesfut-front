@@ -73,6 +73,8 @@ export class InitializeTournamentComponent {
       next: (param) => {
         if (param.get('code')) {
           this.code = param.get('code')!;
+          // Loop 2: el nombre sale del torneo de la URL, no del último torneo clickeado.
+          this.tournamentService.getTournamentShort(this.code).subscribe({ next: (t) => { if (t?.name) this.name = t.name; } });
         }
       }
     });

@@ -35,6 +35,8 @@ export class TournamentDashboardComponent {
       next: (param) => {
         if (param.get('code')) {
           this.code = param.get('code')!;
+          // Loop 2: tournamentShort nunca se cargaba; ahora muestra el nombre y el estado reales.
+          this.tournamentService.getTournamentShort(this.code).subscribe({ next: (short) => { if (short) this.tournamentShort = short; } });
         }
       }
     });

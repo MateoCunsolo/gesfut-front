@@ -19,6 +19,11 @@ import { GuestService } from '../../../../core/services/guest/guest.service';
   styleUrl: './players.component.scss'
 })
 export class PlayersComponent implements OnChanges {
+  // Loop 2: plantel ordenado por dorsal.
+  byShirtNumber<T extends { shirtNumber?: number | null }>(players: T[] | null | undefined): T[] {
+    return [...(players ?? [])].sort((a, b) => (a.shirtNumber ?? 999) - (b.shirtNumber ?? 999));
+  }
+
 
   private tournamentService = inject(TournamentService);
   private teamService = inject(TeamService);

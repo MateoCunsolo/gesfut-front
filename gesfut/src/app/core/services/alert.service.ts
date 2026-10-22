@@ -201,10 +201,11 @@ export class AlertService {
     });
   }
 
-  updateTextAreaAlert(title:String): Promise<string | null> {
+  updateTextAreaAlert(title:String, currentValue: string = ''): Promise<string | null> {
     return Swal.fire({
       title: title,
       input: 'textarea',
+      inputValue: currentValue,
       inputPlaceholder: 'Escribe la nueva descripción...',
       showCancelButton: true,
       confirmButtonText: 'Guardar',

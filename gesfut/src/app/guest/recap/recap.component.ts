@@ -1,3 +1,4 @@
+import { roundLabel } from '../../core/utils/round-label';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchCardComponent } from '../../shared/match-card/match-card.component';
 import { Component, DestroyRef, inject } from '@angular/core';
@@ -18,6 +19,7 @@ import { PublicPageComponent } from '../../pages/public-page/public-page.compone
   styleUrl: './recap.component.scss',
 })
 export class RecapComponent {
+  roundLabel = roundLabel;
   private destroyRef = inject(DestroyRef);
   tournamentCode!: string;
   lastMatchDay!: MatchDayResponse;

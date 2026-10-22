@@ -15,7 +15,7 @@
         </thead>
         <tbody>
           @if (!isGlobalTeam){ 
-          @for (player of participantTeam.playerParticipants; track $index) {
+          @for (player of byShirtNumber(participantTeam.playerParticipants); track $index) {
           
             @if (player.isActive) {
               <tr>
@@ -52,7 +52,7 @@
             }
           }
         }@else{
-          @for (player of participantGlobalStats.playerParticipants; track $index) {
+          @for (player of byShirtNumber(participantGlobalStats.playerParticipants); track $index) {
             @if (player.status) {
               <tr>
                 <td>{{ player.shirtNumber }}</td>
