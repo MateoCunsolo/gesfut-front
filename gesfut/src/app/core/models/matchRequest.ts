@@ -2,6 +2,7 @@
 
 export interface MatchRequest {
     matchId: number;
+    tiebreakWinnerId?: number | null;
     events:  EventRequest[];
 }
 

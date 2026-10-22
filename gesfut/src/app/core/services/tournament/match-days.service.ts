@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import {
   BehaviorSubject,
+  finalize,
   catchError,
   Observable,
   of,
@@ -23,6 +24,7 @@ import { MatchDescription } from '../../models/MatchDescriptionResponse';
   providedIn: 'root',
 })
 export class MatchDaysService {
+  readonly saving = signal(false);
   url: string = environment.apiUrl;
 
   currentMatch: BehaviorSubject<MatchDetailedResponse> =
@@ -115,9 +117,11 @@ export class MatchDaysService {
     });
   }
 
-  saveEvents(events: any[], matchId: number): void {
+  saveEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null): void {
+    if (this.saving()) return;
+    this.saving.set(true);
     console.log('Array de eventos recibidos en el servicio:', events);
-    const request = this.generateMatchRequest(events, matchId);
+    const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId);
     const token = sessionStorage.getItem('token');
 
     console.log(request);
@@ -133,9 +137,10 @@ export class MatchDaysService {
       }
     )
       .pipe(
+        finalize(() => this.saving.set(false)),
         catchError((error) => {
           console.error('Error al guardar los eventos:', error);
-          return of('Error al guardar los eventos');
+          return throwError(() => error);
         })
       )
       .subscribe({
@@ -157,12 +162,12 @@ export class MatchDaysService {
         },
         error: (err) => {
           console.error('Error en la solicitud HTTP:', err);
-          this.alertService.errorAlert(err.error.error);
+          this.alertService.errorAlert(err.error?.error || 'No se pudo guardar el partido. Tus cambios siguen en pantalla.');
         },
       });
   }
 
-  generateMatchRequest(events: any[], matchId: number): MatchRequest {
+  generateMatchRequest(events: any[], matchId: number, tiebreakWinnerId: number | null = null): MatchRequest {
     const eventRequests: EventRequest[] = [];
 
     events.forEach((event) => {
@@ -201,13 +206,16 @@ export class MatchDaysService {
 
     return {
       matchId: matchId,
+      tiebreakWinnerId,
       events: eventRequests,
     };
   }
 
-  saveEditEvents(events: any[], matchId: number): void {
+  saveEditEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null): void {
+    if (this.saving()) return;
+    this.saving.set(true);
     console.log('Array de eventos recibidos en el servicio:', events);
-    const request = this.generateMatchRequest(events, matchId);
+    const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId);
     const token = sessionStorage.getItem('token');
 
     console.log(request);
@@ -223,9 +231,10 @@ export class MatchDaysService {
       }
     )
       .pipe(
+        finalize(() => this.saving.set(false)),
         catchError((error) => {
           console.error('Error al guardar los eventos:', error);
-          return of('Error al guardar los eventos');
+          return throwError(() => error);
         })
       )
       .subscribe({
@@ -247,7 +256,7 @@ export class MatchDaysService {
         },
         error: (err) => {
           console.error('Error en la solicitud HTTP:', err);
-          this.alertService.errorAlert(err.error.error);
+          this.alertService.errorAlert(err.error?.error || 'No se pudo guardar el partido. Tus cambios siguen en pantalla.');
         },
       });
   }

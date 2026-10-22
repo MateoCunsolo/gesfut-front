@@ -8,6 +8,7 @@ export interface EventResponse {
 }
 
 export interface MatchResponse {
+    tiebreakWinnerId?: number | null;
     id: number;
     homeTeam: string;
     awayTeam: string;
@@ -72,6 +73,8 @@ export interface TournamentResponse {
 }
 
 export interface TournamentResponseFull {
+    championOfLeagueId?: number | null;
+    championOfPlayoffsId?: number | null;
     name: string;
     code: string;
     startDate: string;

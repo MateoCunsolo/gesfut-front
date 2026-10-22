@@ -28,6 +28,10 @@ export class SessionService {
   private initializeSession(): void {
     const token = sessionStorage.getItem('token');
     if(token != null){
+      if (SessionService.isTokenExpired(token)) {
+        this.removeStoredSession();
+        return;
+      }
       this.verificateSession(token);
     }
 }
@@ -38,9 +42,10 @@ verificateSession(token:string) {
       if(response){
         this.getItems(response);
       }else{
-        sessionStorage.removeItem('token');
+        this.removeStoredSession();
       }
-    }
+    },
+    error: () => this.removeStoredSession()
   });
 }
 
@@ -88,7 +93,37 @@ getItems(response:boolean) {
   }
 
   isAuth(): boolean {
-    return this.currentUserLoginOn.value;
+    if (!this.currentUserLoginOn.value) return false;
+    const token = sessionStorage.getItem('token');
+    if (!token || SessionService.isTokenExpired(token)) {
+      this.expireSession();
+      return false;
+    }
+    return true;
+  }
+
+  /** Sesión vencida o rechazada por el servidor: limpia y envía al login sin recargar la app. */
+  expireSession(): void {
+    this.removeStoredSession();
+    this.router.navigate(['/auth/login']);
+  }
+
+  private removeStoredSession(): void {
+    ['token', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
+    this.currentUserLoginOn.next(false);
+    this.currentUserData.next({ name: '', lastName: '', token: '', role: '' });
+  }
+
+  /** Lee el claim exp del JWT (sin validar firma: eso lo hace el backend). */
+  static isTokenExpired(token: string): boolean {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) return true;
+      const json = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(payload.length / 4) * 4, '=')));
+      return typeof json.exp === 'number' ? json.exp * 1000 <= Date.now() : false;
+    } catch {
+      return true;
+    }
   }
 
   userRole(): string{
@@ -102,13 +137,9 @@ getItems(response:boolean) {
   }
 
   validateToken(token:string): Observable<boolean> {
-    return this.http.post<boolean>(`${this.url}/validate-token/${token}`,
-    {
-      headers: {
-        'Content-Type': 'application/json'
-        }
-      }
-    );
+    return this.http.post<boolean>(`${this.url}/validate-token/${token}`, null, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
 

@@ -21,10 +21,12 @@ export class DashboardService {
 
   setActiveTournamentComponent(component: string) {
     this.activeTournamentComponentSubject.next(component);
+    requestAnimationFrame(() => window.scrollTo({top: 0, behavior: 'instant'}));
   }
 
   setActiveDashboardAdminComponent(component: string) {
     this.activeDashboardAdminComponentSubject.next(component);
+    requestAnimationFrame(() => window.scrollTo({top: 0, behavior: 'instant'}));
   }
 
   setHaveParticipants(thereAre: boolean) {

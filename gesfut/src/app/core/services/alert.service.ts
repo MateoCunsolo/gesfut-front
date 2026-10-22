@@ -95,12 +95,11 @@ export class AlertService {
       title: title,
       text: text,
       icon: 'warning',
-      width: '300px',
       showCancelButton: true,
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--error-color)',
-      cancelButtonText: 'CANCELAR',
-      confirmButtonText: confirmButtonText.toLocaleUpperCase(),
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: confirmButtonText,
       scrollbarPadding: false,
     });
   }
@@ -114,8 +113,8 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonColor: 'var(--primary-color)',
       cancelButtonColor: 'var(--primary-color)',
-      confirmButtonText: firstOption.toLocaleUpperCase(),
-      cancelButtonText: secondOption.toLocaleUpperCase(),
+      confirmButtonText: firstOption,
+      cancelButtonText: secondOption,
       scrollbarPadding: false,
     });
 
@@ -138,7 +137,7 @@ export class AlertService {
       text: 'Se mostrarán aquellos jugadores que hayan sido elegidos como MVP en sus partidos.',
       inputOptions: options,
       showCancelButton: true,
-      confirmButtonText: 'CERRAR FECHA',
+      confirmButtonText: 'Cerrar fecha',
       cancelButtonText: cancelText,
       scrollbarPadding: false,
       inputValidator: (value) => {
@@ -256,39 +255,36 @@ export class AlertService {
       icon: 'info',
       title: title,
       html: `
-        <div style="display: flex; flex-direction: column; text-align: left; font-size: 16px; gap: 10px;">
+        <div class="alert-summary">
           <p><strong>Equipos:</strong> ${teams.map(team => team.name).join(', ')}</p>
           <p><strong>Fecha de inicio:</strong> ${date ? date : "Sin fecha"}</p>
           <p><strong>Minutos por partido:</strong> ${minutes ? minutes : "Sin duración"}</p>
           <p><strong>Días entre jornadas:</strong> ${days ? days : "Sin días"}</p>
-          *Tambien podras cargar las fecha en la seccion 'FECHAS' una vez que inicies el torneo.
+          <small>También podés programar los horarios desde Partidos después de iniciar el torneo.</small>
         </div>`,
-      confirmButtonText: 'INICIALIZAR',
+      confirmButtonText: 'Inicializar',
       showConfirmButton: true,
       showCancelButton: true,
-      cancelButtonText: 'EDITAR',
+      cancelButtonText: 'Editar',
       scrollbarPadding: false,
       customClass: {
         confirmButton: 'base-button',
         cancelButton: 'back-button',
       },
-      width: '600px'
     });
   }
 
   saherdLinkAlert(title: string, link: string) {
     return Swal.fire({
       title: title,
-      html: `
-        <div style="display: flex; flex-direction: column; text-align: center; font-size: 14px; gap: 10px; margin: 0;">
-          <p><strong>Link:</strong> ${link}</p>
-        </div>`,
-      confirmButtonText: 'COPIAR LINK',
+      input: 'text',
+      inputValue: link,
+      inputAttributes: { readonly: 'true', 'aria-label': 'Enlace del torneo' },
+      confirmButtonText: 'Copiar enlace',
       showConfirmButton: true,
       showCancelButton: true,
-      cancelButtonText: 'CERRAR',
+      cancelButtonText: 'Cerrar',
       scrollbarPadding: false,
-      width: '600px',
       customClass: {
         confirmButton: 'base-button',
       },

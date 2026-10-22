@@ -2,6 +2,8 @@ import { EventResponse, ParticipantResponse } from "./tournamentResponse";
 
 export interface MatchDetailedResponse {
     id: number;
+    tiebreakWinnerId?: number | null;
+    isPlayOff?: boolean;
     homeTeam: ParticipantResponse;
     awayTeam: ParticipantResponse;
     numberOfMatchDay: number;

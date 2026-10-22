@@ -16,5 +16,6 @@ export class GuestService {
 
   setActiveComponent(component:string){
     this.activeComponent.next(component);
+    requestAnimationFrame(() => window.scrollTo({top: 0, behavior: 'instant'}));
   }
 }

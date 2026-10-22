@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../enviroments/environment';
-import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, shareReplay, tap, throwError } from 'rxjs';
+import { TournamentCache } from './tournament-cache';
 import { MatchResponse, ParticipantResponse, TournamentResponseFull } from '../../models/tournamentResponse';
 import { INITIAL_TOURNAMENT, INITIAL_TOURNAMENT_SHORT } from './initial-tournament';
 import { TournamentResponseShort } from '../../models/tournamentResponseShort';
@@ -48,10 +49,34 @@ export class TournamentService {
 
   constructor(private http: HttpClient) { }
 
-  getTournamentFull(code: string): Observable<TournamentResponseFull> {
+  private tournamentCache = inject(TournamentCache);
+
+  /** Fuerza la próxima lectura desde el servidor (sin código: todos los torneos). */
+  invalidateTournament(code?: string): void {
+    this.tournamentCache.invalidate(code);
+  }
+
+  /**
+   * Torneo completo con caché por código (shareReplay(1), 60 s). Varias pantallas que lo piden
+   * comparten una sola request. Si falla se quita de la caché para que "Reintentar" vuelva a pedirlo.
+   * Toda escritura exitosa invalida la caché (tournamentCacheInterceptor).
+   */
+  getTournamentFull(code: string, forceRefresh = false): Observable<TournamentResponseFull> {
+    if (forceRefresh) this.tournamentCache.invalidate(code);
+    let request$ = this.tournamentCache.get(code);
+    if (!request$) {
+      request$ = this.fetchTournamentFull(code).pipe(
+        catchError(error => { this.tournamentCache.invalidate(code); return throwError(() => error); }),
+        shareReplay(1)
+      );
+      this.tournamentCache.set(code, request$);
+    }
+    return request$.pipe(tap(response => this.currentTournament.next(response)));
+  }
+
+  private fetchTournamentFull(code: string): Observable<TournamentResponseFull> {
     return this.http.get<TournamentResponseFull>(`${this.url}/tournaments/${code}`).pipe(
-      tap({
-        next: (response: TournamentResponseFull) => {
+      map((response: TournamentResponseFull) => {
           response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
           response.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
           response.participants.sort((a, b) => {
@@ -63,12 +88,7 @@ export class TournamentService {
             }
             return b.statistics.points - a.statistics.points;
           });
-          this.currentTournament.next(response)
           return response;
-        },
-        error: (error: HttpErrorResponse) => {
-          return throwError(() => error)
-        }
       })
     );
   }
