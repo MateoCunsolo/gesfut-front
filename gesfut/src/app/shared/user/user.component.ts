@@ -2,7 +2,6 @@ import { Component, HostListener, inject, OnDestroy } from '@angular/core';
 import { SessionService } from '../../core/services/manager/session.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AlertService } from '../../core/services/alert.service';
-import Swal from 'sweetalert2';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { filter, Subscription } from 'rxjs';
 
@@ -66,7 +65,7 @@ export class UserComponent {
   }
 
   async onLogout(): Promise<void> {
-    // El guard del editor puede cancelar la salida; conservar la sesión en ese caso.
+    // El guard del editor puede cancelar la salida; conservar la sesiÃ³n en ese caso.
     if (await this.route.navigateByUrl('/')) {
       this.sessionService.clearUserSession();
     }
@@ -91,10 +90,10 @@ export class UserComponent {
       .then((result) => {
         if (result.isConfirmed) {
           this.route.navigateByUrl('/admin/faq');
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          this.alertService.infoAlert('gesfut.arg@gmail.com', 'Porfavor detalla correctamente el problema y si puedes envia fotos. Gracias por tu colaboración');
+        } else if (String(result.dismiss) === 'cancel' /* Swal.DismissReason.cancel, sin importar sweetalert2 en el bundle inicial */) {
+          this.alertService.infoAlert('gesfut.arg@gmail.com', 'Porfavor detalla correctamente el problema y si puedes envia fotos. Gracias por tu colaboraciÃ³n');
         } else {
-          this.alertService.infoAlertTop('No se ha seleccionado ninguna opción');
+          this.alertService.infoAlertTop('No se ha seleccionado ninguna opciÃ³n');
           this.route.navigateByUrl('/admin');
         }
       });

@@ -122,6 +122,16 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
   ],
 })
 export class TimepickerDatepickerIntegrationExample {
+  /** Auditoria 22/10 (#15): el tema de Material (mismos colores) se carga solo cuando se usa el selector de horario. */
+  private readonly materialTheme = (() => {
+    if (typeof document !== 'undefined' && !document.getElementById('material-theme')) {
+      const link = document.createElement('link');
+      link.id = 'material-theme'; link.rel = 'stylesheet'; link.href = 'material-theme.css';
+      document.head.appendChild(link);
+    }
+    return true;
+  })();
+
   private matchDayServices = inject(MatchDaysService);
   private alertService = inject(AlertService);
   value: Date = new Date();

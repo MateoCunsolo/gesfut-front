@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import Swal from 'sweetalert2';
+import type { SweetAlertOptions, SweetAlertResult } from 'sweetalert2';
+// Auditoria 22/10 (#15): sweetalert2 se carga recien al primer aviso, fuera del bundle inicial. Misma API y mismos estilos.
+const loadSwal = () => import('sweetalert2').then(m => m.default);
+const Swal = {
+  fire: (options: SweetAlertOptions): Promise<SweetAlertResult<any>> => loadSwal().then(S => S.fire(options)),
+  close: (): void => { loadSwal().then(S => S.close()); },
+  showLoading: (): void => { loadSwal().then(S => S.showLoading()); },
+  showValidationMessage: (message: string): void => { loadSwal().then(S => S.showValidationMessage(message)); },
+};
 import { ParticipantResponse } from '../models/tournamentResponse';
 import { Observable, Subject } from 'rxjs';
 import { TeamResponse } from '../models/teamResponse';
