@@ -96,12 +96,9 @@ export class RegisterComponent {
     this.isLoading = true;
     this.authService.register(credentials).subscribe({
       next: (response) => {
-        if (response.token) {
-          this.alertService.successAlert('Usuario registrado correctamente');
-          this.route.navigateByUrl('/auth/login');
-        } else {
-          this.alertService.errorAlert('Error al registrar usuario');
-        }
+        // Loop 5: el registro ya no devuelve token (hay que verificar el email antes de entrar).
+        this.alertService.successAlert('Cuenta creada. Revisá tu correo para verificarla.');
+        this.route.navigateByUrl('/auth/login');
       },
       error: (err: HttpErrorResponse) => {
         this.alertService.errorAlert(err.error.error);

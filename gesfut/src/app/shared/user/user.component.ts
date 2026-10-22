@@ -69,6 +69,7 @@ export class UserComponent {
     this.sessionService.loggingOut = true;
     try {
       if (await this.route.navigateByUrl('/')) {
+        await this.sessionService.revokeToken();
         this.sessionService.clearUserSession();
       }
     } finally {

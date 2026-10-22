@@ -141,6 +141,16 @@ getItems(response:boolean) {
     return userdata.token;
   }
 
+  /** Loop 5: revoca el token en el servidor. Si falla (sin red, ya vencido) igual se limpia la sesion local. */
+  revokeToken(): Promise<void> {
+    const token = sessionStorage.getItem('token');
+    if (!token) return Promise.resolve();
+    return new Promise(resolve => {
+      this.http.post(`${this.url}/logout`, null, { headers: { Authorization: `Bearer ${token}` } })
+        .subscribe({ next: () => resolve(), error: () => resolve() });
+    });
+  }
+
   validateToken(token:string): Observable<boolean> {
     // Loop 4: el token va en el header, nunca en la URL.
     return this.http.post<boolean>(`${this.url}/validate-token`, null, {

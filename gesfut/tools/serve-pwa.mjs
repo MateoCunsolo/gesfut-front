@@ -37,7 +37,9 @@ export function createPwaServer({ root = defaultRoot, apiTarget = 'http://127.0.
     let info = await stat(file).catch(() => null);
     if (!info?.isFile()) {
       // Solo rutas de navegación reciben index.html. Los assets ausentes son 404.
-      if (path.extname(decoded)) { response.writeHead(404).end(); return; }
+      // Loop 5: los links de mail llevan un JWT con puntos (/auth/verify-email/aaa.bbb.ccc): una navegacion (Accept text/html) siempre recibe la app.
+      const isNavigation = (request.headers.accept ?? '').includes('text/html');
+      if (path.extname(decoded) && !isNavigation) { response.writeHead(404).end(); return; }
       file = path.join(root, 'index.html');
       info = await stat(file).catch(() => null);
       if (!info?.isFile()) { response.writeHead(503).end('Primero ejecutá npm run build.'); return; }
