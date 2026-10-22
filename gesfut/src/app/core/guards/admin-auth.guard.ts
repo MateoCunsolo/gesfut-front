@@ -2,9 +2,10 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { SessionService } from '../services/manager/session.service';
 
-export const adminAuthGuard: CanActivateFn = () => {
+export const adminAuthGuard: CanActivateFn = async () => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
+  await sessionService.ready; // Loop 7: esperar la validacion inicial del token
 
   const isAuthenticated = sessionService.isAuth();
   const userRole = sessionService.userRole();

@@ -230,12 +230,13 @@ export class LoadResultComponent {
       } else {
         this.events.push(newEvent);
       }
-      console.log(this.events);
+      // Loop 7: se mantiene el equipo elegido para cargar al siguiente jugador sin volver a elegirlo.
+      const keepTeam = this.statisticsForm.get('team')?.value || '';
       this.statisticsForm.reset({
         id: 0,
         name: '',
         shirt: 0,
-        team: '',
+        team: keepTeam,
         goals: 0,
         yellowCard: 0,
         redCard: 0,

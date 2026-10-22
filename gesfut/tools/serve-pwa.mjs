@@ -3,6 +3,7 @@ import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createGzip } from 'node:zlib';
 
 const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist/gesfut/browser');
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };
@@ -44,12 +45,17 @@ export function createPwaServer({ root = defaultRoot, apiTarget = 'http://127.0.
       info = await stat(file).catch(() => null);
       if (!info?.isFile()) { response.writeHead(503).end('Primero ejecutá npm run build.'); return; }
     }
-    response.writeHead(200, { 'content-type': mime[path.extname(file)] ?? 'application/octet-stream', 'content-length': info.size,
-      'cache-control': 'no-cache', 'x-content-type-options': 'nosniff' });
+    // Loop 7: gzip para texto (3G: ~1.3 MB -> ~0.4 MB) y cache larga para assets con hash en el nombre.
+    const ext = path.extname(file);
+    const gzip = /\.(js|css|html|json|webmanifest|svg)$/.test(ext) && /\bgzip\b/.test(request.headers['accept-encoding'] ?? '') && info.size > 1024;
+    const hashed = /-[A-Z0-9]{8}\.(js|css)$/.test(path.basename(file));
+    const headers = { 'content-type': mime[ext] ?? 'application/octet-stream', 'cache-control': hashed ? 'public, max-age=31536000, immutable' : 'no-cache', 'x-content-type-options': 'nosniff', vary: 'Accept-Encoding' };
+    if (gzip) headers['content-encoding'] = 'gzip'; else headers['content-length'] = info.size;
+    response.writeHead(200, headers);
     if (request.method === 'HEAD') { response.end(); return; }
     const stream = createReadStream(file);
     stream.on('error', () => response.destroy());
-    stream.pipe(response);
+    (gzip ? stream.pipe(createGzip()) : stream).pipe(response);
   });
 }
 

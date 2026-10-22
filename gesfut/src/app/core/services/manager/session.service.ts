@@ -23,6 +23,9 @@ export class SessionService {
   loggingOut = false;
   /** Recorrido 22/10: la sesión se descartó por vencida o inválida (no por logout). */
   sessionExpired = false;
+  /** Loop 7: se resuelve cuando termina la validacion inicial del token; los guards la esperan (antes, con assets en cache, el guard corria antes y expulsaba a la landing). */
+  private markReady!: () => void;
+  readonly ready: Promise<void> = new Promise<void>(resolve => this.markReady = resolve);
 
 
   constructor(private router:Router, private http: HttpClient) {
@@ -34,10 +37,13 @@ export class SessionService {
     if(token != null){
       if (SessionService.isTokenExpired(token)) {
         this.removeStoredSession();
+        this.markReady();
         return;
       }
       this.verificateSession(token);
+      return;
     }
+    this.markReady();
 }
 
 verificateSession(token:string) {
@@ -48,8 +54,9 @@ verificateSession(token:string) {
       }else{
         this.removeStoredSession();
       }
+      this.markReady();
     },
-    error: () => this.removeStoredSession()
+    error: () => { this.removeStoredSession(); this.markReady(); }
   });
 }
 

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as XLSX from 'xlsx';
+// xlsx (~550 KB) se carga solo al usarlo, para no pesar en la vista publica.
+const loadXlsx = () => import('xlsx');
 import { AlertService } from '../../core/services/alert.service';
 
 @Component({
@@ -13,7 +14,8 @@ export class ExcelUploadComponent {
   private alertService = inject(AlertService);
   @Output() dataLoaded = new EventEmitter<any>();
 
-  showFormatExcel() {
+  async showFormatExcel() {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([
       ['NOMBRE', 'APELLIDO', 'DORSAL', 'CAPITAN', 'ARQUERO', 'EQUIPO', 'COLOR_CAMISETA'],
@@ -41,7 +43,8 @@ export class ExcelUploadComponent {
     }
 
     const reader = new FileReader();
-    reader.onload = (e: any) => {
+    reader.onload = async (e: any) => {
+      const XLSX = await loadXlsx();
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
 
