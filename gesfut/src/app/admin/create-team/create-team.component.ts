@@ -253,7 +253,7 @@ button: any;
     this.teamService.createTeam(teamData).subscribe({
       next: (response) => {
         this.error = '';
-        this.alertService.successAlert("Equipo creado!");
+        this.alertService.successAlert(this.inTournament ? "Equipo creado y agregado a la preparación del torneo." : "Equipo creado!");
         if(this.inTournament){
           this.dashboardService.setActiveTournamentComponent('initialize');
           this.tournamentService.setNewTeamToInitTournament(response);

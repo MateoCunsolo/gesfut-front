@@ -8,3 +8,8 @@
 .editor-layout{gap:16px;}
 .save-status{font-size:1.3rem;color:var(--muted);margin:16px 0 8px;}
 @media(min-width:900px){.entry-disclosure{position:sticky;top:112px;}}
+
+/* 28: en edición, el registro existente va primero en celular; el alta queda plegada. Resumen antes de guardar. */
+@media(max-width:899px){.editor-layout.editing .events-panel{order:-1;}}
+.live-score{padding:16px;margin-bottom:16px;}
+.save-summary{margin:16px 0 8px;display:grid;gap:4px;}.save-summary .save-status{margin:0;}.save-status.pending{color:var(--ink);font-weight:700;}.summary-line{font-size:1.3rem;color:var(--muted);overflow-wrap:anywhere;}

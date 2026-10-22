@@ -100,7 +100,7 @@
   ></app-add-player>
   }@else {
   <div class="buttons">
-    <button class="base-button" (click)="showFormAddPlayer()">Agregar jugador</button>
+    <button #addPlayerTrigger class="base-button" (click)="showFormAddPlayer()">Agregar jugador</button>
     <button class="button-secondary" (click)="toLastMatches()">Últimos partidos</button>
     <button class="button-secondary button-danger" (click)="deleteTeam()">Eliminar equipo</button>
   </div>

@@ -12,9 +12,9 @@ export function loadErrorKind(error: unknown): LoadErrorKind {
   return isNotFoundError(error) ? 'not-found' : 'offline';
 }
 
-/** Errores transitorios: sin conexión (0) o servidor caído / con fallas (5xx). */
+/** Errores transitorios: sin conexión (0) o servidor/proxy no disponible (502/503/504). Un 500 no se reintenta. */
 export function isTransientError(error: unknown): boolean {
-  return error instanceof HttpErrorResponse && (error.status === 0 || error.status >= 500);
+  return error instanceof HttpErrorResponse && [0, 502, 503, 504].includes(error.status);
 }
 
 /** Reintenta automáticamente solo errores transitorios con backoff 2 s, 4 s, 8 s. */

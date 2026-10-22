@@ -60,3 +60,23 @@ No guardar partidos, crear jugadores ni resetear la base para comprobar diseño.
 - Tiempos (torneos grandes, 3 corridas): torneo completo 142-329 ms => 66-149 ms; fechas 92-185 ms => 46-88 ms; equipos 47-74 ms => 33-53 ms.
 - register-image.jpg recomprimida (531 KB => 246 KB, mismas dimensiones). Sin cambios de colores ni estilos.
 - Respaldo: work/antes-perf-bloque (archivos, dist, jar y dump de la base antes del índice).
+
+## 2026-10-22 — Bloque 4 (densidad mobile) + bugs backend
+
+- Backend: `@Transactional(readOnly=true)` en lecturas de equipos/torneos; `spring.jpa.open-in-view=false`; `GlobalExceptionHandler` con 404 (no existe) / 400 (entrada inválida o regla de negocio) / 405 y demás errores de Spring con su status / 500 logueado como ERROR; sin `printf` de debug en `TournamentController`; `@Transactional` explícito en `updateStatusMatchDay`; eliminado `GET /tournaments` (sin uso en el front; ahora responde 405).
+- Front: `match-card` con modo `compact` (recap público, fechas admin, historial); fechas admin con barra fecha+estado, acción principal + "Más" (Horario/Cancha) y "Acciones de toda la fecha"; equipos del torneo con acciones arriba y filas compactas; buscador oculto en mobile con <= 8 equipos; historial con encabezado torneo/equipo y filtro Jugados/Próximos; tablas y filas más densas; reintento automático solo en 0/502/503/504.
+- Verificado: `ng build` prod OK, tests front OK, `mvn package` 19/19 OK, status 200/400/404/405 y bearer vencido en GET público = 200.
+- Suite GET admin (356 filas, 3 corridas): todo 200 salvo `GET /tournaments`=405 (eliminado) y `lastPlayed` sin fechas jugadas=404 (antes 400). Torneo completo 66-134 ms en caliente.
+- E2E (Tag bloque4, torneo TEST nuevo) completo en 2,3 s: resultados, edición, fechas, cierre, playoffs y premios OK.
+- Regresión de open-in-view=false corregida: `GET /teams/{id}/players-stats` daba 500 (LazyInitialization); se agregó `@Transactional(readOnly=true)` a `getAllPlayerStatsByTeam` y `getTeamTournamentsParticipations`. java.log sin ERROR ni LazyInit.
+- Capturas antes/después en `outputs\bloque4-despues`.
+
+## 2026-10-22 — Vistas P1 parciales (08, 17/33, 18/32, 24, 28)
+
+- 08 Login: labels visibles, Mostrar/Ocultar contraseña (botón 44px, aria-pressed), recuperación siempre visible, acciones secundarias en una fila sin espacio sobrante.
+- 17/33 Crear equipo: labels persistentes, jugadores numerados ("Jugador N") con quitar rotulado, roles en texto; desde torneo explica que vuelve a la preparación y que el equipo queda incorporado.
+- 18/32 Agregar jugador: labels persistentes, contexto "equipo · torneo", al cancelar el foco vuelve a "Agregar jugador".
+- 24 Inicio privado: título de fecha 22/24px y navegación en la misma fila; goleadores y destacado más densos.
+- 28 Editor: en edición el registro va primero en celular; resumen (marcador, tarjetas, MVP) y estado de cambios antes de guardar.
+- Regresión de bloque 4 corregida: match-card compacto no mostraba las acciones (dos ng-content en ramas @if).
+- Verificado: ng build prod, tests front (incluye nuevo tools/test-p1-parciales.mjs, 5/5), capturas 390 con login de prueba.

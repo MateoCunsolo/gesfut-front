@@ -15,6 +15,8 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 })
 
 export class LoginComponent {
+  /** Mostrar/Ocultar contraseña (visible, sin depender de un intento fallido). */
+  showPassword = false;
   loginForm: FormGroup;
   error: string = '';
   redActive = false;

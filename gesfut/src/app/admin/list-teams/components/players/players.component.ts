@@ -147,8 +147,21 @@ export class PlayersComponent implements OnChanges {
   }
 
   cancelAddPlayerEvent() {
+    this.focusAddTriggerPending = true;
     this.flagAddPlayer = false;
   }
+  /** Al cancelar el alta, el foco vuelve al botón "Agregar jugador" que la abrió. */
+  private focusAddTriggerPending = false;
+  @ViewChild('addPlayerTrigger') set addPlayerTrigger(el: ElementRef<HTMLButtonElement> | undefined) {
+    if (el && this.focusAddTriggerPending) {
+      this.focusAddTriggerPending = false;
+      setTimeout(() => {
+        el.nativeElement.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+        el.nativeElement.focus({ preventScroll: true });
+      });
+    }
+  }
+
 
   addPlayerToTeam(newPlayer: PlayerParticipantResponse) {
     console.log('Agregando jugador:', newPlayer);

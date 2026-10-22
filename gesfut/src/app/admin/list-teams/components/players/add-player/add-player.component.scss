@@ -4,3 +4,5 @@ header h3{font-size:2rem;margin:0;scroll-margin-top:120px;outline-offset:4px;}
 .destination{font-size:1.4rem;color:var(--muted);margin:6px 0 0;overflow-wrap:anywhere;}
 .player-role-choice{display:flex;align-items:center;gap:8px;min-height:44px;font-size:1.4rem;cursor:pointer;}
 .player-role-choice input{position:static;opacity:1;appearance:auto;width:20px;height:20px;margin:0;accent-color:var(--primary-color);}
+
+.field{display:flex;flex-direction:column;gap:6px;min-width:0;}.field-label{align-self:flex-start;text-align:left;justify-content:flex-start;font-size:1.4rem;font-weight:700;color:var(--ink);}.clear-select{min-width:44px;min-height:44px;}

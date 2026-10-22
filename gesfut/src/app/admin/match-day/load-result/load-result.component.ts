@@ -396,6 +396,16 @@ export class LoadResultComponent {
     return this.events.some((event) => event.mvp === true);
   }
 
+  /** Resumen visible antes de guardar (sin confirmaciones extra). */
+  get summaryTotals(): { yellow: number; red: number; mvp: string } {
+    const evs = this.events || [];
+    return {
+      yellow: evs.reduce((n: number, e: any) => n + (Number(e.yellowCard) || 0), 0),
+      red: evs.reduce((n: number, e: any) => n + (Number(e.redCard) || 0), 0),
+      mvp: evs.find((e: any) => e.mvp)?.name ?? '',
+    };
+  }
+
   get hasPendingChanges(): boolean {
     const draft = this.statisticsForm.getRawValue();
     return !this.eventsAreEquals()

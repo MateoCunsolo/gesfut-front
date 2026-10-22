@@ -3,6 +3,7 @@
     @if(destinationName) {<p class="destination">{{destinationName}}</p>}
   </header>
   @if (therArePlayersToADD) {
+  <label class="field-label" for="playersGlobales">Jugador existente (opcional)</label>
   <div class="playerExist">
     <select
       name="playersGlobales"
@@ -21,7 +22,7 @@
       }
     </select>
     @if(selectedPlayerId!=0){
-    <button (click)="resetSelect()">X</button>
+    <button type="button" class="clear-select" aria-label="Quitar selección de jugador existente" (click)="resetSelect()">X</button>
     }
   </div>
   }@else if (therArePlayersToADD) {
@@ -42,7 +43,7 @@
         }
       </select>
       @if(selectedPlayerId!=0){
-      <button (click)="resetSelect()">X</button>
+      <button type="button" class="clear-select" aria-label="Quitar selección de jugador existente" (click)="resetSelect()">X</button>
       }
     </div>
   }
@@ -52,40 +53,43 @@
     (ngSubmit)="addPlayer()"
   >
     <!-- Campo Nombre -->
+    <div class="field"><label class="field-label" for="addPlayerName">Nombre</label>
     <div class="form-group input-icon">
-      <input aria-label="Nombre" type="text" formControlName="name" placeholder="Nombre" [ngClass]="{ disabled: disbalechecks }" />
+      <input id="addPlayerName" type="text" formControlName="name" placeholder="Nombre" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fas fa-user"></i>
       @if (playerForm.get('name')?.invalid && playerForm.get('name')?.touched) {
       <small>El nombre es requerido (mín. 2 caracteres).</small>
       }
-    </div>
+    </div></div>
 
     <!-- Campo Apellido -->
+    <div class="field"><label class="field-label" for="addPlayerLastName">Apellido</label>
     <div class="form-group input-icon">
-      <input aria-label="Apellido" type="text" formControlName="lastName" placeholder="Apellido" [ngClass]="{ disabled: disbalechecks }"/>
+      <input id="addPlayerLastName" type="text" formControlName="lastName" placeholder="Apellido" [ngClass]="{ disabled: disbalechecks }"/>
       <i class="fas fa-user"></i>
       @if (playerForm.get('lastName')?.invalid &&
       playerForm.get('lastName')?.touched) {
       <small>El apellido es requerido (mín. 2 caracteres).</small>
       }
-    </div>
+    </div></div>
 
     <!-- Campo Dorsal -->
+    <div class="field"><label class="field-label" for="addPlayerNumber">Dorsal</label>
     <div class="form-group input-icon">
-      <input aria-label="Dorsal" type="number" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
+      <input id="addPlayerNumber" type="number" inputmode="numeric" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fa-solid fa-hashtag"></i>
       @if (playerForm.get('number')?.invalid &&
       playerForm.get('number')?.touched) {
       <small>Ingresa un dorsal válido (1-99).</small>
       }
-    </div>
+    </div></div>
 
     <!-- Campos Checkbox -->
     <div class="mini-group">
       <div class="check-group">
         <div class="form-group">
           <label class="player-role-choice" [ngClass]="{ disabled: disbalechecks }">
-            <input aria-label="Capitán"
+            <input
               type="checkbox"
               formControlName="isCaptain"
               [ngClass]="{ disabled: disbalechecks }"
@@ -95,7 +99,7 @@
         </div>
         <div class="form-group">
           <label class="player-role-choice" [ngClass]="{ disabled: disbalechecks }">
-            <input aria-label="Arquero"
+            <input
               type="checkbox"
               formControlName="isGoalKeeper"
               [ngClass]="{ disabled: disbalechecks }"
