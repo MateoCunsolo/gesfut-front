@@ -56,6 +56,12 @@ export class ListMatchDaysComponent implements OnInit {
     private sessionService: SessionService
   ) { }
 
+  /** Auditoria 22/10: el cruce se nombra por los equipos, no por IDs internos. */
+  bracketRival(day: any, matchId: number): string {
+    const m = day?.matches?.find((x: any) => x.id === matchId);
+    return m && m.homeTeam && m.awayTeam ? `${m.homeTeam} – ${m.awayTeam}` : 'la otra llave';
+  }
+
   ngOnInit(): void {
     this.tournamentService.currentTournament.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: TournamentResponseFull) => {

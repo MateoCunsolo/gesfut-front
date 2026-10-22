@@ -19,7 +19,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
   <p>🌧 PROB. LLUVIA: {{ day.chance_of_rain }}%</p>
 
   <section class="condition">
-    <img src="{{day.condition.icon}}"><img>
+    <img src="{{day.condition.icon}}" [alt]="day.condition.text || 'Pronóstico'">
     <p class="text-conditio">{{conditionText}}</p>
   </section>
 

@@ -168,7 +168,7 @@ export class TournamentService {
 
 
   changeStatusPlayerParticipant(idParticipant: number, status: boolean) {
-    const url = `http://localhost:8080/api/v1/team-participant/change-status/${idParticipant}/${status}`;
+    const url = `${this.url}/team-participant/change-status/${idParticipant}/${status}`;
     return this.http.put<void>(`${url}`, {}, {
       headers: {
         'Content-Type': 'application/json',

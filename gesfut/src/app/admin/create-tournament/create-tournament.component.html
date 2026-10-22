@@ -42,7 +42,7 @@
         <app-spinner></app-spinner>
       }@else{
         <section class="buttons">
-          <button class="btn-create" type="submit" [disabled]="createTournamentForm.invalid">Crear torneo</button>
+          <button class="btn-create" type="submit" [disabled]="createTournamentForm.invalid || isloding" [attr.aria-busy]="isloding">Crear torneo</button>
         </section>
       }
     </form>

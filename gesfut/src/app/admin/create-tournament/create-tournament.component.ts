@@ -48,6 +48,7 @@ export class CreateTournamentComponent {
   }
 
   onSubmit() {
+    if (this.isloding) return; // Auditoria 22/10: evita doble envio (creaba 2 torneos)
     if (this.createTournamentForm.valid) {
       const tournament: TournamentRequest = { name: this.name?.value };
       this.isloding = true;
