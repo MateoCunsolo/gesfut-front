@@ -70,7 +70,7 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         }@else {
         <mat-label>Elegir fecha</mat-label>
         }
-        <input matInput [matDatepicker]="datepicker" [(ngModel)]="dateValue" [min]="(isToInitTournament || isForAllMatches) ? minDate : null" />
+        <input matInput [matDatepicker]="datepicker" [(ngModel)]="dateValue" [min]="minDate" />
         <mat-datepicker #datepicker />
         <mat-datepicker-toggle [for]="datepicker" matSuffix />
       </mat-form-field>
@@ -202,6 +202,11 @@ export class TimepickerDatepickerIntegrationExample {
     const chosen = this.value;
     if (chosen && (this.isToInitTournament || this.isForAllMatches) && chosen.getTime() < this.minDate.getTime()) {
       this.alertService.errorAlert('Elegí una fecha de hoy en adelante.');
+      return;
+    }
+    // Plan 22/10 #5: un partido suelto solo con fecha y hora futura.
+    if (chosen && !this.isToInitTournament && !this.isForAllMatches && chosen.getTime() < Date.now()) {
+      this.alertService.errorAlert('Elegí una fecha y hora futura para el partido.');
       return;
     }
     if (chosen) {
