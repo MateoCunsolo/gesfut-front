@@ -3,7 +3,7 @@
 }
 <section class="setup" [class.blur]="showPicker">
   <button type="button" class="back-button" (click)="changeComponent('dashboard')">Volver</button>
-  <header class="page-heading"><h2>Preparar calendario</h2><p>Elegí al menos 4 equipos. Podés definir los horarios ahora o después.</p></header>
+  <header class="page-heading"><h2>Preparar calendario</h2><p>Elegí al menos 2 equipos. Podés definir los horarios ahora o después.</p></header>
   <div class="setup-columns">
     <section aria-labelledby="available-heading">
       <div class="section-heading"><h3 id="available-heading">Equipos disponibles</h3><span>{{teams.length}}</span></div>
@@ -37,7 +37,7 @@
     }
   </section>
   <footer class="setup-summary">
-    <div role="status"><strong>{{teamsTournament.length}} {{teamsTournament.length===1 ? 'equipo seleccionado' : 'equipos seleccionados'}}</strong><span id="setup-requirement">{{teamsTournament.length<4 ? 'Faltan ' + (4-teamsTournament.length) + ' para el mínimo de 4.' : 'Listo para revisar y generar el calendario.'}}</span></div>
-    <button type="button" class="base-button" [disabled]="teamsTournament.length<4" aria-describedby="setup-requirement" (click)="initTournament()">Revisar y generar</button>
+    <div role="status"><strong>{{teamsTournament.length}} {{teamsTournament.length===1 ? 'equipo seleccionado' : 'equipos seleccionados'}}</strong><span id="setup-requirement">{{teamsTournament.length<2 ? 'Faltan ' + (2-teamsTournament.length) + ' para el mínimo de 2.' : (teamsTournament.length===3 ? 'Listo. Con 3 equipos, cada fecha uno queda libre.' : 'Listo para revisar y generar el calendario.')}}</span></div>
+    <button type="button" class="base-button" [disabled]="teamsTournament.length<2" aria-describedby="setup-requirement" (click)="initTournament()">Revisar y generar</button>
   </footer>
 </section>

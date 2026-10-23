@@ -420,6 +420,11 @@ export class ListMatchDaysComponent implements OnInit {
       this.alertService.errorAlert('No hay equipos clasificados');
       return;
     }
+    // Plan 22/10 #8: el cuadro más chico es una final (2 equipos).
+    if (length < 2) {
+      this.alertService.errorAlert('Elegí al menos 2 equipos para los playoffs');
+      return;
+    }
     //multiple de 2
     if (!(length > 0 && (length & (length - 1)) === 0)) {
       this.alertService.errorAlert('El valor debe ser una potencia de 2');

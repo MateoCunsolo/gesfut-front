@@ -144,7 +144,7 @@ export class InitializeTournamentComponent {
   }
 
   initTournament() {
-    if (this.teamsTournament.length >= 4) {
+    if (this.teamsTournament.length >= 2) { // Plan 22/10 #8: mínimo 2 equipos
       const ids = this.teamsTournament.map(team => team.id);
       const initializeRequest = {
         tournamentCode: this.code,
@@ -182,7 +182,7 @@ export class InitializeTournamentComponent {
         });
 
     } else {
-      this.alertService.errorAlert('El torneo debe tener al menos 4 equipos');
+      this.alertService.errorAlert('El torneo debe tener al menos 2 equipos');
     }
   }
 
