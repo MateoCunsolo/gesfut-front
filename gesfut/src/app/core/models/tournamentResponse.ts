@@ -21,6 +21,8 @@ export interface MatchResponse {
     description: string,
     mvpPlayer: string;
     vsMatchIdWhoWin: number;
+    /** Plan 22/10 #9: false hasta el día del partido. */
+    canLoadResult?: boolean;
 }
 
 export interface MatchDayResponse {
