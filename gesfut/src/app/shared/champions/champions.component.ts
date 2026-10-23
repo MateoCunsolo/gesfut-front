@@ -12,7 +12,14 @@ import { TournamentResponseFull } from '../../core/models/tournamentResponse';
   standalone: true,
   template: `
     @if (titles.length) {
-      <section class="champions" aria-label="Campeones del torneo">
+      <section class="champions" [class.banner]="tournament?.isFinished" aria-label="Campeones del torneo">
+        @if (tournament?.isFinished) {
+          <!-- Plan 22/10 #4: banner de campeón al terminar el torneo (mismos colores del tema). -->
+          <div class="banner-head" role="status">
+            <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+            <div><span class="eyebrow">Torneo finalizado</span><h2>¡{{ titles[titles.length - 1].team }} campeón!</h2></div>
+          </div>
+        }
         <ul>
           @for (t of titles; track t.label) {
             <li><i class="fa-solid fa-trophy" aria-hidden="true"></i><span class="eyebrow">{{ t.label }}</span><strong>{{ t.team }}</strong></li>
@@ -23,6 +30,10 @@ import { TournamentResponseFull } from '../../core/models/tournamentResponse';
   `,
   styles: `
     .champions { margin-bottom: 16px; }
+    .banner { padding: 16px; border: 2px solid var(--primary-color); border-radius: 16px; background: var(--surface); }
+    .banner-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .banner-head > i { font-size: 3.2rem; color: var(--primary-color); }
+    .banner-head h2 { margin: 4px 0 0; font-size: 2.2rem; line-height: 1.2; color: var(--ink); overflow-wrap: anywhere; }
     ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
     li { position: relative; display: grid; gap: 4px; padding: 14px 48px 14px 16px; border-radius: 14px; background: var(--primary-soft); }
     li i { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--primary-color); font-size: 2rem; }
