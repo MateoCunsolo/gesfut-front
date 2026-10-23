@@ -1,3 +1,4 @@
+import { naturalCompare } from '../../core/utils/natural-sort';
 import { Component, inject, OnInit } from '@angular/core';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { TeamResponse } from '../../core/models/teamResponse';
@@ -36,6 +37,8 @@ export class NamesTeamsComponent implements OnInit {
 
   ngOnInit() {
     this.adminService.getTeams().subscribe((response) => {
+      // Plan 22/10 #12: orden natural (Equipo 2 antes que Equipo 10).
+      response = [...response].sort((a, b) => naturalCompare(a.name, b.name));
       this.teamsGlobales = response;
       this.teamsGlobalesInputFilter = response;
       if (this.teamsGlobales.length > 0) {

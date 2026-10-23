@@ -1,3 +1,4 @@
+import { naturalCompare } from '../../core/utils/natural-sort';
 import { Component } from '@angular/core';
 import { TeamRequest } from '../../core/models/teamRequest';
 import { NavbarComponent } from "../navbar/navbar.component";
@@ -84,7 +85,7 @@ export class InitializeTournamentComponent {
         this.teams = response.map(team => ({
           ...team,
           name: team.name.toUpperCase()
-        })).sort((a, b) => a.name.localeCompare(b.name));
+        })).sort((a, b) => naturalCompare(a.name, b.name));
         this.teams = this.teams.filter(team => team.status === true);
         this.teamsFilters = [...this.teams];
         this.getTeamRecentlyCreated();
@@ -200,7 +201,7 @@ export class InitializeTournamentComponent {
   deleteTeam(team: TeamResponse) {
     this.teamsTournament = this.teamsTournament.filter(t => t.id !== team.id);
     if (!this.teamsFilters.some(t => t.id === team.id)) this.teamsFilters = [...this.teamsFilters, team];
-    this.teamsFilters.sort((a, b) => a.name.localeCompare(b.name));
+    this.teamsFilters.sort((a, b) => naturalCompare(a.name, b.name));
     this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
     this.filterTeams();
   }
@@ -303,7 +304,7 @@ export class InitializeTournamentComponent {
 
   private doDeleteAllTeams() {
     this.teamsFilters = [...new Map([...this.teamsFilters, ...this.teamsTournament].map(team => [team.id, team])).values()]
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => naturalCompare(a.name, b.name));
     this.teamsTournament = [];
     this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
     this.filterTeams();

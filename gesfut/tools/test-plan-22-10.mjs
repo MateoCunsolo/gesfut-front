@@ -6,6 +6,12 @@ import ts from 'typescript';
 const src=p=>readFileSync(new URL('../src/app/'+p,import.meta.url),'utf8');
 const load=async p=>import('data:text/javascript,'+encodeURIComponent(ts.transpileModule(src(p),{compilerOptions:{module:ts.ModuleKind.ES2022,target:ts.ScriptTarget.ES2022}}).outputText));
 const row=(EQUIPO,NOMBRE,APELLIDO,DORSAL,CAPITAN='',ARQUERO='')=>({EQUIPO,NOMBRE,APELLIDO,DORSAL,CAPITAN,ARQUERO,COLOR_CAMISETA:'#fff'});
+test('#12 orden natural: Fecha 2 antes que Fecha 10, sin distinguir mayusculas',async()=>{
+  const {naturalCompare:c}=await load('core/utils/natural-sort.ts');
+  assert.deepEqual(['Fecha 10','fecha 2','Fecha 1','Equipo B'].sort(c),['Equipo B','Fecha 1','fecha 2','Fecha 10']);
+  assert.match(src('admin/list-teams/names-teams.component.ts'),/naturalCompare\(a\.name, b\.name\)/);
+  assert.doesNotMatch(src('admin/initialize-tournament/initialize-tournament.component.ts'),/localeCompare/);
+});
 test('#15 Excel parcial: importa los equipos validos y reporta las filas/equipos con error',async()=>{
   const {parseTeamRows:p}=await load('core/utils/excel-teams.ts');
   const r=p([row('TEST Bueno','Juan','Perez',1,'SI','SI'),row('TEST Bueno','Pedro','Gomez',2),row('TEST Malo','Ana','Diaz',3),row('TEST Malo','Leo','Sosa',4),row('TEST Bueno','Jo','X','z')]);
