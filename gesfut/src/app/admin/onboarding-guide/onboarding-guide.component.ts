@@ -4,6 +4,20 @@ import { forkJoin } from 'rxjs';
 import { AdminService } from '../../core/services/manager/admin.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { TeamService } from '../../core/services/tournament/team.service';
+import { AlertService } from '../../core/services/alert.service';
+import { TeamRequest } from '../../core/models/teamRequest';
+
+/** Plan 22/10 #7: equipos de ejemplo para probar sin cargar datos reales (5 jugadores c/u: capitán y arquero). */
+export const SAMPLE_TEAMS: TeamRequest[] = [
+  ['Ejemplo Leones', '#E53935'], ['Ejemplo Tigres', '#FB8C00'], ['Ejemplo Halcones', '#1E88E5'], ['Ejemplo Pumas', '#43A047'],
+].map(([name, color], t) => ({
+  name, color,
+  players: ['Juan Perez', 'Luis Gomez', 'Pablo Diaz', 'Mario Ruiz', 'Diego Sosa'].map((p, i) => {
+    const [first, last] = p.split(' ');
+    return { name: first, lastName: last, isCaptain: i === 0, isGoalKeeper: i === 1, number: i + 1 };
+  })
+})) as TeamRequest[];
 
 interface Step { id: string; title: string; help: string; done: boolean; }
 
@@ -33,7 +47,8 @@ interface Step { id: string; title: string; help: string; done: boolean; }
                 @if (!s.done) {
                   <div class="actions">
                     @switch (s.id) {
-                      @case ('teams') { <button type="button" class="button-secondary" (click)="go.emit('create-team')">Crear equipo</button> }
+                      @case ('teams') { <button type="button" class="button-secondary" (click)="go.emit('create-team')">Crear equipo</button>
+                        <button type="button" class="button-secondary" [disabled]="loadingSamples()" (click)="loadSamples()">{{ loadingSamples() ? 'Cargando...' : 'Cargar 4 equipos de ejemplo' }}</button> }
                       @case ('tournament') { <button type="button" class="button-secondary" (click)="go.emit('create-tournament')">Crear torneo</button> }
                       @case ('fixture') { @if (pendingCode) { <button type="button" class="button-secondary" (click)="openTournament()">Ir a mi torneo</button> } }
                     }
@@ -69,6 +84,9 @@ export class OnboardingGuideComponent {
   private tournaments = inject(TournamentService);
   private dashboard = inject(DashboardService);
   private router = inject(Router);
+  private teamService = inject(TeamService);
+  private alert = inject(AlertService);
+  readonly loadingSamples = signal(false);
   readonly steps = signal<Step[]>([]);
   readonly visible = signal(false);
   pendingCode = '';
@@ -96,6 +114,19 @@ export class OnboardingGuideComponent {
         this.visible.set(steps.some(s => !s.done));
       },
       error: () => this.visible.set(false)
+    });
+  }
+
+  loadSamples(): void {
+    this.loadingSamples.set(true);
+    this.teamService.createMultipleTeams(SAMPLE_TEAMS).subscribe({
+      next: r => {
+        this.loadingSamples.set(false);
+        if (r.createdCount) this.alert.successAlert(r.createdCount === 1 ? 'Se creó 1 equipo de ejemplo' : 'Se crearon ' + r.createdCount + ' equipos de ejemplo');
+        else this.alert.errorAlert('Los equipos de ejemplo ya estaban cargados.');
+        this.refresh();
+      },
+      error: () => { this.loadingSamples.set(false); this.alert.errorAlert('No se pudieron cargar los equipos de ejemplo.'); }
     });
   }
 
