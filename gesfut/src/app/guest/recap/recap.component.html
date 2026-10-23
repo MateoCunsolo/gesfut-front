@@ -1,4 +1,5 @@
 <section>
+  <app-champions />
   @if(lastMatchDay) {
     <header class="page-heading recap-heading"><h2>{{roundLabel(lastMatchDay)}}</h2>
       @if(!isTheLast() || !isTheFirst()) { <button type="button" class="button-secondary" (click)="nextOrBackMatchDay()">{{returnText() === 'VER PROXIMA FECHA' ? 'Ver próxima fecha' : 'Ver fecha anterior'}} <i [class]="returnText() === 'VER PROXIMA FECHA' ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left'" aria-hidden="true"></i></button> }

@@ -73,9 +73,9 @@ export class LeaderboardComponent {
 
   showTeamDetails(idTeam: number) {
     if (idTeam == this.idChampionOfPlayoffs) {
-      this.alertService.infoAlert('CAMPEON DEL PLAYOFF', '' + this.tournament.participants.find((team) => team.idParticipant == this.idChampionOfPlayoffs)?.name);
+      this.alertService.infoAlert('CAMPEÓN DE PLAYOFF', '' + this.tournament.participants.find((team) => team.idParticipant == this.idChampionOfPlayoffs)?.name);
     } else if (idTeam == this.idChampionOfTournament) {
-      this.alertService.infoAlert('CAMPEON DEL TORNEO', '' + this.tournament.participants.find((team) => team.idParticipant == this.idChampionOfTournament)?.name);
+      this.alertService.infoAlert('CAMPEÓN DE LIGA', '' + this.tournament.participants.find((team) => team.idParticipant == this.idChampionOfTournament)?.name);
     }
   }
 

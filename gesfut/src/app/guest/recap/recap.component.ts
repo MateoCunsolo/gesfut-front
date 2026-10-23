@@ -11,10 +11,11 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { NgClass, NgIf } from '@angular/common';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { PublicPageComponent } from '../../pages/public-page/public-page.component';
+import { ChampionsComponent } from '../../shared/champions/champions.component';
 
 @Component({
   selector: 'app-recap',
-  imports: [MatchCardComponent, WeatherCardComponent],
+  imports: [MatchCardComponent, WeatherCardComponent, ChampionsComponent],
   templateUrl: './recap.component.html',
   styleUrl: './recap.component.scss',
 })
