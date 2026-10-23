@@ -13,6 +13,14 @@ import { FooterComponent } from "./shared/footer/footer.component";
 export class AppComponent {
   title = 'gesfut-front';
 
+  /** Plan 22/10 #10: "Saltar al contenido" mueve el foco al contenido sin tocar la URL ni el router. */
+  skipToContent(event: Event): void {
+    event.preventDefault();
+    const main = document.getElementById('main-content');
+    main?.focus();
+    main?.scrollIntoView();
+  }
+
   ngOnInit(): void {
     window.addEventListener('popstate', (event: PopStateEvent) => {
       if (event.state) {
