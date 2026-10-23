@@ -10,6 +10,9 @@ import { PlayerResponse, TeamResponse } from '../../models/teamResponse';
 import { TeamWithAllStatsPlayerResponse } from '../../models/TeamWithAllStatsPlayerResponse';
 import { environment } from '../../../../enviroments/environment';
 
+/** Plan 22/10 #15 */
+export interface TeamImportResponse { createdCount: number; created: string[]; failed: { index: number; name: string | null; error: string }[] }
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,11 +23,12 @@ export class TeamService {
   constructor(private http: HttpClient, private session: SessionService) { }
 
   /** Recorrido 22/10: alta de varios equipos desde un Excel (POST /teams/create-multiple). */
-  createMultipleTeams(request: TeamRequest[]): Observable<string> {
+  /** Plan 22/10 #15: devuelve qué equipos se crearon y cuáles fallaron (import parcial). */
+  createMultipleTeams(request: TeamRequest[]): Observable<TeamImportResponse> {
     this.invalidateTeam();
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
-    return this.http.post(`${this.url}/create-multiple`, request, { headers, responseType: 'text' });
+    return this.http.post<TeamImportResponse>(`${this.url}/create-multiple`, request, { headers });
   }
 
   createTeam(request: TeamRequest): Observable<TeamResponse> {

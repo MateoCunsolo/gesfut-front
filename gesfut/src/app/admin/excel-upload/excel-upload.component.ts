@@ -65,12 +65,12 @@ export class ExcelUploadComponent {
         return;
       }
       event.target.value = '';
-      if (parsed.errors.length) {
+      // Plan 22/10 #15: si hay al menos un equipo válido se importa; las filas con error se informan después.
+      if (!parsed.teams.length) {
         this.alertService.listAlert('Revis\u00e1 el archivo: no se import\u00f3 nada', parsed.errors);
         return;
       }
-      const jsonData = parsed.teams;
-      this.dataLoaded.emit(jsonData);
+      this.dataLoaded.emit(parsed);
     };
     reader.readAsArrayBuffer(file);
   }

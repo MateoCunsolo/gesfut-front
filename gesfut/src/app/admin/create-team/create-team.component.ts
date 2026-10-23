@@ -106,24 +106,33 @@ button: any;
 
   }
 
+  /** Plan 22/10 #15: filas del Excel que no se pudieron leer (se informan junto con el resultado). */
+  private excelRowErrors: string[] = [];
+
   importMultipleTeams(data: any[]) {
     const names = data.map((team: any) => team.name).join(', ');
-    this.alertService.confirmAlert('Importar ' + data.length + ' equipos', 'El archivo tiene ' + data.length + ' equipos: ' + names + '. Se van a crear todos.', 'Crear equipos')
+    const skipped = this.excelRowErrors.length ? ' ' + this.excelRowErrors.length + (this.excelRowErrors.length === 1 ? ' problema del archivo no se importa' : ' problemas del archivo no se importan') + ' (te los mostramos al final).' : '';
+    this.alertService.confirmAlert('Importar ' + data.length + ' equipos', 'El archivo tiene ' + data.length + ' equipos válidos: ' + names + '. Se van a crear los válidos.' + skipped, 'Crear equipos')
       .then((result) => {
         if (!result.isConfirmed || this.isloading) return;
         const teams = data.map((team: any) => ({ name: String(team.name ?? '').trim(), color: this.returnColorHex(team.color), players: team.players }));
         this.isloading = true;
         this.teamService.createMultipleTeams(teams).subscribe({
-          next: () => {
+          next: (report) => {
             this.isloading = false;
             this.showExcelUpload = false;
-            this.alertService.successAlert(teams.length + ' equipos creados');
+            const problems = [...this.excelRowErrors, ...(report?.failed ?? []).map(f => (f.name || 'Equipo ' + (f.index + 1)) + ': ' + f.error)];
+            this.excelRowErrors = [];
+            const created = report?.createdCount ?? teams.length;
+            if (problems.length) this.alertService.listAlert(created + (created === 1 ? ' equipo creado' : ' equipos creados') + '; no se importó lo siguiente', problems);
+            else this.alertService.successAlert(created + ' equipos creados');
             if (this.inTournament) this.dashboardService.setActiveTournamentComponent('initialize');
             this.dashboardService.setActiveDashboardAdminComponent('dashboard');
           },
           error: (err: HttpErrorResponse) => {
             this.isloading = false;
-            this.alertService.errorAlert(httpErrorMessage(err, 'No se pudieron crear los equipos.') + ' No se cre\u00f3 ninguno.');
+            this.excelRowErrors = [];
+            this.alertService.errorAlert(httpErrorMessage(err, 'No se pudieron crear los equipos.'));
             if (err.status !== 0) this.authService.serverNotResponding(err);
           }
         });
@@ -240,7 +249,11 @@ button: any;
     }
   }
 
-  loadTeamData(data: any[]) {
+  loadTeamData(parsed: { teams: any[]; errors: string[] } | any[]) {
+      // Plan 22/10 #15: el Excel llega con los equipos válidos y la lista de filas con problemas.
+      const data: any[] = Array.isArray(parsed) ? parsed : parsed.teams;
+      this.excelRowErrors = Array.isArray(parsed) ? [] : parsed.errors;
+      if (data.length === 1 && this.excelRowErrors.length) { this.alertService.listAlert('Se cargó 1 equipo; revisá lo que quedó afuera', this.excelRowErrors); this.excelRowErrors = []; }
       // Recorrido 22/10: un Excel con varios equipos crea todos (antes solo tomaba el primero, en silencio).
       if (data.length > 1) { this.importMultipleTeams(data); return; }
       if (data.length > 0) {

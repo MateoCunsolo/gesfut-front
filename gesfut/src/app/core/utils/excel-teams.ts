@@ -28,12 +28,16 @@ export function parseTeamRows(rows: Record<string, unknown>[]): ExcelParse {
     if (t.players.some(p => p.name.toUpperCase() === name.toUpperCase() && p.lastName.toUpperCase() === lastName.toUpperCase())) { errors.push(line + ': ' + name + ' ' + lastName + ' est\u00e1 repetido en ' + t.name); return; }
     t.players.push({ name, lastName, number, isCaptain: yes(row['CAPITAN']), isGoalKeeper: yes(row['ARQUERO']) });
   });
+  // Plan 22/10 #15: import parcial. Un equipo con problemas se deja afuera y se informa; los demás se importan.
+  const valid: ExcelTeam[] = [];
   for (const t of teams.values()) {
+    const before = errors.length;
     const captains = t.players.filter(p => p.isCaptain).length;
     if (t.players.length < 2) errors.push(t.name + ': necesita al menos 2 jugadores');
     if (captains !== 1) errors.push(t.name + ': necesita exactamente 1 capit\u00e1n (tiene ' + captains + ')');
     if (!t.players.some(p => p.isGoalKeeper)) errors.push(t.name + ': necesita al menos 1 arquero');
+    if (errors.length === before) valid.push(t);
   }
   if (!errors.length && !teams.size) errors.push('No se encontraron jugadores en el archivo.');
-  return { teams: [...teams.values()], errors };
+  return { teams: valid, errors };
 }
