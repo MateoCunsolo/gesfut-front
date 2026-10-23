@@ -70,8 +70,13 @@ getItems(response:boolean) {
   });
 }
 
+  /** Plan #13: el JWT vive en la cookie httpOnly; aca solo queda un marcador y el vencimiento (24 h). */
+  static readonly COOKIE_MARKER = 'cookie';
+
   setUserSession(response: AuthResponse): void {
-      sessionStorage.setItem('token', response.token);
+      sessionStorage.setItem('token', SessionService.COOKIE_MARKER);
+      sessionStorage.setItem('sessionExp', String(Date.now() + 24 * 60 * 60 * 1000));
+      response = { ...response, token: SessionService.COOKIE_MARKER };
       sessionStorage.setItem('name', response.name);
       sessionStorage.setItem('lastName', response.lastName);
       sessionStorage.setItem('role', response.role);
@@ -81,6 +86,7 @@ getItems(response:boolean) {
 
   clearUserSession(): void {
       sessionStorage.removeItem('token');
+      sessionStorage.removeItem('sessionExp');
       sessionStorage.removeItem('name');
       sessionStorage.removeItem('lastName');
       sessionStorage.removeItem('role');
@@ -121,13 +127,17 @@ getItems(response:boolean) {
 
   private removeStoredSession(): void {
     if (sessionStorage.getItem('token')) this.sessionExpired = true;
-    ['token', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
+    ['token', 'sessionExp', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
     this.currentUserLoginOn.next(false);
     this.currentUserData.next({ name: '', lastName: '', token: '', role: '' });
   }
 
   /** Lee el claim exp del JWT (sin validar firma: eso lo hace el backend). */
   static isTokenExpired(token: string): boolean {
+    if (token === SessionService.COOKIE_MARKER) {
+      const exp = Number(sessionStorage.getItem('sessionExp') || 0);
+      return !exp || exp <= Date.now();
+    }
     try {
       const payload = token.split('.')[1];
       if (!payload) return true;
