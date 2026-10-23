@@ -4,10 +4,11 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { Router } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { NgIf } from '@angular/common';
+import { OnboardingGuideComponent } from '../onboarding-guide/onboarding-guide.component';
 
 @Component({
     selector: 'app-dashboard',
-    imports: [],
+    imports: [OnboardingGuideComponent],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
