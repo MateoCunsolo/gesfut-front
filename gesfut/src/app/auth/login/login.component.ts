@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
+import { isRegisteredNotice } from '../auth-messages';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
@@ -24,7 +25,7 @@ export class LoginComponent {
   protected isLoading = false;
   /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
   /** Despues de crear la cuenta: recordar verificar el mail antes de entrar. */
-  protected registeredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('registered') === '1';
+  protected registeredNotice = typeof location !== 'undefined' && isRegisteredNotice(location.search);
   protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';
   constructor(
     private fb: FormBuilder,
