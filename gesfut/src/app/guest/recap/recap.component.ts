@@ -12,6 +12,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { PublicPageComponent } from '../../pages/public-page/public-page.component';
 import { ChampionsComponent } from '../../shared/champions/champions.component';
+import { showPreparingState } from '../../core/utils/recap-state';
 
 @Component({
   selector: 'app-recap',
@@ -29,6 +30,9 @@ export class RecapComponent {
   forecast: any;
   loadingWeather: boolean = false;
   isPreviousDayAvailable: boolean = false;
+  /** Lote 24/10 (a): hasta tener la respuesta de la ultima fecha no se muestra el estado vacio. */
+  lastDayLoaded = false;
+  showPreparing(): boolean { return !this.lastMatchDay && showPreparingState(this.lastDayLoaded, this.tournamentService.currentTournament.value, this.tournamentCode); }
   constructor(
     private route: ActivatedRoute,
     private matchDaysService: MatchDaysService,
@@ -39,6 +43,7 @@ export class RecapComponent {
       const code = params.get('code');
       if (code) {
         this.tournamentCode = code;
+        this.lastDayLoaded = false;
         this.loadLastMatchDay(code);
       }
     });
@@ -67,12 +72,16 @@ export class RecapComponent {
   loadLastMatchDay(code: string) {
     this.matchDaysService.getLastPlayedMatchDay(code).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: MatchDayResponse) => {
+        if (code !== this.tournamentCode) return;
+        this.lastDayLoaded = true;
+        if (!response) return;
         this.lastMatchDay = structuredClone(response);
         this.loadTopScorers();
         this.getForecast();
         this.verifyNextMatchDay();
         this.orderForDateMatchDay();
       },
+      error: () => { if (code === this.tournamentCode) this.lastDayLoaded = true; },
     });
   }
 

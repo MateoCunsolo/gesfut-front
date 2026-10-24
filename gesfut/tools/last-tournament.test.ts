@@ -2,6 +2,7 @@ import test from 'node:test';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine, sessionSnapshot } from '../src/app/core/utils/last-tournament';
+import { showPreparingState } from '../src/app/core/utils/recap-state';
 import { reconcileSelection, sameTeamName, matchesSearch } from '../src/app/core/utils/team-selection';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
@@ -229,4 +230,46 @@ test('Mis equipos: respuestas tardias de otro equipo se descartan', () => {
   assert.match(p, /if \(!this\.isCurrent\(seq\) \|\| idTeam !== this\.idTeam\) return;/);
   assert.match(p, /if \(!this\.isCurrent\(seq\) \|\| idParticipant !== this\.participantId\) return;/);
   assert.match(src('admin/list-teams/components/names-tournaments/names-tournaments.component.ts'), /if \(seq !== this\.loadSeq \|\| id !== this\.id\) return;/);
+});
+
+test('vista publica: "se esta preparando" nunca con torneo finalizado/campeon ni mientras carga', () => {
+  const t = { code: 'ABC', isFinished: false, championOfLeagueId: null, championOfPlayoffsId: null };
+  assert.equal(showPreparingState(false, t, 'ABC'), false, 'cargando: no flashea');
+  assert.equal(showPreparingState(true, { code: 'INIT' } as any, 'ABC'), false, 'torneo aun no cargado (valor inicial)');
+  assert.equal(showPreparingState(true, { ...t, isFinished: true }, 'ABC'), false);
+  assert.equal(showPreparingState(true, { ...t, championOfLeagueId: 7 }, 'ABC'), false);
+  assert.equal(showPreparingState(true, { ...t, championOfPlayoffsId: 7 }, 'ABC'), false);
+  assert.equal(showPreparingState(true, t, 'ABC'), true, 'torneo nuevo sin fechas: si');
+  const html = src('guest/recap/recap.component.html');
+  assert.match(html, /@else if \(showPreparing\(\)\) \{ <div class="empty-state"><h3>El torneo/);
+  assert.doesNotMatch(html, /\} @else \{ <div class="empty-state"><h3>El torneo/);
+});
+
+test('toasts de error con role=alert y aria-live (sin tocar estilos)', () => {
+  const a = src('core/services/alert.service.ts');
+  const err = a.slice(a.indexOf('errorAlert('), a.indexOf('infoAlertTop('));
+  assert.match(err, /setAttribute\('role', 'alert'\)/);
+  assert.match(err, /setAttribute\('aria-live', 'assertive'\)/);
+});
+
+test('Mis equipos: borrar la busqueda de golpe vuelve a mostrar equipo (no queda "No hay equipos con ese nombre.")', () => {
+  const teams = [{ id: 3, name: 'QA Alfa' }, { id: 5, name: 'QA Beta' }];
+  // escribir algo sin resultados limpia la seleccion
+  let selected = reconcileSelection(teams.filter(t => matchesSearch(t.name, 'zzz')), 3);
+  assert.equal(selected, 0);
+  // borrar todo de una vez: lista completa y se vuelve a elegir un equipo visible
+  selected = reconcileSelection(teams.filter(t => matchesSearch(t.name, '')), selected);
+  assert.equal(selected, 3);
+  const nt = src('admin/list-teams/names-teams.component.ts');
+  assert.match(nt, /if \(next === 0\) this\.clearSelection\(\);\s*else if \(next !== this\.idSelected\) this\.showParticipants\(next\);/);
+  // la busqueda es local (sin pedido al servidor) y las respuestas tardias del detalle se descartan
+  assert.doesNotMatch(nt.slice(nt.indexOf('searchTeams('), nt.indexOf('onCodeTournament(')), /subscribe\(/);
+  assert.match(src('admin/list-teams/components/players/players.component.ts'), /if \(!this\.isCurrent\(seq\) \|\| idTeam !== this\.idTeam\) return;/);
+});
+
+test('Retomar: nombre en paralelo con la verificacion, visible solo si es propio', () => {
+  const d = src('admin/dashboard/dashboard.component.ts');
+  const body = d.slice(d.indexOf('isMyTournament(code: string)'), d.indexOf('private forgetLastTournament'));
+  assert.ok(body.indexOf('getTournamentShort(code)') < body.indexOf('isMyTournament(code).subscribe'), 'no encadenado');
+  assert.match(src('admin/dashboard/dashboard.component.html'), /@if\(flagIsMyTournament\(\)\)/);
 });

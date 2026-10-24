@@ -37,12 +37,15 @@ export class DashboardComponent {
   }
 
   isMyTournament(code: string) {
+    // Lote 24/10 (d): el nombre se pide EN PARALELO con la verificacion de propiedad (antes era encadenado);
+    // solo se muestra cuando el servidor confirma que el torneo es del usuario.
+    this.tournamentService.getTournamentShort(code).subscribe({ next: (t) => this.lastTournamentName.set(t?.name ?? ''), error: () => {} });
     this.tournamentService.isMyTournament(code).subscribe({
       next: (response) => {
         if (response) {
           this.flagIsMyTournament.set(true);
-          this.tournamentService.getTournamentShort(code).subscribe({ next: (t) => this.lastTournamentName.set(t?.name ?? ''), error: () => {} });
         }else{
+          this.lastTournamentName.set('');
           this.forgetLastTournament();
         }
       },

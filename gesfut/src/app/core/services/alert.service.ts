@@ -59,6 +59,8 @@ export class AlertService {
     Swal.fire({
       toast: true,
       icon: 'error',
+      // Lote 24/10 (b): lectores de pantalla anuncian el error/bloqueo (solo atributos, sin estilos).
+      didOpen: (popup: HTMLElement) => { popup.setAttribute('role', 'alert'); popup.setAttribute('aria-live', 'assertive'); },
       titleText: text,
       position: 'top-end',
       showConfirmButton: false,

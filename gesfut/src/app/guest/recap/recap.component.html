@@ -15,5 +15,5 @@
       }
       @if(forecast && !lastMatchDay.isFinished) {<app-weather-card [day]="forecast" />}
     </aside></div>
-  } @else { <div class="empty-state"><h3>El torneo se está preparando</h3><p>Cuando se programe la primera fecha, vas a encontrar los partidos acá.</p></div> }
+  } @else if (showPreparing()) { <div class="empty-state"><h3>El torneo se está preparando</h3><p>Cuando se programe la primera fecha, vas a encontrar los partidos acá.</p></div> }
 </section>
