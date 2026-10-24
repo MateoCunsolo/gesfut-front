@@ -97,8 +97,8 @@ export class RegisterComponent {
     this.authService.register(credentials).subscribe({
       next: (response) => {
         // Loop 5: el registro ya no devuelve token (hay que verificar el email antes de entrar).
-        this.alertService.successAlert('Cuenta creada. Revisá tu correo para verificarla.');
-        this.route.navigateByUrl('/auth/login');
+        this.alertService.successAlert('Cuenta creada. Te enviamos un mail para verificarla.');
+        this.route.navigateByUrl('/auth/login?registered=1');
       },
       error: (err: HttpErrorResponse) => {
         const msg = this.authService.errorMessage(err, 'revisá los datos e intentá de nuevo.');

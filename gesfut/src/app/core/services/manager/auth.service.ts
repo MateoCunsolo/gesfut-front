@@ -96,6 +96,8 @@ export class AuthService {
   /** Mensaje claro (es-AR) para un error HTTP: usa el del backend si viene, si no un texto por defecto. */
   errorMessage(error: HttpErrorResponse | any, fallback: string): string {
     if (!error || error.status === 0) return 'No pudimos conectar con el servidor. Probá de nuevo en un rato.';
+    // 5xx: nunca mostrar el texto interno del backend.
+    if (error.status >= 500) return 'Tuvimos un problema en el servidor. Probá de nuevo en un rato.';
     const body = error.error;
     let msg = '';
     if (body && typeof body === 'object') {

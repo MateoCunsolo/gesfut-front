@@ -23,6 +23,8 @@ export class LoginComponent {
   protected tryLogin = false;
   protected isLoading = false;
   /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
+  /** Despues de crear la cuenta: recordar verificar el mail antes de entrar. */
+  protected registeredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('registered') === '1';
   protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';
   constructor(
     private fb: FormBuilder,
@@ -51,7 +53,7 @@ export class LoginComponent {
           const fallback = error?.status === 401 || error?.status === 403 ? 'Mail o contraseña incorrectos.' : 'No pudimos iniciar sesión. Probá de nuevo.';
           this.error = this.authService.errorMessage(error, fallback);
           this.alertService.errorAlert(this.error);
-          if (error?.error?.error === 'Email no verificado. Por favor, verifica tu email antes de iniciar sesión.') {
+          if (typeof error?.error?.error === 'string' && error.error.error.startsWith('Email no verificado')) {
             setTimeout(() => {
               this.resendEmail();
             }, 2000);
