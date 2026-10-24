@@ -101,9 +101,9 @@ export class RegisterComponent {
         this.route.navigateByUrl('/auth/login');
       },
       error: (err: HttpErrorResponse) => {
-        this.alertService.errorAlert(err.error.error);
+        const msg = this.authService.errorMessage(err, 'revisá los datos e intentá de nuevo.');
+        this.alertService.errorAlert(err?.status === 0 ? msg : 'No pudimos crear la cuenta: ' + msg);
         this.isLoading = false;
-        this.authService.serverNotResponding(err);   
       },
     });
   }

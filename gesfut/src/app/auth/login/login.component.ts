@@ -48,9 +48,10 @@ export class LoginComponent {
           this.router.navigate(['/admin']);
         },
         (error) => {
-          this.error = error.error.error;
+          const fallback = error?.status === 401 || error?.status === 403 ? 'Mail o contraseña incorrectos.' : 'No pudimos iniciar sesión. Probá de nuevo.';
+          this.error = this.authService.errorMessage(error, fallback);
           this.alertService.errorAlert(this.error);
-          if (error.error.error === 'Email no verificado. Por favor, verifica tu email antes de iniciar sesión.') {
+          if (error?.error?.error === 'Email no verificado. Por favor, verifica tu email antes de iniciar sesión.') {
             setTimeout(() => {
               this.resendEmail();
             }, 2000);
@@ -58,7 +59,6 @@ export class LoginComponent {
           this.redActive = true;
           this.tryLogin = true;
           this.isLoading = false;
-          this.authService.serverNotResponding(error);
         }
       );
     }else{

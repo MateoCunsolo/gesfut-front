@@ -93,6 +93,23 @@ export class AuthService {
     return this.http.post<void>(`${this.url}/resend-verification/${email}`, {});
   }
 
+  /** Mensaje claro (es-AR) para un error HTTP: usa el del backend si viene, si no un texto por defecto. */
+  errorMessage(error: HttpErrorResponse | any, fallback: string): string {
+    if (!error || error.status === 0) return 'No pudimos conectar con el servidor. Probá de nuevo en un rato.';
+    const body = error.error;
+    let msg = '';
+    if (body && typeof body === 'object') {
+      msg = body.error || body.message || '';
+      if (!msg && body.errors && typeof body.errors === 'object') {
+        msg = Object.values(body.errors).filter(v => typeof v === 'string').join('. ');
+      }
+    } else if (typeof body === 'string' && body.trim() && !body.trim().startsWith('<') && body.length < 300) {
+      msg = body.trim();
+    }
+    if (!msg || msg === 'Invalid CORS request' || /^(Unauthorized|Forbidden|Bad Request)$/i.test(msg)) return fallback;
+    return msg;
+  }
+
   serverNotResponding(error: HttpErrorResponse): void {
     if (error.status === 0) {
       this.alertService.errorAlert('Error al conectar con el servidor. Intentelo más tarde.');
