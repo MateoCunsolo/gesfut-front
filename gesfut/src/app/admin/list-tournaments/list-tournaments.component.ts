@@ -78,7 +78,7 @@ export class ListTournamentsComponent {
         item.redCardSuspensionMatches = reds;
         this.alertService.successAlert(`Sanciones: ${yellows} amarillas suspenden 1 fecha; una roja suspende ${reds} fecha${reds === 1 ? '' : 's'}. Se recalcularon las suspensiones.`);
       },
-      error: (e) => this.alertService.errorAlert(e?.error?.message ?? 'No se pudieron guardar las reglas.')
+      error: (e) => this.alertService.errorAlert(e?.error?.error ?? e?.error?.message ?? 'No se pudieron guardar las reglas.')
     });
   }
 

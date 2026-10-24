@@ -428,7 +428,7 @@ export class ListMatchDaysComponent implements OnInit {
     this.tournamentParticipantCopy = [];
   }
 
-  generatePlayOffs() {
+  async generatePlayOffs() {
     let length = this.teamsQualify.length;
 
     if (length === 0) {
@@ -447,8 +447,10 @@ export class ListMatchDaysComponent implements OnInit {
     }
 
     const teamsIds = this.teamsQualify.map((team) => team.idParticipant);
+    const schedule = await this.alertService.playoffScheduleAlert(this.roundName(length));
+    if (!schedule) return;
     this.alertService.loadingAlert('Generando playoffs...');
-    this.tournamentService.generatePlayOffs(teamsIds, this.tournament.code).subscribe({
+    this.tournamentService.generatePlayOffs(teamsIds, this.tournament.code, schedule).subscribe({
       next: () => {
         this.alertService.successAlert("Playoffs generados correctamente");
         this.showGeneratePlayOffs = false;
@@ -456,14 +458,14 @@ export class ListMatchDaysComponent implements OnInit {
         this.matchDayStatus = false;
       },
       error: (error: HttpErrorResponse) => {
-        this.alertService.errorAlert(error.error.error);
+        this.alertService.errorAlert(error.error?.error ?? error.error?.message ?? 'No se pudieron generar los playoffs.');
       }
     });
+  }
 
-    this.alertService.successAlert("Playoffs primer vez generados correctamente");
-    this.showGeneratePlayOffs = false;
-    this.teamsQualify = [];
-    //TODO: Implementar la generación de los playoffs
+  /** Nombre de la ronda según la cantidad de equipos que la juegan. */
+  roundName(teams: number): string {
+    return teams === 2 ? 'la final' : teams === 4 ? 'las semifinales' : teams === 8 ? 'los cuartos de final' : teams === 16 ? 'los octavos de final' : 'la ronda';
   }
 
   showGeneratePlayOffsFunction() {
@@ -538,8 +540,11 @@ export class ListMatchDaysComponent implements OnInit {
     this.tournamentParticipantCopy.sort((a, b) => compareStandings(a.statistics, b.statistics));
   }
 
-  generatePlayOffsNoTeams() {
-    this.tournamentService.generatePlayOffs([], this.tournament.code).subscribe({
+  async generatePlayOffsNoTeams() {
+    const last = [...this.tournament.matchDays].sort((a, b) => b.numberOfMatchDay - a.numberOfMatchDay)[0];
+    const schedule = await this.alertService.playoffScheduleAlert(this.roundName(last?.matches?.length ?? 0));
+    if (!schedule) return;
+    this.tournamentService.generatePlayOffs([], this.tournament.code, schedule).subscribe({
       next: () => {
         this.alertService.successAlert("Playoffs generados correctamente");
         this.showGeneratePlayOffs = false;

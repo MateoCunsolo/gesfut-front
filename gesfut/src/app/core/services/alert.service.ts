@@ -181,6 +181,31 @@ export class AlertService {
     });
   }
 
+  /** Revisión crítica #6: fecha y hora de la ronda de playoffs. Devuelve null si se cancela. */
+  playoffScheduleAlert(roundName: string): Promise<{ startDate: string; minutesPerMatch: number } | null> {
+    return Swal.fire({
+      title: `Programar ${roundName}`,
+      html: `
+        <label class="swal2-input-label" for="po-date">Fecha y hora del primer partido</label>
+        <input id="po-date" type="datetime-local" class="swal2-input">
+        <label class="swal2-input-label" for="po-minutes">Minutos entre partidos</label>
+        <input id="po-minutes" type="number" min="0" max="600" step="5" value="60" class="swal2-input">
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Generar',
+      cancelButtonText: 'Cancelar',
+      scrollbarPadding: false,
+      preConfirm: () => {
+        const startDate = (document.getElementById('po-date') as HTMLInputElement).value;
+        const minutes = Number((document.getElementById('po-minutes') as HTMLInputElement).value);
+        if (!startDate) { Swal.showValidationMessage('Elegí la fecha y hora de la ronda.'); return false; }
+        if (new Date(startDate).getTime() < Date.now()) { Swal.showValidationMessage('Elegí una fecha y hora futura.'); return false; }
+        if (!Number.isFinite(minutes) || minutes < 0 || minutes > 600) { Swal.showValidationMessage('Los minutos deben estar entre 0 y 600.'); return false; }
+        return { startDate: startDate.length === 16 ? `${startDate}:00` : startDate, minutesPerMatch: minutes };
+      }
+    }).then(r => r.isConfirmed ? r.value : null);
+  }
+
   EditDateAndDescriptionMatchAlert() {
     return Swal.fire({
       title: 'Configuración de Partido',

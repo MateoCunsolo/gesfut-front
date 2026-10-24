@@ -245,8 +245,8 @@ export class TournamentService {
       tap(() => this.getTournamentFull(code).subscribe()));
   }
 
-  generatePlayOffs(teamsIdQualify: Number[], code: string): Observable<void> {
-    const url = `${this.url}/tournaments/generate-playoffs/${code}`;
+  generatePlayOffs(teamsIdQualify: Number[], code: string, schedule: { startDate: string; minutesPerMatch: number }): Observable<void> {
+    const url = `${this.url}/tournaments/generate-playoffs/${code}?startDate=${encodeURIComponent(schedule.startDate)}&minutesPerMatch=${schedule.minutesPerMatch}`;
     return this.http.put<void>(url, teamsIdQualify, { 
       headers: {
         'Content-Type': 'application/json',
