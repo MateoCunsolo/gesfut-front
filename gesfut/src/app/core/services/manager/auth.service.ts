@@ -35,9 +35,9 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.url}/login`, credentials).pipe(
       tap((response: AuthResponse) => {
-        this.sessionService.setUserSession(response);
         // Solo para separar datos locales por cuenta ("Retomar último torneo"); nunca se guarda el token.
         try { sessionStorage.setItem('email', String(credentials.email ?? '').trim().toLowerCase()); } catch { /* sin storage */ }
+        this.sessionService.setUserSession(response); // despues del email: quien reaccione al login ya lee la clave correcta
       }),
       map((response) => {
         const auth: AuthResponse = {

@@ -1,4 +1,3 @@
-import { forgetLastTournament } from '../../utils/last-tournament';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthResponse } from '../../models/authResponse';
@@ -86,8 +85,7 @@ getItems(response:boolean) {
   }
 
   clearUserSession(): void {
-      // C(a): el acceso directo "Retomar último torneo" no debe sobrevivir al cierre de sesión (otro usuario en el mismo navegador).
-      forgetLastTournament();
+      // Decision 24/10: el "Retomar" queda guardado por email (no se borra en el logout); otro email no lo ve.
       sessionStorage.removeItem('email');
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('sessionExp');

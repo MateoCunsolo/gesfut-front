@@ -20,7 +20,7 @@ export class DashboardComponent {
   private tournamentService = inject(TournamentService);
   private router = inject(Router);
   lastTournamentClicked: string = '';
-  lastTournamentClickedName: string = '';
+  readonly lastTournamentName = signal('');
   /** C(a): oculto hasta que el servidor confirme que el torneo es del usuario. Signal: el componente es OnPush
    *  (con un boolean comun la respuesta asincronica no repintaba y el panel no aparecia nunca). */
   flagIsMyTournament = signal(false);
@@ -29,7 +29,6 @@ export class DashboardComponent {
   ngOnInit() {
     const last = getLastTournament();
     this.lastTournamentClicked = last?.code ?? '';
-    this.lastTournamentClickedName = last?.name ?? '';
     if(this.lastTournamentClicked !== '') this.isMyTournament(this.lastTournamentClicked);
   }
 
@@ -42,6 +41,7 @@ export class DashboardComponent {
       next: (response) => {
         if (response) {
           this.flagIsMyTournament.set(true);
+          this.tournamentService.getTournamentShort(code).subscribe({ next: (t) => this.lastTournamentName.set(t?.name ?? ''), error: () => {} });
         }else{
           this.forgetLastTournament();
         }
@@ -62,7 +62,7 @@ export class DashboardComponent {
         console.log(response);
         if (response) {
           this.router.navigate([`/admin/tournaments/${code}`]);
-          this.dashboardService.setNameTournament(this.lastTournamentClickedName);
+          this.dashboardService.setNameTournament(this.lastTournamentName());
       }},
       error: (error) => {
         console.log(error);

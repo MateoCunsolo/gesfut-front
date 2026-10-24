@@ -20,6 +20,8 @@ import { GuestService } from '../../../../core/services/guest/guest.service';
   styleUrl: './players.component.scss'
 })
 export class PlayersComponent implements OnChanges {
+  /** Retest 24/10: mensaje explicito cuando el equipo no tiene jugadores (activos). */
+  hasPlayers(list: any[] | null | undefined, flag: string): boolean { return (list ?? []).some(p => !!p?.[flag]); }
   // Loop 2: plantel ordenado por dorsal.
   byShirtNumber<T extends { shirtNumber?: number | null }>(players: T[] | null | undefined): T[] {
     return [...(players ?? [])].sort((a, b) => (a.shirtNumber ?? 999) - (b.shirtNumber ?? 999));

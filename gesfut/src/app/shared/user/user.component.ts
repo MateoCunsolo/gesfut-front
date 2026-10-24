@@ -1,11 +1,9 @@
 import { currentTournamentCode } from '../../core/utils/route-code';
 import { shareTournament } from '../../core/utils/share-tournament';
-import { Component, HostListener, inject, OnDestroy } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { SessionService } from '../../core/services/manager/session.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertService } from '../../core/services/alert.service';
-import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -16,47 +14,14 @@ import { filter, Subscription } from 'rxjs';
 export class UserComponent {
   isMenuOpen = false;
   name: string = '';
-  code: string = '';
-  isTournament = false;
   /** Se evalua al abrir el menu (antes dependia de un NavigationEnd que a veces ya habia pasado). */
   get inTournament(): boolean { return /\/admin\/tournaments\/[0-9a-fA-F-]{36}/.test(window.location.pathname); }
-  private routerSubscription!: Subscription;
-  containsTournaments: boolean = false;
 
   private alertService = inject(AlertService);
-  constructor(private sessionService: SessionService, private route: Router, private tournamentService: TournamentService,private activatedRoute: ActivatedRoute) {
+  constructor(private sessionService: SessionService, private route: Router) {
     this.sessionService.userData.subscribe((data) => {
       this.name = data.name;
     });
-  }
-
-
-  ngOnInit(): void {
-    this.routerSubscription = this.route.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.checkUrl(event.urlAfterRedirects);
-      });
-  }
-
-  checkUrl(url: string): void {
-    this.containsTournaments = url.includes('tournaments');
-    if (this.containsTournaments) {
-      this.isTournament = true;
-      this.tournamentService.currentTournament.subscribe({
-        next: (response) => {
-          this.code = response.code;
-        }
-      })
-    } else {
-      this.isTournament = false;
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
   }
 
 
@@ -112,16 +77,6 @@ export class UserComponent {
   async generateLink() {
     // El codigo sale de la URL: el estado en memoria podia estar vacio y el link quedaba en "/".
     await shareTournament(currentTournamentCode(), this.alertService);
-  }
-  
-  copyToClipboardFallback(text: string) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    this.alertService.successAlert('Link copiado al portapapeles');
   }
   
 }

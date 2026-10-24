@@ -1,43 +1,51 @@
-/** "Retomar último torneo": se guarda por usuario (email de la sesión; si no está, nombre|apellido) para que
- * otra cuenta en el mismo navegador no lo vea. El panel solo se muestra si el servidor confirma que el torneo es
- * del usuario (is-my-tournament). Las claves globales viejas ya no se escriben: se borran sin adoptarse. */
+/** "Retomar último torneo" (decisión 24/10): se guarda SOLO el código, bajo el email de login en minúsculas.
+ * Sobrevive al logout/login del mismo email; otro email nunca lo ve (otra clave) y el servidor igual confirma la
+ * propiedad (is-my-tournament) antes de mostrarlo. Las claves globales viejas se borran sin adoptarse.
+ * El nombre no se guarda: se pide al servidor. */
 type Store = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 export interface LastTournament { code: string; name: string; }
 
 const PREFIX = 'lastTournament:';
-const LEGACY_CODE = 'lastTournamentClicked';
-const LEGACY_NAME = 'lastTournamentClickedName';
+const LEGACY_KEYS = ['lastTournamentClicked', 'lastTournamentClickedName'];
 const g = globalThis as any;
 const local = (): Store | null => (typeof g.localStorage !== 'undefined' ? g.localStorage : null);
 const session = (): Store | null => (typeof g.sessionStorage !== 'undefined' ? g.sessionStorage : null);
 
-export function userScope(s: Store | null = session()): string {
-  const email = (s?.getItem('email') ?? '').trim();
-  if (email) return email.toLowerCase();
-  const name = s?.getItem('name') ?? '', last = s?.getItem('lastName') ?? '';
-  return (name + '|' + last).toLowerCase();
+export const normalizeEmail = (email: string | null | undefined): string => String(email ?? '').trim().toLowerCase();
+
+/** Clave por email de login; sin email no hay clave (no se guarda ni se muestra nada). */
+export function userScope(s: Store | null = session()): string | null {
+  const email = normalizeEmail(s?.getItem('email'));
+  return email ? PREFIX + email : null;
 }
 
-export function setLastTournament(code: string, name: string, l: Store | null = local(), s: Store | null = session()): void {
+function dropLegacy(l: Store): void { for (const k of LEGACY_KEYS) if (l.getItem(k) !== null) l.removeItem(k); }
+
+export function setLastTournament(code: string, _name: string = '', l: Store | null = local(), s: Store | null = session()): void {
   if (!l || !code) return;
-  l.setItem(PREFIX + userScope(s), JSON.stringify({ code, name }));
-  l.removeItem(LEGACY_CODE); l.removeItem(LEGACY_NAME);
+  dropLegacy(l); // primero lo viejo; nunca toca la clave por email
+  const key = userScope(s);
+  if (key) l.setItem(key, code);
 }
 
 export function getLastTournament(l: Store | null = local(), s: Store | null = session()): LastTournament | null {
   if (!l) return null;
-  const raw = l.getItem(PREFIX + userScope(s));
-  if (raw) {
-    try { const v = JSON.parse(raw); return v && typeof v.code === 'string' && v.code ? { code: v.code, name: String(v.name ?? '') } : null; }
-    catch { return null; }
+  dropLegacy(l);
+  const key = userScope(s);
+  const raw = key ? l.getItem(key) : null;
+  if (!raw) return null;
+  let code = raw;
+  if (raw.startsWith('{')) { // formato 3bafd7b ({code,name}) -> se reescribe como solo código
+    try { code = String(JSON.parse(raw)?.code ?? ''); } catch { code = ''; }
+    if (code) l.setItem(key!, code); else l.removeItem(key!);
   }
-  // Claves globales viejas: NO se adoptan (podian ser de otra cuenta en el mismo navegador); solo se borran.
-  l.removeItem(LEGACY_CODE); l.removeItem(LEGACY_NAME);
-  return null;
+  return code ? { code, name: '' } : null;
 }
 
+/** Solo cuando el servidor dice que el torneo ya no es del usuario (no en el logout). */
 export function forgetLastTournament(l: Store | null = local(), s: Store | null = session()): void {
   if (!l) return;
-  l.removeItem(PREFIX + userScope(s));
-  l.removeItem(LEGACY_CODE); l.removeItem(LEGACY_NAME);
+  const key = userScope(s);
+  if (key) l.removeItem(key);
+  dropLegacy(l);
 }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { AlertService } from '../../core/services/alert.service';
-import { shareTournament } from '../../core/utils/share-tournament';
+import { shareTournament, whatsappShareUrl } from '../../core/utils/share-tournament';
 
 @Component({
   selector: 'app-tournament-nav',
@@ -8,7 +8,7 @@ import { shareTournament } from '../../core/utils/share-tournament';
   template: `
     <div class="tournament-heading">
       <h1>{{ name || 'Tu torneo' }}</h1>
-      @if (shareCode) { <button type="button" class="button-secondary share-button" (click)="share()"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Compartir torneo</button> }
+      @if (shareCode) { <div class="share-actions"><button type="button" class="button-secondary share-button" (click)="share()"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Compartir torneo</button><a class="button-secondary share-button" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Compartir por WhatsApp</a></div> }
     </div>
     <nav class="tournament-navigation" aria-label="Secciones del torneo">
       @for (item of sections; track item.id) {
@@ -22,7 +22,8 @@ import { shareTournament } from '../../core/utils/share-tournament';
   styles: `
     :host { display: block; margin-bottom: 12px; }
     .tournament-heading { padding: 12px 0 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
-    .tournament-heading .share-button { flex-direction: row; min-height: 40px; font-size: 1.4rem; padding: 0 12px; gap: 6px; }
+    .share-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tournament-heading .share-button { display: inline-flex; align-items: center; text-decoration: none; flex-direction: row; min-height: 40px; font-size: 1.4rem; padding: 0 12px; gap: 6px; }
     .eyebrow { color: var(--muted); font-size: 1.3rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
     h1 { font-size: 2rem; line-height: 1.25; margin: 0; color: var(--ink); overflow-wrap: anywhere; }
     .tournament-navigation { position: fixed; bottom: 0; inset-inline: 0; z-index: 30; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); background: var(--surface); border-top: 1px solid var(--line); padding: 8px max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)); box-shadow: 0 -4px 24px oklch(.25 .025 154 / .04); }
@@ -46,6 +47,7 @@ export class TournamentNavComponent {
   @Input() shareCode: string | null = null;
   private alerts = inject(AlertService);
   share(): void { shareTournament(this.shareCode, this.alerts); }
+  get whatsappUrl(): string { return this.shareCode ? whatsappShareUrl(this.shareCode, this.name) : ''; }
   @Input() active = 'recap';
   @Output() sectionChange = new EventEmitter<string>();
   readonly sections = [

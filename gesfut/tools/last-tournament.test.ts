@@ -1,53 +1,65 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament } from '../src/app/core/utils/last-tournament';
+import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
 import { parseDmyTime } from '../src/app/core/utils/date-input';
-import { tournamentPublicLink } from '../src/app/core/utils/share-tournament';
+import { tournamentPublicLink, whatsappShareUrl } from '../src/app/core/utils/share-tournament';
 
 function mem() { const m = new Map<string, string>(); return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => { m.set(k, v); }, removeItem: (k: string) => { m.delete(k); } }; }
-function user(name: string, last: string) { const s = mem(); s.setItem('name', name); s.setItem('lastName', last); return s; }
+/** Simula una pestaña: login guarda el email (minúsculas, como auth.service) y logout lo quita (como session.service). */
+function tab() { return mem(); }
+function login(s: ReturnType<typeof mem>, email: string) { s.setItem('email', email.trim().toLowerCase()); }
+function logout(s: ReturnType<typeof mem>) { s.removeItem('email'); s.removeItem('name'); s.removeItem('lastName'); }
 
-test('cada cuenta ve solo su último torneo en el mismo navegador', () => {
-  const local = mem(); const ana = user('Ana', 'Uno'); const beto = user('Beto', 'Dos');
-  setLastTournament('code-ana', 'Liga Ana', local, ana);
-  assert.deepEqual(getLastTournament(local, ana), { code: 'code-ana', name: 'Liga Ana' });
-  assert.equal(getLastTournament(local, beto), null);
-  setLastTournament('code-beto', 'Copa Beto', local, beto);
-  assert.equal(getLastTournament(local, ana)?.code, 'code-ana');
-  assert.equal(getLastTournament(local, beto)?.code, 'code-beto');
+test('guardar -> logout -> login mismo email: sigue; otro email: no lo ve', () => {
+  const local = mem(); const t = tab();
+  login(t, 'Ana@X.com'); setLastTournament('code-ana', 'Liga', local, t);
+  logout(t);
+  assert.equal(getLastTournament(local, t), null, 'sin sesion no se muestra');
+  assert.equal(local.getItem('lastTournament:ana@x.com'), 'code-ana', 'el logout no borra la clave');
+  login(t, '  ANA@x.com '); assert.deepEqual(getLastTournament(local, t), { code: 'code-ana', name: '' });
+  logout(t); login(t, 'beto@x.com'); assert.equal(getLastTournament(local, t), null, 'otro email no lo ve');
+  setLastTournament('code-beto', '', local, t);
+  logout(t); login(t, 'ana@x.com'); assert.equal(getLastTournament(local, t)?.code, 'code-ana');
 });
 
-test('olvidar borra el del usuario y las claves viejas', () => {
-  const local = mem(); const ana = user('Ana', 'Uno');
-  setLastTournament('c', 'n', local, ana);
-  forgetLastTournament(local, ana);
-  assert.equal(getLastTournament(local, ana), null);
-  assert.equal(local.getItem('lastTournamentClicked'), null);
+test('solo se guarda el codigo; formato viejo {code,name} se migra a codigo', () => {
+  const local = mem(); const t = tab(); login(t, 'a@x.com');
+  setLastTournament('c1', 'Nombre secreto', local, t);
+  assert.equal(local.getItem('lastTournament:a@x.com'), 'c1');
+  local.setItem('lastTournament:a@x.com', JSON.stringify({ code: 'c2', name: 'n' }));
+  assert.equal(getLastTournament(local, t)?.code, 'c2');
+  assert.equal(local.getItem('lastTournament:a@x.com'), 'c2');
+  local.setItem('lastTournament:a@x.com', '{no json');
+  assert.equal(getLastTournament(local, t), null);
 });
 
-test('valor corrupto no rompe', () => {
-  const local = mem(); const ana = user('Ana', 'Uno');
-  local.setItem('lastTournament:ana|uno', '{no json');
-  assert.equal(getLastTournament(local, ana), null);
-});
-
-test('con email en la sesión la clave es por email y no se escriben claves globales', () => {
-  const local = mem(); const a = user('Ana', 'Uno'); a.setItem('email', 'Ana@X.com'); const b = user('Ana', 'Uno'); b.setItem('email', 'otra@x.com');
-  setLastTournament('c1', 'n1', local, a);
-  assert.equal(getLastTournament(local, a)?.code, 'c1');
-  assert.equal(getLastTournament(local, b), null, 'mismo nombre, otra cuenta');
-  assert.equal(local.getItem('lastTournamentClicked'), null);
-  assert.equal(local.getItem('lastTournamentClickedName'), null);
-});
-
-test('claves globales viejas: se borran sin adoptarse', () => {
-  const local = mem(); const a = user('Ana', 'Uno');
-  local.setItem('lastTournamentClicked', 'viejo'); local.setItem('lastTournamentClickedName', 'Liga vieja');
+test('olvidar (torneo ajeno segun el servidor) borra solo la clave de ese email', () => {
+  const local = mem(); const a = tab(); login(a, 'a@x.com'); const b = tab(); login(b, 'b@x.com');
+  setLastTournament('ca', '', local, a); setLastTournament('cb', '', local, b);
+  forgetLastTournament(local, a);
   assert.equal(getLastTournament(local, a), null);
+  assert.equal(getLastTournament(local, b)?.code, 'cb');
+});
+
+test('sin email en la sesion no se guarda ni se muestra nada', () => {
+  const local = mem(); const t = tab(); t.setItem('name', 'Ana'); t.setItem('lastName', 'Uno');
+  setLastTournament('c', '', local, t);
+  assert.equal(getLastTournament(local, t), null);
+});
+
+test('claves globales viejas: se borran sin adoptarse y no tocan la clave por email', () => {
+  const local = mem(); const t = tab(); login(t, 'a@x.com');
+  setLastTournament('mio', '', local, t);
+  local.setItem('lastTournamentClicked', 'viejo'); local.setItem('lastTournamentClickedName', 'Liga vieja');
+  assert.equal(getLastTournament(local, t)?.code, 'mio');
   assert.equal(local.getItem('lastTournamentClicked'), null);
   assert.equal(local.getItem('lastTournamentClickedName'), null);
-  assert.equal(local.getItem('lastTournament:ana|uno'), null);
+  logout(t); login(t, 'nuevo@x.com');
+  local.setItem('lastTournamentClicked', 'viejo');
+  assert.equal(getLastTournament(local, t), null);
+  assert.equal(local.getItem('lastTournamentClicked'), null);
 });
 
 test('httpErrorMessage muestra el mensaje del servidor (400 y 429) y si no, el generico', () => {
@@ -66,4 +78,18 @@ test('fecha de playoffs dd/mm/aaaa', () => {
   assert.equal(parseDmyTime('31/02/2026', '20:00'), null);
   assert.equal(parseDmyTime('11/05/26', '20:00'), null);
   assert.equal(parseDmyTime('05/11/2026', '25:00'), null);
+});
+
+test('WhatsApp: wa.me con texto y link publico codificados', () => {
+  const u = whatsappShareUrl('abc-1', 'Liga & Copa', 'https://x.test');
+  assert.ok(u.startsWith('https://wa.me/?text='));
+  const text = decodeURIComponent(u.slice('https://wa.me/?text='.length));
+  assert.ok(text.includes('Liga & Copa') && text.endsWith('https://x.test/abc-1'));
+  assert.ok(!u.slice(20).includes('&'), 'texto codificado');
+});
+
+test('MVP de la fecha: candidatos = MVP cargados en los partidos (sin vacios ni repetidos)', () => {
+  assert.deepEqual(mvpCandidates([{ mvpPlayer: 'Ana' }, { mvpPlayer: '' }, { mvpPlayer: null }, { mvpPlayer: ' Ana ' }, { mvpPlayer: 'Beto' }]), ['Ana', 'Beto']);
+  assert.deepEqual(mvpCandidates([{ mvpPlayer: null }, {}]), [], 'sin MVP cargado no hay selector');
+  assert.deepEqual(mvpCandidates(undefined), []);
 });

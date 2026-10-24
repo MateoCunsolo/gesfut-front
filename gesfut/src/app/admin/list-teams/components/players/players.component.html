@@ -52,6 +52,7 @@
               </tr>
             }
           }
+        @if (!hasPlayers(participantTeam.playerParticipants, 'isActive')) { <tr><td colspan="7" class="no-line">Este equipo todavía no tiene jugadores.</td></tr> }
         }@else{
           @for (player of byShirtNumber(participantGlobalStats.playerParticipants); track $index) {
             @if (player.status) {
@@ -84,6 +85,7 @@
               </tr>
             }
         }
+        @if (!hasPlayers(participantGlobalStats.playerParticipants, 'status')) { <tr><td colspan="7" class="no-line">Este equipo todavía no tiene jugadores.</td></tr> }
       }
         </tbody>
       </table>

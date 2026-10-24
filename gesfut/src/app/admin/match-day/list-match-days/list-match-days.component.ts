@@ -1,3 +1,4 @@
+import { mvpCandidates } from '../../../core/utils/mvp';
 import { addTeamMode, AddTeamMode } from '../../../core/utils/add-team';
 import { AdminService } from '../../../core/services/manager/admin.service';
 import { canFinish } from '../../../core/utils/tournament-finish';
@@ -225,43 +226,34 @@ export class ListMatchDaysComponent implements OnInit {
   closeMatchDay(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
     if (this.closing) return;
     this.pendingCloseKind = closeKind;
-    console.log('Iniciando la función closeMatchDay');
 
     this.playersMvpS = [];
-    console.log('playersMvpS inicializado:', this.playersMvpS);
 
     if (this.selectedMatchDay != 0) {
-      console.log('Verificando la fecha seleccionada:', this.selectedMatchDay);
       if (!this.tournament.matchDays[this.selectedMatchDay - 1].isFinished) {
         this.alertService.errorAlert('Primero debes finalizar la fecha anterior');
-        console.log('No se ha finalizado la fecha anterior');
         return;
       }
     }
 
     const unfinishedMatch = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
     if (unfinishedMatch) {
-      console.log('Partido no cerrado encontrado:', unfinishedMatch);
       if (isByeMatch(unfinishedMatch)) {
         unfinishedMatch.isFinished = true;
-        console.log('Partido marcado como cerrado:', unfinishedMatch);
       } else {
         this.alertService.errorAlert('Falta cargar el resultado de ' + unfinishedMatch.homeTeam + ' vs ' + unfinishedMatch.awayTeam + '. Cargalo antes de cerrar.');
-        console.log('El partido no se cerró correctamente:', unfinishedMatch.homeTeam, unfinishedMatch.awayTeam);
         return;
       }
     }
 
     //ADVERTIR QUE ES LA ULTIMA FECHA 
     if (this.selectedMatchDay === this.tournament.matchDays.length - 1 && !this.tournament.matchDays[this.selectedMatchDay].isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
-      console.log('Última fecha del torneo, mostrando advertencia');
       // Retest 24/10: con MVP, la advertencia va dentro del mismo dialogo (un solo paso).
-      if (this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null && match.mvpPlayer !== '')) { this.closeMatchDayWithMvp(status, 'Es la \u00faltima fecha de la fase regular: despu\u00e9s pod\u00e9s generar playoffs o finalizar el torneo. '); return; }
-      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Es la última fecha de la fase regular. Después podés generar playoffs o finalizar el torneo con el botón "Finalizar torneo".', 'Confirmar')
+      if (mvpCandidates(this.tournament.matchDays[this.selectedMatchDay].matches).length > 0) { this.closeMatchDayWithMvp(status, 'Es la \u00faltima fecha de la fase regular: despu\u00e9s pod\u00e9s generar playoffs o finalizar el torneo. '); return; }
+      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Es la \u00faltima fecha de la fase regular. Despu\u00e9s pod\u00e9s generar playoffs o finalizar el torneo con el bot\u00f3n "Finalizar torneo". Ning\u00fan partido tiene MVP cargado, as\u00ed que se cierra sin MVP de la fecha (para elegirlo, carg\u00e1 el MVP en el resultado de cada partido antes de cerrar).', 'Confirmar')
         .then((result) => {
-          console.log('Resultado de la confirmación:', result);
           if (result.isConfirmed) {
-            if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null)) {
+            if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && mvpCandidates(this.tournament.matchDays[this.selectedMatchDay].matches).length > 0) {
               this.closeMatchDayWithMvp(status);
             } else {
               this.openMatchDay(status);
@@ -271,8 +263,7 @@ export class ListMatchDaysComponent implements OnInit {
       return;
     }
 
-    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null && match.mvpPlayer !== '')) {
-      console.log('Cerrando fecha con MVP');
+    if (!this.tournament.matchDays[this.selectedMatchDay].isFinished && mvpCandidates(this.tournament.matchDays[this.selectedMatchDay].matches).length > 0) {
       this.closeMatchDayWithMvp(status);
     } else {
       // Recorrido 22/10: confirmar también el cierre sin MVP.
@@ -316,12 +307,7 @@ export class ListMatchDaysComponent implements OnInit {
   closeMatchDayWithMvp(status: boolean, note: string = '') {
     let playerMvp = '';
     this.playersMvpS = ['Seleccionar MVP'];
-    this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match) => {
-      if (match.mvpPlayer != null && match.mvpPlayer !== '') {
-        this.playersMvpS.push(match.mvpPlayer);
-      }
-    });
-    console.log('playersMvpS:', this.playersMvpS);
+    this.playersMvpS.push(...mvpCandidates(this.tournament.matchDays[this.selectedMatchDay].matches));
     this.alertService.selectOptionsAlert('Elegí el MVP de la fecha', this.playersMvpS, "Cerrar sin MVP", note)
       .then((result) => {
         if (result.isConfirmed && result.value !== undefined) {
@@ -420,7 +406,6 @@ export class ListMatchDaysComponent implements OnInit {
 
 
   updateDateTime(date: string) {
-    console.log('Fecha recibida en el componente:', date);
 
     if (!date) {  // También cubre el caso de `null`
       this.alertService.errorAlert('Debe seleccionar una fecha y hora válida');

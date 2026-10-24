@@ -1,4 +1,3 @@
-import { getLastTournament } from '../../core/utils/last-tournament';
 import { httpErrorMessage } from '../../core/utils/http-error';
 import { naturalCompare } from '../../core/utils/natural-sort';
 import { Component } from '@angular/core';
@@ -54,7 +53,6 @@ export class InitializeTournamentComponent {
 
   ngOnInit(): void {
 
-    this.name = getLastTournament()?.name || '';
 
     this.tournamentService.$currentTeamsToInitTournament.subscribe({
       next: (response) => {

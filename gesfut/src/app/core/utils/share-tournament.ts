@@ -17,3 +17,9 @@ export async function shareTournament(code: string | null | undefined, alerts: A
     document.execCommand('copy'); document.body.removeChild(t); alerts.successAlert('Link copiado');
   }
 }
+
+/** Link wa.me con texto + link publico (sin codigo corto). */
+export function whatsappShareUrl(code: string, name: string = '', origin: string = window.location.origin): string {
+  const text = (name ? 'Seguí el torneo ' + name : 'Seguí el torneo') + ' en Gesfut: ' + tournamentPublicLink(code, origin);
+  return 'https://wa.me/?text=' + encodeURIComponent(text);
+}
