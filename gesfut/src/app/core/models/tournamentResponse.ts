@@ -23,6 +23,9 @@ export interface MatchResponse {
     vsMatchIdWhoWin: number;
     /** Plan 22/10 #9: false hasta el día del partido. */
     canLoadResult?: boolean;
+    /** Plan 22/10 #2: fecha libre (rival "Free" o dado de baja) y quién descansa. */
+    isBye?: boolean;
+    restingTeam?: string | null;
 }
 
 export interface MatchDayResponse {

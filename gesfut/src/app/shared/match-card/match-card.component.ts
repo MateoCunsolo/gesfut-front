@@ -1,3 +1,4 @@
+import { isByeMatch, restingTeam } from '../../core/utils/bye';
 import { Component, Input } from '@angular/core';
 import { MatchResponse } from '../../core/models/tournamentResponse';
 
@@ -12,7 +13,7 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
         <span class="match-date">{{ match.dateTime || 'Horario por confirmar' }}@if (match.description) { · {{ venueLabel }} }</span>
       </div>
       @if (isBye) {
-        <p class="bye-line"><strong>{{ match.homeTeam === 'Free' ? match.awayTeam : match.homeTeam }}</strong> descansa en esta fecha</p>
+        <p class="bye-line"><strong>{{ resting }}</strong> descansa en esta fecha</p>
       } @else {
         <div class="rows" [attr.aria-label]="match.homeTeam + ' contra ' + match.awayTeam + (match.isFinished ? ', ' + match.homeGoals + ' a ' + match.awayGoals : ', pendiente')">
           <div class="row"><span class="team-mark" aria-hidden="true">{{ initials(match.homeTeam) }}</span><span class="team-name">{{ match.homeTeam }}</span><strong class="goals">{{ match.isFinished ? match.homeGoals : '' }}</strong></div>
@@ -36,7 +37,7 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
         <span class="match-date">{{ match.dateTime || roundLabel }}</span>
       </div>
       @if (isBye) {
-        <div class="bye"><i class="fa-regular fa-calendar" aria-hidden="true"></i><p><strong>{{ match.homeTeam === 'Free' ? match.awayTeam : match.homeTeam }}</strong><span>Descansa en esta fecha</span></p></div>
+        <div class="bye"><i class="fa-regular fa-calendar" aria-hidden="true"></i><p><strong>{{ resting }}</strong><span>Descansa en esta fecha</span></p></div>
       } @else {
         <div class="scoreboard">
           <div class="team"><span class="team-mark" aria-hidden="true">{{ initials(match.homeTeam) }}</span><span class="team-name">{{ match.homeTeam }}</span></div>
@@ -119,7 +120,8 @@ export class MatchCardComponent {
   @Input() compact = false;
   /** Loop 3: en historiales mezclados (Últimos partidos) muestra la ronda junto al estado. */
   @Input() showRound = false;
-  get isBye(): boolean { return this.match.homeTeam === 'Free' || this.match.awayTeam === 'Free'; }
+  get isBye(): boolean { return isByeMatch(this.match); }
+  get resting(): string { return restingTeam(this.match) ?? 'Ningún equipo'; }
   get venueLabel(): string { const text = this.match.description?.trim() || ''; return /^cancha\b/i.test(text) ? text : 'Cancha ' + text; }
   initials(name:string):string { return name.trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase(); }
   symbol(type:string):string { return ({GOAL:'⚽',YELLOW_CARD:'🟨',RED_CARD:'🟥',MVP:'★'} as Record<string,string>)[type] || '•'; }

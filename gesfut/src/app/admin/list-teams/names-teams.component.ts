@@ -35,13 +35,24 @@ export class NamesTeamsComponent implements OnInit {
   clickedToOcultPlayers: boolean = false;
   constructor() {}
 
-  ngOnInit() {
+  ngOnInit() { this.loadTeams(); }
+
+  /** Plan 22/10 #2: tras borrar/deshabilitar/habilitar se recarga la lista. */
+  onTeamChanged(event: { id: number; action: 'DELETE' | 'DISABLE' | 'ENABLE' }) {
+    if (event.action === 'DELETE') { this.idSelected = 0; this.clickedToOcultPlayers = false; this.loadTeams(); return; }
+    const team = this.teamsGlobales.find(t => t.id === event.id);
+    if (team) team.status = event.action === 'ENABLE';
+  }
+
+  private loadTeams() {
     this.adminService.getTeams().subscribe((response) => {
       // Plan 22/10 #12: orden natural (Equipo 2 antes que Equipo 10).
       response = [...response].sort((a, b) => naturalCompare(a.name, b.name));
       this.teamsGlobales = response;
       this.teamsGlobalesInputFilter = response;
+      this.thereAreNotTeams = false;
       if (this.teamsGlobales.length > 0) {
+        this.indexSelectedAfter = 0;
         this.idSelected = this.teamsGlobales[0].id;
         this.bindingSelect = this.idSelected;
         this.nameClicked = this.teamsGlobales[0].name;

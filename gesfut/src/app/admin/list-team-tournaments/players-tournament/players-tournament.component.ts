@@ -21,6 +21,7 @@ import { DashboardService } from '../../../core/services/dashboard.service';
 import { AuthService } from '../../../core/services/manager/auth.service';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { GuestService } from '../../../core/services/guest/guest.service';
+import { TeamRemovalService } from '../../../core/services/tournament/team-removal.service';
 
 @Component({
   selector: 'app-players-tournament',
@@ -39,6 +40,7 @@ export class PlayersTournamentComponent implements OnChanges {
   private dashboardService = inject(DashboardService);
   private guestService = inject(GuestService);
   private sessionService = inject(SessionService);
+  private teamRemoval = inject(TeamRemovalService);
   private isFinishedTournament: boolean = false;
 
   @Input() teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
@@ -128,11 +130,11 @@ export class PlayersTournamentComponent implements OnChanges {
     }
   }
 
-  deleteTeam() {
-    this.alertService.infoAlert(
-      'ELIMINAR EQUIPO',
-      'FUNCIONALIDAD NO IMPLEMENTADA'
-    );
+  /** Plan 22/10 #2: misma regla que en Mis equipos (borra si nunca jugó, si no deshabilita y da de baja del torneo). */
+  async deleteTeam() {
+    if (!this.teamParticipant.idTeam) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
+    const action = await this.teamRemoval.remove(this.teamParticipant.idTeam);
+    if (action) this.teamParticipant.isActive = false;
   }
 
   addPlayerToTeam(player: PlayerParticipantResponse) {

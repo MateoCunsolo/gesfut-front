@@ -10,6 +10,9 @@ import { PlayerResponse, TeamResponse } from '../../models/teamResponse';
 import { TeamWithAllStatsPlayerResponse } from '../../models/TeamWithAllStatsPlayerResponse';
 import { environment } from '../../../../enviroments/environment';
 
+/** Plan 22/10 #2: qué pasa al eliminar un equipo. DELETE = nunca jugó; DISABLE = tiene historial. */
+export interface TeamDeletionResponse { teamId: number; teamName: string; action: 'DELETE' | 'DISABLE'; ongoingTournaments: string[]; blockedReason: string | null; message: string | null }
+
 /** Plan 22/10 #15 */
 export interface TeamImportResponse { createdCount: number; created: string[]; failed: { index: number; name: string | null; error: string }[] }
 
@@ -181,6 +184,17 @@ export class TeamService {
   }
   invalidateTeam(idTeam?: number): void {
     if (idTeam === undefined) this.colorCache.clear(); else this.colorCache.delete(idTeam);
+  }
+
+  /** Plan 22/10 #2: vista previa (no cambia nada). */
+  previewDeleteTeam(idTeam: number): Observable<TeamDeletionResponse> {
+    return this.http.get<TeamDeletionResponse>(`${this.url}/${idTeam}/delete-preview`);
+  }
+
+  /** Plan 22/10 #2: borra si nunca jugó; si tiene historial lo deshabilita. */
+  deleteTeam(idTeam: number): Observable<TeamDeletionResponse> {
+    this.invalidateTeam(idTeam);
+    return this.http.delete<TeamDeletionResponse>(`${this.url}/${idTeam}`);
   }
 
   getTeam(idTeam: number): Observable<TeamResponse> {

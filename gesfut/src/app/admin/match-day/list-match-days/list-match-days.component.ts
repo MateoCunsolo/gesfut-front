@@ -1,3 +1,5 @@
+import { isByeMatch } from '../../../core/utils/bye';
+import { MatchResponse } from '../../../core/models/tournamentResponse';
 import { httpErrorMessage } from '../../../core/utils/http-error';
 import { roundLabel } from '../../../core/utils/round-label';
 import { compareStandings } from '../../../core/utils/standings';
@@ -27,6 +29,8 @@ import { TeamResponse } from '../../../core/models/teamResponse';
   styleUrls: ['./list-match-days.component.scss']
 })
 export class ListMatchDaysComponent implements OnInit {
+  /** Plan 22/10 #2: fecha libre (rival "Free" o dado de baja). */
+  isBye(match: MatchResponse): boolean { return isByeMatch(match); }
   private readonly destroyRef = inject(DestroyRef);
 
   searchTeam(event: Event) {
@@ -184,7 +188,7 @@ export class ListMatchDaysComponent implements OnInit {
     const unfinishedMatch = this.tournament.matchDays[this.selectedMatchDay].matches.find(match => !match.isFinished);
     if (unfinishedMatch) {
       console.log('Partido no cerrado encontrado:', unfinishedMatch);
-      if (unfinishedMatch.homeTeam.toLowerCase() === 'free' || unfinishedMatch.awayTeam.toLowerCase() === 'free') {
+      if (isByeMatch(unfinishedMatch)) {
         unfinishedMatch.isFinished = true;
         console.log('Partido marcado como cerrado:', unfinishedMatch);
       } else {
@@ -385,7 +389,7 @@ export class ListMatchDaysComponent implements OnInit {
   orderForDateMatchDay() {
     if (this.tournament.matchDays[this.selectedMatchDay].matches[0].dateTime) {
       this.tournament.matchDays[this.selectedMatchDay].matches.sort((a, b) => {
-        if (a.homeTeam.toLocaleLowerCase() === 'free' || a.awayTeam.toLocaleLowerCase() === 'free') {
+        if (isByeMatch(a)) {
           return 1;
         }
         if (this.returnHour(a.dateTime) > this.returnHour(b.dateTime)) {

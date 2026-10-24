@@ -1,4 +1,5 @@
-import { Component, ElementRef, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { TeamRemovalService } from '../../../../core/services/tournament/team-removal.service';
 import { MatchResponse, ParticipantResponse, PlayerParticipantResponse } from '../../../../core/models/tournamentResponse';
 import { INITIAL_PARTICIPANT } from '../../../../core/services/tournament/initial-tournament';
 import { TournamentService } from '../../../../core/services/tournament/tournament.service';
@@ -31,6 +32,12 @@ export class PlayersComponent implements OnChanges {
   private dashboardService = inject(DashboardService);
   private guestService = inject(GuestService);
   private route = inject(Router);
+  private teamRemoval = inject(TeamRemovalService);
+  /** Plan 22/10 #2: avisa a la lista que el equipo se borró o cambió de estado. */
+  @Output() teamChanged = new EventEmitter<{ id: number; action: 'DELETE' | 'DISABLE' | 'ENABLE' }>();
+  /** Estado del equipo (false = deshabilitado). */
+  protected teamEnabled = true;
+  protected teamName = '';
   @Input() public participantId: number | null = null;
   @Input() public idTeam: number | null = null;
   @Input() public thereAreNotParticipants: boolean = false;
@@ -54,6 +61,8 @@ export class PlayersComponent implements OnChanges {
         this.getPlayersParticipants(this.participantId);
       }
     }
+
+    if (changes['idTeam'] && this.idTeam) this.loadTeamStatus(this.idTeam);
 
     if (changes['code']) {
       this.code = changes['code'].currentValue;
@@ -181,8 +190,31 @@ export class PlayersComponent implements OnChanges {
     }
   }
 
-  deleteTeam() {
-    this.alertService.infoAlert("ELMINAR EQUIPO", "FUNCION NO IMPLEMENTADA");
+  private loadTeamStatus(idTeam: number) {
+    this.teamService.getTeam(idTeam).subscribe({ next: (t) => { if (t) { this.teamEnabled = t.status !== false; this.teamName = t.name; } }, error: () => {} });
+  }
+
+  private currentTeamId(): number | null {
+    return this.idTeam || this.returnIfIsGlobalOrNot() || null;
+  }
+
+  /** Plan 22/10 #2: borra si nunca jugó; si jugó lo deshabilita (el diálogo dice cuál de las dos). */
+  async deleteTeam() {
+    const id = this.currentTeamId();
+    if (!id) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
+    const action = await this.teamRemoval.remove(id);
+    if (!action) return;
+    if (action === 'DISABLE') this.teamEnabled = false;
+    this.teamChanged.emit({ id, action });
+  }
+
+  async enableTeam() {
+    const id = this.currentTeamId();
+    if (!id) return;
+    if (await this.teamRemoval.enable(id, this.teamName || this.participantGlobalStats.name || this.participantTeam.name)) {
+      this.teamEnabled = true;
+      this.teamChanged.emit({ id, action: 'ENABLE' });
+    }
   }
 
   toLastMatches() {

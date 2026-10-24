@@ -14,8 +14,10 @@
         <button #addPlayerTrigger class="base-button" (click)="showFormAddPlayer()">Agregar jugador</button>
         }
       <button class="button-secondary" (click)="toLastMatches()">Últimos partidos</button>
-      @if (isAuth) {
+      @if (isAuth && teamParticipant.isActive !== false) {
         <button class="button-secondary button-danger" (click)="deleteTeam()">Eliminar equipo</button>
+    } @else if (teamParticipant.isActive === false) {
+        <span class="info-pill" role="status">Dado de baja del torneo</span>
     }
     </div>
   

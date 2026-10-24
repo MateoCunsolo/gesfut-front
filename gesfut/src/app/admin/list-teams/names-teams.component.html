@@ -17,7 +17,7 @@
       [(ngModel)]="bindingSelect"
     >
       @for (team of teamsGlobalesInputFilter; track $index) {
-      <option [value]="team.id">{{ team.name }} </option>
+      <option [value]="team.id">{{ team.name }}{{ team.status === false ? ' (deshabilitado)' : '' }} </option>
       }
     </select>
 
@@ -35,7 +35,7 @@
         [ngClass]="{ 'bg-primary-color': $index == indexSelectedAfter }"
         (click)="showParticipants(item.id)"
       >
-        {{ item.name }}
+        {{ item.name }}@if (item.status === false) { <small> · deshabilitado</small> }
       </p>
       }
     </div>
@@ -66,6 +66,7 @@
           [idTeam]="idSelected"
           [code]="codeTouranment"
           [nameTournament]="nameTouranemt"
+          (teamChanged)="onTeamChanged($event)"
         ></app-players>
       </div>
       }@else {
