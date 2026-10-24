@@ -85,7 +85,8 @@ button: any;
       lastName: ['', Validators.required],
       number: ['', Validators.required],
       isCaptain: [false],
-      isGoalKeeper: [false]
+      isGoalKeeper: [false],
+      dni: ['', Validators.pattern(/^\s*\d{1,2}\.?\d{3}\.?\d{3}\s*$/)]
     });
     this.players.push(playerForm);  
   }
@@ -271,7 +272,8 @@ button: any;
             lastName: [player.lastName, Validators.required],
             number: [player.number, Validators.required],
             isCaptain: [player.isCaptain],
-            isGoalKeeper: [player.isGoalKeeper]
+            isGoalKeeper: [player.isGoalKeeper],
+            dni: [player.dni ?? '']
           });
           this.players.push(playerForm);
         });

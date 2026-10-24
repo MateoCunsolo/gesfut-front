@@ -84,6 +84,16 @@
       }
     </div></div>
 
+    <!-- DNI opcional -->
+    <div class="field"><label class="field-label" for="addPlayerDni">DNI (opcional)</label>
+    <div class="form-group input-icon">
+      <input id="addPlayerDni" type="text" inputmode="numeric" maxlength="12" formControlName="dni" placeholder="Ej: 30123456" />
+      <i class="fa-regular fa-id-card"></i>
+      @if (playerForm.get('dni')?.invalid && playerForm.get('dni')?.touched) {
+      <small>El DNI debe tener 7 u 8 dígitos.</small>
+      }
+    </div></div>
+
     <!-- Campos Checkbox -->
     <div class="mini-group">
       <div class="check-group">

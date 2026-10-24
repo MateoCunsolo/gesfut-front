@@ -12,4 +12,6 @@ export interface PlayerRequest {
     isCaptain: boolean;
     isGoalKeeper: boolean;
     number: number;
+    /** DNI opcional: si se carga, el jugador no puede estar en dos equipos del mismo torneo. */
+    dni?: string | null;
 }

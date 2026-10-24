@@ -1,3 +1,4 @@
+import { normalizeDni } from '../../../../../core/utils/dni';
 import { Component, afterNextRender, ElementRef, ViewChild, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -58,6 +59,7 @@ export class AddPlayerComponent implements OnChanges {
       number: [null, [Validators.required, Validators.min(1), Validators.max(99)]],
       isCaptain: [false],
       isGoalKeeper: [false],
+      dni: ['', Validators.pattern(/^\s*\d{1,2}\.?\d{3}\.?\d{3}\s*$/)],
     });
   }
 
@@ -395,7 +397,8 @@ export class AddPlayerComponent implements OnChanges {
       lastName: this.playerForm.get('lastName')?.value,
       number: this.playerForm.get('number')?.value,
       isCaptain: this.playerForm.get('isCaptain')?.value,
-      isGoalKeeper: this.playerForm.get('isGoalKeeper')?.value
+      isGoalKeeper: this.playerForm.get('isGoalKeeper')?.value,
+      dni: normalizeDni(this.playerForm.get('dni')?.value)
     };
     return newPlayer;
   }

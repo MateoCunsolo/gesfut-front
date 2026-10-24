@@ -70,6 +70,13 @@
             <i class="fa-solid fa-hashtag"></i>
           </div>
           </div>
+          <div class="field">
+          <label class="field-label" [for]="'playerDni-' + i">DNI (opcional)</label>
+          <div class="form-group input-icon">
+            <input id="playerDni-{{ i }}" type="text" inputmode="numeric" maxlength="12" formControlName="dni" placeholder="Ej: 30123456" />
+            <i class="fa-regular fa-id-card"></i>
+          </div>
+          </div>
           <div class="mini-group">
             <div class="check-group">
               <div class="form-group"><label class="player-role-choice"><input type="checkbox" formControlName="isCaptain" /><span>Capitán</span></label></div>
