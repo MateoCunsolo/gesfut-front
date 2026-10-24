@@ -38,6 +38,7 @@
                 <td class="status-cell"><span class="status-badge">Habilitado</span></td>
                 }
                 <td class="no-line">
+                  <button type="button" class="button-secondary" [attr.aria-label]="'Editar ' + player.playerName + ' ' + player.playerLastName" (click)="editPlayer(player)">Editar</button>
                   <app-delete-player
                     [idPlayerParticipant]="player.id"
                     [name]="player.playerName + ', ' + player.playerLastName"
@@ -69,6 +70,7 @@
                 <td data-label="Rojas">{{ player.redCards }}</td>
                 <td data-label="MVP">{{ player.isMvp }}</td>
                 <td class="no-line">
+                  <button type="button" class="button-secondary" [attr.aria-label]="'Editar ' + player.playerName + ' ' + player.playerLastName" (click)="editPlayer(player)">Editar</button>
                   <app-delete-player
                     [idPlayerParticipant]="player.id"
                     [name]="player.playerName + ', ' + player.playerLastName"

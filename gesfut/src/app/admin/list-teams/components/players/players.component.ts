@@ -121,6 +121,29 @@ export class PlayersComponent implements OnChanges {
     }
   }
 
+  /** Editar jugador: datos del plantel; el historial queda en el mismo jugador. */
+  editPlayer(player: any) {
+    const teamId = this.isGlobalTeam ? this.participantGlobalStats.idTeam : this.participantTeam.idTeam;
+    this.teamService.getTeam(teamId).subscribe({
+      next: async (team: any) => {
+        const current = (team?.players ?? []).find((p: any) => p.id === player.playerId);
+        const data = await this.alertService.editPlayerAlert({
+          name: current?.name ?? player.playerName, lastName: current?.lastName ?? player.playerLastName,
+          number: current?.number ?? player.shirtNumber, dni: current?.dni ?? null });
+        if (!data) return;
+        this.teamService.editPlayer(player.playerId, data).subscribe({
+          next: () => {
+            const rows = [...(this.participantGlobalStats.playerParticipants ?? []), ...(this.participantTeam.playerParticipants ?? [])] as any[];
+            rows.filter(r => r.playerId === player.playerId).forEach(r => { r.playerName = data.name; r.playerLastName = data.lastName; r.shirtNumber = data.number; });
+            this.alertService.successAlert('Jugador actualizado');
+          },
+          error: (e) => this.alertService.errorAlert(e?.error?.error ?? e?.error?.message ?? 'No se pudo editar el jugador.')
+        });
+      },
+      error: () => this.alertService.errorAlert('No se pudo cargar el jugador.')
+    });
+  }
+
   returnIfIsGlobalOrNot() {
     if (this.isGlobalTeam) {
       return this.participantGlobalStats.idTeam;

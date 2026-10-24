@@ -143,6 +143,35 @@ export class AlertService {
   }
 
 
+  /** Editar jugador: nombre, apellido, dorsal y DNI opcional. Devuelve los datos o null si se cancela. */
+  editPlayerAlert(current: { name: string; lastName: string; number: number; dni?: string | null }): Promise<{ name: string; lastName: string; number: number; dni: string | null } | null> {
+    const v = (x: any) => escapeHtml(String(x ?? ''));
+    return Swal.fire({
+      title: 'Editar jugador',
+      html: `
+        <label class="swal2-input-label" for="ep-name">Nombre</label><input id="ep-name" class="swal2-input" maxlength="50" value="${v(current.name)}">
+        <label class="swal2-input-label" for="ep-last">Apellido</label><input id="ep-last" class="swal2-input" maxlength="50" value="${v(current.lastName)}">
+        <label class="swal2-input-label" for="ep-number">Dorsal</label><input id="ep-number" type="number" min="0" max="99" class="swal2-input" value="${v(current.number)}">
+        <label class="swal2-input-label" for="ep-dni">DNI (opcional)</label><input id="ep-dni" class="swal2-input" inputmode="numeric" maxlength="12" placeholder="Ej: 30123456" value="${v(current.dni)}">
+        <p class="swal2-html-container" style="font-size:1.2rem">Los goles y tarjetas ya cargados siguen siendo de este jugador.</p>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      scrollbarPadding: false,
+      preConfirm: () => {
+        const get = (id: string) => (document.getElementById(id) as HTMLInputElement).value.trim();
+        const name = get('ep-name'), lastName = get('ep-last'), numberRaw = get('ep-number'), dniRaw = get('ep-dni');
+        if (name.length < 3 || lastName.length < 3) { Swal.showValidationMessage('Nombre y apellido deben tener entre 3 y 50 caracteres.'); return false; }
+        const number = Number(numberRaw);
+        if (numberRaw === '' || !Number.isInteger(number) || number < 0 || number > 99) { Swal.showValidationMessage('El dorsal debe estar entre 0 y 99.'); return false; }
+        const dni = dniRaw.replace(/\D/g, '');
+        if (dni && (dni.length < 7 || dni.length > 8)) { Swal.showValidationMessage('El DNI debe tener 7 u 8 dígitos.'); return false; }
+        return { name, lastName, number, dni: dni || null };
+      }
+    }).then(r => r.isConfirmed ? r.value : null);
+  }
+
   /** Respuesta 3: elegir un equipo de una lista. Devuelve el índice elegido o null. */
   pickOneAlert(title: string, text: string, options: string[], confirmText: string): Promise<number | null> {
     return Swal.fire({

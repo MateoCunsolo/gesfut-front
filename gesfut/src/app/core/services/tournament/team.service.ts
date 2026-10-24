@@ -197,6 +197,11 @@ export class TeamService {
     return this.http.delete<TeamDeletionResponse>(`${this.url}/${idTeam}`);
   }
 
+  /** Editar jugador del plantel (solo el dueño). */
+  editPlayer(idPlayer: number, body: { name: string; lastName: string; number: number; dni: string | null }): Observable<any> {
+    return this.http.put(`${this.url}/players/${idPlayer}`, body);
+  }
+
   getTeam(idTeam: number): Observable<TeamResponse> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',      
