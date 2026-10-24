@@ -86,7 +86,8 @@ export interface TournamentResponseFull {
     championOfPlayoffsId?: number | null;
     yellowCardsToSuspend?: number;
     /** Revisión crítica #13: false = archivado. */
-    isActive?: boolean;
+    /** El backend manda Boolean (puede venir null en datos viejos): solo un false explicito es archivado. */
+    isActive?: boolean | null;
     redCardSuspensionMatches?: number;
     name: string;
     code: string;

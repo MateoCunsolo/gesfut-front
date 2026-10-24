@@ -1,7 +1,7 @@
 import test from 'node:test';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine } from '../src/app/core/utils/last-tournament';
+import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine, sessionSnapshot } from '../src/app/core/utils/last-tournament';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
 import { parseDmyTime } from '../src/app/core/utils/date-input';
@@ -141,10 +141,34 @@ test('reabrir fecha: sin dialogo de MVP y botones bloqueados hasta refrescar', (
   assert.ok(!html.includes('[disabled]="closing"') && (html.match(/\[disabled\]="busy"/g) ?? []).length >= 5);
 });
 
-test('sin console.* en el codigo de la app (podian imprimir datos de jugadores)', () => {
-  const root = new URL('../src/app/', import.meta.url);
+test('sin console.<metodo>() en la app (.ts y .html), ignorando comentarios y strings simples', () => {
+  const root = decodeURIComponent(new URL('../src/app/', import.meta.url).pathname).replace(/^\/([A-Za-z]:)/, '$1');
+  const strip = (code: string) => code
+    .replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/(^|[^:\\])\/\/[^\n]*/g, '$1')
+    .replace(/'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"/g, "''");
   const hits: string[] = [];
-  const walk = (dir: string) => { for (const n of readdirSync(dir)) { const p = dir + '/' + n; if (statSync(p).isDirectory()) walk(p); else if (p.endsWith('.ts') && !p.endsWith('.spec.ts') && /console\.(log|info|debug|warn|error)\(/.test(readFileSync(p, 'utf8'))) hits.push(p); } };
-  walk(decodeURIComponent(root.pathname).replace(/^\/([A-Za-z]:)/, '$1'));
+  const walk = (dir: string) => { for (const n of readdirSync(dir)) { const p = dir + '/' + n; if (statSync(p).isDirectory()) walk(p); else if ((p.endsWith('.ts') && !p.endsWith('.spec.ts')) || p.endsWith('.html')) { if (/\bconsole\s*\.\s*[A-Za-z_$][\w$]*\s*\(/.test(strip(readFileSync(p, 'utf8')))) hits.push(p); } } };
+  walk(root);
   assert.deepEqual(hits, []);
+  // el detector si ve los metodos menos comunes
+  for (const m of ['trace', 'table', 'debug', 'dir', 'group']) assert.ok(/\bconsole\s*\.\s*[A-Za-z_$][\w$]*\s*\(/.test(strip('x(); console.' + m + '(a);')), m);
+  assert.ok(!/\bconsole\s*\.\s*[A-Za-z_$][\w$]*\s*\(/.test(strip("// console.log(a)\nconst s = 'console.log(x)';")), 'ignora comentarios y strings');
+});
+
+test('toggleMatchDayStatus: chequea busy antes de confirmar', () => {
+  const list = src('admin/match-day/list-match-days/list-match-days.component.ts');
+  const i = list.indexOf('async toggleMatchDayStatus(status: boolean) {');
+  assert.match(list.slice(i, i + 120), /if \(this\.busy\) return;/);
+});
+
+test('Retomar guarda con el email del inicio de la request', () => {
+  const local = mem(); const t = mem(); t.setItem('email', 'ana@x.com');
+  const who = sessionSnapshot(t);
+  t.setItem('email', 'beto@x.com'); // cambio de sesion antes de la respuesta
+  rememberIfMine('c-ana', true, true, local, who);
+  assert.equal(local.getItem('lastTournament:ana@x.com'), 'c-ana');
+  assert.equal(local.getItem('lastTournament:beto@x.com'), null);
+  assert.match(src('pages/admin-tournament-page/admin-tournament-page.component.ts'), /const who = sessionSnapshot\(\);[\s\S]{0,200}rememberIfMine\(opened, !!mine, full\.isActive, undefined, who\)/);
+  assert.ok(!src('pages/admin-tournament-page/admin-tournament-page.component.ts').includes('as any'));
 });

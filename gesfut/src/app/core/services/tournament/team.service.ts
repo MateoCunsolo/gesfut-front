@@ -49,7 +49,6 @@ export class TeamService {
     return this.http.post<TeamResponse>(`${this.url}/create`, request, {
       headers
     }).pipe(
-      tap(() => void 0),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       })
@@ -72,7 +71,6 @@ export class TeamService {
     return this.http.get<ParticipantResponse[]>(`${this.url}/${code}`, {
       headers
     }).pipe(
-      tap(() => void 0),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       })

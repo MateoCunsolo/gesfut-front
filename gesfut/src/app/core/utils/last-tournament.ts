@@ -52,6 +52,13 @@ export function forgetLastTournament(l: Store | null = local(), s: Store | null 
 
 /** Solo se recuerda un torneo propio y activo: un link de admin de otro organizador o un torneo archivado
  *  (pagina publica de solo lectura) nunca pisan el "Retomar". */
+/** Foto del email de la sesion al INICIO de la request: si la sesion cambia antes de la respuesta, se guarda
+ *  bajo el email que pidio (o no se guarda si no habia). */
+export function sessionSnapshot(s: Store | null = session()): Store {
+  const email = s?.getItem('email') ?? null;
+  return { getItem: (k: string) => (k === 'email' ? email : null), setItem: () => {}, removeItem: () => {} };
+}
+
 export function rememberIfMine(code: string, isMine: boolean, isActive: boolean | null | undefined, l: Store | null = local(), s: Store | null = session()): boolean {
   if (!code || !isMine || isActive === false) return false;
   setLastTournament(code, '', l, s);

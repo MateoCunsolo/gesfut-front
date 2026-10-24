@@ -182,6 +182,7 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   async toggleMatchDayStatus(status: boolean) {
+    if (this.busy) return; // antes de cualquier confirmacion
 
     if (!status) {
       if (this.tournament.matchDays[this.tournament.matchDays.length - 1].isPlayOff

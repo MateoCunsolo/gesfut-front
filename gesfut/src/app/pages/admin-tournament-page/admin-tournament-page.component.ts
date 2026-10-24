@@ -1,4 +1,4 @@
-import { rememberIfMine } from '../../core/utils/last-tournament';
+import { rememberIfMine, sessionSnapshot } from '../../core/utils/last-tournament';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -80,7 +80,8 @@ export class AdminTournamentPageComponent  {
       this.dashboardService.setNameTournament(full.name);
       // Se guarda al abrir el torneo (cualquier camino) solo si el servidor confirma que es mio y no esta archivado.
       const opened = this.code;
-      this.tournamentService.isMyTournament(opened).subscribe({ next: (mine) => rememberIfMine(opened, !!mine, (full as any).isActive), error: () => {} });
+      const who = sessionSnapshot(); // email al iniciar la request, no al recibir la respuesta
+      this.tournamentService.isMyTournament(opened).subscribe({ next: (mine) => rememberIfMine(opened, !!mine, full.isActive, undefined, who), error: () => {} });
       this.dashboardService.setHaveParticipants(short.haveParticipants);
       this.dashboardService.setActiveTournamentComponent(short.haveParticipants ? 'recap' : 'dashboard');
       this.isLoading = false;

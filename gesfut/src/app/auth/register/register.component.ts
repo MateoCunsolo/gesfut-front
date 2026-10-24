@@ -77,21 +77,6 @@ export class RegisterComponent {
       return;
     }
     
-    // FUE COMENTADO PORQUE LA API YA NO ADMITE LA VERIFICACIÓN DE EMAIL, SUPERAMOS EL LIMITE DE USOS 50/50
-    //   try {
-    //   this.isLoading = true;
-    //   const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
-    //   void 0;
-    //   if (!isValidEmail) {
-    //     this.alertService.errorAlert('Email no válido');
-    //     this.isLoading = false;
-    //     return;
-    //   }
-    // } catch (err) {
-    //   this.alertService.errorAlert('Error al verificar el email');
-    //   this.isLoading = false;
-    //   return;
-    // }
   
     this.isLoading = true;
     this.authService.register(credentials).subscribe({

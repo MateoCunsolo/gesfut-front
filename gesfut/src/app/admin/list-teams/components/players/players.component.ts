@@ -57,7 +57,7 @@ export class PlayersComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes['participantId'] || changes['isGlobalTeam'] || changes['idTeam']) && this.participantId !== null) {
       if (this.isGlobalTeam) {
-        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else {  }
+        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else { this.alertService.errorAlert('No se pudo identificar el equipo. Volv\u00e9 a elegirlo en la lista.'); }
       } else {
         this.getPlayersParticipants(this.participantId);
       }
