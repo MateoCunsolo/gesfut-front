@@ -233,6 +233,12 @@ export class TournamentService {
       }))
   }
 
+  /** Revisión crítica #4: reglas de sanción del torneo. */
+  updateDiscipline(code: string, yellowCardsToSuspend: number, redCardSuspensionMatches: number): Observable<void> {
+    return this.http.put<void>(`${this.url}/tournaments/${code}/discipline`, { yellowCardsToSuspend, redCardSuspensionMatches }).pipe(
+      tap(() => this.getTournamentFull(code).subscribe()));
+  }
+
   /** Revisión crítica #2: finalizar es explícito e irreversible. */
   finishTournament(code: string): Observable<void> {
     return this.http.put<void>(`${this.url}/tournaments/${code}/finish`, null).pipe(

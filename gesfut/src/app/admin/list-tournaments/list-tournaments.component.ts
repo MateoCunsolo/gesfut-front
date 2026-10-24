@@ -66,6 +66,22 @@ export class ListTournamentsComponent {
 
   }
 
+  /** Revisión crítica #4: amarillas para suspender y fechas por roja, por torneo. */
+  async editDiscipline(item: TournamentResponseShort) {
+    const yellows = await this.alertService.updateNumberInputAlert(`Amarillas acumuladas que suspenden 1 fecha (actual: ${item.yellowCardsToSuspend ?? 5})`);
+    if (yellows === null) return;
+    const reds = await this.alertService.updateNumberInputAlert(`Fechas de suspensión por roja (actual: ${item.redCardSuspensionMatches ?? 1})`);
+    if (reds === null) return;
+    this.tournamentService.updateDiscipline(item.code, yellows, reds).subscribe({
+      next: () => {
+        item.yellowCardsToSuspend = yellows;
+        item.redCardSuspensionMatches = reds;
+        this.alertService.successAlert(`Sanciones: ${yellows} amarillas suspenden 1 fecha; una roja suspende ${reds} fecha${reds === 1 ? '' : 's'}. Se recalcularon las suspensiones.`);
+      },
+      error: (e) => this.alertService.errorAlert(e?.error?.message ?? 'No se pudieron guardar las reglas.')
+    });
+  }
+
   deleteTournament(code: string) {
     this.alertService.confirmAlert('¿Estás seguro de que quieres eliminar este torneo?', 'Estara 7 dias en papelera y luego se elinara.', 'Sí, eliminar').then((result) => {
       if (result.isConfirmed) {

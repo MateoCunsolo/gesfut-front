@@ -80,6 +80,8 @@ export interface TournamentResponse {
 export interface TournamentResponseFull {
     championOfLeagueId?: number | null;
     championOfPlayoffsId?: number | null;
+    yellowCardsToSuspend?: number;
+    redCardSuspensionMatches?: number;
     name: string;
     code: string;
     startDate: string;

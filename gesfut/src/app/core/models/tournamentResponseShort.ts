@@ -5,4 +5,6 @@ export interface TournamentResponseShort {
     isFinished: boolean;
     isActive: boolean;
     haveParticipants: boolean;
+    yellowCardsToSuspend?: number;
+    redCardSuspensionMatches?: number;
 }
