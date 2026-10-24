@@ -148,6 +148,7 @@ export class AlertService {
     const v = (x: any) => escapeHtml(String(x ?? ''));
     return Swal.fire({
       title: 'Editar jugador',
+      customClass: { htmlContainer: 'swal-form' },
       html: `
         <label class="swal2-input-label" for="ep-name">Nombre</label><input id="ep-name" class="swal2-input" maxlength="50" value="${v(current.name)}">
         <label class="swal2-input-label" for="ep-last">Apellido</label><input id="ep-last" class="swal2-input" maxlength="50" value="${v(current.lastName)}">
