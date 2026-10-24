@@ -117,6 +117,13 @@ export class ListMatchDaysComponent implements OnInit {
             !max || matchday.numberOfMatchDay > max.numberOfMatchDay ? matchday : max,
             undefined
           );
+        // Bug 8: si el usuario ya habia elegido una fecha de este torneo (p. ej. antes de "Corregir resultado"), se mantiene.
+        const kept = this.keptRound();
+        if (kept !== null && kept < this.tournament.matchDays.length) {
+          this.selectedMatchDay = kept;
+          this.bindingSelect = kept;
+          this.matchDayStatus = this.tournament.matchDays[kept].isFinished;
+        } else {
         this.selectedMatchDay = lastFinishedMatchDay ? lastFinishedMatchDay.numberOfMatchDay + 1 : 0;
         this.bindingSelect = this.selectedMatchDay;
         if (this.selectedMatchDay === this.tournament.matchDays.length) {
@@ -124,10 +131,18 @@ export class ListMatchDaysComponent implements OnInit {
           this.bindingSelect = this.selectedMatchDay;
           this.matchDayStatus = this.tournament.matchDays[this.selectedMatchDay].isFinished;
         }
+        }
         this.sortMatchDays();
         this.orderForDateMatchDay();
       },
     });
+  }
+
+  private roundKey(): string | null { return this.tournament?.code ? 'fixtureRound:' + this.tournament.code : null; }
+  private keptRound(): number | null {
+    const key = this.roundKey(); if (!key || typeof sessionStorage === 'undefined') return null;
+    const v = sessionStorage.getItem(key); const n = v === null ? NaN : Number(v);
+    return Number.isInteger(n) && n >= 0 ? n : null;
   }
 
   updateMatchDay(matchDay: number | Event) {
@@ -140,7 +155,8 @@ export class ListMatchDaysComponent implements OnInit {
     }
     this.matchDayStatus =
       this.tournament.matchDays[this.selectedMatchDay].isFinished;
-    console.log(this.tournament.matchDays[this.selectedMatchDay].isFinished)
+    const key = this.roundKey();
+    if (key && typeof sessionStorage !== 'undefined') sessionStorage.setItem(key, String(this.selectedMatchDay));
     this.orderForDateMatchDay();
   }
 
@@ -516,7 +532,7 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   addTeamsPerTable() {
-    this.alertService.inputAlert('NUMERO DE EQUIPOS QUE CLASIFICARAN')
+    this.alertService.qualifyCountAlert(this.tournament.participants.length)
       .then((result) => {
         if (result.isConfirmed) {
           if (result.value) {

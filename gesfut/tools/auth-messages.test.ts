@@ -43,3 +43,15 @@ test('bloque A: toasts nunca vacios, revisar antes de generar, intervalo minimo 
   for (const f of ['admin/initialize-tournament/initialize-tournament.component.ts', 'admin/match-day/list-match-days/list-match-days.component.ts', 'admin/match-day/list-match-days/timePicker/timePicker.component.ts'])
     assert.doesNotMatch(src(f), /errorAlert\(\w+\.error\.error\)/, f);
 });
+
+test('bloque A: fecha elegida se mantiene, playoffs accesibles, refresco tras baja/alta', () => {
+  const src = (p: string) => readFileSync(new URL('../src/app/' + p, import.meta.url), 'utf8');
+  const lmd = src('admin/match-day/list-match-days/list-match-days.component.ts');
+  assert.match(lmd, /fixtureRound:/); assert.match(lmd, /const kept = this\.keptRound\(\)/);
+  assert.match(lmd, /qualifyCountAlert\(this\.tournament\.participants\.length\)/);
+  const al = src('core/services/alert.service.ts');
+  assert.match(al, /input: 'select'[^]*'aria-label'/); assert.match(al, /confirmButtonAriaLabel: `Generar \$\{roundName\}`/);
+  const tr = src('core/services/tournament/team-removal.service.ts');
+  assert.equal((tr.match(/this\.refreshOpenTournament\(\);/g) || []).length, 2);
+  assert.match(tr, /'Equipo habilitado'/);
+});

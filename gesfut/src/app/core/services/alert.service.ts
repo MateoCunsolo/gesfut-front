@@ -216,6 +216,7 @@ export class AlertService {
     return Swal.fire({
       titleText: title,
       input: 'text',
+      inputAttributes: { 'aria-label': title },
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
@@ -226,6 +227,27 @@ export class AlertService {
         }
         return null;
       }
+    });
+  }
+
+  /** Playoffs: cuantos clasifican (2, 4 u 8, sin pasar de los equipos del torneo). */
+  qualifyCountAlert(teamsInTournament: number) {
+    const options: Record<string, string> = {};
+    for (const n of [2, 4, 8]) if (n <= teamsInTournament) options[String(n)] = n + ' equipos';
+    return Swal.fire({
+      titleText: 'N\u00famero de equipos que clasificar\u00e1n',
+      input: 'select',
+      inputOptions: options,
+      inputValue: '2',
+      inputLabel: 'Clasifican los mejores de la tabla; despu\u00e9s pod\u00e9s cambiar a mano qui\u00e9nes entran.',
+      inputAttributes: { 'aria-label': 'N\u00famero de equipos que clasificar\u00e1n' },
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonAriaLabel: 'Aceptar cantidad de equipos que clasifican',
+      cancelButtonAriaLabel: 'Cancelar y volver al fixture',
+      scrollbarPadding: true,
+      inputValidator: (value) => (value ? null : 'Eleg\u00ed cu\u00e1ntos equipos clasifican.')
     });
   }
 
@@ -242,6 +264,8 @@ export class AlertService {
       showCancelButton: true,
       confirmButtonText: 'Generar',
       cancelButtonText: 'Cancelar',
+      confirmButtonAriaLabel: `Generar ${roundName}`,
+      cancelButtonAriaLabel: 'Cancelar la programaci\u00f3n de playoffs',
       scrollbarPadding: false,
       preConfirm: () => {
         const startDate = (document.getElementById('po-date') as HTMLInputElement).value;
