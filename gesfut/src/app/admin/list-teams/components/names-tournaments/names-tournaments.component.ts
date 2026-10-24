@@ -57,9 +57,12 @@ export class NamesTournamentsComponent implements OnChanges {
     this.selectedTournament = 0;
   }
 
+  private loadSeq = 0;
   getAllParticipantsTournament(id: number) {
+    const seq = ++this.loadSeq; // Retest 24/10: se descarta la respuesta de un equipo anterior
     this.teamService.getParticipantsShortAllTournamemts(id).subscribe({
       next: (response) => {
+        if (seq !== this.loadSeq || id !== this.id) return;
         this.spinner = false;
         this.participantsTeam = response;
         if (this.participantsTeam.length > 0) {

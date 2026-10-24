@@ -1,4 +1,4 @@
-import { reconcileSelection } from '../../core/utils/team-selection';
+import { matchesSearch, reconcileSelection } from '../../core/utils/team-selection';
 import { naturalCompare } from '../../core/utils/natural-sort';
 import { Component, inject, OnInit } from '@angular/core';
 import { AdminService } from '../../core/services/manager/admin.service';
@@ -111,9 +111,7 @@ export class NamesTeamsComponent implements OnInit {
       this.teamsGlobalesInputFilter = this.teamsGlobales;
       this.indexSelectedAfter = this.teamsGlobales.findIndex((team) => team.id === this.idSelected);
     } else {
-      this.teamsGlobalesInputFilter = this.teamsGlobales.filter((team) =>
-        team.name.toLowerCase().includes(this.inputText.toLowerCase())
-      );
+      this.teamsGlobalesInputFilter = this.teamsGlobales.filter((team) => matchesSearch(team.name, this.inputText));
     }
     // Retest 24/10: encabezado, jugadores y botones siempre del MISMO equipo visible.
     const next = reconcileSelection(this.teamsGlobalesInputFilter, this.idSelected);

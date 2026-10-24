@@ -1,3 +1,4 @@
+import { matchesSearch } from '../../core/utils/team-selection';
 import { reconcileSelection } from '../../core/utils/team-selection';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, inject, DestroyRef } from '@angular/core';
@@ -75,10 +76,8 @@ export class ListTeamsTournamentsComponent {
   }
 
   searchTeams($event: Event) {
-    this.inputText = ($event.target as HTMLInputElement).value.toLowerCase();
-    this.particpantsFilter = this.participants.filter(team =>
-      team.name.toLowerCase().includes(this.inputText)
-    );
+    this.inputText = ($event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.particpantsFilter = this.participants.filter(team => matchesSearch(team.name, this.inputText));
     // Retest 24/10: el detalle siempre es de un equipo visible (o ninguno), igual que en Mis equipos.
     const next = reconcileSelection(this.particpantsFilter.map(p => ({ id: p.idParticipant })), this.teamParticipant?.idParticipant);
     if (next && next !== this.teamParticipant?.idParticipant) this.showParticipants(next);

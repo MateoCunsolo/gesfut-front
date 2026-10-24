@@ -8,5 +8,11 @@ export function reconcileSelection(filtered: ReadonlyArray<{ id: number }>, sele
 /** La accion (eliminar/deshabilitar) solo sigue si el equipo que confirma el servidor es el que muestra la pantalla. */
 export function sameTeamName(shown: string | null | undefined, actual: string | null | undefined): boolean {
   const n = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase();
-  return !n(shown) || n(shown) === n(actual);
+  if (!n(shown)) return false; // sin nombre visible no se sabe sobre que equipo se actua: se bloquea
+  return n(shown) === n(actual);
+}
+
+/** Busqueda de equipos: sin distinguir mayusculas ni espacios de los extremos. */
+export function matchesSearch(name: string | null | undefined, query: string | null | undefined): boolean {
+  return String(name ?? '').toLowerCase().includes(String(query ?? '').trim().toLowerCase());
 }

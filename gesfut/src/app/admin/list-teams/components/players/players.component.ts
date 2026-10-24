@@ -82,11 +82,17 @@ export class PlayersComponent implements OnChanges {
 
   }
 
+  /** Retest 24/10: cada carga lleva un numero; las respuestas tardias de un equipo/torneo anterior se descartan. */
+  private loadSeq = 0;
+  private isCurrent(seq: number): boolean { return seq === this.loadSeq; }
+
   getPlayersGlobal(idTeam: number) {
+    const seq = ++this.loadSeq;
     this.teamService.getTeam(idTeam).subscribe({
       next: (response) => {
+        if (!this.isCurrent(seq) || idTeam !== this.idTeam) return;
         if (response) {
-          this.mapPlayersGlobal(response);
+          this.mapPlayersGlobal(response, seq);
         }
       },
       error: (error) => {
@@ -95,8 +101,10 @@ export class PlayersComponent implements OnChanges {
   }
 
   getPlayersParticipants(idParticipant: number) {
+    const seq = ++this.loadSeq;
     this.tournamentService.getTournamentParticipantTeamByID(idParticipant).subscribe({
       next: (response) => {
+        if (!this.isCurrent(seq) || idParticipant !== this.participantId) return;
         if (!this.isGlobalTeam) {
           this.participantTeam = response;
         }
@@ -160,9 +168,10 @@ export class PlayersComponent implements OnChanges {
   }
 
 
-  mapPlayersGlobal(response: TeamResponse) {
+  mapPlayersGlobal(response: TeamResponse, seq: number = this.loadSeq) {
     this.teamService.getAllStatsPlayersFromTeam(response.id).subscribe({
       next: (response) => {
+        if (!this.isCurrent(seq)) return;
         if (response) {
           this.participantGlobalStats = response;
         }
@@ -206,7 +215,7 @@ export class PlayersComponent implements OnChanges {
   }
 
   private loadTeamStatus(idTeam: number) {
-    this.teamService.getTeam(idTeam).subscribe({ next: (t) => { if (t) { this.teamEnabled = t.status !== false; this.teamName = t.name; } }, error: () => {} });
+    this.teamService.getTeam(idTeam).subscribe({ next: (t) => { if (idTeam !== this.idTeam) return; if (t) { this.teamEnabled = t.status !== false; this.teamName = t.name; } }, error: () => {} });
   }
 
   private currentTeamId(): number | null {

@@ -35,7 +35,8 @@ export class TeamRemovalService {
   }
 
   /** Pregunta y aplica. Devuelve la acción hecha o null si se canceló/bloqueó. */
-  async remove(teamId: number, shownName: string = ''): Promise<'DELETE' | 'DISABLE' | null> {
+  async remove(teamId: number, shownName: string): Promise<'DELETE' | 'DISABLE' | null> {
+    if (!String(shownName ?? '').trim()) { this.alerts.errorAlert('No se pudo identificar el equipo en pantalla. Volv\u00e9 a elegirlo en la lista.'); return null; }
     try {
       const preview = await firstValueFrom(this.teams.previewDeleteTeam(teamId));
       // Retest 24/10: si la pantalla muestra otro equipo, no se pregunta ni se borra nada.

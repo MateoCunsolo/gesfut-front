@@ -132,9 +132,13 @@ export class PlayersTournamentComponent implements OnChanges {
   /** Plan 22/10 #2: misma regla que en Mis equipos (borra si nunca jugó, si no deshabilita y da de baja del torneo). */
   async deleteTeam() {
     if (!this.teamParticipant.idTeam) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
-    const action = await this.teamRemoval.remove(this.teamParticipant.idTeam);
+    if (this.removing) return;
+    this.removing = true;
+    let action: 'DELETE' | 'DISABLE' | null = null;
+    try { action = await this.teamRemoval.remove(this.teamParticipant.idTeam, this.teamParticipant.name); } finally { this.removing = false; }
     if (action) this.teamParticipant.isActive = false;
   }
+  removing = false;
 
   addPlayerToTeam(player: PlayerParticipantResponse) {
     this.teamParticipant.playerParticipants.push(player);

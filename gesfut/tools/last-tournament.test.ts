@@ -2,7 +2,7 @@ import test from 'node:test';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine, sessionSnapshot } from '../src/app/core/utils/last-tournament';
-import { reconcileSelection, sameTeamName } from '../src/app/core/utils/team-selection';
+import { reconcileSelection, sameTeamName, matchesSearch } from '../src/app/core/utils/team-selection';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
 import { parseDmyTime } from '../src/app/core/utils/date-input';
@@ -189,6 +189,7 @@ test('Mis equipos: filtrar mantiene un solo equipo coherente (o ninguno)', () =>
 
 test('Eliminar equipo: la accion va al id del equipo seleccionado y se frena si la pantalla muestra otro', () => {
   assert.equal(sameTeamName('QA ALFA', 'QA Alfa'), true);
+  for (const empty of ['', '   ', null, undefined]) assert.equal(sameTeamName(empty as any, 'AC Milan'), false, 'sin nombre visible se bloquea');
   assert.equal(sameTeamName('QA Alfa', 'AC Milan'), false);
   const players = src('admin/list-teams/components/players/players.component.ts');
   assert.match(players, /this\.teamRemoval\.remove\(id, this\.headerName\)/);
@@ -203,4 +204,29 @@ test('campeon: no se muestra antes de finalizar o jugar la final; reabrir muestr
   assert.match(src('shared/champions/champions.component.ts'), /if \(!t\.isFinished && !t\.championOfPlayoffsId\) return \[\];/);
   assert.match(src('admin/match-day/list-match-days/list-match-days.component.html'), /progressLabel \|\| 'Reabrir fecha'/);
   assert.match(src('core/services/alert.service.ts'), /showDenyButton: true,[\s\S]{0,120}cancelButtonText: 'Cancelar'/);
+});
+
+test('remove exige el nombre visible (sin default) y lo bloquea vacio; Equipos del torneo pasa el nombre y bloquea doble clic', () => {
+  const removal = src('core/services/tournament/team-removal.service.ts');
+  assert.match(removal, /async remove\(teamId: number, shownName: string\)/, 'sin valor por defecto: falla al compilar si falta');
+  const i = removal.indexOf('async remove('), guard = removal.indexOf("if (!String(shownName ?? '').trim())", i), preview = removal.indexOf('previewDeleteTeam(teamId)', i);
+  assert.ok(guard > i && guard < preview, 'con nombre vacio no se pide nada al servidor');
+  const pt = src('admin/list-team-tournaments/players-tournament/players-tournament.component.ts');
+  assert.match(pt, /teamRemoval\.remove\(this\.teamParticipant\.idTeam, this\.teamParticipant\.name\)/);
+  assert.match(pt, /if \(this\.removing\) return;[\s\S]{0,200}finally \{ this\.removing = false; \}/);
+  assert.match(src('admin/list-team-tournaments/players-tournament/players-tournament.component.html'), /\[disabled\]="removing"[\s\S]{0,120}Cargando/);
+});
+
+test('busqueda de equipos sin distinguir mayusculas ni espacios', () => {
+  assert.equal(matchesSearch('qa alfa', 'QA'), true);
+  assert.equal(matchesSearch('QA Alfa', '  qa al '), true);
+  assert.equal(matchesSearch('AC Milan', 'qa'), false);
+  assert.match(src('admin/list-team-tournaments/list-teams-tournaments.component.ts'), /matchesSearch\(team\.name, this\.inputText\)/);
+});
+
+test('Mis equipos: respuestas tardias de otro equipo se descartan', () => {
+  const p = src('admin/list-teams/components/players/players.component.ts');
+  assert.match(p, /if \(!this\.isCurrent\(seq\) \|\| idTeam !== this\.idTeam\) return;/);
+  assert.match(p, /if \(!this\.isCurrent\(seq\) \|\| idParticipant !== this\.participantId\) return;/);
+  assert.match(src('admin/list-teams/components/names-tournaments/names-tournaments.component.ts'), /if \(seq !== this\.loadSeq \|\| id !== this\.id\) return;/);
 });

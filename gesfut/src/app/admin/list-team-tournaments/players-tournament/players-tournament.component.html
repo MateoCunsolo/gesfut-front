@@ -15,7 +15,7 @@
         }
       <button class="button-secondary" (click)="toLastMatches()">Últimos partidos</button>
       @if (isAuth && teamParticipant.isActive !== false) {
-        <button class="button-secondary button-danger" (click)="deleteTeam()">Eliminar equipo</button>
+        <button class="button-secondary button-danger" [disabled]="removing" [attr.aria-busy]="removing" (click)="deleteTeam()">{{ removing ? 'Cargando…' : 'Eliminar equipo' }}</button>
     } @else if (teamParticipant.isActive === false) {
         <span class="info-pill" role="status">Dado de baja del torneo</span>
     }
