@@ -1,3 +1,4 @@
+import { reconcileSelection } from '../../core/utils/team-selection';
 import { naturalCompare } from '../../core/utils/natural-sort';
 import { Component, inject, OnInit } from '@angular/core';
 import { AdminService } from '../../core/services/manager/admin.service';
@@ -86,7 +87,13 @@ export class NamesTeamsComponent implements OnInit {
     this.nameClicked = this.teamsGlobales.find((team) => team.id === id)?.name || '';
     this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === id);
     this.bindingSelect = this.idSelected;
-    this.colorSelected = this.teamsGlobales[this.indexSelectedAfter].color;
+    this.colorSelected = this.teamsGlobales.find((team) => team.id === id)?.color || '';
+  }
+
+  /** Retest 24/10: sin resultados no queda el detalle del equipo anterior (riesgo de borrar el equivocado). */
+  private clearSelection() {
+    this.idSelected = 0; this.bindingSelect = 0; this.nameClicked = ''; this.colorSelected = '';
+    this.indexSelectedAfter = -1; this.clickedToOcultPlayers = false; this.selectedParticipantId = null;
   }
 
   onParticipantSelected(id: number) {
@@ -107,13 +114,12 @@ export class NamesTeamsComponent implements OnInit {
       this.teamsGlobalesInputFilter = this.teamsGlobales.filter((team) =>
         team.name.toLowerCase().includes(this.inputText.toLowerCase())
       );
-      const teamInFilteredList = this.teamsGlobalesInputFilter.find((team) => team.id === this.idSelected);
-      if (teamInFilteredList) {
-        this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === this.idSelected);
-      } else {
-        this.indexSelectedAfter = -1;
-      }
     }
+    // Retest 24/10: encabezado, jugadores y botones siempre del MISMO equipo visible.
+    const next = reconcileSelection(this.teamsGlobalesInputFilter, this.idSelected);
+    if (next === 0) this.clearSelection();
+    else if (next !== this.idSelected) this.showParticipants(next);
+    else this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === next);
   }
   
   onCodeTournament(code: string) {

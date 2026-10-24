@@ -22,7 +22,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.component";
 import { EventRequest, MatchDateResponse } from '../../../core/models/matchRequest';
-import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { TeamResponse } from '../../../core/models/teamResponse';
 
@@ -239,6 +238,9 @@ export class ListMatchDaysComponent implements OnInit {
   refreshingForClose = false;
   /** Botones de cerrar/reabrir deshabilitados mientras se envia o se refrescan los datos de la fecha. */
   get busy(): boolean { return this.closing || this.refreshingForClose; }
+  /** Que se esta enviando (para mostrar "Reabriendo..." / "Cerrando..." hasta tener los datos nuevos). */
+  pendingStatus: boolean | null = null;
+  get progressLabel(): string { return !this.closing ? '' : this.pendingStatus === false ? 'Reabriendo\u2026' : 'Cerrando\u2026'; }
 
   private closeMatchDayWithData(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
     if (this.closing) return;
@@ -301,6 +303,7 @@ export class ListMatchDaysComponent implements OnInit {
   private sendClose(status: boolean, mvp: string) {
     if (this.closing) return;
     this.closing = true;
+    this.pendingStatus = status;
     this.matchDaysService
       .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, mvp)
       .subscribe({
@@ -340,7 +343,7 @@ export class ListMatchDaysComponent implements OnInit {
           } else {
             this.alertService.errorAlert('Debe seleccionar un MVP');
           }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        } else if (result.isDenied) {
           // Loop 9: solo el boton "Cerrar sin MVP" cierra sin MVP; Esc, X o un segundo dialogo no cierran la fecha.
           this.openMatchDay(status);
         }

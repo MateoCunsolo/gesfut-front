@@ -40,6 +40,9 @@ export class PlayersComponent implements OnChanges {
   /** Estado del equipo (false = deshabilitado). */
   protected teamEnabled = true;
   protected teamName = '';
+  /** Nombre del equipo que muestra el encabezado de Mis equipos: la accion se frena si no coincide. */
+  @Input() headerName = '';
+  removing = false;
   @Input() public participantId: number | null = null;
   @Input() public idTeam: number | null = null;
   @Input() public thereAreNotParticipants: boolean = false;
@@ -214,7 +217,10 @@ export class PlayersComponent implements OnChanges {
   async deleteTeam() {
     const id = this.currentTeamId();
     if (!id) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
-    const action = await this.teamRemoval.remove(id);
+    if (this.removing) return;
+    this.removing = true;
+    let action: 'DELETE' | 'DISABLE' | null = null;
+    try { action = await this.teamRemoval.remove(id, this.headerName); } finally { this.removing = false; }
     if (!action) return;
     if (action === 'DISABLE') this.teamEnabled = false;
     this.teamChanged.emit({ id, action });

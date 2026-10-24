@@ -95,7 +95,7 @@
 <section [class.blur]="showPicker || showGeneratePlayOffs">
 <header class="page-heading"><h2>Partidos</h2></header>
 <div class="round-bar"><div class="round-picker"><label class="sr-only" for="fixture-round">Fecha o instancia</label><select id="fixture-round" (change)="updateMatchDay($event)" [ngModel]="selectedMatchDay">@for(day of tournament.matchDays;track day.numberOfMatchDay){<option [value]="day.numberOfMatchDay">{{roundLabel(day)}}</option>}</select></div>
-@if(tournament.matchDays[selectedMatchDay];as day){<span class="info-pill" role="status">{{day.isFinished ? 'Finalizada' : someMatchIsClosed() ? 'En curso' : 'Próximamente'}}</span>}</div>
+@if(tournament.matchDays[selectedMatchDay];as day){<span class="info-pill" role="status">{{progressLabel || (day.isFinished ? 'Finalizada' : someMatchIsClosed() ? 'En curso' : 'Próximamente')}}</span>}</div>
 @if(tournament.matchDays[selectedMatchDay];as day){
 @if(isAuth() && !day.isFinished){<div class="page-actions"><button type="button" class="button-secondary" (click)="chargeAllDates()">Programar horarios</button></div>}
 <div class="match-grid">@for(match of day.matches;track match.id){<div class="fixture-item"><app-match-card [match]="match" [compact]="true" [roundLabel]="day.isPlayOff && day.matches.length===1 ? 'Final' : ''">
@@ -108,14 +108,14 @@
     @if(isAuth() && !tournament.isFinished){
         <p class="day-actions-help">Acciones de toda la fecha</p>
         @if(this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
-          <button class="base-button edit-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="toggleMatchDayStatus(false)">Reabrir fecha</button>
+          <button class="base-button edit-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="toggleMatchDayStatus(false)">{{ progressLabel || 'Reabrir fecha' }}</button>
           @if (!tournament.matchDays[selectedMatchDay+1]) {
             <button class="base-button" (click)="showGeneratePlayOffsFunction()">Generar playoffs</button>
           }
         }@else if(!this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
           <button class="base-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="closeMatchDay(true)">Cerrar fecha</button>
         }@else if(this.matchDayStatus && tournament.matchDays[selectedMatchDay].isPlayOff){
-          <button class="base-button edit-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="toggleMatchDayStatus(false)">Reabrir playoffs</button>
+          <button class="base-button edit-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="toggleMatchDayStatus(false)">{{ progressLabel || 'Reabrir playoffs' }}</button>
           @if (this.matchDayStatus && tournament.matchDays[selectedMatchDay].matches.length>1
             && !tournament.matchDays[selectedMatchDay+1]
           ) {

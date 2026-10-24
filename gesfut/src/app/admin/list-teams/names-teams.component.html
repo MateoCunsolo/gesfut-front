@@ -40,7 +40,7 @@
       }
     </div>
 
-    @if (teamsGlobalesInputFilter.length === 0) {
+    @if (teamsGlobalesInputFilter.length === 0 || !idSelected) {
     <div class="info"><p class="team-name">No hay equipos con ese nombre.</p></div>
     } @else {
     <div class="info">
@@ -69,6 +69,7 @@
           [idTeam]="idSelected"
           [code]="codeTouranment"
           [nameTournament]="nameTouranemt"
+          [headerName]="nameClicked"
           (teamChanged)="onTeamChanged($event)"
         ></app-players>
       </div>

@@ -1,3 +1,4 @@
+import { reconcileSelection } from '../../core/utils/team-selection';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, inject, DestroyRef } from '@angular/core';
 import { NgClass } from '@angular/common';
@@ -78,8 +79,14 @@ export class ListTeamsTournamentsComponent {
     this.particpantsFilter = this.participants.filter(team =>
       team.name.toLowerCase().includes(this.inputText)
     );
+    // Retest 24/10: el detalle siempre es de un equipo visible (o ninguno), igual que en Mis equipos.
+    const next = reconcileSelection(this.particpantsFilter.map(p => ({ id: p.idParticipant })), this.teamParticipant?.idParticipant);
+    if (next && next !== this.teamParticipant?.idParticipant) this.showParticipants(next);
     this.updateSelectedIndex();
   }
+
+  /** Sin resultados en la busqueda no se muestra (ni se puede accionar sobre) el equipo anterior. */
+  get noResults(): boolean { return this.particpantsFilter.length === 0; }
 
   private updateSelectedIndex() {
     if (this.teamParticipant) {

@@ -2,6 +2,7 @@ import test from 'node:test';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine, sessionSnapshot } from '../src/app/core/utils/last-tournament';
+import { reconcileSelection, sameTeamName } from '../src/app/core/utils/team-selection';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
 import { parseDmyTime } from '../src/app/core/utils/date-input';
@@ -171,4 +172,35 @@ test('Retomar guarda con el email del inicio de la request', () => {
   assert.equal(local.getItem('lastTournament:beto@x.com'), null);
   assert.match(src('pages/admin-tournament-page/admin-tournament-page.component.ts'), /const who = sessionSnapshot\(\);[\s\S]{0,200}rememberIfMine\(opened, !!mine, full\.isActive, undefined, who\)/);
   assert.ok(!src('pages/admin-tournament-page/admin-tournament-page.component.ts').includes('as any'));
+});
+
+test('Mis equipos: filtrar mantiene un solo equipo coherente (o ninguno)', () => {
+  const all = [{ id: 1, name: 'AC Milan' }, { id: 2, name: 'QA Alfa' }, { id: 3, name: 'QA Bravo' }];
+  const f = (q: string) => all.filter(t => t.name.toLowerCase().includes(q.toLowerCase()));
+  assert.equal(reconcileSelection(f('QA Alfa'), 1), 2, 'AC Milan ya no esta visible: pasa al primer resultado');
+  assert.equal(reconcileSelection(f('QA'), 3), 3, 'si sigue visible se mantiene');
+  assert.equal(reconcileSelection(f('zzz'), 1), 0, 'sin resultados: ninguno');
+  const names = src('admin/list-teams/names-teams.component.ts');
+  assert.match(names, /reconcileSelection\(this\.teamsGlobalesInputFilter, this\.idSelected\)/);
+  assert.match(names, /this\.colorSelected = this\.teamsGlobales\.find\(\(team\) => team\.id === id\)/);
+  assert.match(src('admin/list-teams/names-teams.component.html'), /\[headerName\]="nameClicked"/);
+  assert.match(src('admin/list-team-tournaments/list-teams-tournaments.component.ts'), /reconcileSelection\(/);
+});
+
+test('Eliminar equipo: la accion va al id del equipo seleccionado y se frena si la pantalla muestra otro', () => {
+  assert.equal(sameTeamName('QA ALFA', 'QA Alfa'), true);
+  assert.equal(sameTeamName('QA Alfa', 'AC Milan'), false);
+  const players = src('admin/list-teams/components/players/players.component.ts');
+  assert.match(players, /this\.teamRemoval\.remove\(id, this\.headerName\)/);
+  assert.match(players, /if \(this\.removing\) return;/);
+  const removal = src('core/services/tournament/team-removal.service.ts');
+  const i = removal.indexOf('previewDeleteTeam(teamId)'), j = removal.indexOf('sameTeamName(shownName, preview.teamName)'), k = removal.indexOf('this.teams.deleteTeam(teamId)');
+  assert.ok(i > 0 && j > i && k > j, 'preview -> chequeo de nombre -> borrar el mismo teamId');
+  assert.match(src('admin/list-teams/components/players/players.component.html'), /\[disabled\]="removing"/);
+});
+
+test('campeon: no se muestra antes de finalizar o jugar la final; reabrir muestra progreso', () => {
+  assert.match(src('shared/champions/champions.component.ts'), /if \(!t\.isFinished && !t\.championOfPlayoffsId\) return \[\];/);
+  assert.match(src('admin/match-day/list-match-days/list-match-days.component.html'), /progressLabel \|\| 'Reabrir fecha'/);
+  assert.match(src('core/services/alert.service.ts'), /showDenyButton: true,[\s\S]{0,120}cancelButtonText: 'Cancelar'/);
 });

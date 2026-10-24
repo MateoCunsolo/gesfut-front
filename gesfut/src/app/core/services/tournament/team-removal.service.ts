@@ -1,3 +1,4 @@
+import { sameTeamName } from '../../utils/team-selection';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AlertService } from '../alert.service';
@@ -34,9 +35,11 @@ export class TeamRemovalService {
   }
 
   /** Pregunta y aplica. Devuelve la acción hecha o null si se canceló/bloqueó. */
-  async remove(teamId: number): Promise<'DELETE' | 'DISABLE' | null> {
+  async remove(teamId: number, shownName: string = ''): Promise<'DELETE' | 'DISABLE' | null> {
     try {
       const preview = await firstValueFrom(this.teams.previewDeleteTeam(teamId));
+      // Retest 24/10: si la pantalla muestra otro equipo, no se pregunta ni se borra nada.
+      if (!sameTeamName(shownName, preview.teamName)) { this.alerts.errorAlert(`La pantalla muestra "${shownName}" pero la acci\u00f3n era sobre "${preview.teamName}". Volv\u00e9 a elegir el equipo en la lista.`); return null; }
       if (preview.blockedReason) { this.alerts.errorAlert(preview.blockedReason); return null; }
       const c = deletionConfirmText(preview);
       const answer = await this.alerts.confirmAlert(c.title, c.text, c.button);

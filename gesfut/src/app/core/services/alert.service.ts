@@ -198,9 +198,12 @@ export class AlertService {
       input: 'select',
       text: note + 'Se mostrarán aquellos jugadores que hayan sido elegidos como MVP en sus partidos.',
       inputOptions: options.map(escapeHtml),
+      // Retest 24/10: "Cerrar sin MVP" es el boton deny; Cancelar no cierra nada.
+      showDenyButton: true,
+      denyButtonText: cancelText,
       showCancelButton: true,
       confirmButtonText: 'Cerrar fecha',
-      cancelButtonText: cancelText,
+      cancelButtonText: 'Cancelar',
       scrollbarPadding: false,
       inputValidator: (value) => {
         if (!value) {

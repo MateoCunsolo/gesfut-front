@@ -55,6 +55,8 @@ export class ChampionsComponent {
 
   static titlesOf(t: TournamentResponseFull | undefined): { label: string; team: string }[] {
     if (!t?.participants) return [];
+    // Retest 24/10: nadie es campeon antes de finalizar el torneo o de jugar la final (aunque el backend mande el dato).
+    if (!t.isFinished && !t.championOfPlayoffsId) return [];
     const name = (id?: number | null) => id ? t.participants.find(p => p.idParticipant === id)?.name : undefined;
     const league = name(t.championOfLeagueId), playoff = name(t.championOfPlayoffsId);
     const hasPlayoff = (t.matchDays ?? []).some(d => d.isPlayOff);
