@@ -20,4 +20,10 @@ describe('Eliminar equipo: texto de confirmación (plan 22/10 #2)', () => {
     expect(c.text).toContain('TEST Liga');
     expect(c.text).toContain('fecha libre');
   });
+  it('avisa que se regenera el fixture si el torneo no empezó', () => {
+    const c = deletionConfirmText({ ...base, regeneratedTournaments: ['TEST Nuevo'] });
+    expect(c.text).toContain('TEST Nuevo');
+    expect(c.text).toContain('se regenera el fixture');
+    expect(deletionConfirmText(base).text).not.toContain('regenera');
+  });
 });

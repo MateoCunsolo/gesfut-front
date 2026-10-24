@@ -6,15 +6,18 @@ import { httpErrorMessage } from '../../utils/http-error';
 
 /** Plan 22/10 #2: texto del diálogo de confirmación; deja claro si se borra o se deshabilita. */
 export function deletionConfirmText(p: TeamDeletionResponse): { title: string; text: string; button: string } {
+  const regen = p.regeneratedTournaments?.length
+    ? ` En ${p.regeneratedTournaments.length === 1 ? 'el torneo' : 'los torneos'} ${p.regeneratedTournaments.join(', ')} todavía no se jugó ningún partido: se lo quita y se regenera el fixture completo sin él.`
+    : '';
   if (p.action === 'DELETE') {
     return { title: `Eliminar "${p.teamName}"`, button: 'Eliminar definitivamente',
-      text: 'Este equipo nunca jugó un partido, así que se va a borrar definitivamente junto con sus jugadores. No se puede deshacer.' };
+      text: `Este equipo nunca jugó un partido, así que se va a borrar definitivamente junto con sus jugadores.${regen} No se puede deshacer.` };
   }
   const ongoing = p.ongoingTournaments?.length
     ? ` En ${p.ongoingTournaments.length === 1 ? 'el torneo en curso' : 'los torneos en curso'} (${p.ongoingTournaments.join(', ')}) queda dado de baja: sus partidos pendientes pasan a fecha libre para el rival.`
     : '';
   return { title: `Deshabilitar "${p.teamName}"`, button: 'Deshabilitar equipo',
-    text: `Este equipo ya tiene historial, así que no se borra: se va a deshabilitar. Sus resultados, tablas y goleadores se conservan.${ongoing} Después podés volver a habilitarlo para torneos nuevos.` };
+    text: `Este equipo ya tiene historial, así que no se borra: se va a deshabilitar. Sus resultados, tablas y goleadores se conservan.${ongoing}${regen} Después podés volver a habilitarlo para torneos nuevos.` };
 }
 
 @Injectable({ providedIn: 'root' })

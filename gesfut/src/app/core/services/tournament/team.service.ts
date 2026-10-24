@@ -11,7 +11,7 @@ import { TeamWithAllStatsPlayerResponse } from '../../models/TeamWithAllStatsPla
 import { environment } from '../../../../enviroments/environment';
 
 /** Plan 22/10 #2: qué pasa al eliminar un equipo. DELETE = nunca jugó; DISABLE = tiene historial. */
-export interface TeamDeletionResponse { teamId: number; teamName: string; action: 'DELETE' | 'DISABLE'; ongoingTournaments: string[]; blockedReason: string | null; message: string | null }
+export interface TeamDeletionResponse { teamId: number; teamName: string; action: 'DELETE' | 'DISABLE'; ongoingTournaments: string[]; regeneratedTournaments?: string[]; blockedReason: string | null; message: string | null }
 
 /** Plan 22/10 #15 */
 export interface TeamImportResponse { createdCount: number; created: string[]; failed: { index: number; name: string | null; error: string }[] }
