@@ -41,7 +41,7 @@ export class LastsMatchesComponent {
   get upcoming(): MatchResponse[] { return this.matches.filter(m => !m.isFinished && !this.isByeMatch(m)); }
   /** Cabecera: equipo y torneo por separado (antes "EQUIPO EN TORNEO"). */
   get teamLabel(): string { return this.nameTeam || this.teamName; }
-  get tournamentLabel(): string { return this.nameTeam ? (sessionStorage.getItem('lastTournamentClickedName') || '') : ''; }
+  get tournamentLabel(): string { return this.nameTeam ? (sessionStorage.getItem('viewingTournamentName') || '') : ''; }
   private isByeMatch(m: MatchResponse): boolean { return isByeMatch(m); }
   ngOnInit() {
 
@@ -52,7 +52,7 @@ export class LastsMatchesComponent {
           this.isGlobal = false;
         }else if (this.route.url.includes('admin')) {
           this.nameTeam = response;
-          this.teamName = response +' EN '+ sessionStorage.getItem('lastTournamentClickedName');
+          this.teamName = response +' EN '+ sessionStorage.getItem('viewingTournamentName');
         }else{
           this.teamName = response;
         }

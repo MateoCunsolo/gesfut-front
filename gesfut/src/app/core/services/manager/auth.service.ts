@@ -36,6 +36,8 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.url}/login`, credentials).pipe(
       tap((response: AuthResponse) => {
         this.sessionService.setUserSession(response);
+        // Solo para separar datos locales por cuenta ("Retomar último torneo"); nunca se guarda el token.
+        try { sessionStorage.setItem('email', String(credentials.email ?? '').trim().toLowerCase()); } catch { /* sin storage */ }
       }),
       map((response) => {
         const auth: AuthResponse = {
@@ -91,7 +93,8 @@ export class AuthService {
   }
 
   resendEmail(email: string): Observable<{ message?: string }> {
-    return this.http.post<{ message?: string }>(`${this.url}/resend-verification/${encodeURIComponent(email)}`, {});
+    // El email va en el body (no queda en la URL ni en logs de acceso).
+    return this.http.post<{ message?: string }>(`${this.url}/resend-verification`, { email });
   }
 
   /** Mensaje claro (es-AR) para un error HTTP: usa el del backend si viene, si no un texto por defecto. */

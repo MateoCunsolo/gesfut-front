@@ -253,7 +253,7 @@ export class PlayersComponent implements OnChanges {
           this.tournamentService.setMatches(response);
           this.tournamentService.setNameTeamToViewEvents(this.participantTeam.name);
           this.dashboardService.setActiveDashboardAdminComponent('lasts-matches');
-          sessionStorage.setItem('lastTournamentClickedName', this.nameTournament);
+          sessionStorage.setItem('viewingTournamentName', this.nameTournament);
           this.alertService.closeLoadingAlert();
         }
       });

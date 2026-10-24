@@ -28,3 +28,20 @@ test('valor corrupto no rompe', () => {
   local.setItem('lastTournament:ana|uno', '{no json');
   assert.equal(getLastTournament(local, ana), null);
 });
+
+test('con email en la sesión la clave es por email y no se escriben claves globales', () => {
+  const local = mem(); const a = user('Ana', 'Uno'); a.setItem('email', 'Ana@X.com'); const b = user('Ana', 'Uno'); b.setItem('email', 'otra@x.com');
+  setLastTournament('c1', 'n1', local, a);
+  assert.equal(getLastTournament(local, a)?.code, 'c1');
+  assert.equal(getLastTournament(local, b), null, 'mismo nombre, otra cuenta');
+  assert.equal(local.getItem('lastTournamentClicked'), null);
+  assert.equal(local.getItem('lastTournamentClickedName'), null);
+});
+
+test('migra las claves globales viejas una sola vez', () => {
+  const local = mem(); const a = user('Ana', 'Uno');
+  local.setItem('lastTournamentClicked', 'viejo'); local.setItem('lastTournamentClickedName', 'Liga vieja');
+  assert.deepEqual(getLastTournament(local, a), { code: 'viejo', name: 'Liga vieja' });
+  assert.equal(local.getItem('lastTournamentClicked'), null);
+  assert.equal(getLastTournament(local, a)?.code, 'viejo');
+});
