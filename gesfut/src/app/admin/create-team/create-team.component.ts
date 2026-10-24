@@ -289,7 +289,7 @@ button: any;
   onSubmit() {
     if (this.isloading) return; // Loop 8: doble toque enviaba el equipo dos veces
     if (this.teamForm.invalid) {
-      this.alertService.errorAlert("Por favor, rellene todos los campos.");
+      this.alertService.errorAlert("Completá todos los campos.");
       return;
     }
     const teamData = this.teamForm.value;

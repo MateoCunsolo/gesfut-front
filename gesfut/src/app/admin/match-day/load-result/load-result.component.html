@@ -1,5 +1,5 @@
 <section class="result-editor">
-<header class="page-heading"><span class="eyebrow">{{roundOf(currentMatch.numberOfMatchDay)}}</span><h2>{{isEditMatch ? 'Editar resultado' : 'Cargar resultado'}}</h2></header>
+<header class="page-heading"><span class="eyebrow">{{roundOf(currentMatch.numberOfMatchDay)}}</span><h2>{{isEditMatch ? 'Corregir resultado' : 'Cargar resultado'}}</h2></header>
 <div class="live-score" aria-label="Marcador del partido"><div><span>Local</span><strong>{{currentMatch.homeTeam.name}}</strong></div><b>{{currentMatch.homeGoals}} <span>–</span> {{currentMatch.awayGoals}}</b><div><span>Visitante</span><strong>{{currentMatch.awayTeam.name}}</strong></div></div>
 <div class="editor-layout" [class.editing]="isEditMatch"><details class="entry-disclosure" [open]="entryOpen" (toggle)="entryOpen = $any($event.target).open"><summary>Agregar estadísticas de un jugador</summary><form class="entry-form" [formGroup]="statisticsForm" (ngSubmit)="loadStatistics()">
 <p class="form-hint">Los goles que agregues actualizan el marcador.</p><label for="event-team">Equipo</label><select id="event-team" formControlName="team"><option value="" disabled>Elegí un equipo</option>@for(team of filteredTeams;track team.idParticipant){<option [ngValue]="team">{{team.name}}</option>}</select>
