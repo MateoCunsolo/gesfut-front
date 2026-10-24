@@ -22,6 +22,11 @@ export class DeleteComponent {
   @Input() isGoalKeeper: boolean = false
   @Input() idPlayer: number = 0;
   @Input() name: string = '';
+  /** "Nombre Apellido" sin comas ni restos de campos vacios; si no hay datos, "este jugador". */
+  get displayName(): string {
+    const clean = String(this.name ?? '').replace(/\bundefined\b|\bnull\b/g, '').replace(/[\s,]+/g, ' ').trim();
+    return clean || 'este jugador';
+  }
   @Output() public deletePlayer = new EventEmitter<number>();
   constructor() { }
 
@@ -45,9 +50,9 @@ export class DeleteComponent {
   }
 
   showNormalAlert(idPlayerParticipant: number) {
-    this.alertService.confirmAlert('Eliminar jugador', 'Estas seguro que quieres eliminar a ' + this.name + '?', 'Aceptar').then((result) => {
+    this.alertService.confirmAlert('Eliminar jugador', '\u00bfSeguro que quer\u00e9s eliminar a ' + this.displayName + '?', 'Aceptar').then((result) => {
       if (result.isConfirmed) {
-        this.alertService.twoOptionsAlert('Eliminar jugador', 'Elije de donde lo quieres eliminar', 'Equipo Global', 'Torneo Actual').then((result) => {
+        this.alertService.twoOptionsAlert('Eliminar jugador', '\u00bfDe d\u00f3nde lo quer\u00e9s eliminar?', 'Equipo Global', 'Torneo Actual').then((result) => {
           if (this.verificationsDelete()) {
             if (result.isConfirmed) {
               this.deleteFromGlobal();
@@ -85,7 +90,7 @@ export class DeleteComponent {
 
   deleteFromGlobal() {
     if (this.isGlobalTeam) {
-      this.alertService.confirmAlert('Eliminar jugador', 'Estas seguro que quieres eliminar a ' + this.name + '?', 'Aceptar').then((result) => {
+      this.alertService.confirmAlert('Eliminar jugador', '\u00bfSeguro que quer\u00e9s eliminar a ' + this.displayName + '?', 'Aceptar').then((result) => {
         if (result.isConfirmed) {
           this.deleteFromGlobalCallService();
         }
@@ -97,7 +102,7 @@ export class DeleteComponent {
 
   deleteFromGlobalCallService() {
     if(!this.verificationsDelete()){
-      if(this.isCapitan) this.alertService.errorAlert('No puedes eliminar a un capitan');
+      if(this.isCapitan) this.alertService.errorAlert('No pod\u00e9s eliminar al capit\u00e1n');
       if(this.isGoalKeeper) this.alertService.errorAlert('No podés eliminar al arquero');
       return;
     }
@@ -114,7 +119,7 @@ export class DeleteComponent {
 
   showErrorMessage() {
     if (this.isCapitan) {
-      this.alertService.errorAlert('No puedes eliminar a un capitan');
+      this.alertService.errorAlert('No pod\u00e9s eliminar al capit\u00e1n');
     } else if (this.isGoalKeeper) {
       this.alertService.errorAlert('No podés eliminar al arquero');
     }else{

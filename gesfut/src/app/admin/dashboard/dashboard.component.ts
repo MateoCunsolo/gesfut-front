@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import { getLastTournament, forgetLastTournament } from '../../core/utils/last-tournament';
 import { FooterComponent } from "../../shared/footer/footer.component";
 import { DashboardService } from '../../core/services/dashboard.service';
 import { Router } from '@angular/router';
@@ -20,13 +21,15 @@ export class DashboardComponent {
   private router = inject(Router);
   lastTournamentClicked: string = '';
   lastTournamentClickedName: string = '';
-  /** C(a): oculto hasta que el servidor confirme que el torneo es del usuario. */
-  flagIsMyTournament: boolean = false;
+  /** C(a): oculto hasta que el servidor confirme que el torneo es del usuario. Signal: el componente es OnPush
+   *  (con un boolean comun la respuesta asincronica no repintaba y el panel no aparecia nunca). */
+  flagIsMyTournament = signal(false);
   constructor() {} 
 
   ngOnInit() {
-    this.lastTournamentClicked = localStorage.getItem('lastTournamentClicked') || '';
-    this.lastTournamentClickedName = localStorage.getItem('lastTournamentClickedName') || '';
+    const last = getLastTournament();
+    this.lastTournamentClicked = last?.code ?? '';
+    this.lastTournamentClickedName = last?.name ?? '';
     if(this.lastTournamentClicked !== '') this.isMyTournament(this.lastTournamentClicked);
   }
 
@@ -38,19 +41,19 @@ export class DashboardComponent {
     this.tournamentService.isMyTournament(code).subscribe({
       next: (response) => {
         if (response) {
-          this.flagIsMyTournament = true;
+          this.flagIsMyTournament.set(true);
         }else{
           this.forgetLastTournament();
         }
       },
-      error: () => this.forgetLastTournament()
+      // Error de red/servidor: no se muestra, pero tampoco se borra (se reintenta la proxima vez).
+      error: () => this.flagIsMyTournament.set(false)
     });
   }
 
   private forgetLastTournament(): void {
-    this.flagIsMyTournament = false;
-    localStorage.removeItem('lastTournamentClicked');
-    localStorage.removeItem('lastTournamentClickedName');
+    this.flagIsMyTournament.set(false);
+    forgetLastTournament();
   }
 
   toTournament(code: string) {
@@ -63,7 +66,7 @@ export class DashboardComponent {
       }},
       error: (error) => {
         console.log(error);
-        this.flagIsMyTournament = false;
+        this.flagIsMyTournament.set(false);
       }
     });
 

@@ -20,22 +20,22 @@ export class FaqComponent {
     },
     {
       question: '¿Es posible modificar el horario de los partidos?',
-      answer: 'Sí, puedes modificar el horario de los encuentros de la próxima fecha desde la administración del torneo.',
+      answer: 'Sí. En el calendario del torneo podés cambiar el día y la hora de un partido, o reprogramar todos los de una fecha.',
       open: false
     },
     {
       question: '¿Cómo se generan los enfrentamientos de un torneo?',
-      answer: 'GESFUT genera automáticamente la fecha, la hora y el lugar de los partidos al asignar los equipos a un torneo.',
+      answer: 'Al generar el calendario, GESFUT arma los cruces de todas las fechas (todos contra todos). Si elegís fecha de inicio, duración de cada partido y días entre fechas, también asigna el día y la hora de cada partido; la cancha la cargás vos en cada partido. Con cantidad impar de equipos, en cada fecha uno queda libre. Al terminar la fase regular podés generar playoffs o tocar «Finalizar torneo» para cerrarlo con la tabla actual.',
       open: false
     },
     {
       question: '¿Puedo asignar premios a los jugadores?',
-      answer: 'Sí, puedes asignar un MVP por partido y un MVP por jornada.',
+      answer: 'Sí, podés asignar un MVP por partido y un MVP por jornada.',
       open: false
     },
     {
       question: '¿Cómo se calculan las tablas de posiciones?',
-      answer: 'Las tablas de posiciones se generan automáticamente a partir de los resultados registrados de los partidos. Si el la tabla cuenta con dos equipos con los mismos puntos, se ordenan por diferencia de goles.',
+      answer: 'Las tablas de posiciones se generan automáticamente a partir de los resultados registrados de los partidos. Si dos equipos tienen los mismos puntos, se ordenan por diferencia de goles.',
       open: false
     },
     {

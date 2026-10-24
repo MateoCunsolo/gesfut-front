@@ -90,6 +90,7 @@ export class InitializeTournamentComponent {
         this.teams = this.teams.filter(team => team.status === true);
         this.teamsFilters = [...this.teams];
         this.getTeamRecentlyCreated();
+        this.restoreSelection();
         this.filterTeamsTournament();
       },
       error: (err) => {
@@ -117,6 +118,23 @@ export class InitializeTournamentComponent {
         console.error(err);
       },
     });
+  }
+
+  /** Retest (c): la seleccion de equipos sobrevive a recargar o salir y volver (sessionStorage, por torneo). */
+  private selectionKey(): string { return 'initTeams:' + this.code; }
+  private persistSelection(): void {
+    if (!this.code) return;
+    try { sessionStorage.setItem(this.selectionKey(), JSON.stringify(this.teamsTournament.map(t => t.id))); } catch { /* sin storage */ }
+  }
+  private restoreSelection(): void {
+    if (!this.code || this.teamsTournament.length) return;
+    let ids: number[] = [];
+    try { ids = JSON.parse(sessionStorage.getItem(this.selectionKey()) || '[]'); } catch { ids = []; }
+    if (!Array.isArray(ids) || !ids.length) return;
+    const picked = this.teams.filter(t => ids.includes(t.id));
+    if (!picked.length) return;
+    this.teamsTournament = picked;
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
   }
 
   filterTeamsTournament() {
@@ -201,7 +219,7 @@ export class InitializeTournamentComponent {
   addTeam(team: TeamResponse) {
     if (!this.teamsTournament.some(item => item.id === team.id)) {
       this.teamsTournament.push(team);
-      this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+      this.tournamentService.setTeamsToInitTournament(this.teamsTournament); this.persistSelection();
       this.teams = this.teams.filter(t => t !== team);
       this.teamsFilters = this.teamsFilters.filter(t => t !== team);
     } else {
@@ -213,7 +231,7 @@ export class InitializeTournamentComponent {
     this.teamsTournament = this.teamsTournament.filter(t => t.id !== team.id);
     if (!this.teamsFilters.some(t => t.id === team.id)) this.teamsFilters = [...this.teamsFilters, team];
     this.teamsFilters.sort((a, b) => naturalCompare(a.name, b.name));
-    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament); this.persistSelection();
     this.filterTeams();
   }
 
@@ -317,7 +335,7 @@ export class InitializeTournamentComponent {
     this.teamsFilters = [...new Map([...this.teamsFilters, ...this.teamsTournament].map(team => [team.id, team])).values()]
       .sort((a, b) => naturalCompare(a.name, b.name));
     this.teamsTournament = [];
-    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament); this.persistSelection();
     this.filterTeams();
   }
 
@@ -328,7 +346,7 @@ export class InitializeTournamentComponent {
       this.teamsFilters = this.teamsFilters.filter(t => t !== team);
     });
     this.teams = [];
-    this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
+    this.tournamentService.setTeamsToInitTournament(this.teamsTournament); this.persistSelection();
   }
 
 

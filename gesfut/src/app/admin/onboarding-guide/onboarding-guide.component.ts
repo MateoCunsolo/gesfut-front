@@ -1,3 +1,4 @@
+import { setLastTournament } from '../../core/utils/last-tournament';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -137,8 +138,7 @@ export class OnboardingGuideComponent {
 
   openTournament(): void {
     if (!this.pendingCode) return;
-    localStorage.setItem('lastTournamentClicked', this.pendingCode);
-    localStorage.setItem('lastTournamentClickedName', this.pendingName);
+    setLastTournament(this.pendingCode, this.pendingName);
     this.dashboard.setNameTournament(this.pendingName);
     this.router.navigate(['/admin/tournaments/' + this.pendingCode]);
   }

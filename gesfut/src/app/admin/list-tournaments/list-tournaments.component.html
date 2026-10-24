@@ -17,7 +17,7 @@
       </button>
       <details class="options"><summary [attr.aria-label]="'Opciones de ' + item.name">Opciones</summary>
         <div class="option-actions">
-          <button type="button" (click)="changeNameTournament(item.code)">Cambiar nombre</button>
+          @if(item.isActive !== false && !item.isFinished){<button type="button" (click)="changeNameTournament(item.code)">Cambiar nombre</button>}
           @if(item.isActive && !item.isFinished){<button type="button" (click)="editDiscipline(item)">Reglas de sanción</button>}
           @if(item.isActive){<button type="button" class="danger" (click)="deleteTournament(item.code)">Eliminar torneo</button>}
           @else{<button type="button" (click)="restoreTournament(item.code)">Restaurar torneo</button>}

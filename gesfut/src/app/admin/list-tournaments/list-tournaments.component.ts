@@ -1,3 +1,5 @@
+import { setLastTournament } from '../../core/utils/last-tournament';
+import { httpErrorMessage } from '../../core/utils/http-error';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TournamentResponseShort } from '../../core/models/tournamentResponseShort';
@@ -128,17 +130,19 @@ export class ListTournamentsComponent {
         if (flag) {
           this.alertService.errorAlert('Ya existe un torneo con ese nombre');
         } else {
-          this.tournaments.forEach(tournament => {
-            if (tournament.code === code) {
-              tournament.name = 'cambiando nombre. . .';
-            }
-          });
+          // Bug retest (D): se guarda el nombre anterior y, si el servidor rechaza (p. ej. torneo finalizado), se restaura y se muestra el motivo.
+          const target = this.tournaments.find(tournament => tournament.code === code)!;
+          const previous = target.name;
+          target.name = 'Cambiando nombre\u2026';
           this.tournamentService.changeNameTournament(code, name).subscribe({
             next: (response) => {
-              if (response) {
-                this.tournaments.find(tournament => tournament.code === code)!.name = name;
-                this.applyFilters();
-              }
+              target.name = response ? name : previous;
+              this.applyFilters();
+            },
+            error: (err) => {
+              target.name = previous;
+              this.applyFilters();
+              this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo cambiar el nombre.'));
             }
           });
         }
@@ -154,8 +158,7 @@ export class ListTournamentsComponent {
       return;
     }
     this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);
-    localStorage.setItem('lastTournamentClicked', code);
-    localStorage.setItem('lastTournamentClickedName', this.tournaments.find(tournament => tournament.code === code)?.name || '');
+    setLastTournament(code, this.tournaments.find(tournament => tournament.code === code)?.name || '');
     this.dashboardService.setNameTournament(this.tournaments.find(tournament => tournament.code === code)?.name || '');
     this.route.navigate([`/admin/tournaments/${code}`]);
   }

@@ -10,7 +10,8 @@
     "start:pwa": "node tools/serve-pwa.mjs",
     "test:pwa": "node tools/test-pwa.mjs",
     "test:result-editor": "node tools/test-result-editor.mjs",
-    "test:auth-messages": "node tools/test-auth-messages.mjs"
+    "test:auth-messages": "node tools/test-auth-messages.mjs",
+    "test:last-tournament": "node tools/test-last-tournament.mjs"
   },
   "private": true,
   "dependencies": {

@@ -20,13 +20,6 @@
     <div class="select-column">
       <h3 class="noQualify">
         EQUIPOS DEL TORNEO
-        <span>
-          {{
-            tournamentParticipantCopy.length > 0
-              ? tournamentParticipantCopy.length
-              : ""
-          }}
-        </span>
       </h3>
       <input type="text" placeholder="Buscar..." (input)="searchTeam($event)" />
       <hr class="hr-select" />

@@ -41,7 +41,7 @@
                   <button type="button" class="button-secondary" [attr.aria-label]="'Editar ' + player.playerName + ' ' + player.playerLastName" (click)="editPlayer(player)">Editar</button>
                   <app-delete-player
                     [idPlayerParticipant]="player.id"
-                    [name]="player.playerName + ', ' + player.playerLastName"
+                    [name]="(player.playerName || '') + ' ' + (player.playerLastName || '')"
                     [isGlobalTeam]="isGlobalTeamPlayers"
                     [isCapitan]="player.isCaptain"
                     [isGoalKeeper]="player.isGoalKeeper"
@@ -73,7 +73,7 @@
                   <button type="button" class="button-secondary" [attr.aria-label]="'Editar ' + player.playerName + ' ' + player.playerLastName" (click)="editPlayer(player)">Editar</button>
                   <app-delete-player
                     [idPlayerParticipant]="player.id"
-                    [name]="player.playerName + ', ' + player.playerLastName"
+                    [name]="(player.playerName || '') + ' ' + (player.playerLastName || '')"
                     [isGlobalTeam]="isGlobalTeamPlayers"
                     [isCapitan]="player.isCaptain"
                     [isGoalKeeper]="player.isGoalKeeper"

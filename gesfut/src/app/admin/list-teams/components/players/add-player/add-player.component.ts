@@ -373,7 +373,7 @@ export class AddPlayerComponent implements OnChanges {
   }
 
   showReConfirmAlert(option: number) {
-    this.alertService.confirmAlert('Agregar jugador', 'Estas seguro que quieres agregar a ' + this.playerForm.get('name')?.value + ' ' + this.playerForm.get('lastName')?.value + '?', 'Aceptar').then((result) => {
+    this.alertService.confirmAlert('Agregar jugador', '\u00bfSeguro que quer\u00e9s agregar a ' + this.playerForm.get('name')?.value + ' ' + this.playerForm.get('lastName')?.value + '?', 'Aceptar').then((result) => {
       if (result.isConfirmed) {
         let newPlayer: PlayerRequest = this.validateForm();
         if (newPlayer === null) {

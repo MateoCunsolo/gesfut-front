@@ -1,3 +1,4 @@
+import { setLastTournament } from '../../core/utils/last-tournament';
 import { ChangeDetectorRef, Component} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ChangeDetectionStrategy } from '@angular/core';
@@ -54,8 +55,7 @@ export class CreateTournamentComponent {
       this.isloding = true;
       this.adminService.createTournament(tournament).subscribe({
         next: (response) => {
-          localStorage.setItem('lastTournamentClicked', response.toString());
-          localStorage.setItem('lastTournamentClickedName', this.name?.value);
+          setLastTournament(response.toString(), this.name?.value ?? '');
           this.alertService.successAlert(this.name?.value.toUpperCase() + ' CREADO CORRECTAMENTE');
           this.router.navigate([`/admin/tournaments/${response}`]);
           this.dashboardService.setHaveParticipants(false);
