@@ -3,6 +3,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <h1 class="title">Ingresar a Gesfut</h1>
     @if (registeredNotice) { <p class="form-hint" role="status">Te enviamos un mail para verificar tu cuenta. Verificalo y después iniciá sesión.</p> }
+    @if (showResend) { <p class="form-hint" role="status">¿No te llegó el mail? Escribí tu mail y te lo reenviamos. <button type="button" class="text-action" [disabled]="resendCooldown > 0" (click)="sendVerification()" [attr.aria-label]="resendCooldown > 0 ? 'Reenviar mail disponible en ' + resendCooldown + ' segundos' : 'Reenviar mail de verificación'">{{ resendCooldown > 0 ? 'Reenviar mail (' + resendCooldown + ' s)' : 'Reenviar mail' }}</button></p> }
     @if (expiredNotice) { <p class="form-hint" role="status">Tu sesión venció. Ingresá de nuevo para seguir.</p> }
       <div class="error-message">
         <!-- @if (error) {

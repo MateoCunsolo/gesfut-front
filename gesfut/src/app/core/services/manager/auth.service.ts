@@ -90,8 +90,8 @@ export class AuthService {
     return this.http.post<void>(`${this.url}/verify-email/${token}`,{});
   }
 
-  resendEmail(email: string): Observable<void> {
-    return this.http.post<void>(`${this.url}/resend-verification/${email}`, {});
+  resendEmail(email: string): Observable<{ message?: string }> {
+    return this.http.post<{ message?: string }>(`${this.url}/resend-verification/${encodeURIComponent(email)}`, {});
   }
 
   /** Mensaje claro (es-AR) para un error HTTP: usa el del backend si viene, si no un texto por defecto. */

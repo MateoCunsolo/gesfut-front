@@ -17,6 +17,13 @@ export function authErrorMessage(error: any, fallback: string): string {
   return msg;
 }
 
+export const RESEND_NEUTRAL = 'Si el mail existe y falta verificarlo, te lo mandamos. Revis\u00e1 tu casilla (y spam).';
+export const RESEND_TOO_MANY = 'Probaste muchas veces. Esper\u00e1 un rato e intent\u00e1 de nuevo.';
+/** Mensaje neutral del reenvio: el del servidor si vino, si no el mismo texto fijo. */
+export function resendMessage(body: any): string {
+  return body && typeof body.message === 'string' && body.message.trim() ? body.message : RESEND_NEUTRAL;
+}
+
 /** Aviso en el login despues de crear la cuenta (?registered=1). */
 export function isRegisteredNotice(search: string): boolean {
   return new URLSearchParams(search).get('registered') === '1';

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { authErrorMessage, isRegisteredNotice } from '../src/app/auth/auth-messages';
+import { authErrorMessage, isRegisteredNotice, resendMessage, RESEND_NEUTRAL, RESEND_TOO_MANY } from '../src/app/auth/auth-messages';
 
 const fb = 'FALLBACK';
 test('usa el mensaje del backend en 4xx', () => {
@@ -54,4 +54,15 @@ test('bloque A: fecha elegida se mantiene, playoffs accesibles, refresco tras ba
   const tr = src('core/services/tournament/team-removal.service.ts');
   assert.equal((tr.match(/this\.refreshOpenTournament\(\);/g) || []).length, 2);
   assert.match(tr, /'Equipo habilitado'/);
+});
+
+test('bloque B: reenviar mail neutral, cooldown 60 s y 429 con voseo', () => {
+  assert.equal(resendMessage({ message: 'Si el mail existe y falta verificarlo, te lo mandamos.' }), 'Si el mail existe y falta verificarlo, te lo mandamos.');
+  assert.equal(resendMessage(null), RESEND_NEUTRAL);
+  assert.equal(RESEND_TOO_MANY, 'Probaste muchas veces. Esperá un rato e intentá de nuevo.');
+  const ts = readFileSync(new URL('../src/app/auth/login/login.component.ts', import.meta.url), 'utf8');
+  assert.match(ts, /startResendCooldown\(60\)/); assert.match(ts, /status === 429 \? RESEND_TOO_MANY/);
+  assert.match(ts, /protected showResend = this\.registeredNotice/); assert.match(ts, /this\.showResend = true/);
+  const html = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
+  assert.match(html, /@if \(showResend\)[^]*\[disabled\]="resendCooldown > 0"/);
 });

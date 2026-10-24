@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
-import { isRegisteredNotice } from '../auth-messages';
+import { isRegisteredNotice, resendMessage, RESEND_TOO_MANY } from '../auth-messages';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
@@ -26,6 +26,10 @@ export class LoginComponent {
   /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
   /** Despues de crear la cuenta: recordar verificar el mail antes de entrar. */
   protected registeredNotice = typeof location !== 'undefined' && isRegisteredNotice(location.search);
+  /** Reenviar mail de verificacion: visible tras crear cuenta o si el login dice "Email no verificado". */
+  protected showResend = this.registeredNotice;
+  protected resendCooldown = 0;
+  private resendTimer: ReturnType<typeof setInterval> | null = null;
   protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';
   constructor(
     private fb: FormBuilder,
@@ -55,9 +59,7 @@ export class LoginComponent {
           this.error = this.authService.errorMessage(error, fallback);
           this.alertService.errorAlert(this.error);
           if (typeof error?.error?.error === 'string' && error.error.error.startsWith('Email no verificado')) {
-            setTimeout(() => {
-              this.resendEmail();
-            }, 2000);
+            this.showResend = true;
           }
           this.redActive = true;
           this.tryLogin = true;
@@ -68,6 +70,26 @@ export class LoginComponent {
       // this.error = 'Campos inválidos';
       this.alertService.errorAlert('Formulario inválido');
     }
+  }
+
+  sendVerification() {
+    if (this.resendCooldown > 0) return;
+    const email = String(this.loginForm.value.email || '').trim();
+    if (!email || this.loginForm.controls['email'].invalid) { this.alertService.errorAlert('Escrib\u00ed tu mail arriba para reenviarte el enlace.'); return; }
+    this.startResendCooldown(60);
+    this.authService.resendEmail(email).subscribe({
+      next: (r: any) => this.alertService.successAlert(resendMessage(r)),
+      error: (err) => this.alertService.errorAlert(err?.status === 429 ? RESEND_TOO_MANY : this.authService.errorMessage(err, 'No pudimos reenviar el mail. Prob\u00e1 de nuevo en un rato.'))
+    });
+  }
+
+  private startResendCooldown(seconds: number) {
+    this.resendCooldown = seconds;
+    if (this.resendTimer) clearInterval(this.resendTimer);
+    this.resendTimer = setInterval(() => {
+      this.resendCooldown = Math.max(0, this.resendCooldown - 1);
+      if (this.resendCooldown === 0 && this.resendTimer) { clearInterval(this.resendTimer); this.resendTimer = null; }
+    }, 1000);
   }
 
   toRegister() {
