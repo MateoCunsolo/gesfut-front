@@ -1,4 +1,4 @@
-import { isByeMatch } from '../../../core/utils/bye';
+import { isByeMatch, playoffEligible } from '../../../core/utils/bye';
 import { MatchResponse } from '../../../core/models/tournamentResponse';
 import { httpErrorMessage } from '../../../core/utils/http-error';
 import { roundLabel } from '../../../core/utils/round-label';
@@ -37,7 +37,7 @@ export class ListMatchDaysComponent implements OnInit {
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase().trim();
     const qualifiedSet = new Set(this.teamsQualify.map(team => team.idParticipant));
 
-    this.tournamentParticipantCopy = this.tournament.participants
+    this.tournamentParticipantCopy = playoffEligible(this.tournament.participants)
       .filter(participant => !qualifiedSet.has(participant.idParticipant))
       .filter(participant => searchTerm ? participant.name.toLowerCase().includes(searchTerm) : true);
   }
@@ -456,7 +456,7 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
   showGeneratePlayOffsFunction() {
-    this.tournamentParticipantCopy = [...this.tournament.participants]
+    this.tournamentParticipantCopy = playoffEligible(this.tournament.participants)
     this.orderTeamNoQualify();
     this.showGeneratePlayOffs = !this.showGeneratePlayOffs;
   }
@@ -512,7 +512,7 @@ export class ListMatchDaysComponent implements OnInit {
 
   getBestTeamsLeaderboard(numTeams: number) {
     this.teamsQualify = [];
-    this.tournamentParticipantCopy = [...this.tournament.participants];
+    this.tournamentParticipantCopy = playoffEligible(this.tournament.participants);
     this.orderTeamNoQualify();
     this.teamsQualify = this.tournamentParticipantCopy.slice(0, numTeams);
     this.tournamentParticipantCopy = this.tournamentParticipantCopy.slice(numTeams);

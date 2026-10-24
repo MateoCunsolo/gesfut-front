@@ -43,7 +43,7 @@ export class TeamRemovalService {
   }
 
   async enable(teamId: number, teamName: string): Promise<boolean> {
-    const answer = await this.alerts.confirmAlert(`Habilitar "${teamName}"`, 'El equipo vuelve a estar disponible para torneos nuevos. En los torneos donde fue dado de baja sigue de baja.', 'Habilitar');
+    const answer = await this.alerts.confirmAlert(`Habilitar "${teamName}"`, 'El equipo vuelve a estar disponible. En los torneos en curso donde fue dado de baja vuelve a jugar las fechas que faltan (las fechas ya pasadas quedan como libres). Si el torneo está en playoffs o terminó, no vuelve.', 'Habilitar');
     if (!answer.isConfirmed) return false;
     try {
       await firstValueFrom(this.teams.changeStatusTeam(teamId, true));

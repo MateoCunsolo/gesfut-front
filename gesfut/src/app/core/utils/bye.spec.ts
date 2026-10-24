@@ -1,4 +1,4 @@
-import { isByeMatch, restingTeam } from './bye';
+import { isByeMatch, playoffEligible, restingTeam } from './bye';
 
 describe('fecha libre (plan 22/10 #2)', () => {
   it('reconoce "Free" aunque el backend no mande el flag', () => {
@@ -13,5 +13,12 @@ describe('fecha libre (plan 22/10 #2)', () => {
   it('un partido normal no es libre', () => {
     expect(isByeMatch({ homeTeam: 'TEST A', awayTeam: 'TEST B', isBye: false })).toBeFalse();
     expect(restingTeam({ homeTeam: 'TEST A', awayTeam: 'TEST B', isBye: false })).toBeNull();
+  });
+});
+
+describe('clasificación a playoffs (plan 22/10 #2)', () => {
+  it('no ofrece equipos dados de baja', () => {
+    const r = playoffEligible([{ name: 'A', isActive: true }, { name: 'B', isActive: false }, { name: 'C' }]);
+    expect(r.map(x => x.name)).toEqual(['A', 'C']);
   });
 });

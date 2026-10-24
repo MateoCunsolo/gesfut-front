@@ -12,3 +12,8 @@ export function restingTeam(m: Pick<MatchResponse, 'homeTeam' | 'awayTeam'> & Pa
   if (m.restingTeam !== undefined) return m.restingTeam;
   return m.homeTeam?.toLowerCase() === 'free' ? m.awayTeam : m.homeTeam;
 }
+
+/** Plan 22/10 #2 (respuesta 3): un equipo dado de baja del torneo no puede clasificar a playoffs. */
+export function playoffEligible<T extends { isActive?: boolean | null }>(participants: T[] | null | undefined): T[] {
+  return (participants ?? []).filter(p => p.isActive !== false);
+}
