@@ -10,7 +10,6 @@ import { ParticipantShortResponse } from '../../models/participantShortResponse'
 import { SessionService } from '../manager/session.service';
 import { PlayerRequest } from '../../models/teamRequest';
 import { TeamResponse } from '../../models/teamResponse';
-import { compareStandings } from '../../utils/standings';
 
 @Injectable({
   providedIn: 'root'
@@ -80,7 +79,7 @@ export class TournamentService {
       map((response: TournamentResponseFull) => {
           response.participants = response.participants.filter(participant => participant.name.toLocaleLowerCase() != 'free');
           response.matchDays.sort((a, b) => a.numberOfMatchDay - b.numberOfMatchDay);
-          response.participants.sort((a, b) => compareStandings(a.statistics, b.statistics));
+          // Revisión crítica #8: el orden de la tabla lo define el backend (incluye enfrentamiento directo y fair play).
           return response;
       })
     );

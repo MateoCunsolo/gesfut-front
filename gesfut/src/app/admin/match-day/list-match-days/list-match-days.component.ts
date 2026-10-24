@@ -3,7 +3,7 @@ import { isByeMatch, playoffEligible } from '../../../core/utils/bye';
 import { MatchResponse } from '../../../core/models/tournamentResponse';
 import { httpErrorMessage } from '../../../core/utils/http-error';
 import { roundLabel } from '../../../core/utils/round-label';
-import { compareStandings } from '../../../core/utils/standings';
+import { byLeagueRank } from '../../../core/utils/standings';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchCardComponent } from '../../../shared/match-card/match-card.component';
 import { MatchDayResponse, ParticipantResponse } from '../../../core/models/tournamentResponse';
@@ -529,15 +529,15 @@ export class ListMatchDaysComponent implements OnInit {
     this.orderTeamNoQualify();
     this.teamsQualify = this.tournamentParticipantCopy.slice(0, numTeams);
     this.tournamentParticipantCopy = this.tournamentParticipantCopy.slice(numTeams);
-    this.tournamentParticipantCopy.sort((a, b) => compareStandings(a.statistics, b.statistics));
+    this.tournamentParticipantCopy.sort(byLeagueRank(this.tournament.participants));
   };
 
   orderTeamQulify() {
-    this.teamsQualify.sort((a, b) => compareStandings(a.statistics, b.statistics));
+    this.teamsQualify.sort(byLeagueRank(this.tournament.participants));
   }
 
   orderTeamNoQualify() {
-    this.tournamentParticipantCopy.sort((a, b) => compareStandings(a.statistics, b.statistics));
+    this.tournamentParticipantCopy.sort(byLeagueRank(this.tournament.participants));
   }
 
   async generatePlayOffsNoTeams() {
