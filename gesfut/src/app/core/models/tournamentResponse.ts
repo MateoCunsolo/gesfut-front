@@ -60,6 +60,8 @@ export interface PlayerParticipantResponse {
 
 export interface ParticipantResponse {
     idParticipant: number;
+    /** Revisión crítica #14: color del equipo (viene con el participante). */
+    color?: string | null;
     idTeam: number;
     name: string;
     isActive: boolean;

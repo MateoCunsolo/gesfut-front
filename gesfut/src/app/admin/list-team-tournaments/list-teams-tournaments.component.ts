@@ -11,6 +11,7 @@ import { NamesTournamentsComponent } from '../list-teams/components/names-tourna
 import { PlayersComponent } from '../list-teams/components/players/players.component';
 import { PlayersTournamentComponent } from './players-tournament/players-tournament.component';
 import { TeamService } from '../../core/services/tournament/team.service';
+import { SessionService } from '../../core/services/manager/session.service';
 import { IfStmt } from '@angular/compiler';
 
 @Component({
@@ -25,6 +26,7 @@ export class ListTeamsTournamentsComponent {
   private dashboardService = inject(DashboardService);
   private tournamentService = inject(TournamentService);
   private teamService = inject(TeamService);
+  private sessionService = inject(SessionService);
 
   protected tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
   protected participants: ParticipantResponse[] = [];
@@ -99,7 +101,9 @@ export class ListTeamsTournamentsComponent {
       this.tournamentService.setLastTeamClicked(this.participants.indexOf(participant));
       this.updateSelectedIndex();
       this.bindingSelect = idParticipant;
-      this.getTeamColor(participant.idTeam);
+      // Revisión crítica #14: el color viene en el participante (la vista pública no puede pedir /teams/{id}).
+      if (participant.color) this.colorSelected = participant.color;
+      else if (this.sessionService.isAuth()) this.getTeamColor(participant.idTeam);
     }
   }
 
