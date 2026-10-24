@@ -1,7 +1,7 @@
 <div class="user-container">
   <button type="button" class="user-trigger" aria-label="Mi cuenta" [attr.aria-expanded]="isMenuOpen" (click)="toggleMenu()"><span class="user-avatar" aria-hidden="true">{{ name.charAt(0).toUpperCase() }}</span><span class="user-name">{{name}}</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
   @if (isMenuOpen) { <div class="user-menu">
-    @if(isTournament){<button type="button" (click)="generateLink()">Compartir torneo</button>}
+    @if(inTournament){<button type="button" (click)="generateLink()">Compartir torneo</button>}
     <button type="button" (click)="toChangePasswordWithPassword()">Cambiar contraseña</button><button type="button" (click)="help()">Ayuda</button><button type="button" (click)="onLogout()" class="logout">Cerrar sesión</button>
   </div> }
 </div>

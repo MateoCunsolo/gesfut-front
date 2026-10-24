@@ -255,6 +255,8 @@ export class ListMatchDaysComponent implements OnInit {
     //ADVERTIR QUE ES LA ULTIMA FECHA 
     if (this.selectedMatchDay === this.tournament.matchDays.length - 1 && !this.tournament.matchDays[this.selectedMatchDay].isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
       console.log('Última fecha del torneo, mostrando advertencia');
+      // Retest 24/10: con MVP, la advertencia va dentro del mismo dialogo (un solo paso).
+      if (this.tournament.matchDays[this.selectedMatchDay].matches.some(match => match.mvpPlayer != null && match.mvpPlayer !== '')) { this.closeMatchDayWithMvp(status, 'Es la \u00faltima fecha de la fase regular: despu\u00e9s pod\u00e9s generar playoffs o finalizar el torneo. '); return; }
       this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Es la última fecha de la fase regular. Después podés generar playoffs o finalizar el torneo con el botón "Finalizar torneo".', 'Confirmar')
         .then((result) => {
           console.log('Resultado de la confirmación:', result);
@@ -311,7 +313,7 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
-  closeMatchDayWithMvp(status: boolean) {
+  closeMatchDayWithMvp(status: boolean, note: string = '') {
     let playerMvp = '';
     this.playersMvpS = ['Seleccionar MVP'];
     this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match) => {
@@ -320,7 +322,7 @@ export class ListMatchDaysComponent implements OnInit {
       }
     });
     console.log('playersMvpS:', this.playersMvpS);
-    this.alertService.selectOptionsAlert('Elegí el MVP de la fecha', this.playersMvpS, "Cerrar sin MVP")
+    this.alertService.selectOptionsAlert('Elegí el MVP de la fecha', this.playersMvpS, "Cerrar sin MVP", note)
       .then((result) => {
         if (result.isConfirmed && result.value !== undefined) {
           const playerMvp = this.playersMvpS[result.value];

@@ -4,8 +4,7 @@
 <h3 class="search-team mobile">Estadísticas de</h3>
 }@else {
 <h3>
-  EL EQUIPO NO ESTA INSCRIPTO A NINGUN TORNEO, SE MOSTRARAN LOS JUGADORES
-  GLOBALES
+  Este equipo todavía no está inscripto en ningún torneo. Se muestran sus jugadores.
 </h3>
 }
 
@@ -22,7 +21,7 @@
       [ngClass]="{ tournamentClicked: isClicked }"
       (click)="emitThatIsGlobalTeam()"
     >
-      JUGADORES GLOBALES
+      Jugadores del equipo
     </option>
     @for (team of participantsTeam; track $index) {
     <option class="opSelect" [value]="team.idParticipant">
@@ -37,7 +36,7 @@
       [ngClass]="{ tournamentClicked: isClicked }"
       (click)="emitThatIsGlobalTeam()"
     >
-      JUGADORES GLOBALES
+      Jugadores del equipo
     </p>
     @for (participantsTournament of participantsTeam; track $index) {
     <p
@@ -66,7 +65,7 @@
           [ngClass]="{ tournamentClicked: isClicked }"
           (click)="emitThatIsGlobalTeam()"
         >
-          JUGADORES GLOBALES
+          Jugadores del equipo
         </option>
         @for (team of participantsTeam; track $index) {
         <option class="opSelect" [value]="team.idParticipant">

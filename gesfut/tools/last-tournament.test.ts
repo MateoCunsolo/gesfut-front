@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament } from '../src/app/core/utils/last-tournament';
+import { httpErrorMessage } from '../src/app/core/utils/http-error';
+import { parseDmyTime } from '../src/app/core/utils/date-input';
+import { tournamentPublicLink } from '../src/app/core/utils/share-tournament';
 
 function mem() { const m = new Map<string, string>(); return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => { m.set(k, v); }, removeItem: (k: string) => { m.delete(k); } }; }
 function user(name: string, last: string) { const s = mem(); s.setItem('name', name); s.setItem('lastName', last); return s; }
@@ -38,10 +41,29 @@ test('con email en la sesión la clave es por email y no se escriben claves glob
   assert.equal(local.getItem('lastTournamentClickedName'), null);
 });
 
-test('migra las claves globales viejas una sola vez', () => {
+test('claves globales viejas: se borran sin adoptarse', () => {
   const local = mem(); const a = user('Ana', 'Uno');
   local.setItem('lastTournamentClicked', 'viejo'); local.setItem('lastTournamentClickedName', 'Liga vieja');
-  assert.deepEqual(getLastTournament(local, a), { code: 'viejo', name: 'Liga vieja' });
+  assert.equal(getLastTournament(local, a), null);
   assert.equal(local.getItem('lastTournamentClicked'), null);
-  assert.equal(getLastTournament(local, a)?.code, 'viejo');
+  assert.equal(local.getItem('lastTournamentClickedName'), null);
+  assert.equal(local.getItem('lastTournament:ana|uno'), null);
+});
+
+test('httpErrorMessage muestra el mensaje del servidor (400 y 429) y si no, el generico', () => {
+  assert.equal(httpErrorMessage({ status: 400, error: { error: 'El DNI 123 ya está en el equipo X' } }, 'gen'), 'El DNI 123 ya está en el equipo X');
+  assert.equal(httpErrorMessage({ status: 429, error: { error: 'Demasiados intentos. Esperá unos minutos.' } }, 'gen'), 'Demasiados intentos. Esperá unos minutos.');
+  assert.equal(httpErrorMessage({ status: 400, error: { message: 'm' } }, 'gen'), 'm');
+  assert.equal(httpErrorMessage({ status: 500, error: null }, 'gen'), 'gen');
+});
+
+test('link de compartir usa el codigo', () => {
+  assert.equal(tournamentPublicLink('abc-1', 'https://x.test'), 'https://x.test/abc-1');
+});
+
+test('fecha de playoffs dd/mm/aaaa', () => {
+  assert.equal(parseDmyTime('05/11/2026', '20:30'), '2026-11-05T20:30:00');
+  assert.equal(parseDmyTime('31/02/2026', '20:00'), null);
+  assert.equal(parseDmyTime('11/05/26', '20:00'), null);
+  assert.equal(parseDmyTime('05/11/2026', '25:00'), null);
 });

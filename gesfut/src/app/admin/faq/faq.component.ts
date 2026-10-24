@@ -45,7 +45,7 @@ export class FaqComponent {
     },
     {
       question: '¿Cómo puedo compartir un torneo?',
-      answer: 'Puedes compartir un torneo a través de su link, lo podes generar apretando en el icono del usuario y seleccionando "Compartir torneo" . Debes si o si estar dentro de la seccion torneo para poder compartirlo.',
+      answer: 'Dentro del torneo, tocá «Compartir torneo» (al lado del nombre, o en tu menú de usuario). Se copia un link público con el código del torneo: quien lo abra ve calendario, tabla y resultados sin necesidad de cuenta y sin poder modificar nada.',
       open: false
     },
     {

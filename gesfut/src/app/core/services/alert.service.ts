@@ -1,3 +1,4 @@
+import { parseDmyTime } from '../utils/date-input';
 import { Injectable } from '@angular/core';
 import type { SweetAlertOptions, SweetAlertResult } from 'sweetalert2';
 // Auditoria 22/10 (#15): sweetalert2 se carga recien al primer aviso, fuera del bundle inicial. Misma API y mismos estilos.
@@ -191,11 +192,11 @@ export class AlertService {
     }).then(r => r.isConfirmed ? Number(r.value) : null);
   }
 
-  selectOptionsAlert(title: string, options: string[], cancelText: string) {
+  selectOptionsAlert(title: string, options: string[], cancelText: string, note: string = '') {
     return Swal.fire({
       titleText: title,
       input: 'select',
-      text: 'Se mostrarán aquellos jugadores que hayan sido elegidos como MVP en sus partidos.',
+      text: note + 'Se mostrarán aquellos jugadores que hayan sido elegidos como MVP en sus partidos.',
       inputOptions: options.map(escapeHtml),
       showCancelButton: true,
       confirmButtonText: 'Cerrar fecha',
@@ -256,8 +257,10 @@ export class AlertService {
     return Swal.fire({
       title: `Programar ${roundName}`,
       html: `
-        <label class="swal2-input-label" for="po-date">Fecha y hora del primer partido</label>
-        <input id="po-date" type="datetime-local" class="swal2-input">
+        <label class="swal2-input-label" for="po-date">Fecha del primer partido (dd/mm/aaaa)</label>
+        <input id="po-date" type="text" inputmode="numeric" placeholder="dd/mm/aaaa" autocomplete="off" class="swal2-input">
+        <label class="swal2-input-label" for="po-time">Hora (24 h)</label>
+        <input id="po-time" type="text" inputmode="numeric" placeholder="hh:mm" value="20:00" autocomplete="off" class="swal2-input">
         <label class="swal2-input-label" for="po-minutes">Minutos entre partidos</label>
         <input id="po-minutes" type="number" min="0" max="600" step="5" value="60" class="swal2-input">
       `,
@@ -268,12 +271,12 @@ export class AlertService {
       cancelButtonAriaLabel: 'Cancelar la programaci\u00f3n de playoffs',
       scrollbarPadding: false,
       preConfirm: () => {
-        const startDate = (document.getElementById('po-date') as HTMLInputElement).value;
+        const startDate = parseDmyTime((document.getElementById('po-date') as HTMLInputElement).value, (document.getElementById('po-time') as HTMLInputElement).value);
         const minutes = Number((document.getElementById('po-minutes') as HTMLInputElement).value);
-        if (!startDate) { Swal.showValidationMessage('Elegí la fecha y hora de la ronda.'); return false; }
+        if (!startDate) { Swal.showValidationMessage('Escrib\u00ed la fecha como dd/mm/aaaa y la hora como hh:mm.'); return false; }
         if (new Date(startDate).getTime() < Date.now()) { Swal.showValidationMessage('Elegí una fecha y hora futura.'); return false; }
         if (!Number.isFinite(minutes) || minutes < 0 || minutes > 600) { Swal.showValidationMessage('Los minutos deben estar entre 0 y 600.'); return false; }
-        return { startDate: startDate.length === 16 ? `${startDate}:00` : startDate, minutesPerMatch: minutes };
+        return { startDate, minutesPerMatch: minutes };
       }
     }).then(r => r.isConfirmed ? r.value : null);
   }

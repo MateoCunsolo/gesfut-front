@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { AlertService } from '../../core/services/alert.service';
+import { shareTournament } from '../../core/utils/share-tournament';
 
 @Component({
   selector: 'app-tournament-nav',
@@ -6,6 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   template: `
     <div class="tournament-heading">
       <h1>{{ name || 'Tu torneo' }}</h1>
+      @if (shareCode) { <button type="button" class="button-secondary share-button" (click)="share()"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Compartir torneo</button> }
     </div>
     <nav class="tournament-navigation" aria-label="Secciones del torneo">
       @for (item of sections; track item.id) {
@@ -18,7 +21,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   `,
   styles: `
     :host { display: block; margin-bottom: 12px; }
-    .tournament-heading { padding: 12px 0 8px; }
+    .tournament-heading { padding: 12px 0 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+    .tournament-heading .share-button { flex-direction: row; min-height: 40px; font-size: 1.4rem; padding: 0 12px; gap: 6px; }
     .eyebrow { color: var(--muted); font-size: 1.3rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
     h1 { font-size: 2rem; line-height: 1.25; margin: 0; color: var(--ink); overflow-wrap: anywhere; }
     .tournament-navigation { position: fixed; bottom: 0; inset-inline: 0; z-index: 30; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); background: var(--surface); border-top: 1px solid var(--line); padding: 8px max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)); box-shadow: 0 -4px 24px oklch(.25 .025 154 / .04); }
@@ -38,6 +42,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class TournamentNavComponent {
   @Input() name = '';
+  /** Solo en la vista del organizador: muestra "Compartir torneo" con el link público por código. */
+  @Input() shareCode: string | null = null;
+  private alerts = inject(AlertService);
+  share(): void { shareTournament(this.shareCode, this.alerts); }
   @Input() active = 'recap';
   @Output() sectionChange = new EventEmitter<string>();
   readonly sections = [

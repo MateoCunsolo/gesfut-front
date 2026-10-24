@@ -1,3 +1,5 @@
+import { currentTournamentCode } from '../../core/utils/route-code';
+import { shareTournament } from '../../core/utils/share-tournament';
 import { Component, HostListener, inject, OnDestroy } from '@angular/core';
 import { SessionService } from '../../core/services/manager/session.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -16,6 +18,8 @@ export class UserComponent {
   name: string = '';
   code: string = '';
   isTournament = false;
+  /** Se evalua al abrir el menu (antes dependia de un NavigationEnd que a veces ya habia pasado). */
+  get inTournament(): boolean { return /\/admin\/tournaments\/[0-9a-fA-F-]{36}/.test(window.location.pathname); }
   private routerSubscription!: Subscription;
   containsTournaments: boolean = false;
 
@@ -106,23 +110,8 @@ export class UserComponent {
   }
 
   async generateLink() {
-    const link = new URL(`/${encodeURIComponent(this.code)}`, window.location.origin).href;
-    
-    try {
-      const result = await this.alertService.saherdLinkAlert('LINK DEL TORNEO', link);
-      
-      if (result.isConfirmed) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(link);
-          this.alertService.successAlert('Link copiado al portapapeles');
-        } else {
-          this.copyToClipboardFallback(link);
-        }
-      }
-    } catch (error) {
-      console.error('Error al copiar el enlace', error);
-      this.copyToClipboardFallback(link);
-    }
+    // El codigo sale de la URL: el estado en memoria podia estar vacio y el link quedaba en "/".
+    await shareTournament(currentTournamentCode(), this.alertService);
   }
   
   copyToClipboardFallback(text: string) {

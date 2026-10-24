@@ -1,3 +1,4 @@
+import { currentTournamentCode } from '../../core/utils/route-code';
 import { TournamentNavComponent } from '../../shared/tournament-nav/tournament-nav.component';
 import { Component, HostListener } from '@angular/core';
 import { DashboardService } from '../../core/services/dashboard.service';
@@ -18,6 +19,8 @@ export class NavbarComponent {
   menuOpen: boolean = false;
   activeComponent = 'recap';
   tournamentName: string = '';
+  /** Codigo del torneo de la URL (/admin/tournaments/:code), no del estado en memoria. */
+  get shareCode(): string | null { return currentTournamentCode(); }
   constructor(private dashboardService: DashboardService, private sessionService:SessionService) {
     this.checkScreenSize();
   }
