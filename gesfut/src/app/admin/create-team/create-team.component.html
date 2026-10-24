@@ -41,6 +41,7 @@
     <div formArrayName="players" class="players-form" >
       <app-excel-upload *ngIf="showExcelUpload" (dataLoaded)="loadTeamData($event)"></app-excel-upload>
       <div class="players-list" *ngIf="!showExcelUpload">
+        <p class="players-hint"><small>Podés crear el equipo solo con el nombre y sumar jugadores después. Para generar el fixture necesita al menos 2 jugadores, un capitán y un arquero.</small></p>
         <ng-container *ngIf="players.length === 0"><p>No hay jugadores en el equipo.</p></ng-container>
         <div *ngFor="let player of players.controls; let i = index" [formGroupName]="i" class="player-row" role="group" [attr.aria-labelledby]="'playerTitle-' + i">
           <div class="player-row-head">

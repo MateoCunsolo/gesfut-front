@@ -55,7 +55,7 @@ export class AuthService {
   }
 
   register(credentials: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.url}/sing-up`, credentials).pipe(
+    return this.http.post<AuthResponse>(`${this.url}/signup`, credentials).pipe(
       map((response) => {
         const auth: AuthResponse = {
           name: response.name,

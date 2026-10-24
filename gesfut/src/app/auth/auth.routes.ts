@@ -10,9 +10,11 @@ export const AUTH_ROUTES: Routes = [
     component: LoginComponent
   },
   {
-    path: 'singup',
+    path: 'signup',
     component: RegisterComponent
   },
+  // Alias viejo: links guardados o compartidos siguen funcionando.
+  { path: 'singup', redirectTo: 'signup', pathMatch: 'full' },
   {
     path: 'reset-password',
     component: ReciveEmailComponent

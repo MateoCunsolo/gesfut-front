@@ -107,7 +107,7 @@ export class CreatePrizeComponent {
         },
       });
     }else{
-      this.alertService.errorAlert("Por favor rellene todos los campos.");
+      this.alertService.errorAlert("Completá todos los campos.");
     }
   }
 

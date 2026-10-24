@@ -85,6 +85,9 @@ getItems(response:boolean) {
   }
 
   clearUserSession(): void {
+      // C(a): el acceso directo "Retomar último torneo" no debe sobrevivir al cierre de sesión (otro usuario en el mismo navegador).
+      localStorage.removeItem('lastTournamentClicked');
+      localStorage.removeItem('lastTournamentClickedName');
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('sessionExp');
       sessionStorage.removeItem('name');

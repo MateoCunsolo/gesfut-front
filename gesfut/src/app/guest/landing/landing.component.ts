@@ -16,7 +16,7 @@ export class LandingComponent {
   constructor(private router: Router) { }
 
   toRegister() {
-    this.router.navigate(['/auth/singup']);
+    this.router.navigate(['/auth/signup']);
   }
 
   viewTournament() {

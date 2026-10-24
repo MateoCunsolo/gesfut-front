@@ -98,7 +98,7 @@ export class DeleteComponent {
   deleteFromGlobalCallService() {
     if(!this.verificationsDelete()){
       if(this.isCapitan) this.alertService.errorAlert('No puedes eliminar a un capitan');
-      if(this.isGoalKeeper) this.alertService.errorAlert('No puedes eliminar a un portero');
+      if(this.isGoalKeeper) this.alertService.errorAlert('No podés eliminar al arquero');
       return;
     }
     console.log('Eliminando jugador global:', this.idPlayer);
@@ -116,7 +116,7 @@ export class DeleteComponent {
     if (this.isCapitan) {
       this.alertService.errorAlert('No puedes eliminar a un capitan');
     } else if (this.isGoalKeeper) {
-      this.alertService.errorAlert('No puedes eliminar a un portero');
+      this.alertService.errorAlert('No podés eliminar al arquero');
     }else{
       this.alertService.errorAlert('Error al eliminar jugador');
     }

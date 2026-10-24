@@ -92,17 +92,7 @@ button: any;
   }
 
   removePlayer(index: number) {
-    
-    if (this.players.length < 3) {
-      Swal.fire({
-        title: '¡Atención!',
-        text: 'El equipo debe tener al menos 2 jugadores.',
-        icon: 'warning',
-        confirmButtonText: 'Entendido'
-      });
-      return;
-    }
-    
+    // C(b): el equipo se puede crear solo con nombre; el plantel minimo se pide al generar el fixture.
     this.players.removeAt(index);
 
   }
@@ -288,6 +278,11 @@ button: any;
     
   onSubmit() {
     if (this.isloading) return; // Loop 8: doble toque enviaba el equipo dos veces
+    // C(b): las filas de jugador que quedaron totalmente vacias no se envian (se puede crear solo con nombre).
+    for (let i = this.players.length - 1; i >= 0; i--) {
+      const v = this.players.at(i).value;
+      if (!String(v.name ?? '').trim() && !String(v.lastName ?? '').trim() && (v.number === null || v.number === undefined || v.number === '') && !String(v.dni ?? '').trim()) this.players.removeAt(i);
+    }
     if (this.teamForm.invalid) {
       this.alertService.errorAlert("Completá todos los campos.");
       return;

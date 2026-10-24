@@ -93,7 +93,7 @@ export class LoginComponent {
   }
 
   toRegister() {
-    this.router.navigate(['auth/singup']);
+    this.router.navigate(['auth/signup']);
   }
 
 

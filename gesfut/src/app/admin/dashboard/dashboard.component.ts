@@ -20,20 +20,13 @@ export class DashboardComponent {
   private router = inject(Router);
   lastTournamentClicked: string = '';
   lastTournamentClickedName: string = '';
-  flagIsMyTournament: boolean = true;
+  /** C(a): oculto hasta que el servidor confirme que el torneo es del usuario. */
+  flagIsMyTournament: boolean = false;
   constructor() {} 
 
   ngOnInit() {
     this.lastTournamentClicked = localStorage.getItem('lastTournamentClicked') || '';
-    if (this.lastTournamentClicked === '') {
-      this.flagIsMyTournament = false;
-      // this.router.navigate(['/admin']);
-    }
     this.lastTournamentClickedName = localStorage.getItem('lastTournamentClickedName') || '';
-    if (this.lastTournamentClickedName === '') {
-      this.flagIsMyTournament = false;
-      // this.router.navigate(['/admin']);
-    }
     if(this.lastTournamentClicked !== '') this.isMyTournament(this.lastTournamentClicked);
   }
 
@@ -47,17 +40,17 @@ export class DashboardComponent {
         if (response) {
           this.flagIsMyTournament = true;
         }else{
-          this.flagIsMyTournament = false;
-          localStorage.removeItem('lastTournamentClicked');
-          localStorage.removeItem('lastTournamentClickedName');
-          window.location.reload();
-          console.log("No es mi torneo");
+          this.forgetLastTournament();
         }
       },
-      error: (error) => {
-        console.log(error);
-      }
+      error: () => this.forgetLastTournament()
     });
+  }
+
+  private forgetLastTournament(): void {
+    this.flagIsMyTournament = false;
+    localStorage.removeItem('lastTournamentClicked');
+    localStorage.removeItem('lastTournamentClickedName');
   }
 
   toTournament(code: string) {
