@@ -238,6 +238,11 @@ export class TournamentService {
       tap(() => this.getTournamentFull(code).subscribe()));
   }
 
+  /** Revisión crítica #15: borra si no se jugó nada; si ya hubo partidos, archiva. */
+  deleteTournament(code: string): Observable<{ action: 'DELETE' | 'ARCHIVE' }> {
+    return this.http.delete<{ action: 'DELETE' | 'ARCHIVE' }>(`${this.url}/tournaments/${code}`);
+  }
+
   /** Revisión crítica #2: finalizar es explícito e irreversible. */
   finishTournament(code: string): Observable<void> {
     return this.http.put<void>(`${this.url}/tournaments/${code}/finish`, null).pipe(

@@ -83,25 +83,23 @@ export class ListTournamentsComponent {
   }
 
   deleteTournament(code: string) {
-    this.alertService.confirmAlert('¿Estás seguro de que quieres eliminar este torneo?', 'Estara 7 dias en papelera y luego se elinara.', 'Sí, eliminar').then((result) => {
-      if (result.isConfirmed) {
-        this.tournamentService.changeIsActive(code, false).subscribe({
-          next: (response) => {
-            if (response) {
-              this.tournaments = this.tournaments.filter(tournament => tournament.code !== code);
-              this.tournamentService.getTournamentShortList().subscribe({
-                next: (response) => {
-                  this.tournaments = response;
-                  this.applyFilters();
-                }
-              });
-            }}
+    this.alertService.confirmAlert('¿Eliminar este torneo?', 'Si todavía no se jugó ningún partido, se borra definitivamente. Si ya hubo partidos, se archiva: sigue visible en su link pero no se puede modificar.', 'Sí, eliminar').then((result) => {
+      if (!result.isConfirmed) return;
+      this.tournamentService.deleteTournament(code).subscribe({
+        next: (response) => {
+          this.alertService.successAlert(response.action === 'DELETE' ? 'Torneo eliminado' : 'Torneo archivado: sigue visible en su link');
+          this.tournamentService.getTournamentShortList().subscribe({
+            next: (list) => {
+              this.tournaments = list;
+              this.applyFilters();
+            }
           });
-      } else {
-        this.alertService.errorAlert('Operación cancelada');
-      }
-    })
+        },
+        error: (e) => this.alertService.errorAlert(e?.error?.error ?? e?.error?.message ?? 'No se pudo eliminar el torneo.')
+      });
+    });
   }
+
 
 
   changeComponent(component: string) {
