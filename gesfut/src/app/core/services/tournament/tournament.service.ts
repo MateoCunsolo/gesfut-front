@@ -238,6 +238,12 @@ export class TournamentService {
       tap(() => this.getTournamentFull(code).subscribe()));
   }
 
+  /** Respuesta 3: sumar un equipo al torneo (antes de empezar, o empezado e impar). */
+  addTeam(code: string, teamId: number): Observable<void> {
+    return this.http.post<void>(`${this.url}/tournaments/${code}/add-team`, { tournamentCode: code, teams: [teamId] }).pipe(
+      tap(() => this.getTournamentFull(code).subscribe()));
+  }
+
   /** Revisión crítica #15: borra si no se jugó nada; si ya hubo partidos, archiva. */
   deleteTournament(code: string): Observable<{ action: 'DELETE' | 'ARCHIVE' }> {
     return this.http.delete<{ action: 'DELETE' | 'ARCHIVE' }>(`${this.url}/tournaments/${code}`);

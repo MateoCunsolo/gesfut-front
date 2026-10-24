@@ -143,6 +143,22 @@ export class AlertService {
   }
 
 
+  /** Respuesta 3: elegir un equipo de una lista. Devuelve el índice elegido o null. */
+  pickOneAlert(title: string, text: string, options: string[], confirmText: string): Promise<number | null> {
+    return Swal.fire({
+      titleText: title,
+      text,
+      input: 'select',
+      inputOptions: options.map(escapeHtml),
+      inputPlaceholder: 'Elegí un equipo',
+      showCancelButton: true,
+      confirmButtonText: confirmText,
+      cancelButtonText: 'Cancelar',
+      scrollbarPadding: false,
+      inputValidator: (value) => (value === '' || value === null || value === undefined) ? 'Elegí un equipo' : null
+    }).then(r => r.isConfirmed ? Number(r.value) : null);
+  }
+
   selectOptionsAlert(title: string, options: string[], cancelText: string) {
     return Swal.fire({
       titleText: title,

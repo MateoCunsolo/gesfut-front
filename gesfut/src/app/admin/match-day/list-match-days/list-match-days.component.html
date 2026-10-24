@@ -110,6 +110,7 @@
   <div class="btn-container" [class.day-actions]="isAuth()">
     @if(tournament.isFinished){<span class="info-pill" role="status">Torneo finalizado</span>}
     @if(isAuth() && canFinishTournament){<button class="base-button" (click)="finishTournament()">Finalizar torneo</button>}
+    @if(isAuth() && addTeamMode){<button type="button" class="button-secondary" (click)="addTeamToTournament()">Sumar equipo</button>}
     @if(isAuth() && !tournament.isFinished){
         <p class="day-actions-help">Acciones de toda la fecha</p>
         @if(this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){

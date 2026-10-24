@@ -1,3 +1,5 @@
+import { addTeamMode, AddTeamMode } from '../../../core/utils/add-team';
+import { AdminService } from '../../../core/services/manager/admin.service';
 import { canFinish } from '../../../core/utils/tournament-finish';
 import { isByeMatch, playoffEligible } from '../../../core/utils/bye';
 import { MatchResponse } from '../../../core/models/tournamentResponse';
@@ -34,6 +36,30 @@ export class ListMatchDaysComponent implements OnInit {
   isBye(match: MatchResponse): boolean { return isByeMatch(match); }
   /** Revisión crítica #2: se puede finalizar cuando todo está jugado (liga y playoffs). */
   get canFinishTournament(): boolean { return canFinish(this.tournament); }
+  /** Respuesta 3: "Sumar equipo" solo cuando el backend lo permite. */
+  get addTeamMode(): AddTeamMode { return addTeamMode(this.tournament as any); }
+
+  addTeamToTournament() {
+    const mode = this.addTeamMode;
+    if (!mode) return;
+    const inTournament = new Set(this.tournament.participants.map(p => p.idTeam));
+    this.adminService.getTeams().subscribe({
+      next: async (teams) => {
+        const options = teams.filter(t => t.status !== false && !inTournament.has(t.id));
+        if (!options.length) { this.alertService.errorAlert('No tenés equipos habilitados que no estén en este torneo.'); return; }
+        const text = mode === 'replace-free'
+          ? 'El torneo ya empezó: el equipo ocupa el lugar de la fecha libre en lo que falta jugar. Las fechas jugadas quedan como libre.'
+          : 'Todavía no se jugó ningún partido: se regenera el fixture con el equipo nuevo.';
+        const idx = await this.alertService.pickOneAlert('Sumar equipo', text, options.map(t => t.name), 'Sumar');
+        if (idx === null) return;
+        this.tournamentService.addTeam(this.tournament.code, options[idx].id).subscribe({
+          next: () => this.alertService.successAlert(`${options[idx].name} se sumó al torneo`),
+          error: (e) => this.alertService.errorAlert(e?.error?.error ?? e?.error?.message ?? 'No se pudo sumar el equipo.')
+        });
+      },
+      error: () => this.alertService.errorAlert('No se pudieron cargar tus equipos.')
+    });
+  }
   async finishTournament() {
     const answer = await this.alertService.confirmAlert('Finalizar torneo', 'Se da por terminado el torneo con los resultados actuales. Es irreversible: después no se podrán cargar ni corregir resultados, ni generar playoffs. Los premios quedan bloqueados.', 'Finalizar torneo');
     if (!answer.isConfirmed) return;
@@ -71,7 +97,8 @@ export class ListMatchDaysComponent implements OnInit {
     private tournamentService: TournamentService,
     private matchDaysService: MatchDaysService,
     private alertService: AlertService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private adminService: AdminService
   ) { }
 
   /** Auditoria 22/10: el cruce se nombra por los equipos, no por IDs internos. */
