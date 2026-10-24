@@ -131,7 +131,7 @@ export class PlayersTournamentComponent implements OnChanges {
 
   /** Plan 22/10 #2: misma regla que en Mis equipos (borra si nunca jugó, si no deshabilita y da de baja del torneo). */
   async deleteTeam() {
-    if (!this.teamParticipant.idTeam) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
+    if (!this.teamParticipant.idTeam || !this.teamParticipant.name) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
     if (this.removing) return;
     this.removing = true;
     // Review 24/10: referencia tomada ANTES del await; si se cambia de equipo con el dialogo abierto, se marca el original.

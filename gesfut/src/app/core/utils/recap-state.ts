@@ -2,12 +2,13 @@
  *  "se esta preparando" solo para un torneo nuevo; finalizado o con campeon, mensaje neutro; error, aviso. */
 export interface RecapTournamentInfo { code?: string | null; isFinished?: boolean | null; championOfLeagueId?: number | null; championOfPlayoffsId?: number | null; }
 export type RecapEmptyState = 'loading' | 'preparing' | 'finished' | 'error';
-export function recapEmptyState(lastDayLoaded: boolean, failed: boolean, tournament: RecapTournamentInfo | null | undefined, code: string | null | undefined): RecapEmptyState {
-  if (!lastDayLoaded) return 'loading';
+export function recapEmptyState(lastDayLoaded: boolean, failed: boolean, tournament: RecapTournamentInfo | null | undefined, code: string | null | undefined, timedOut = false): RecapEmptyState {
+  // Review 24/10: con timeout (10 s sin datos) se cae a un estado final seguro, nunca pantalla en blanco.
+  if (!lastDayLoaded) return timedOut ? 'error' : 'loading';
   const sameTournament = !!tournament && !!code && String(tournament.code ?? '').toUpperCase() === code.toUpperCase();
   if (sameTournament && (tournament!.isFinished || tournament!.championOfLeagueId != null || tournament!.championOfPlayoffsId != null)) return 'finished';
   if (failed) return 'error';
-  return sameTournament ? 'preparing' : 'loading';
+  return sameTournament ? 'preparing' : (timedOut ? 'error' : 'loading');
 }
 export function showPreparingState(lastDayLoaded: boolean, tournament: RecapTournamentInfo | null | undefined, code: string | null | undefined): boolean {
   return recapEmptyState(lastDayLoaded, false, tournament, code) === 'preparing';

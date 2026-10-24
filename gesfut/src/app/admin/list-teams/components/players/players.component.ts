@@ -56,6 +56,22 @@ export class PlayersComponent implements OnChanges {
   protected participantGlobalStats: TeamWithAllStatsPlayerResponse = emptyGlobalStats();
   /** Review 24/10: mientras carga se muestra "Cargando…", nunca filas del equipo anterior. */
   protected loadingPlayers = false;
+  /** Review 24/10: en modo torneo, si el participante no llega en 10 s se muestran los jugadores globales del equipo. */
+  static readonly PARTICIPANT_TIMEOUT_MS = 10000;
+  protected forcedGlobal = false;
+  private participantTimer?: ReturnType<typeof setTimeout>;
+  globalView(): boolean { return this.isGlobalTeam || this.forcedGlobal; }
+  private waitParticipant() {
+    clearTimeout(this.participantTimer);
+    const seq = this.loadSeq, team = this.idTeam;
+    this.participantTimer = setTimeout(() => {
+      if (seq !== this.loadSeq || team !== this.idTeam || this.isGlobalTeam || this.participantId || !this.loadingPlayers) return;
+      if (!team) { this.loadingPlayers = false; return; }
+      this.forcedGlobal = true;
+      this.getPlayersGlobal(team);
+    }, PlayersComponent.PARTICIPANT_TIMEOUT_MS);
+  }
+  ngOnDestroy() { clearTimeout(this.participantTimer); }
   protected flagAddPlayer: boolean = false;
   protected playerDeleted: { idPlayer: number, idPlayerParticipant: number } = { idPlayer: 0, idPlayerParticipant: 0 };
 
@@ -72,7 +88,11 @@ export class PlayersComponent implements OnChanges {
         if (!this.idTeam && !teamChanged) { this.alertService.errorAlert('No se pudo identificar el equipo. Volv\u00e9 a elegirlo en la lista.'); }
       }
     } else if ((changes['participantId'] || changes['isGlobalTeam']) && this.participantId) {
+      this.forcedGlobal = false;
+      clearTimeout(this.participantTimer);
       this.getPlayersParticipants(this.participantId);
+    } else if (!this.participantId && this.loadingPlayers) {
+      this.waitParticipant();
     }
 
     if (teamChanged && this.idTeam) this.loadTeamStatus(this.idTeam);
@@ -102,6 +122,7 @@ export class PlayersComponent implements OnChanges {
     this.teamEnabled = true;
     this.teamName = '';
     this.loadingPlayers = true;
+    this.forcedGlobal = false;
   }
 
   getPlayersGlobal(idTeam: number) {
@@ -110,6 +131,7 @@ export class PlayersComponent implements OnChanges {
     this.teamService.getTeam(idTeam).subscribe({
       next: (response) => {
         if (!this.isCurrent(seq) || idTeam !== this.idTeam) return;
+        // (forcedGlobal) misma guarda: respuesta de otro equipo se descarta
         if (response) {
           this.mapPlayersGlobal(response, seq);
         } else this.loadingPlayers = false;

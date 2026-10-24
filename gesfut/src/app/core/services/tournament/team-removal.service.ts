@@ -36,6 +36,8 @@ export class TeamRemovalService {
 
   /** Pregunta y aplica. Devuelve la acción hecha o null si se canceló/bloqueó. */
   async remove(teamId: number, shownName: string): Promise<'DELETE' | 'DISABLE' | null> {
+    // Retest 19:40: un toast del clic anterior (otro equipo) no queda en pantalla mientras se valida el nuevo.
+    this.alerts.closeLoadingAlert();
     if (!String(shownName ?? '').trim()) { this.alerts.errorAlert('No se pudo identificar el equipo en pantalla. Volv\u00e9 a elegirlo en la lista.'); return null; }
     try {
       const preview = await firstValueFrom(this.teams.previewDeleteTeam(teamId));

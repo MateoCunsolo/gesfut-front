@@ -350,7 +350,49 @@ test('Mis equipos: "Cargando" no queda pegado (idTeam vacio o falla de torneos)'
   assert.match(nt, /error: \(\) => \{\s*if \(seq !== this\.loadSeq \|\| id !== this\.id\) return;\s*this\.spinner = false;[\s\S]{0,120}this\.onlyGlobalTeams\.emit\(true\);/);
 });
 
-test('sin BOM en archivos nuevos/tocados hoy', () => {
-  for (const p of ['core/utils/recap-state.ts', 'core/utils/owned-name.ts']) assert.notEqual(src(p).charCodeAt(0), 0xFEFF, p);
-  assert.notEqual(readFileSync(new URL(import.meta.url), 'utf8').charCodeAt(0), 0xFEFF);
+test('sin BOM en src/ y tools/ (recursivo)', () => {
+  const root = new URL('../', import.meta.url);
+  const walk = (dir: URL): string[] => readdirSync(dir).flatMap(n => {
+    if (n === 'node_modules' || n.startsWith('.')) return [];
+    const u = new URL(n, dir); return statSync(u).isDirectory() ? walk(new URL(n + '/', dir)) : [u.href];
+  });
+  const files = [...walk(new URL('src/', root)), ...walk(new URL('tools/', root))].filter(f => /\.(ts|html|scss|css|json|js)$/.test(f));
+  assert.ok(files.length > 50);
+  const bom = files.filter(f => { const b = readFileSync(new URL(f)); return b[0] === 0xEF && b[1] === 0xBB && b[2] === 0xBF; });
+  assert.deepEqual(bom, []);
+});
+
+test('vista publica: timeout de 10 s cae a error (nunca en blanco)', () => {
+  const t = { code: 'ABC', isFinished: false };
+  assert.equal(recapEmptyState(true, false, { code: 'OTRO' }, 'ABC'), 'loading');
+  assert.equal(recapEmptyState(true, false, { code: 'OTRO' }, 'ABC', true), 'error', 'torneo nunca cargo');
+  assert.equal(recapEmptyState(false, false, t, 'ABC', true), 'error', 'ultima fecha nunca respondio');
+  assert.equal(recapEmptyState(true, false, t, 'ABC', true), 'preparing');
+  const r = src('guest/recap/recap.component.ts');
+  assert.match(r, /LOAD_TIMEOUT_MS = 10000/);
+  assert.match(r, /this\.startTimeout\(\);/);
+  assert.match(r, /onDestroy\(\(\) => clearTimeout/);
+  assert.match(src('shared/tournament-nav/tournament-nav.component.ts'), /name \|\| 'Cargando torneo\u2026'/);
+  assert.doesNotMatch(src('shared/tournament-nav/tournament-nav.component.ts'), /Tu torneo/);
+});
+
+test('Mis equipos: modo torneo sin participante -> a los 10 s jugadores globales', () => {
+  const p = src('admin/list-teams/components/players/players.component.ts');
+  assert.match(p, /PARTICIPANT_TIMEOUT_MS = 10000/);
+  assert.match(p, /else if \(!this\.participantId && this\.loadingPlayers\) \{\s*this\.waitParticipant\(\);/);
+  assert.match(p, /this\.forcedGlobal = true;\s*this\.getPlayersGlobal\(team\);/);
+  assert.match(p, /if \(seq !== this\.loadSeq \|\| team !== this\.idTeam/);
+  const h = src('admin/list-teams/components/players/players.component.html');
+  assert.doesNotMatch(h, /@if \(!isGlobalTeam\)/);
+  assert.equal((h.match(/@if \(!globalView\(\)\)/g) ?? []).length, 2);
+});
+
+test('Equipos del torneo: nombre e id del mismo equipo, toast anterior cerrado, refresco conserva el equipo', () => {
+  const r = src('core/services/tournament/team-removal.service.ts');
+  const body = r.slice(r.indexOf('async remove('));
+  assert.ok(body.indexOf('this.alerts.closeLoadingAlert();') < body.indexOf('previewDeleteTeam('), 'se cierra el toast viejo antes de validar');
+  const pt = src('admin/list-team-tournaments/players-tournament/players-tournament.component.ts');
+  assert.match(pt, /remove\(target\.idTeam, target\.name\)/, 'id y nombre del mismo objeto');
+  assert.match(pt, /if \(!this\.teamParticipant\.idTeam \|\| !this\.teamParticipant\.name\)/);
+  assert.match(src('admin/list-team-tournaments/list-teams-tournaments.component.ts'), /this\.participants\.find\(p => keepId && p\.idParticipant === keepId\)/);
 });

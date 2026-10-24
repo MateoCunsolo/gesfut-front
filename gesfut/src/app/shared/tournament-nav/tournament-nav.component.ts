@@ -7,7 +7,7 @@ import { shareTournament, whatsappShareUrl } from '../../core/utils/share-tourna
   standalone: true,
   template: `
     <div class="tournament-heading">
-      <h1>{{ name || 'Tu torneo' }}</h1>
+      <h1>{{ name || 'Cargando torneo…' }}</h1>
       @if (shareCode) { <div class="share-actions"><button type="button" class="button-secondary share-button" (click)="share()"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Compartir torneo</button><a class="button-secondary share-button" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Compartir por WhatsApp</a></div> }
     </div>
     <nav class="tournament-navigation" aria-label="Secciones del torneo">

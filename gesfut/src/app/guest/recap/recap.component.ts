@@ -33,19 +33,30 @@ export class RecapComponent {
   /** Lote 24/10 (a): hasta tener la respuesta de la ultima fecha no se muestra el estado vacio. */
   lastDayLoaded = false;
   lastDayFailed = false;
-  emptyState() { return recapEmptyState(this.lastDayLoaded, this.lastDayFailed, this.tournamentService.currentTournament.value, this.tournamentCode); }
+  emptyState() { return recapEmptyState(this.lastDayLoaded, this.lastDayFailed, this.tournamentService.currentTournament.value, this.tournamentCode, this.timedOut); }
+  /** Review 24/10: si en 10 s no estan la ultima fecha y el torneo, se muestra el error en vez de quedar en blanco. */
+  static readonly LOAD_TIMEOUT_MS = 10000;
+  timedOut = false;
+  private timeoutId?: ReturnType<typeof setTimeout>;
+  private startTimeout() {
+    clearTimeout(this.timeoutId);
+    this.timedOut = false;
+    this.timeoutId = setTimeout(() => { if (!this.lastMatchDay && this.emptyState() === 'loading') this.timedOut = true; }, RecapComponent.LOAD_TIMEOUT_MS);
+  }
   constructor(
     private route: ActivatedRoute,
     private matchDaysService: MatchDaysService,
     private weatherService: WeatherService,
     private tournamentService: TournamentService
   ) {
+    this.destroyRef.onDestroy(() => clearTimeout(this.timeoutId));
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const code = params.get('code');
       if (code) {
         this.tournamentCode = code;
         this.lastDayLoaded = false;
         this.lastDayFailed = false;
+        this.startTimeout();
         this.loadLastMatchDay(code);
       }
     });

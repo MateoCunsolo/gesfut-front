@@ -9,12 +9,12 @@
             <th class="stats" title="Cantidad de amarillas que recibio">🟨</th>
             <th class="stats" title="Cantidad de rojas que recibio">🟥</th>
             <th class="stats" title="Cantidad de veces que fue MOST VALUE PLAYER">MVP</th>
-            @if (!isGlobalTeam) {
+            @if (!globalView()) {
               <th class="stats" title="Esta suspendido para la proxima fecha?">ESTADO</th>
             }
         </thead>
         <tbody>
-          @if (!isGlobalTeam){ 
+          @if (!globalView()){ 
           @for (player of byShirtNumber(participantTeam.playerParticipants); track $index) {
           
             @if (player.isActive && (player.playerName || player.playerLastName)) {
@@ -94,7 +94,7 @@
 
   @if (flagAddPlayer) {
   <app-add-player
-  [destinationName]="isGlobalTeam ? participantGlobalStats.name : participantTeam.name + (nameTournament ? ' · ' + nameTournament : '')"
+  [destinationName]="globalView() ? participantGlobalStats.name : participantTeam.name + (nameTournament ? ' · ' + nameTournament : '')"
   [teamIdGlobal]="returnIfIsGlobalOrNot()"
   [teamIdParticipant]="areThereParticipanForThisTeam()"
   (addPlayerToTeam)="addPlayerToTeam($event)"

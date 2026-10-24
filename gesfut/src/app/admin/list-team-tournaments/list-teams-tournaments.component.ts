@@ -49,7 +49,9 @@ export class ListTeamsTournamentsComponent {
         this.particpantsFilter = response.participants;
 
         if (this.participants.length > 0) {
-          this.teamParticipant = this.participants[this.lastClicked] || this.participants[0];
+          // Retest 19:40: al refrescar el torneo se conserva el MISMO equipo (por id), no el de la misma posicion.
+          const keepId = this.teamParticipant?.idParticipant;
+          this.teamParticipant = this.participants.find(p => keepId && p.idParticipant === keepId) || this.participants[this.lastClicked] || this.participants[0];
           this.bindingSelect = this.teamParticipant.idParticipant;
           this.nameClicked = this.teamParticipant.name;
           this.getTeamColor(this.teamParticipant.idTeam);
