@@ -132,7 +132,6 @@ export class ListEventsComponent {
       this.match = changes['match'].currentValue;
 
       this.orderEvents();
-      console.log(this.match);
     }
   }
 

@@ -119,9 +119,6 @@ export class RecapComponent {
       !this.lastMatchDay.matches ||
       this.lastMatchDay.matches.length === 0
     ) {
-      console.warn(
-        '⚠️ No hay datos de partidos, no se puede obtener el pronóstico.'
-      );
       this.loadingWeather = false;
       return;
     }
@@ -130,9 +127,6 @@ export class RecapComponent {
     const targetDateTime = this.lastMatchDay.matches[0]?.dateTime;
 
     if (!targetDateTime) {
-      console.warn(
-        '⚠️ No hay fecha en el partido, no se puede obtener el pronóstico.'
-      );
       this.loadingWeather = false;
       this.forecast = null;
       return;
@@ -141,7 +135,6 @@ export class RecapComponent {
     const targetDate = this.formatDate(targetDateTime);
 
     if (!targetDate) {
-      console.warn('⚠️ Fecha inválida, cancelando consulta.');
       return;
     }
 
@@ -161,10 +154,7 @@ export class RecapComponent {
             chance_of_rain: forecastDay.day.daily_chance_of_rain, 
             condition: forecastDay.day.condition 
           };
-          console.log('Fecha:', this.forecast.date),
-          console.log(`Pronóstico promedio para ${targetDate}:`, this.forecast);
         } else {
-          console.warn('La fecha solicitada no está disponible en la API.');
           this.isPreviousDayAvailable = false;
           this.forecast = null;
         }
@@ -179,7 +169,6 @@ export class RecapComponent {
     const match = dateTime.toLowerCase().match(regex);
 
     if (!match) {
-      console.error('❌ Error: No se pudo extraer la fecha de:', dateTime);
       return '';
     }
 
@@ -203,7 +192,6 @@ export class RecapComponent {
 
     const monthNumber = months[month.substring(0, 3)]; // Tomamos solo los primeros 3 caracteres
     if (!monthNumber) {
-      console.error('❌ Error: Mes no reconocido:', month);
       return '';
     }
 
@@ -215,7 +203,6 @@ export class RecapComponent {
     const match = dateTime.match(regex);
 
     if (!match) {
-      console.error('❌ Error: No se pudo extraer la hora de:', dateTime);
       return '';
     }
 

@@ -75,14 +75,12 @@ export class DeleteComponent {
   }
 
   deleteFromTournament(idPlayerParticipant: number) {
-    console.log('Eliminando jugador de torneo:', idPlayerParticipant);
     this.tournamentService.changeStatusPlayerParticipant(idPlayerParticipant, false).subscribe({
       next:()=>{
         this.alertService.successAlert('Jugador eliminado');
         this.deletePlayer.emit(this.idPlayer);
       },
       error:(error)=>{
-        console.error('Error al eliminar jugador', error);
       }
     });
 
@@ -106,7 +104,6 @@ export class DeleteComponent {
       if(this.isGoalKeeper) this.alertService.errorAlert('No podés eliminar al arquero');
       return;
     }
-    console.log('Eliminando jugador global:', this.idPlayer);
     this.teamService.changeStatusPlayerGlobal(this.idPlayer, false).subscribe({
       next:()=>{
         this.alertService.successAlert('Jugador eliminado');

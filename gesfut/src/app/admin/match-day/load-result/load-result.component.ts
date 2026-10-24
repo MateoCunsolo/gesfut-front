@@ -74,7 +74,6 @@ export class LoadResultComponent {
       if (!this.isMobile && this.editStatsModal) {
         this.editStatsModal = false;
         this.eventSelect = 0;
-        console.log("Pantalla agrandada, cerrando modal...");
       }
     });
 
@@ -151,8 +150,6 @@ export class LoadResultComponent {
           (team) => team.name !== 'Home Team' && team.name !== 'Away Team'
         );
         if (match.events.length > 0) {
-          console.log(match.events);
-          console.log('ANTES DE MAPPEAR');
           this.events = this.mapEventsAndAgruopStatics(match.events);
           this.eventsCopy = this.events.map((event) => ({ ...event }));
         }
@@ -274,7 +271,6 @@ export class LoadResultComponent {
       return;
     }
     if (this.matchDayService.editResult.value === true) {
-      console.log('es editando');
       if (this.eventsAreEquals() && this.tiebreakWinnerId === (this.currentMatch.tiebreakWinnerId ?? null)
         && (penalties?.home ?? null) === (this.currentMatch.penaltiesHome ?? null) && (penalties?.away ?? null) === (this.currentMatch.penaltiesAway ?? null)) {
         this.DashboardService.setActiveTournamentComponent('match-days');
@@ -282,7 +278,6 @@ export class LoadResultComponent {
         this.matchDayService.saveEditEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId, penalties);
       }
     } else {
-      console.log('es primera carga');
       this.matchDayService.saveEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId, penalties);
     }
   }

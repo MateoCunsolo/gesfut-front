@@ -1,4 +1,4 @@
-import { setLastTournament } from '../../core/utils/last-tournament';
+import { rememberIfMine } from '../../core/utils/last-tournament';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -78,8 +78,9 @@ export class AdminTournamentPageComponent  {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(({short, full}) => {
       this.dashboardService.setNameTournament(full.name);
-      // Retest 24/10: se guarda al ABRIR el torneo por cualquier camino (lista, Retomar, link, recarga), no solo desde la lista.
-      setLastTournament(this.code, full.name);
+      // Se guarda al abrir el torneo (cualquier camino) solo si el servidor confirma que es mio y no esta archivado.
+      const opened = this.code;
+      this.tournamentService.isMyTournament(opened).subscribe({ next: (mine) => rememberIfMine(opened, !!mine, (full as any).isActive), error: () => {} });
       this.dashboardService.setHaveParticipants(short.haveParticipants);
       this.dashboardService.setActiveTournamentComponent(short.haveParticipants ? 'recap' : 'dashboard');
       this.isLoading = false;

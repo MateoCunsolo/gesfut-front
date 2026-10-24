@@ -95,12 +95,10 @@ export class WeatherCardComponent implements OnChanges {
       this.day.date = this.getDayName(this.day.date) + ' ' + this.getNumberDay(this.day.date) + ' DE ' + this.getMonthName(this.day.date);
       if (this.day.condition?.text) {
         const key = this.day.condition.text.trim().toUpperCase();
-        console.log("Clave para traducción:", key);
         this.conditionText = this.day.condition.text;
       } else {
         this.conditionText = 'Condición desconocida';
       }
-      console.log("Traducción aplicada:", this.conditionText);
     }
   }
   
@@ -109,7 +107,6 @@ export class WeatherCardComponent implements OnChanges {
   getDayName(dateStr: string): string {
     const [year, month, day] = dateStr.split('-').map(Number);
     const date = new Date(year, month - 1, day); 
-    console.log("Fecha corregida:", date);
     return date.toLocaleDateString('es-ES', { weekday: 'long' }).toUpperCase();
   }
   

@@ -19,7 +19,7 @@ export class WeatherService {
     const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&days=${days}&aqi=no&alerts=no&lang=es`;
     return this.http.get<any>(url).pipe(
       catchError(error => {
-        console.error('Error fetching weather data', error?.status); // Loop 8: sin la URL (lleva la key)
+         // Loop 8: sin la URL (lleva la key)
         throw error;
       })
     );
@@ -30,7 +30,7 @@ export class WeatherService {
     const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&dt=${date}&aqi=no&alerts=no`;
     return this.http.get<any>(url).pipe(
       catchError(error => {
-        console.error('Error fetching weather data', error?.status); // Loop 8: sin la URL (lleva la key)
+         // Loop 8: sin la URL (lleva la key)
         throw error;
       })
     );
@@ -41,7 +41,7 @@ export class WeatherService {
     const url = `${this.baseUrl}?key=${this.apiKey}&q=${location}&dt=${date}&days=7&aqi=no&alerts=no`;
     return this.http.get<any>(url).pipe(
       catchError(error => {
-        console.error('Error fetching weather data', error?.status); // Loop 8: sin la URL (lleva la key)
+         // Loop 8: sin la URL (lleva la key)
         throw error;
       })
     );

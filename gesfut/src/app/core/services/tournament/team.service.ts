@@ -49,7 +49,7 @@ export class TeamService {
     return this.http.post<TeamResponse>(`${this.url}/create`, request, {
       headers
     }).pipe(
-      tap(() => console.log('Equipo creado exitosamente')),
+      tap(() => void 0),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       })
@@ -72,7 +72,7 @@ export class TeamService {
     return this.http.get<ParticipantResponse[]>(`${this.url}/${code}`, {
       headers
     }).pipe(
-      tap(() => console.log('Equipos obtenidos exitosamente')),
+      tap(() => void 0),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       })
@@ -115,7 +115,6 @@ export class TeamService {
       { headers }
     ).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('Error al cambiar el estado', error);
         return throwError(() => error);
       })
     );
@@ -140,7 +139,6 @@ export class TeamService {
       { headers }
     ).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('Error al cambiar el estado del equipo', error);
         return throwError(() => error);
       })
     );
@@ -165,7 +163,6 @@ export class TeamService {
       { headers }
     ).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('Error al agregar el jugador al equipo', error);
         return throwError(() => error);
       })
     );
@@ -228,7 +225,6 @@ export class TeamService {
       headers
     }).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('Error al obtener las estadísticas de los jugadores del equipo', error);
         return throwError(() => error);
       })
     );

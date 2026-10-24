@@ -105,15 +105,12 @@ export class AddPlayerComponent implements OnChanges {
             this.playersGlobal = [...newPlayers, ...this.inactivedPlayers];
             this.therArePlayersToADD = this.playersGlobal.length > 0;
     
-            console.log('Jugadores globales:', this.playersGlobal);
           },
           error: (error) => {
-            console.error('Error al obtener participante del equipo:', error);
           }
         });
       }
     } catch (error) {
-      console.error('Error al obtener jugadores globales:', error);
     }
   }
   
@@ -171,10 +168,8 @@ export class AddPlayerComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
 
     if(changes['playerDeleted']){
-      console.log('Jugador eliminado:', this.playerDeleted);
       this.callPlayerGlobals();
     }else{
-      console.log('No se ha eliminado ningún jugador: ACA');
     }
 
     if (changes['teamIdParticipant'] || changes['teamIdGlobal']) {
@@ -187,15 +182,12 @@ export class AddPlayerComponent implements OnChanges {
       this.callPlayerGlobals();
       this.verifyIfAreThereParticipantsForThisTeam();
     } else {
-      console.log('No hay cambios');
     }
   }
 
   verifyIfAreThereParticipantsForThisTeam() {
     if (this.teamIdParticipant === 0) {
-      console.log('No hay participaciones en torneos de este equipo');
     } else {
-      console.log('teamIdParticipant:', this.teamIdParticipant);
     }
   }
 
@@ -227,11 +219,9 @@ export class AddPlayerComponent implements OnChanges {
               this.disbalechecks=false;
               this.changeText=false;
             }else{
-              console.error('No se encontró el jugador a activar');
             }
           },
           error: (error) => {
-            console.error('Error al activar jugador:', error);
             this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
           }
         });
@@ -245,7 +235,6 @@ export class AddPlayerComponent implements OnChanges {
       next: (response) => {
         const player = this.playersGlobal.find(player => player.id === this.selectedPlayerId);
         if (!player) {
-          console.error('No se encontró el jugador a activar');
           return;
         }  
         const playerMapped = this.mapPlayerNoParticipants(player);
@@ -261,7 +250,6 @@ export class AddPlayerComponent implements OnChanges {
         this.alertService.successAlert('Jugador activado');
       },
       error: (error) => {
-        console.error('Error al activar jugador:', error);
         this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     });
@@ -286,7 +274,6 @@ export class AddPlayerComponent implements OnChanges {
     });
 
     if (flag) {
-      console.log('Jugador activado');
       return;
     }
 
@@ -328,19 +315,16 @@ export class AddPlayerComponent implements OnChanges {
         this.clearValues();
         this.selectedPlayerId = 0;
         let playerMaped = this.mapPlayerNoParticipants(response);
-        console.log('Jugador mapeado:', playerMaped);
         this.addPlayerToTeam.emit(playerMaped);
         if(this.teamIdParticipant != 0){
           this.playersGlobal.push(response);
         }
         this.playersGlobal = this.playersGlobal.filter(player => player.number !== playerMaped.shirtNumber);
-        console.log('Jugadores globales filtrados:', this.playersGlobal);
         if (this.playersGlobal.length === 0) {
           this.therArePlayersToADD = false;
         }
       },
       error: (error) => {
-        console.error('Error al agregar jugador:', error);
         this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     })
@@ -359,14 +343,12 @@ export class AddPlayerComponent implements OnChanges {
             }
           });
           this.playersGlobal = this.playersGlobal.filter(player => player.number !== newPlayer.number);
-          console.log('Jugadores globales filtrados:', this.playersGlobal);
           if (this.playersGlobal.length === 0) {
             this.therArePlayersToADD = false;
           }
         }
       },
       error: (error) => {
-        console.error('Error al agregar jugador:', error);
         this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     })
@@ -381,10 +363,8 @@ export class AddPlayerComponent implements OnChanges {
           return;
         }
         if (option === 1) {
-          console.log('Agregando jugador al torneo:', newPlayer);
           this.addPlayerToTournament(newPlayer);
         } else {
-          console.log('Agregando jugador al equipo global:', newPlayer);
           this.addPlayerToGlobal(newPlayer);
         }
       }

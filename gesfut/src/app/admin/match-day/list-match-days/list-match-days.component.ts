@@ -209,9 +209,8 @@ export class ListMatchDaysComponent implements OnInit {
         'Confirmar'
       )
       .then((result) => {
-        if (result.isConfirmed) {
-          this.closeMatchDay(status);
-        }
+        // Reabrir no pasa por el dialogo de MVP (antes mostraba "Ningun partido tiene MVP" con datos viejos).
+        if (result.isConfirmed) this.sendClose(false, '');
       });
   }
 
@@ -236,7 +235,9 @@ export class ListMatchDaysComponent implements OnInit {
       error: (e: HttpErrorResponse) => { this.refreshingForClose = false; this.alertService.errorAlert(httpErrorMessage(e, 'No pudimos actualizar la fecha. Prob\u00e1 de nuevo.')); }
     });
   }
-  private refreshingForClose = false;
+  refreshingForClose = false;
+  /** Botones de cerrar/reabrir deshabilitados mientras se envia o se refrescan los datos de la fecha. */
+  get busy(): boolean { return this.closing || this.refreshingForClose; }
 
   private closeMatchDayWithData(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
     if (this.closing) return;
@@ -303,11 +304,15 @@ export class ListMatchDaysComponent implements OnInit {
       .closeMatchDay(this.tournament.matchDays[this.selectedMatchDay].idMatchDay, status, mvp)
       .subscribe({
         next: () => {
-          this.closing = false;
           this.alertService.successAlert(this.closeSuccessText(status));
           this.matchDayStatus = false;
-          // Estado real (Finalizada / MVP) sin esperar a recargar la pagina.
-          if (this.tournament?.code) this.tournamentService.getTournamentFull(this.tournament.code, true).subscribe({ error: () => {} });
+          // Estado real (Finalizada / MVP) antes de volver a habilitar los botones.
+          const round = this.selectedMatchDay;
+          if (this.tournament?.code) this.tournamentService.getTournamentFull(this.tournament.code, true).subscribe({
+            next: () => { this.selectedMatchDay = round; this.bindingSelect = round; this.closing = false; },
+            error: () => { this.closing = false; }
+          });
+          else this.closing = false;
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.closing = false;

@@ -78,7 +78,6 @@ export class NamesTournamentsComponent implements OnChanges {
         }
       },
       error: (error) => {
-        console.error('Error al obtener los participantes:', error);
       },
     });
   }

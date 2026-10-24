@@ -1,7 +1,7 @@
 import test from 'node:test';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { getLastTournament, setLastTournament, forgetLastTournament } from '../src/app/core/utils/last-tournament';
+import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine } from '../src/app/core/utils/last-tournament';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
 import { parseDmyTime } from '../src/app/core/utils/date-input';
@@ -106,7 +106,7 @@ test('flujo real: login -> abrir torneo -> logout -> login -> dashboard', () => 
   const session = src('core/services/manager/session.service.ts');
   const clear = session.slice(session.indexOf('clearUserSession(): void'), session.indexOf('clearUserSession(): void') + 600);
   assert.ok(!/forgetLastTournament\(/.test(clear), 'el logout no borra el Retomar');
-  assert.match(src('pages/admin-tournament-page/admin-tournament-page.component.ts'), /setLastTournament\(this\.code, full\.name\)/, 'abrir el torneo lo guarda');
+  assert.match(src('pages/admin-tournament-page/admin-tournament-page.component.ts'), /isMyTournament\(opened\)[\s\S]{0,120}rememberIfMine\(opened, !!mine/, 'abrir el torneo lo guarda solo si es mio');
   assert.match(src('admin/dashboard/dashboard.component.ts'), /getLastTournament\(\)/);
   // y con esos pasos, en el mismo navegador:
   const local = mem(); const t = mem();
@@ -120,4 +120,31 @@ test('cerrar fecha: pide datos frescos antes del dialogo y codifica el MVP en la
   const list = src('admin/match-day/list-match-days/list-match-days.component.ts');
   assert.match(list, /getTournamentFull\(code, true\)[\s\S]{0,200}closeMatchDayWithData/);
   assert.match(src('core/services/tournament/match-days.service.ts'), /playerMvp=\$\{encodeURIComponent\(/);
+});
+
+test('abrir el link de admin de otro organizador (o un archivado) no pisa mi Retomar', () => {
+  const local = mem(); const t = mem(); t.setItem('email', 'ana@x.com');
+  assert.equal(rememberIfMine('mio', true, true, local, t), true);
+  assert.equal(rememberIfMine('ajeno', false, true, local, t), false);
+  assert.equal(rememberIfMine('archivado', true, false, local, t), false);
+  assert.equal(getLastTournament(local, t)?.code, 'mio');
+  assert.equal(rememberIfMine('otro-mio', true, undefined, local, t), true);
+  assert.equal(getLastTournament(local, t)?.code, 'otro-mio');
+});
+
+
+test('reabrir fecha: sin dialogo de MVP y botones bloqueados hasta refrescar', () => {
+  const list = src('admin/match-day/list-match-days/list-match-days.component.ts');
+  assert.match(list, /if \(result\.isConfirmed\) this\.sendClose\(false, ''\)/);
+  assert.match(list, /getTournamentFull\(this\.tournament\.code, true\)\.subscribe\(\{\s*next: \(\) => \{[^}]*this\.closing = false/);
+  const html = src('admin/match-day/list-match-days/list-match-days.component.html');
+  assert.ok(!html.includes('[disabled]="closing"') && (html.match(/\[disabled\]="busy"/g) ?? []).length >= 5);
+});
+
+test('sin console.* en el codigo de la app (podian imprimir datos de jugadores)', () => {
+  const root = new URL('../src/app/', import.meta.url);
+  const hits: string[] = [];
+  const walk = (dir: string) => { for (const n of readdirSync(dir)) { const p = dir + '/' + n; if (statSync(p).isDirectory()) walk(p); else if (p.endsWith('.ts') && !p.endsWith('.spec.ts') && /console\.(log|info|debug|warn|error)\(/.test(readFileSync(p, 'utf8'))) hits.push(p); } };
+  walk(decodeURIComponent(root.pathname).replace(/^\/([A-Za-z]:)/, '$1'));
+  assert.deepEqual(hits, []);
 });

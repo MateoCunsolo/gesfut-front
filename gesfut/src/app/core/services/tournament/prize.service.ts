@@ -54,7 +54,6 @@ export class PrizeService {
   getAllPrizes(code: string): Observable<Prize[]> {
     return this.Http.get<Prize[]>(`${environment.apiUrl}/prizes/${code}`).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.log(error);
         return throwError(() => error);
       })
     );
@@ -65,7 +64,6 @@ export class PrizeService {
       .pipe(
         map(prizes => prizes.sort((a, b) => a.position - b.position)),
         catchError((error: HttpErrorResponse) => {
-          console.log(error);
           return throwError(() => error);
         })
       );

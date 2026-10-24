@@ -79,8 +79,6 @@ export class LastsMatchesComponent {
       this.viewEventsFlag = false;
     } else {
       this.matchIndex = index;
-      console.log('MATCH');
-      console.log(this.matches[index]);
       this.viewEventsFlag = true;
     }
   }

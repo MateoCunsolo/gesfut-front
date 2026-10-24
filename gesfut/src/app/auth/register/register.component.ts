@@ -81,7 +81,7 @@ export class RegisterComponent {
     //   try {
     //   this.isLoading = true;
     //   const isValidEmail = await this.emailVerificationService.validateEmail(credentials.email).toPromise();
-    //   console.log(isValidEmail);
+    //   void 0;
     //   if (!isValidEmail) {
     //     this.alertService.errorAlert('Email no válido');
     //     this.isLoading = false;

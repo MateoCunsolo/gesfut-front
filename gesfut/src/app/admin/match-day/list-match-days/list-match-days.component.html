@@ -108,14 +108,14 @@
     @if(isAuth() && !tournament.isFinished){
         <p class="day-actions-help">Acciones de toda la fecha</p>
         @if(this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
-          <button class="base-button edit-button" [disabled]="closing" (click)="toggleMatchDayStatus(false)">Reabrir fecha</button>
+          <button class="base-button edit-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="toggleMatchDayStatus(false)">Reabrir fecha</button>
           @if (!tournament.matchDays[selectedMatchDay+1]) {
             <button class="base-button" (click)="showGeneratePlayOffsFunction()">Generar playoffs</button>
           }
         }@else if(!this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
-          <button class="base-button" [disabled]="closing" (click)="closeMatchDay(true)">Cerrar fecha</button>
+          <button class="base-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="closeMatchDay(true)">Cerrar fecha</button>
         }@else if(this.matchDayStatus && tournament.matchDays[selectedMatchDay].isPlayOff){
-          <button class="base-button edit-button" [disabled]="closing" (click)="toggleMatchDayStatus(false)">Reabrir playoffs</button>
+          <button class="base-button edit-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="toggleMatchDayStatus(false)">Reabrir playoffs</button>
           @if (this.matchDayStatus && tournament.matchDays[selectedMatchDay].matches.length>1
             && !tournament.matchDays[selectedMatchDay+1]
           ) {
@@ -124,9 +124,9 @@
         }@else if (!this.matchDayStatus && tournament.matchDays[selectedMatchDay].isPlayOff &&
         tournament.matchDays[selectedMatchDay].matches.length>1
         ) {
-          <button class="base-button" [disabled]="closing" (click)="closeMatchDay(true, 'playoffs')">Cerrar playoffs</button>
+          <button class="base-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="closeMatchDay(true, 'playoffs')">Cerrar playoffs</button>
         }@else {
-          <button class="base-button" [disabled]="closing" (click)="closeMatchDay(true, 'torneo')">Cerrar torneo</button>
+          <button class="base-button" [disabled]="busy" [attr.aria-busy]="busy" (click)="closeMatchDay(true, 'torneo')">Cerrar torneo</button>
         }
   }
   </div>

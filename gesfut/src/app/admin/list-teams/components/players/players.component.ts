@@ -57,8 +57,7 @@ export class PlayersComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes['participantId'] || changes['isGlobalTeam'] || changes['idTeam']) && this.participantId !== null) {
       if (this.isGlobalTeam) {
-        console.log('Obteniendo jugadores globales');
-        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else { console.error('No se ha proporcionado el id del equipo'); }
+        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else {  }
       } else {
         this.getPlayersParticipants(this.participantId);
       }
@@ -84,12 +83,10 @@ export class PlayersComponent implements OnChanges {
     this.teamService.getTeam(idTeam).subscribe({
       next: (response) => {
         if (response) {
-          console.log('Equipo global obtenido:', response);
           this.mapPlayersGlobal(response);
         }
       },
       error: (error) => {
-        console.error('Error al obtener los jugadores globales:', error);
       }
     });
   }
@@ -99,11 +96,9 @@ export class PlayersComponent implements OnChanges {
       next: (response) => {
         if (!this.isGlobalTeam) {
           this.participantTeam = response;
-          console.log('Jugadores participantes obtenidos:', this.participantTeam);
         }
       },
       error: (error) => {
-        console.error('Error al obtener los jugadores del equipo participante', error);
       }
     });
   }
@@ -117,7 +112,6 @@ export class PlayersComponent implements OnChanges {
 
     if (this.isGlobalTeam) {
       this.participantGlobalStats.playerParticipants = this.participantGlobalStats.playerParticipants.filter(player => player.playerId !== idPlayerGlobal);
-      console.log('Jugadores globales eliminados:', this.participantGlobalStats);
     } else { 
       this.participantTeam.playerParticipants = this.participantTeam.playerParticipants.filter(player => player.playerId !== idPlayerGlobal);
     }
@@ -169,11 +163,8 @@ export class PlayersComponent implements OnChanges {
         if (response) {
           this.participantGlobalStats = response;
         }
-        console.log('Jugadores globales mapeados:', this.participantGlobalStats);
-        console.log('es global team:', this.isGlobalTeam);
       },
       error: (error) => {
-        console.error('Error al obtener las estadísticas de los jugadores del equipo', error);
       }
 
 
@@ -203,14 +194,10 @@ export class PlayersComponent implements OnChanges {
 
 
   addPlayerToTeam(newPlayer: PlayerParticipantResponse) {
-    console.log('Agregando jugador:', newPlayer);
     if (this.isGlobalTeam) {
       //antes de agregar
-      console.log('Jugadores globales antes de agregar:', this.participantGlobalStats);
       this.participantGlobalStats.playerParticipants.push(newPlayer);
-      console.log('Jugadores globales después de agregar:', this.participantGlobalStats);
     } else {
-      console.log('Jugadores participantes antes de agregar:', this.participantTeam);
       this.participantTeam.playerParticipants.push(newPlayer);
     }
   }
@@ -247,11 +234,8 @@ export class PlayersComponent implements OnChanges {
       this.alertService.errorAlert('Debes selecionar un torneo para ver los partidos.');
     } else if (this.participantId) {
       this.alertService.loadingAlert('OBTENIENDO ULTIMOS PARTIDOS');
-      console.log('Obteniendo ultimos partidos: ', this.participantTeam.idParticipant);
-      console.log('Obteniendo ultimos partidos: ', this.code);
       this.tournamentService.getMatchesAllForParticipant(this.code, this.participantTeam.idParticipant).subscribe({
         next: (response: MatchResponse[]) => {
-          console.log('Ultimos partidos:', response);
           this.tournamentService.setMatches(response);
           this.tournamentService.setNameTeamToViewEvents(this.participantTeam.name);
           this.dashboardService.setActiveDashboardAdminComponent('lasts-matches');

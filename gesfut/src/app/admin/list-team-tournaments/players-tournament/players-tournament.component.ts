@@ -82,7 +82,6 @@ export class PlayersTournamentComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['teamParticipant']) {
       this.teamParticipant = changes['teamParticipant'].currentValue;
-      console.log(this.teamParticipant);
     }
   }
 
@@ -138,7 +137,6 @@ export class PlayersTournamentComponent implements OnChanges {
   }
 
   addPlayerToTeam(player: PlayerParticipantResponse) {
-    console.log('Agregando jugador desde la url del torneo:', player);
     this.teamParticipant.playerParticipants.push(player);
   }
 

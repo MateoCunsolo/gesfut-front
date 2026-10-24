@@ -87,7 +87,6 @@ export class NamesTeamsComponent implements OnInit {
     this.indexSelectedAfter = this.teamsGlobalesInputFilter.findIndex((team) => team.id === id);
     this.bindingSelect = this.idSelected;
     this.colorSelected = this.teamsGlobales[this.indexSelectedAfter].color;
-    console.log('ID de equipo seleccionado:', this.idSelected, 'index:', this.indexSelectedAfter);
   }
 
   onParticipantSelected(id: number) {

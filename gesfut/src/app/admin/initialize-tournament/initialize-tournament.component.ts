@@ -93,10 +93,8 @@ export class InitializeTournamentComponent {
         this.filterTeamsTournament();
       },
       error: (err) => {
-        console.error(err);
       },
       complete: () => {
-        console.log('TEAMS LOADED');
       }
     });
   }
@@ -114,7 +112,6 @@ export class InitializeTournamentComponent {
         }
       },
       error: (err) => {
-        console.error(err);
       },
     });
   }
@@ -202,10 +199,8 @@ export class InitializeTournamentComponent {
               },
               error: (err) => {
                 this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
-                console.error(err);
               },
               complete: () => {
-                console.log('TOURNAMENT INITIALIZED');
               }
             });
           } else {

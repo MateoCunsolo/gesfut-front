@@ -59,7 +59,6 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
         .getAllPrizesByCategory(this.currentTournament, this.currentCategory)
         .subscribe({
           next: (response: Prize[]) => {
-            console.log(this.currentCategory);
             this.prizes = response;
           },
         });
@@ -80,7 +79,6 @@ export class ListPrizesComponent implements OnInit, OnDestroy {
       this.alertService.infoAlertTop('El torneo ya ha finalizado.');
       return
     }
-    console.log('Cambiando vista a:', view);
     this.prizeService.currentView.next(view);
   }
 

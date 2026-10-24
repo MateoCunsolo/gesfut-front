@@ -26,7 +26,6 @@ export class PrizeDashboardComponent {
     this.categorySubscription = this.prizeService.currentCategory.subscribe(category => this.activeCategory = category);
     this.currentView = this.prizeService.currentView.subscribe({
       next: (view) => {
-        console.log("Nueva vista recibida:", view);
         this.view = view;
       }
     });

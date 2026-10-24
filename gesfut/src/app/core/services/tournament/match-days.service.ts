@@ -48,7 +48,6 @@ export class MatchDaysService {
     ).pipe(
       tap({
         next: (response: MatchDetailedResponse) => {
-          console.log(response);
           return response;
         },
         error: (error: HttpErrorResponse) => {
@@ -111,7 +110,6 @@ export class MatchDaysService {
   setActiveMatch(id: number) {
     this.getMatchDetailed(id).subscribe({
       next: (response: MatchDetailedResponse) => {
-        console.log(response);
         this.currentMatch.next(response);
         this.dashboardService.setActiveTournamentComponent('load-result');
       },
@@ -124,11 +122,9 @@ export class MatchDaysService {
   saveEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null, penalties: Penalties | null = null): void {
     if (this.saving()) return;
     this.saving.set(true);
-    console.log('Array de eventos recibidos en el servicio:', events);
     const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId, penalties);
     const token = sessionStorage.getItem('token');
 
-    console.log(request);
     this.HttpClient.post<MatchRequest>(
       `${this.url}/matches/load-result`,
       request,
@@ -143,13 +139,11 @@ export class MatchDaysService {
       .pipe(
         finalize(() => this.saving.set(false)),
         catchError((error) => {
-          console.error('Error al guardar los eventos:', error);
           return throwError(() => error);
         })
       )
       .subscribe({
         next: (response) => {
-          console.log('Eventos guardados correctamente:', response);
           this.tournamentService
             .getTournamentFull(
               this.tournamentService.currentTournament.value.code
@@ -165,7 +159,6 @@ export class MatchDaysService {
             });
         },
         error: (err) => {
-          console.error('Error en la solicitud HTTP:', err);
           this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo guardar el partido. Tus cambios siguen en pantalla.'));
         },
       });
@@ -220,11 +213,9 @@ export class MatchDaysService {
   saveEditEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null, penalties: Penalties | null = null): void {
     if (this.saving()) return;
     this.saving.set(true);
-    console.log('Array de eventos recibidos en el servicio:', events);
     const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId, penalties);
     const token = sessionStorage.getItem('token');
 
-    console.log(request);
     this.HttpClient.put<MatchRequest>(
       `${this.url}/matches/update-result`,
       request,
@@ -239,13 +230,11 @@ export class MatchDaysService {
       .pipe(
         finalize(() => this.saving.set(false)),
         catchError((error) => {
-          console.error('Error al guardar los eventos:', error);
           return throwError(() => error);
         })
       )
       .subscribe({
         next: (response) => {
-          console.log('Eventos guardados correctamente:', response);
           this.tournamentService
             .getTournamentFull(
               this.tournamentService.currentTournament.value.code
@@ -261,7 +250,6 @@ export class MatchDaysService {
             });
         },
         error: (err) => {
-          console.error('Error en la solicitud HTTP:', err);
           this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo guardar el partido. Tus cambios siguen en pantalla.'));
         },
       });

@@ -55,7 +55,6 @@ export class ListTeamsTournamentsComponent {
         }
       },
       error: (error) => {
-        console.error(error);
       }
     });
 
@@ -70,7 +69,6 @@ export class ListTeamsTournamentsComponent {
         }
       },
       error: (error) => {
-        console.error(error);
       }
     });
   }
@@ -114,7 +112,6 @@ export class ListTeamsTournamentsComponent {
         this.colorSelected = color;
       },
       error: (error) => {
-        console.error(error);
       }
     })
   }

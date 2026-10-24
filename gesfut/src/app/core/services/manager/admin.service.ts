@@ -76,7 +76,6 @@ export class AdminService {
     }
 
     const token = sessionStorage.getItem('token');
-    console.log('Contenido de init:', init);
 
     return this.http.post<string>(`${this.url}/tournaments/initialize`, init, {
       headers: {

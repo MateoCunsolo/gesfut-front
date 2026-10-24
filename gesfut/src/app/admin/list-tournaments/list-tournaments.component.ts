@@ -112,7 +112,6 @@ export class ListTournamentsComponent {
     this.alertService.inputAlert('Introduce el nuevo nombre del torneo').then((result) => {
       let name = result.value;
       if (name === null) {
-        console.log('Operación del cambio de nombre cancelada');
       } else if (name === '') {
         this.alertService.errorAlert('Debes introducir un nombre');
       } else if (name === this.tournaments.find(tournament => tournament.code === code)!.name) {

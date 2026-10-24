@@ -194,7 +194,6 @@ export class TimepickerDatepickerIntegrationExample {
   }
 
   converDateToISO(value: Date): string {
-    console.log('Fecha original desde Timepicker:', this.value);
 
     // Crear una nueva instancia asegurando que sea un objeto Date válido
     const date = new Date(value);
@@ -245,7 +244,6 @@ export class TimepickerDatepickerIntegrationExample {
         this.cancelPickerFunction();
       },
       error: (err) => {
-        console.error('Error en la solicitud HTTP:', err);
         this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       },
     });
@@ -259,7 +257,6 @@ export class TimepickerDatepickerIntegrationExample {
         this.sendAllDates.emit(response);
       },
       error: (err) => {
-        console.error('Error en la solicitud HTTP:', err);
         this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       },
     });

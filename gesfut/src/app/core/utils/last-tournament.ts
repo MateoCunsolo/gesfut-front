@@ -49,3 +49,11 @@ export function forgetLastTournament(l: Store | null = local(), s: Store | null 
   if (key) l.removeItem(key);
   dropLegacy(l);
 }
+
+/** Solo se recuerda un torneo propio y activo: un link de admin de otro organizador o un torneo archivado
+ *  (pagina publica de solo lectura) nunca pisan el "Retomar". */
+export function rememberIfMine(code: string, isMine: boolean, isActive: boolean | null | undefined, l: Store | null = local(), s: Store | null = session()): boolean {
+  if (!code || !isMine || isActive === false) return false;
+  setLastTournament(code, '', l, s);
+  return true;
+}
