@@ -11,7 +11,7 @@ import { ParticipantResponse, PlayerParticipantResponse } from '../../../../../c
 import { PlayerResponse } from '../../../../../core/models/teamResponse';
 import { forkJoin, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
-import { INITIAL_PARTICIPANT } from '../../../../../core/services/tournament/initial-tournament';
+import { emptyParticipant } from '../../../../../core/services/tournament/initial-tournament';
 import { NgClass } from '@angular/common';
 import Swal from 'sweetalert2';
 
@@ -38,7 +38,7 @@ export class AddPlayerComponent implements OnChanges {
   @Output() public addPlayerToTeam = new EventEmitter<PlayerParticipantResponse>();
   @Output() public cancelAddPlayerEvent = new EventEmitter<void>();
 
-  protected teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
+  protected teamParticipant: ParticipantResponse = emptyParticipant();
   protected playersGlobal: PlayerResponse[] = [];
   protected selectedPlayerId: number = 0;
   protected therArePlayersToADD: boolean = false;

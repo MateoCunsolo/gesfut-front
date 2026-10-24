@@ -1,7 +1,8 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine, sessionSnapshot } from '../src/app/core/utils/last-tournament';
+import { emptyParticipant, INITIAL_PARTICIPANT } from '../src/app/core/services/tournament/initial-tournament';
 import { showPreparingState } from '../src/app/core/utils/recap-state';
 import { reconcileSelection, sameTeamName, matchesSearch } from '../src/app/core/utils/team-selection';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
@@ -10,7 +11,7 @@ import { parseDmyTime } from '../src/app/core/utils/date-input';
 import { tournamentPublicLink, whatsappShareUrl } from '../src/app/core/utils/share-tournament';
 
 function mem() { const m = new Map<string, string>(); return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => { m.set(k, v); }, removeItem: (k: string) => { m.delete(k); } }; }
-/** Simula una pestaña: login guarda el email (minúsculas, como auth.service) y logout lo quita (como session.service). */
+/** Simula una pestaÃ±a: login guarda el email (minÃºsculas, como auth.service) y logout lo quita (como session.service). */
 function tab() { return mem(); }
 function login(s: ReturnType<typeof mem>, email: string) { s.setItem('email', email.trim().toLowerCase()); }
 function logout(s: ReturnType<typeof mem>) { s.removeItem('email'); s.removeItem('name'); s.removeItem('lastName'); }
@@ -66,8 +67,8 @@ test('claves globales viejas: se borran sin adoptarse y no tocan la clave por em
 });
 
 test('httpErrorMessage muestra el mensaje del servidor (400 y 429) y si no, el generico', () => {
-  assert.equal(httpErrorMessage({ status: 400, error: { error: 'El DNI 123 ya está en el equipo X' } }, 'gen'), 'El DNI 123 ya está en el equipo X');
-  assert.equal(httpErrorMessage({ status: 429, error: { error: 'Demasiados intentos. Esperá unos minutos.' } }, 'gen'), 'Demasiados intentos. Esperá unos minutos.');
+  assert.equal(httpErrorMessage({ status: 400, error: { error: 'El DNI 123 ya estÃ¡ en el equipo X' } }, 'gen'), 'El DNI 123 ya estÃ¡ en el equipo X');
+  assert.equal(httpErrorMessage({ status: 429, error: { error: 'Demasiados intentos. EsperÃ¡ unos minutos.' } }, 'gen'), 'Demasiados intentos. EsperÃ¡ unos minutos.');
   assert.equal(httpErrorMessage({ status: 400, error: { message: 'm' } }, 'gen'), 'm');
   assert.equal(httpErrorMessage({ status: 500, error: null }, 'gen'), 'gen');
 });
@@ -213,8 +214,8 @@ test('remove exige el nombre visible (sin default) y lo bloquea vacio; Equipos d
   const i = removal.indexOf('async remove('), guard = removal.indexOf("if (!String(shownName ?? '').trim())", i), preview = removal.indexOf('previewDeleteTeam(teamId)', i);
   assert.ok(guard > i && guard < preview, 'con nombre vacio no se pide nada al servidor');
   const pt = src('admin/list-team-tournaments/players-tournament/players-tournament.component.ts');
-  assert.match(pt, /teamRemoval\.remove\(this\.teamParticipant\.idTeam, this\.teamParticipant\.name\)/);
-  assert.match(pt, /if \(this\.removing\) return;[\s\S]{0,200}finally \{ this\.removing = false; \}/);
+  assert.match(pt, /const target = this\.teamParticipant;[\s\S]{0,250}teamRemoval\.remove\(target\.idTeam, target\.name\)/);
+  assert.match(pt, /if \(this\.removing\) return;[\s\S]{0,400}finally \{ this\.removing = false; \}/);
   assert.match(src('admin/list-team-tournaments/players-tournament/players-tournament.component.html'), /\[disabled\]="removing"[\s\S]{0,120}Cargando/);
 });
 
@@ -272,4 +273,45 @@ test('Retomar: nombre en paralelo con la verificacion, visible solo si es propio
   const body = d.slice(d.indexOf('isMyTournament(code: string)'), d.indexOf('private forgetLastTournament'));
   assert.ok(body.indexOf('getTournamentShort(code)') < body.indexOf('isMyTournament(code).subscribe'), 'no encadenado');
   assert.match(src('admin/dashboard/dashboard.component.html'), /@if\(flagIsMyTournament\(\)\)/);
+});
+
+test('review: baja marca al equipo original, spinner sin quedar girando, import unico', () => {
+  const pt = src('admin/list-team-tournaments/players-tournament/players-tournament.component.ts');
+  assert.match(pt, /const target = this\.teamParticipant;[\s\S]{0,250}remove\(target\.idTeam, target\.name\)[\s\S]{0,80}if \(action\) target\.isActive = false;/);
+  assert.doesNotMatch(pt, /this\.teamParticipant\.isActive = false/);
+  assert.match(src('admin/list-teams/components/names-tournaments/names-tournaments.component.ts'), /error: \(\) => \{ if \(seq === this\.loadSeq && id === this\.id\) this\.spinner = false; \}/);
+  assert.equal((src('admin/list-team-tournaments/list-teams-tournaments.component.ts').match(/core\/utils\/team-selection/g) ?? []).length, 1);
+});
+
+test('Mis equipos: participante inicial sin jugador falso y objeto nuevo cada vez', () => {
+  assert.deepEqual(INITIAL_PARTICIPANT.playerParticipants, []);
+  const a = emptyParticipant(), b = emptyParticipant();
+  assert.notEqual(a, b); assert.notEqual(a.playerParticipants, b.playerParticipants);
+  a.playerParticipants.push({ id: 1 } as any);
+  assert.equal(emptyParticipant().playerParticipants.length, 0, 'un push no contamina la constante');
+  for (const p of ['admin/list-teams/components/players/players.component.ts','admin/list-team-tournaments/players-tournament/players-tournament.component.ts','admin/list-team-tournaments/list-teams-tournaments.component.ts'])
+    assert.doesNotMatch(src(p), /= INITIAL_PARTICIPANT\b/, p);
+});
+
+test('Mis equipos: cambio de equipo vacia datos, invalida respuestas viejas y no usa el participante anterior', () => {
+  const p = src('admin/list-teams/components/players/players.component.ts');
+  const ch = p.slice(p.indexOf('ngOnChanges('), p.indexOf('private loadSeq'));
+  assert.ok(ch.indexOf('if (teamChanged) this.resetTeamData();') < ch.indexOf('getPlayersParticipants('), 'se limpia antes de pedir');
+  assert.match(ch, /else if \(\(changes\['participantId'\] \|\| changes\['isGlobalTeam'\]\) && this\.participantId\)/, 'cambio solo de idTeam no recarga el participante viejo');
+  const reset = p.slice(p.indexOf('private resetTeamData()'), p.indexOf('getPlayersGlobal(idTeam: number)'));
+  for (const r of [/\+\+this\.loadSeq/, /participantTeam = emptyParticipant\(\)/, /participantGlobalStats = emptyGlobalStats\(\)/, /teamEnabled = true/, /teamName = ''/, /loadingPlayers = true/]) assert.match(reset, r);
+  // guardas por numero de peticion en jugadores, estadisticas y estado
+  assert.match(p, /mapPlayersGlobal\(response: TeamResponse, seq[\s\S]{0,200}if \(!this\.isCurrent\(seq\)\) return;/);
+  assert.match(p, /if \(idTeam !== this\.idTeam\) return;/);
+  const nt = src('admin/list-teams/names-teams.component.ts');
+  assert.match(nt, /if \( id != this\.idSelected\)\{[\s\S]{0,200}this\.selectedParticipantId = null;/);
+  assert.match(nt, /if \(event !== this\.isGlobalTeams\) this\.selectedParticipantId = null;/);
+  assert.match(nt, /onGlobalPlayerSelected\(_id: number\) \{\s*this\.selectedParticipantId = null;/);
+});
+
+test('Mis equipos: sin fila con numero 0 sin nombre y "Cargando" mientras carga', () => {
+  const h = src('admin/list-teams/components/players/players.component.html');
+  assert.match(h, /@if \(player\.isActive && \(player\.playerName \|\| player\.playerLastName\)\)/);
+  assert.match(h, /@if \(player\.status && \(player\.playerName \|\| player\.playerLastName\)\)/);
+  assert.equal((h.match(/@if \(loadingPlayers\) \{ <tr><td colspan="7" class="no-line" role="status">Cargando\u2026<\/td><\/tr> \} @else if \(!hasPlayers/g) ?? []).length, 2);
 });

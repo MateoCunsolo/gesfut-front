@@ -169,25 +169,8 @@ export const INITIAL_PARTICIPANT : ParticipantResponse = {
     idTeam: 0,
     name: '',
     isActive: false,
-    playerParticipants: [
-        {
-            id: 0,
-            shirtNumber: 0,
-            playerName: '',
-            playerLastName: '',
-            goals: 0,
-            redCards: 0,
-            yellowCards: 0,
-            isSuspended: false,
-            isMvp: 0,
-            matchesPlayed: 0,
-            status: false,
-            isActive: true,
-            isCaptain: false,
-            isGoalKeeper: false,
-            playerId: 0
-        }
-    ],
+    // Review 24/10: sin jugador falso (se veia una fila "0" sin nombre).
+    playerParticipants: [],
     statistics: {
         points: 0,
         matchesPlayed: 0,
@@ -198,3 +181,6 @@ export const INITIAL_PARTICIPANT : ParticipantResponse = {
         goalsAgainst: 0
     }
 }
+
+/** Review 24/10: objeto NUEVO cada vez (la constante compartida se modificaba con push). */
+export function emptyParticipant(): ParticipantResponse { return structuredClone(INITIAL_PARTICIPANT); }

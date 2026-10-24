@@ -1,5 +1,4 @@
-import { matchesSearch } from '../../core/utils/team-selection';
-import { reconcileSelection } from '../../core/utils/team-selection';
+import { matchesSearch, reconcileSelection } from '../../core/utils/team-selection';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, inject, DestroyRef } from '@angular/core';
 import { NgClass } from '@angular/common';
@@ -8,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { ParticipantResponse, TournamentResponseFull } from '../../core/models/tournamentResponse';
-import { INITIAL_PARTICIPANT, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
+import { emptyParticipant, INITIAL_TOURNAMENT } from '../../core/services/tournament/initial-tournament';
 import { NamesTournamentsComponent } from '../list-teams/components/names-tournaments/names-tournaments.component';
 import { PlayersComponent } from '../list-teams/components/players/players.component';
 import { PlayersTournamentComponent } from './players-tournament/players-tournament.component';
@@ -33,7 +32,7 @@ export class ListTeamsTournamentsComponent {
   protected tournament: TournamentResponseFull = INITIAL_TOURNAMENT;
   protected participants: ParticipantResponse[] = [];
   protected particpantsFilter: ParticipantResponse[] = [];
-  protected teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
+  protected teamParticipant: ParticipantResponse = emptyParticipant();
   protected nameClicked: string = '';
   protected indexSelectedAfter = 0;
   protected inputText: string = '';

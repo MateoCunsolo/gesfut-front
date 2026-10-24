@@ -17,7 +17,7 @@
           @if (!isGlobalTeam){ 
           @for (player of byShirtNumber(participantTeam.playerParticipants); track $index) {
           
-            @if (player.isActive) {
+            @if (player.isActive && (player.playerName || player.playerLastName)) {
               <tr>
                 <td>{{ player.shirtNumber }}</td>
                 <td class="player">
@@ -52,10 +52,10 @@
               </tr>
             }
           }
-        @if (!hasPlayers(participantTeam.playerParticipants, 'isActive')) { <tr><td colspan="7" class="no-line">Este equipo todavía no tiene jugadores.</td></tr> }
+        @if (loadingPlayers) { <tr><td colspan="7" class="no-line" role="status">Cargando…</td></tr> } @else if (!hasPlayers(participantTeam.playerParticipants, 'isActive')) { <tr><td colspan="7" class="no-line">Este equipo todavía no tiene jugadores.</td></tr> }
         }@else{
           @for (player of byShirtNumber(participantGlobalStats.playerParticipants); track $index) {
-            @if (player.status) {
+            @if (player.status && (player.playerName || player.playerLastName)) {
               <tr>
                 <td>{{ player.shirtNumber }}</td>
                 <td class="player">
@@ -85,7 +85,7 @@
               </tr>
             }
         }
-        @if (!hasPlayers(participantGlobalStats.playerParticipants, 'status')) { <tr><td colspan="7" class="no-line">Este equipo todavía no tiene jugadores.</td></tr> }
+        @if (loadingPlayers) { <tr><td colspan="7" class="no-line" role="status">Cargando…</td></tr> } @else if (!hasPlayers(participantGlobalStats.playerParticipants, 'status')) { <tr><td colspan="7" class="no-line">Este equipo todavía no tiene jugadores.</td></tr> }
       }
         </tbody>
       </table>

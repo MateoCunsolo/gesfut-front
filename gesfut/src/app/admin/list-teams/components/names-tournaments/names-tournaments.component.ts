@@ -80,8 +80,8 @@ export class NamesTournamentsComponent implements OnChanges {
           this.onlyGlobalTeams.emit(true);
         }
       },
-      error: (error) => {
-      },
+      // Review 24/10: si falla la peticion vigente, el spinner no queda girando.
+      error: () => { if (seq === this.loadSeq && id === this.id) this.spinner = false; },
     });
   }
 

@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { TeamRemovalService } from '../../../../core/services/tournament/team-removal.service';
 import { MatchResponse, ParticipantResponse, PlayerParticipantResponse } from '../../../../core/models/tournamentResponse';
-import { INITIAL_PARTICIPANT } from '../../../../core/services/tournament/initial-tournament';
+import { emptyParticipant } from '../../../../core/services/tournament/initial-tournament';
 import { TournamentService } from '../../../../core/services/tournament/tournament.service';
 import { DeleteComponent } from './delete/delete.component';
 import { TeamService } from '../../../../core/services/tournament/team.service';
@@ -12,6 +12,8 @@ import { AlertService } from '../../../../core/services/alert.service';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import { Router } from '@angular/router';
 import { GuestService } from '../../../../core/services/guest/guest.service';
+
+const emptyGlobalStats = (): TeamWithAllStatsPlayerResponse => ({ idTeam: 0, name: '', status: true, playerParticipants: [] } as unknown as TeamWithAllStatsPlayerResponse);
 
 @Component({
   selector: 'app-players',
@@ -50,23 +52,29 @@ export class PlayersComponent implements OnChanges {
   @Input() public code: string = '';
   @Input() public nameTournament: string = '';
   protected isGlobalTeamPlayers: boolean = false;
-  protected participantTeam: ParticipantResponse = INITIAL_PARTICIPANT;
-  protected participantGlobalStats = {} as TeamWithAllStatsPlayerResponse;
+  protected participantTeam: ParticipantResponse = emptyParticipant();
+  protected participantGlobalStats: TeamWithAllStatsPlayerResponse = emptyGlobalStats();
+  /** Review 24/10: mientras carga se muestra "Cargando…", nunca filas del equipo anterior. */
+  protected loadingPlayers = false;
   protected flagAddPlayer: boolean = false;
   protected playerDeleted: { idPlayer: number, idPlayerParticipant: number } = { idPlayer: 0, idPlayerParticipant: 0 };
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ((changes['participantId'] || changes['isGlobalTeam'] || changes['idTeam']) && this.participantId !== null) {
-      if (this.isGlobalTeam) {
-        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else { this.alertService.errorAlert('No se pudo identificar el equipo. Volv\u00e9 a elegirlo en la lista.'); }
-      } else {
-        this.getPlayersParticipants(this.participantId);
+    // Review 24/10 (bug Mis equipos): al cambiar de equipo se invalidan las cargas en curso y se vacian los datos
+    // ANTES de pedir nada; el participantId viejo no se usa para el equipo nuevo.
+    const teamChanged = !!changes['idTeam'];
+    if (teamChanged) this.resetTeamData();
+    if (this.isGlobalTeam) {
+      if (teamChanged || changes['isGlobalTeam']) {
+        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else if (!teamChanged) { this.alertService.errorAlert('No se pudo identificar el equipo. Volv\u00e9 a elegirlo en la lista.'); }
       }
+    } else if ((changes['participantId'] || changes['isGlobalTeam']) && this.participantId) {
+      this.getPlayersParticipants(this.participantId);
     }
 
-    if (changes['idTeam'] && this.idTeam) this.loadTeamStatus(this.idTeam);
+    if (teamChanged && this.idTeam) this.loadTeamStatus(this.idTeam);
 
     if (changes['code']) {
       this.code = changes['code'].currentValue;
@@ -86,31 +94,41 @@ export class PlayersComponent implements OnChanges {
   private loadSeq = 0;
   private isCurrent(seq: number): boolean { return seq === this.loadSeq; }
 
+  private resetTeamData() {
+    ++this.loadSeq;
+    this.participantTeam = emptyParticipant();
+    this.participantGlobalStats = emptyGlobalStats();
+    this.teamEnabled = true;
+    this.teamName = '';
+    this.loadingPlayers = true;
+  }
+
   getPlayersGlobal(idTeam: number) {
     const seq = ++this.loadSeq;
+    this.loadingPlayers = true;
     this.teamService.getTeam(idTeam).subscribe({
       next: (response) => {
         if (!this.isCurrent(seq) || idTeam !== this.idTeam) return;
         if (response) {
           this.mapPlayersGlobal(response, seq);
-        }
+        } else this.loadingPlayers = false;
       },
-      error: (error) => {
-      }
+      error: () => { if (this.isCurrent(seq)) this.loadingPlayers = false; }
     });
   }
 
   getPlayersParticipants(idParticipant: number) {
     const seq = ++this.loadSeq;
+    this.loadingPlayers = true;
     this.tournamentService.getTournamentParticipantTeamByID(idParticipant).subscribe({
       next: (response) => {
         if (!this.isCurrent(seq) || idParticipant !== this.participantId) return;
-        if (!this.isGlobalTeam) {
-          this.participantTeam = response;
+        this.loadingPlayers = false;
+        if (!this.isGlobalTeam && response) {
+          this.participantTeam = { ...response, playerParticipants: response.playerParticipants ?? [] };
         }
       },
-      error: (error) => {
-      }
+      error: () => { if (this.isCurrent(seq)) this.loadingPlayers = false; }
     });
   }
 
@@ -172,12 +190,12 @@ export class PlayersComponent implements OnChanges {
     this.teamService.getAllStatsPlayersFromTeam(response.id).subscribe({
       next: (response) => {
         if (!this.isCurrent(seq)) return;
+        this.loadingPlayers = false;
         if (response) {
-          this.participantGlobalStats = response;
+          this.participantGlobalStats = { ...response, playerParticipants: response.playerParticipants ?? [] };
         }
       },
-      error: (error) => {
-      }
+      error: () => { if (this.isCurrent(seq)) this.loadingPlayers = false; }
 
 
     });

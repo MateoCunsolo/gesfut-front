@@ -8,7 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { ParticipantResponse } from '../../../core/models/participantResponse';
-import { INITIAL_PARTICIPANT } from '../../../core/services/tournament/initial-tournament';
+import { emptyParticipant } from '../../../core/services/tournament/initial-tournament';
 import { DeleteComponent } from '../../list-teams/components/players/delete/delete.component';
 import { AddPlayerComponent } from '../../list-teams/components/players/add-player/add-player.component';
 import {
@@ -43,7 +43,7 @@ export class PlayersTournamentComponent implements OnChanges {
   private teamRemoval = inject(TeamRemovalService);
   private isFinishedTournament: boolean = false;
 
-  @Input() teamParticipant: ParticipantResponse = INITIAL_PARTICIPANT;
+  @Input() teamParticipant: ParticipantResponse = emptyParticipant();
   @Input() code: string = '';
 
   flagAddPlayer: boolean = false;
@@ -134,9 +134,11 @@ export class PlayersTournamentComponent implements OnChanges {
     if (!this.teamParticipant.idTeam) { this.alertService.errorAlert('No se ha seleccionado un equipo'); return; }
     if (this.removing) return;
     this.removing = true;
+    // Review 24/10: referencia tomada ANTES del await; si se cambia de equipo con el dialogo abierto, se marca el original.
+    const target = this.teamParticipant;
     let action: 'DELETE' | 'DISABLE' | null = null;
-    try { action = await this.teamRemoval.remove(this.teamParticipant.idTeam, this.teamParticipant.name); } finally { this.removing = false; }
-    if (action) this.teamParticipant.isActive = false;
+    try { action = await this.teamRemoval.remove(target.idTeam, target.name); } finally { this.removing = false; }
+    if (action) target.isActive = false;
   }
   removing = false;
 

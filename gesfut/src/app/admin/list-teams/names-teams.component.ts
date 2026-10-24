@@ -65,6 +65,8 @@ export class NamesTeamsComponent implements OnInit {
   }
 
   onOnlyGlobalTeams(event: boolean) {
+    // Review 24/10: al cambiar de modo no se arrastra un id del otro modo.
+    if (event !== this.isGlobalTeams) this.selectedParticipantId = null;
     this.isGlobalTeams = event;
     this.clickedToOcultPlayers = true;
   }
@@ -82,6 +84,8 @@ export class NamesTeamsComponent implements OnInit {
   showParticipants(id: number) {
     if ( id != this.idSelected){
       this.clickedToOcultPlayers = false;
+      // Review 24/10: el participante de torneo del equipo anterior no sirve para el nuevo.
+      this.selectedParticipantId = null;
     }
     this.idSelected = id;
     this.nameClicked = this.teamsGlobales.find((team) => team.id === id)?.name || '';
@@ -100,8 +104,9 @@ export class NamesTeamsComponent implements OnInit {
     this.selectedParticipantId = id;
   }
 
-  onGlobalPlayerSelected(id: number) {
-    this.selectedParticipantId = id;
+  /** Review 24/10: en modo global el equipo sale de idSelected; el id global no se guarda como participante. */
+  onGlobalPlayerSelected(_id: number) {
+    this.selectedParticipantId = null;
   }
   
 
