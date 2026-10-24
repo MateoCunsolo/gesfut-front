@@ -9,6 +9,8 @@ export interface EventResponse {
 
 export interface MatchResponse {
     tiebreakWinnerId?: number | null;
+    penaltiesHome?: number | null;
+    penaltiesAway?: number | null;
     id: number;
     homeTeam: string;
     awayTeam: string;

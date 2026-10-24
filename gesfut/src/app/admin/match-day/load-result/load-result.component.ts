@@ -34,6 +34,9 @@ export class LoadResultComponent {
   private destroyRef = inject(DestroyRef);
   readonly saving = inject(MatchDaysService).saving;
   tiebreakWinnerId: number | null = null;
+  /** Revisión crítica #9: tanda de penales (opcional). */
+  penaltiesHome: number | null = null;
+  penaltiesAway: number | null = null;
   currentMatch: MatchDetailedResponse = INITIAL_DETAILED_MATCH;
   searchQuery: string = '';
   filteredTeams: ParticipantResponse[] = [];
@@ -137,6 +140,8 @@ export class LoadResultComponent {
         this.events = [];
         this.eventsCopy = [];
         this.tiebreakWinnerId = this.currentMatch.tiebreakWinnerId ?? null;
+        this.penaltiesHome = this.currentMatch.penaltiesHome ?? null;
+        this.penaltiesAway = this.currentMatch.penaltiesAway ?? null;
         this.statisticsForm.reset({id:0,name:'',shirt:0,team:'',goals:0,yellowCard:0,redCard:0,mvp:false});
         this.filteredTeams = [
           this.currentMatch.homeTeam,
@@ -260,7 +265,9 @@ export class LoadResultComponent {
       this.alertService.errorAlert('Seleccioná quién ganó el desempate.');
       return;
     }
-    if (!tiedPlayoff) this.tiebreakWinnerId = null;
+    if (!tiedPlayoff) { this.tiebreakWinnerId = null; this.penaltiesHome = null; this.penaltiesAway = null; }
+    const penalties = this.penaltiesFor();
+    if (penalties === undefined) return;
 
     if (this.thereAreMoreThanOneMvp(this.events)) {
       this.alertService.errorAlert('Solo puede haber un MVP por partido');
@@ -268,15 +275,32 @@ export class LoadResultComponent {
     }
     if (this.matchDayService.editResult.value === true) {
       console.log('es editando');
-      if (this.eventsAreEquals() && this.tiebreakWinnerId === (this.currentMatch.tiebreakWinnerId ?? null)) {
+      if (this.eventsAreEquals() && this.tiebreakWinnerId === (this.currentMatch.tiebreakWinnerId ?? null)
+        && (penalties?.home ?? null) === (this.currentMatch.penaltiesHome ?? null) && (penalties?.away ?? null) === (this.currentMatch.penaltiesAway ?? null)) {
         this.DashboardService.setActiveTournamentComponent('match-days');
       } else {
-        this.matchDayService.saveEditEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId);
+        this.matchDayService.saveEditEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId, penalties);
       }
     } else {
       console.log('es primera carga');
-      this.matchDayService.saveEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId);
+      this.matchDayService.saveEvents(this.events, this.currentMatch.id, this.tiebreakWinnerId, penalties);
     }
+  }
+
+  /** Penales cargados: si están los dos definen el ganador del desempate. */
+  syncPenaltyWinner() {
+    const p = this.penaltiesFor(false);
+    if (p && p.home !== p.away) this.tiebreakWinnerId = p.home > p.away ? this.currentMatch.homeTeam.idParticipant : this.currentMatch.awayTeam.idParticipant;
+  }
+
+  /** null = sin penales; undefined = datos inválidos (ya avisado). */
+  penaltiesFor(alert = true): { home: number; away: number } | null | undefined {
+    const empty = (v: number | null) => v === null || v === undefined || (v as any) === '';
+    if (empty(this.penaltiesHome) && empty(this.penaltiesAway)) return null;
+    if (empty(this.penaltiesHome) || empty(this.penaltiesAway)) { if (alert) this.alertService.errorAlert('Cargá los penales de los dos equipos o dejalos vacíos.'); return undefined; }
+    const home = Number(this.penaltiesHome), away = Number(this.penaltiesAway);
+    if (home === away) { if (alert) this.alertService.errorAlert('Los penales no pueden terminar empatados.'); return undefined; }
+    return { home, away };
   }
 
   eventsAreEquals(): boolean {

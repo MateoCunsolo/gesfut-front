@@ -1,4 +1,5 @@
 import { isByeMatch, restingTeam } from '../../core/utils/bye';
+import { penaltiesLabel } from '../../core/utils/penalties';
 import { Component, Input } from '@angular/core';
 import { MatchResponse } from '../../core/models/tournamentResponse';
 
@@ -20,7 +21,7 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
           <div class="row"><span class="team-mark" aria-hidden="true">{{ initials(match.awayTeam) }}</span><span class="team-name">{{ match.awayTeam }}</span><strong class="goals">{{ match.isFinished ? match.awayGoals : '' }}</strong></div>
           @if (!match.isFinished) { <span class="vs-compact" aria-hidden="true">vs</span> }
         </div>
-        @if (match.tiebreakWinnerId) { <p class="definition">Definido por desempate</p> }
+        @if (match.tiebreakWinnerId) { <p class="definition">{{ penaltiesLabel || 'Definido por desempate' }}</p> }
         @if (match.isFinished) {
           <details class="match-detail">
             <summary>Detalle del partido <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
@@ -47,7 +48,7 @@ import { MatchResponse } from '../../core/models/tournamentResponse';
           </div>
           <div class="team"><span class="team-mark" aria-hidden="true">{{ initials(match.awayTeam) }}</span><span class="team-name">{{ match.awayTeam }}</span></div>
         </div>
-        @if (match.tiebreakWinnerId) { <p class="definition">Definido por desempate</p> }
+        @if (match.tiebreakWinnerId) { <p class="definition">{{ penaltiesLabel || 'Definido por desempate' }}</p> }
         @if (match.description && !draft) { <p class="venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ venueLabel }}</p> }
         @if (match.isFinished && !draft) {
           <details class="match-detail">
@@ -121,6 +122,8 @@ export class MatchCardComponent {
   /** Loop 3: en historiales mezclados (Últimos partidos) muestra la ronda junto al estado. */
   @Input() showRound = false;
   get isBye(): boolean { return isByeMatch(this.match); }
+  /** Revisión crítica #9: "Definido por penales (4-3)". */
+  get penaltiesLabel(): string | null { return penaltiesLabel(this.match); }
   get resting(): string { return restingTeam(this.match) ?? 'Ningún equipo'; }
   get venueLabel(): string { const text = this.match.description?.trim() || ''; return /^cancha\b/i.test(text) ? text : 'Cancha ' + text; }
   initials(name:string):string { return name.trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase(); }

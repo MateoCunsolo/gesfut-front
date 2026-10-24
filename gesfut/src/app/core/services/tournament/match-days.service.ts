@@ -20,6 +20,9 @@ import { MatchDayResponse } from '../../models/tournamentResponse';
 import { MatchDescription } from '../../models/MatchDescriptionResponse';
 
 
+/** Revisión crítica #9: tanda de penales. */
+export interface Penalties { home: number; away: number; }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -117,11 +120,11 @@ export class MatchDaysService {
     });
   }
 
-  saveEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null): void {
+  saveEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null, penalties: Penalties | null = null): void {
     if (this.saving()) return;
     this.saving.set(true);
     console.log('Array de eventos recibidos en el servicio:', events);
-    const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId);
+    const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId, penalties);
     const token = sessionStorage.getItem('token');
 
     console.log(request);
@@ -167,7 +170,7 @@ export class MatchDaysService {
       });
   }
 
-  generateMatchRequest(events: any[], matchId: number, tiebreakWinnerId: number | null = null): MatchRequest {
+  generateMatchRequest(events: any[], matchId: number, tiebreakWinnerId: number | null = null, penalties: Penalties | null = null): MatchRequest {
     const eventRequests: EventRequest[] = [];
 
     events.forEach((event) => {
@@ -207,15 +210,17 @@ export class MatchDaysService {
     return {
       matchId: matchId,
       tiebreakWinnerId,
+      penaltiesHome: penalties?.home ?? null,
+      penaltiesAway: penalties?.away ?? null,
       events: eventRequests,
     };
   }
 
-  saveEditEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null): void {
+  saveEditEvents(events: any[], matchId: number, tiebreakWinnerId: number | null = null, penalties: Penalties | null = null): void {
     if (this.saving()) return;
     this.saving.set(true);
     console.log('Array de eventos recibidos en el servicio:', events);
-    const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId);
+    const request = this.generateMatchRequest(events, matchId, tiebreakWinnerId, penalties);
     const token = sessionStorage.getItem('token');
 
     console.log(request);

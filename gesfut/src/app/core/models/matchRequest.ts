@@ -3,6 +3,8 @@
 export interface MatchRequest {
     matchId: number;
     tiebreakWinnerId?: number | null;
+    penaltiesHome?: number | null;
+    penaltiesAway?: number | null;
     events:  EventRequest[];
 }
 
