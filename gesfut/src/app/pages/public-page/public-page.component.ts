@@ -49,6 +49,8 @@ export class PublicPageComponent {
   private loadSubscription?: Subscription;
   loadingTournament = true;
   tournamentName: string = 'Cargando nombre...';
+  /** Revisión crítica #13: torneo archivado (visible, solo lectura). */
+  archived = false;
   constructor(
     private tournamentService: TournamentService,
     private activedRoute: ActivatedRoute,
@@ -91,6 +93,7 @@ export class PublicPageComponent {
     ).subscribe({
       next: (response: TournamentResponseFull) => {
         this.currentTournament.next(response);
+        this.archived = response.isActive === false;
         this.dashboardService.setNameTournament(response.name);
         this.loadingTournament = false;
       },

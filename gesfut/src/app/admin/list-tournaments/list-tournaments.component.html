@@ -3,16 +3,16 @@
   <h2>Mis torneos</h2>
   <div class="filters">
     <label for="tournament-search">Buscar torneo<input id="tournament-search" type="search" placeholder="Nombre del torneo" (input)="onSearchChange($event)" [value]="searchQuery"></label>
-    <label for="filter">Estado<select id="filter" (change)="onFilterChange($event)" [value]="filter"><option value="all">Todos</option><option value="finished">Finalizados</option><option value="inProgress">En curso</option><option value="trash">Papelera</option></select></label>
+    <label for="filter">Estado<select id="filter" (change)="onFilterChange($event)" [value]="filter"><option value="all">Todos</option><option value="finished">Finalizados</option><option value="inProgress">En curso</option><option value="trash">Archivados</option></select></label>
     @if(filter!=='all' || searchQuery){<button type="button" class="back-button" (click)="resetFilters()">Limpiar filtros</button>}
   </div>
   <p class="result-count" role="status">{{filteredTournaments.length}} {{filteredTournaments.length===1 ? 'torneo' : 'torneos'}}</p>
   <div class="rows">
     @for(item of filteredTournaments;track item.code){
     <article class="tournament">
-      <button type="button" class="open-tournament" [disabled]="!item.isActive" [attr.aria-label]="'Abrir torneo ' + item.name" (click)="toTournament(item.code)">
+      <button type="button" class="open-tournament" [attr.aria-label]="'Abrir torneo ' + item.name" (click)="toTournament(item.code)">
         <strong>{{item.name}}</strong>
-        <span class="metadata"><span class="status" [class.finished]="item.isFinished || !item.isActive">{{!item.isActive ? 'En papelera' : item.isFinished ? 'Finalizado' : 'En curso'}}</span><span>{{item.startDate ? (item.startDate | date:'dd MMM yyyy') : 'Sin fecha de inicio'}}</span></span>
+        <span class="metadata"><span class="status" [class.finished]="item.isFinished || !item.isActive">{{!item.isActive ? 'Archivado' : item.isFinished ? 'Finalizado' : 'En curso'}}</span><span>{{item.startDate ? (item.startDate | date:'dd MMM yyyy') : 'Sin fecha de inicio'}}</span></span>
         @if(item.isActive){<span class="open-arrow" aria-hidden="true">›</span>}
       </button>
       <details class="options"><summary [attr.aria-label]="'Opciones de ' + item.name">Opciones</summary>

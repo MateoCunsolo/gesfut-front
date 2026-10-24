@@ -150,8 +150,9 @@ export class ListTournamentsComponent {
   }
 
   toTournament(code: string) {
+    // Revisión crítica #13: un torneo archivado se ve en su página pública (solo lectura).
     if (this.tournaments.find(tournament => tournament.code === code)!.isActive === false) {
-      this.alertService.errorAlert('Este torneo fue eliminado.');
+      this.route.navigate(['/', code]);
       return;
     }
     this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);

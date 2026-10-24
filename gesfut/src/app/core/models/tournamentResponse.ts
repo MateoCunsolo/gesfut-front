@@ -83,6 +83,8 @@ export interface TournamentResponseFull {
     championOfLeagueId?: number | null;
     championOfPlayoffsId?: number | null;
     yellowCardsToSuspend?: number;
+    /** Revisión crítica #13: false = archivado. */
+    isActive?: boolean;
     redCardSuspensionMatches?: number;
     name: string;
     code: string;

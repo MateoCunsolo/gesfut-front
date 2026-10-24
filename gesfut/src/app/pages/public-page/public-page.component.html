@@ -13,6 +13,9 @@
 } @else if (loadingTournament) {
   <p class="connection-error" role="status">Cargando torneo…</p>
 } @else {
+@if (archived) {
+  <p class="info-pill archived-banner" role="status">Torneo archivado: se puede consultar pero ya no se actualiza.</p>
+}
 @if(currentActiveComponent == 'match-days'){
   <app-list-match-days></app-list-match-days>
 }
