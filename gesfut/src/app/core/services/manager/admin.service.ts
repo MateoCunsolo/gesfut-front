@@ -64,6 +64,11 @@ export class AdminService {
     );
   }
 
+  /** Revisar y generar: valida (DNI repetido, programacion) sin crear nada. */
+  checkTeams(init: InitializeRequest): Observable<unknown> {
+    return this.http.post(`${this.url}/tournaments/check-teams`, init, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionStorage.getItem('token')}` } });
+  }
+
   initTournament(init: InitializeRequest): Observable<TournamentResponse> {
     const userCurrent = this.sessionService.isAuth();
     if (!userCurrent) {

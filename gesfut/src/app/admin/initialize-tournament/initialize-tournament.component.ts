@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../core/utils/http-error';
 import { naturalCompare } from '../../core/utils/natural-sort';
 import { Component } from '@angular/core';
 import { TeamRequest } from '../../core/models/teamRequest';
@@ -154,6 +155,19 @@ export class InitializeTournamentComponent {
         minutesPerMatch: this.date ? this.minutes : null,
         dayBetweenMatchDay: this.date ? this.days : null
       };
+      if (this.date && !(Number(this.days) >= 1)) { this.alertService.errorAlert('El intervalo entre fechas tiene que ser de al menos 1 d\u00eda.'); return; }
+      if (this.date && !(Number(this.minutes) >= 1)) { this.alertService.errorAlert('La duraci\u00f3n de cada partido tiene que ser de al menos 1 minuto.'); return; }
+      this.adminService.checkTeams(initializeRequest).subscribe({
+        error: (err) => this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo revisar el torneo. Prob\u00e1 de nuevo.')),
+        next: () => this.confirmAndInit(initializeRequest)
+      });
+    } else {
+      this.alertService.errorAlert('El torneo debe tener al menos 2 equipos');
+    }
+  }
+
+  private confirmAndInit(initializeRequest: any) {
+    {
       this.alertService.infoAlertTournament('INFORMACIÓN DEL TORNEO', this.teamsTournament, this.splitDate(this.date).dateWithStrings, this.minutes, this.days)
         .then((result) => {
           if (result.isConfirmed) {
@@ -170,7 +184,7 @@ export class InitializeTournamentComponent {
                 });
               },
               error: (err) => {
-                this.alertService.errorAlert(err.error.error);
+                this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
                 console.error(err);
               },
               complete: () => {
@@ -181,9 +195,6 @@ export class InitializeTournamentComponent {
             return;
           }
         });
-
-    } else {
-      this.alertService.errorAlert('El torneo debe tener al menos 2 equipos');
     }
   }
 

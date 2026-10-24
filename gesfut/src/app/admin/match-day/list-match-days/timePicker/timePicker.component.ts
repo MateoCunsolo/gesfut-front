@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../../../core/utils/http-error';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import {
   ChangeDetectionStrategy,
@@ -100,7 +101,7 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
       @if(isToInitTournament){
         <mat-form-field>
         <mat-label>Intervalo de dias entre jornadas</mat-label>
-        <input matInput type="number" min="7" [(ngModel)]="plusDays"/> </mat-form-field
+        <input matInput type="number" min="1" aria-label="Intervalo de d\u00edas entre jornadas" [(ngModel)]="plusDays"/> </mat-form-field
       >}
       
 
@@ -217,6 +218,8 @@ export class TimepickerDatepickerIntegrationExample {
         this.alertService.loadingAlert('Actualizando fecha...');
         this.updateOneMatchDate(localDateTime, this.matchId);
       }else if(this.isToInitTournament){
+        if (!(Number(this.plusDays) >= 1)) { this.alertService.errorAlert('El intervalo entre fechas tiene que ser de al menos 1 d\u00eda.'); return; }
+        if (!(Number(this.plusMinutes) >= 1)) { this.alertService.errorAlert('La duraci\u00f3n de cada partido tiene que ser de al menos 1 minuto.'); return; }
         this.sendDate.emit(localDateTime);
         this.sendMinutesAndDays.emit({minutes: this.plusMinutes, days: this.plusDays});
         this.cancelPickerFunction();
@@ -234,7 +237,7 @@ export class TimepickerDatepickerIntegrationExample {
       },
       error: (err) => {
         console.error('Error en la solicitud HTTP:', err);
-        this.alertService.errorAlert(err.error.error);
+        this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       },
     });
   }
@@ -248,7 +251,7 @@ export class TimepickerDatepickerIntegrationExample {
       },
       error: (err) => {
         console.error('Error en la solicitud HTTP:', err);
-        this.alertService.errorAlert(err.error.error);
+        this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       },
     });
   }

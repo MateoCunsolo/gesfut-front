@@ -311,7 +311,7 @@ button: any;
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 0) this.alertService.errorAlert('No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo: los datos siguen cargados.');
-        else { this.alertService.errorAlert(err.error?.error || 'No se pudo crear el equipo.'); this.authService.serverNotResponding(err); }   
+        else { this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo crear el equipo.')); this.authService.serverNotResponding(err); }   
         this.isloading = false;
       }
     });

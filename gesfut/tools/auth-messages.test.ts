@@ -31,3 +31,15 @@ test('aviso registered=1 en el login', () => {
   const reg = readFileSync(new URL('../src/app/auth/register/register.component.ts', import.meta.url), 'utf8');
   assert.match(reg, /navigateByUrl\('\/auth\/login\?registered=1'\)/);
 });
+
+test('bloque A: toasts nunca vacios, revisar antes de generar, intervalo minimo 1', () => {
+  const src = (p: string) => readFileSync(new URL('../src/app/' + p, import.meta.url), 'utf8');
+  assert.match(src('core/services/alert.service.ts'), /const text = typeof err === 'string' && err\.trim\(\) \? err :/);
+  const ini = src('admin/initialize-tournament/initialize-tournament.component.ts');
+  assert.match(ini, /checkTeams\(initializeRequest\)/);
+  assert.match(ini, /al menos 1 d/);
+  const tp = src('admin/match-day/list-match-days/timePicker/timePicker.component.ts');
+  assert.match(tp, /min="1"[^>]*plusDays/);
+  for (const f of ['admin/initialize-tournament/initialize-tournament.component.ts', 'admin/match-day/list-match-days/list-match-days.component.ts', 'admin/match-day/list-match-days/timePicker/timePicker.component.ts'])
+    assert.doesNotMatch(src(f), /errorAlert\(\w+\.error\.error\)/, f);
+});

@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../../../../core/utils/http-error';
 import { normalizeDni } from '../../../../../core/utils/dni';
 import { Component, afterNextRender, ElementRef, ViewChild, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
@@ -231,7 +232,7 @@ export class AddPlayerComponent implements OnChanges {
           },
           error: (error) => {
             console.error('Error al activar jugador:', error);
-            this.alertService.errorAlert(error.error.error);
+            this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
           }
         });
       }
@@ -261,7 +262,7 @@ export class AddPlayerComponent implements OnChanges {
       },
       error: (error) => {
         console.error('Error al activar jugador:', error);
-        this.alertService.errorAlert(error.error.error);
+        this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     });
   }
@@ -340,7 +341,7 @@ export class AddPlayerComponent implements OnChanges {
       },
       error: (error) => {
         console.error('Error al agregar jugador:', error);
-        this.alertService.errorAlert(error.error.error);
+        this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     })
   }
@@ -366,7 +367,7 @@ export class AddPlayerComponent implements OnChanges {
       },
       error: (error) => {
         console.error('Error al agregar jugador:', error);
-        this.alertService.errorAlert(error.error.error);
+        this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     })
   }

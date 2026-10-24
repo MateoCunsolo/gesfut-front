@@ -1,3 +1,4 @@
+import { httpErrorMessage } from '../../utils/http-error';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import {
@@ -165,7 +166,7 @@ export class MatchDaysService {
         },
         error: (err) => {
           console.error('Error en la solicitud HTTP:', err);
-          this.alertService.errorAlert(err.error?.error || 'No se pudo guardar el partido. Tus cambios siguen en pantalla.');
+          this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo guardar el partido. Tus cambios siguen en pantalla.'));
         },
       });
   }
@@ -261,7 +262,7 @@ export class MatchDaysService {
         },
         error: (err) => {
           console.error('Error en la solicitud HTTP:', err);
-          this.alertService.errorAlert(err.error?.error || 'No se pudo guardar el partido. Tus cambios siguen en pantalla.');
+          this.alertService.errorAlert(httpErrorMessage(err, 'No se pudo guardar el partido. Tus cambios siguen en pantalla.'));
         },
       });
   }

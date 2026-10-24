@@ -53,10 +53,12 @@ export class AlertService {
   }
 
   errorAlert(err: string) {
+    // Nunca un toast vacio: si no vino mensaje, uno generico.
+    const text = typeof err === 'string' && err.trim() ? err : 'Algo sali\u00f3 mal. Prob\u00e1 de nuevo.';
     Swal.fire({
       toast: true,
       icon: 'error',
-      titleText: err,
+      titleText: text,
       position: 'top-end',
       showConfirmButton: false,
       timer: 3000,

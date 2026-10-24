@@ -377,7 +377,7 @@ export class ListMatchDaysComponent implements OnInit {
           }
         },
         error: (error: HttpErrorResponse) => {
-          this.alertService.errorAlert(error.error.error)
+          this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'))
         }
       })
     }
@@ -580,7 +580,7 @@ export class ListMatchDaysComponent implements OnInit {
         this.matchDayStatus = false;
       },
       error: (error: HttpErrorResponse) => {
-        this.alertService.errorAlert(error.error.error);
+        this.alertService.errorAlert(httpErrorMessage(error, 'No se pudo completar la acci\u00f3n. Prob\u00e1 de nuevo.'));
       }
     });
   }
