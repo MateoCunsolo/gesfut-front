@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { AlertService } from '../alert.service';
 import { TeamDeletionResponse, TeamService } from './team.service';
 import { httpErrorMessage } from '../../utils/http-error';
+import { TournamentService } from './tournament.service';
 
 /** Plan 22/10 #2: texto del diálogo de confirmación; deja claro si se borra o se deshabilita. */
 export function deletionConfirmText(p: TeamDeletionResponse): { title: string; text: string; button: string } {
@@ -24,6 +25,13 @@ export function deletionConfirmText(p: TeamDeletionResponse): { title: string; t
 export class TeamRemovalService {
   private teams = inject(TeamService);
   private alerts = inject(AlertService);
+  private tournaments = inject(TournamentService);
+
+  /** Bug 3: tras dar de baja/habilitar, el fixture del torneo abierto se vuelve a pedir (sin cache). */
+  private refreshOpenTournament(): void {
+    const code = (this.tournaments.currentTournament as any)?.value?.code;
+    if (code) this.tournaments.getTournamentFull(code, true).subscribe({ error: () => {} });
+  }
 
   /** Pregunta y aplica. Devuelve la acción hecha o null si se canceló/bloqueó. */
   async remove(teamId: number): Promise<'DELETE' | 'DISABLE' | null> {
@@ -35,6 +43,7 @@ export class TeamRemovalService {
       if (!answer.isConfirmed) return null;
       const done = await firstValueFrom(this.teams.deleteTeam(teamId));
       this.alerts.successAlert(done.action === 'DELETE' ? 'Equipo eliminado' : 'Equipo deshabilitado');
+      this.refreshOpenTournament();
       return done.action;
     } catch (err) {
       this.alerts.errorAlert(httpErrorMessage(err, 'No se pudo eliminar el equipo.'));
@@ -48,6 +57,7 @@ export class TeamRemovalService {
     try {
       await firstValueFrom(this.teams.changeStatusTeam(teamId, true));
       this.alerts.successAlert('Equipo habilitado');
+      this.refreshOpenTournament();
       return true;
     } catch (err) {
       this.alerts.errorAlert(httpErrorMessage(err, 'No se pudo habilitar el equipo.'));
