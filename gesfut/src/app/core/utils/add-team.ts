@@ -13,8 +13,9 @@ interface T {
 export function addTeamMode(t: T | null | undefined): AddTeamMode {
   if (!t || t.isFinished || t.isActive === false) return null;
   if (t.matchDays.some(d => d.isPlayOff)) return null;
-  const started = t.matchDays.some(d => d.isFinished || d.matches.some(m => m.isFinished && !m.isBye));
-  if (!started) return 'before-start';
+  // Respuesta 7: solo si el torneo es impar (el nuevo ocupa el lugar de Libre), igual que el backend.
   const real = t.participants.filter(p => p.name.toLowerCase() !== 'free').length;
-  return real % 2 === 1 ? 'replace-free' : null;
+  if (real % 2 !== 1) return null;
+  const started = t.matchDays.some(d => d.isFinished || d.matches.some(m => m.isFinished && !m.isBye));
+  return started ? 'replace-free' : 'before-start';
 }
