@@ -1,3 +1,4 @@
+import { canFinish } from '../../../core/utils/tournament-finish';
 import { isByeMatch, playoffEligible } from '../../../core/utils/bye';
 import { MatchResponse } from '../../../core/models/tournamentResponse';
 import { httpErrorMessage } from '../../../core/utils/http-error';
@@ -31,6 +32,16 @@ import { TeamResponse } from '../../../core/models/teamResponse';
 export class ListMatchDaysComponent implements OnInit {
   /** Plan 22/10 #2: fecha libre (rival "Free" o dado de baja). */
   isBye(match: MatchResponse): boolean { return isByeMatch(match); }
+  /** Revisión crítica #2: se puede finalizar cuando todo está jugado (liga y playoffs). */
+  get canFinishTournament(): boolean { return canFinish(this.tournament); }
+  async finishTournament() {
+    const answer = await this.alertService.confirmAlert('Finalizar torneo', 'Se da por terminado el torneo con los resultados actuales. Es irreversible: después no se podrán cargar ni corregir resultados, ni generar playoffs. Los premios quedan bloqueados.', 'Finalizar torneo');
+    if (!answer.isConfirmed) return;
+    this.tournamentService.finishTournament(this.tournament.code).subscribe({
+      next: () => this.alertService.successAlert('¡Torneo finalizado!'),
+      error: (e: HttpErrorResponse) => this.alertService.errorAlert(httpErrorMessage(e, 'No se pudo finalizar el torneo.')),
+    });
+  }
   private readonly destroyRef = inject(DestroyRef);
 
   searchTeam(event: Event) {
@@ -165,7 +176,7 @@ export class ListMatchDaysComponent implements OnInit {
   private pendingCloseKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha';
   closeSuccessText(status: boolean): string {
     if (!status) return 'Fecha reabierta';
-    return this.pendingCloseKind === 'torneo' ? '¡Torneo finalizado!' : this.pendingCloseKind === 'playoffs' ? 'Instancia de playoffs cerrada' : 'Fecha cerrada';
+    return this.pendingCloseKind === 'torneo' ? 'Final cerrada' : this.pendingCloseKind === 'playoffs' ? 'Instancia de playoffs cerrada' : 'Fecha cerrada';
   }
 
   closeMatchDay(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
@@ -201,7 +212,7 @@ export class ListMatchDaysComponent implements OnInit {
     //ADVERTIR QUE ES LA ULTIMA FECHA 
     if (this.selectedMatchDay === this.tournament.matchDays.length - 1 && !this.tournament.matchDays[this.selectedMatchDay].isFinished && !this.tournament.matchDays[this.selectedMatchDay].isPlayOff) {
       console.log('Última fecha del torneo, mostrando advertencia');
-      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Es la última fecha de la fase regular. Al cerrarla el torneo queda finalizado; después podés generar playoffs, o reabrir la fecha si necesitás corregir algo mientras no haya playoffs.', 'Confirmar')
+      this.alertService.confirmAlert('⚠️ ADVERTENCIA ⚠️', 'Es la última fecha de la fase regular. Después podés generar playoffs o finalizar el torneo con el botón "Finalizar torneo".', 'Confirmar')
         .then((result) => {
           console.log('Resultado de la confirmación:', result);
           if (result.isConfirmed) {

@@ -108,7 +108,9 @@
 @if(isAuth() && !day.isFinished && !isBye(match)){<div class="match-actions">@if(match.isFinished || match.canLoadResult !== false){<button type="button" class="base-button" (click)="match.isFinished ? editResult(match.id) : loadResult(match.id)">{{match.isFinished ? 'Editar resultado' : 'Cargar resultado'}}</button>}@else{<span class="info-pill" role="note">El resultado se carga el día del partido</span>}<details class="more-actions"><summary [attr.aria-label]="'Más opciones de ' + match.homeTeam + ' contra ' + match.awayTeam">Más <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary><div><button type="button" class="button-secondary" [attr.aria-label]="'Horario de ' + match.homeTeam + ' contra ' + match.awayTeam" (click)="sendMatchId(match.id,1)"><i class="fa-regular fa-clock" aria-hidden="true"></i> Horario</button><button type="button" class="button-secondary" [attr.aria-label]="'Cancha de ' + match.homeTeam + ' contra ' + match.awayTeam" (click)="sendMatchId(match.id,2)"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Cancha</button></div></details></div>}
 </app-match-card>@if(day.isPlayOff && match.vsMatchIdWhoWin){<p class="bracket-note">El ganador juega contra el ganador de {{ bracketRival(day, match.vsMatchIdWhoWin) }}.</p>}</div>}@empty{<div class="empty-state">No hay partidos programados para esta fecha.</div>}</div>
   <div class="btn-container" [class.day-actions]="isAuth()">
-    @if(isAuth()){
+    @if(tournament.isFinished){<span class="info-pill" role="status">Torneo finalizado</span>}
+    @if(isAuth() && canFinishTournament){<button class="base-button" (click)="finishTournament()">Finalizar torneo</button>}
+    @if(isAuth() && !tournament.isFinished){
         <p class="day-actions-help">Acciones de toda la fecha</p>
         @if(this.matchDayStatus && !tournament.matchDays[selectedMatchDay].isPlayOff){
           <button class="base-button edit-button" [disabled]="closing" (click)="toggleMatchDayStatus(false)">Reabrir fecha</button>

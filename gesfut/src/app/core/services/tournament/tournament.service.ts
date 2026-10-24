@@ -233,6 +233,12 @@ export class TournamentService {
       }))
   }
 
+  /** Revisión crítica #2: finalizar es explícito e irreversible. */
+  finishTournament(code: string): Observable<void> {
+    return this.http.put<void>(`${this.url}/tournaments/${code}/finish`, null).pipe(
+      tap(() => this.getTournamentFull(code).subscribe()));
+  }
+
   generatePlayOffs(teamsIdQualify: Number[], code: string): Observable<void> {
     const url = `${this.url}/tournaments/generate-playoffs/${code}`;
     return this.http.put<void>(url, teamsIdQualify, { 
