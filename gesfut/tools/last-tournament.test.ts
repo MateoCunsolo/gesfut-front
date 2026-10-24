@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament } from '../src/app/core/utils/last-tournament';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
@@ -92,4 +93,31 @@ test('MVP de la fecha: candidatos = MVP cargados en los partidos (sin vacios ni 
   assert.deepEqual(mvpCandidates([{ mvpPlayer: 'Ana' }, { mvpPlayer: '' }, { mvpPlayer: null }, { mvpPlayer: ' Ana ' }, { mvpPlayer: 'Beto' }]), ['Ana', 'Beto']);
   assert.deepEqual(mvpCandidates([{ mvpPlayer: null }, {}]), [], 'sin MVP cargado no hay selector');
   assert.deepEqual(mvpCandidates(undefined), []);
+});
+
+/** Flujo real (cableado de los componentes): login escribe el email ANTES de avisar la sesion; abrir el torneo guarda;
+ *  logout no borra; el dashboard lee con el mismo email. Se verifica el codigo fuente que lo arma. */
+const src = (p: string) => readFileSync(new URL('../src/app/' + p, import.meta.url), 'utf8');
+test('flujo real: login -> abrir torneo -> logout -> login -> dashboard', () => {
+  const auth = src('core/services/manager/auth.service.ts');
+  const iEmail = auth.indexOf("sessionStorage.setItem('email'"), iSession = auth.indexOf('this.sessionService.setUserSession(response)');
+  assert.ok(iEmail > 0 && iSession > iEmail, 'el email se guarda antes de setUserSession');
+  assert.match(auth, /setItem\('email', String\(credentials\.email \?\? ''\)\.trim\(\)\.toLowerCase\(\)\)/);
+  const session = src('core/services/manager/session.service.ts');
+  const clear = session.slice(session.indexOf('clearUserSession(): void'), session.indexOf('clearUserSession(): void') + 600);
+  assert.ok(!/forgetLastTournament\(/.test(clear), 'el logout no borra el Retomar');
+  assert.match(src('pages/admin-tournament-page/admin-tournament-page.component.ts'), /setLastTournament\(this\.code, full\.name\)/, 'abrir el torneo lo guarda');
+  assert.match(src('admin/dashboard/dashboard.component.ts'), /getLastTournament\(\)/);
+  // y con esos pasos, en el mismo navegador:
+  const local = mem(); const t = mem();
+  t.setItem('email', ' Ana@X.com '.trim().toLowerCase()); setLastTournament('abc', 'Liga', local, t); // login + abrir
+  t.removeItem('email');                                                                              // logout
+  t.setItem('email', 'ANA@x.com'.trim().toLowerCase());                                                 // login
+  assert.equal(getLastTournament(local, t)?.code, 'abc');                                             // dashboard
+});
+
+test('cerrar fecha: pide datos frescos antes del dialogo y codifica el MVP en la URL', () => {
+  const list = src('admin/match-day/list-match-days/list-match-days.component.ts');
+  assert.match(list, /getTournamentFull\(code, true\)[\s\S]{0,200}closeMatchDayWithData/);
+  assert.match(src('core/services/tournament/match-days.service.ts'), /playerMvp=\$\{encodeURIComponent\(/);
 });

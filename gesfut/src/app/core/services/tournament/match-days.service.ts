@@ -77,7 +77,7 @@ export class MatchDaysService {
     const token = sessionStorage.getItem('token');
 
     return this.HttpClient.put<void>(
-      `${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}&playerMvp=${playerMvp}`,
+      `${this.url}/match-days/close?matchDayId=${idMatchDay}&status=${status}&playerMvp=${encodeURIComponent(String(playerMvp ?? ''))}`,
       null,
       {
         headers: {

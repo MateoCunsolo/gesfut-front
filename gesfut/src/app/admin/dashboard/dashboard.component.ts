@@ -59,13 +59,11 @@ export class DashboardComponent {
   toTournament(code: string) {
     this.tournamentService.tournamentExists(code).subscribe({
       next: (response) => {
-        console.log(response);
         if (response) {
           this.router.navigate([`/admin/tournaments/${code}`]);
           this.dashboardService.setNameTournament(this.lastTournamentName());
       }},
-      error: (error) => {
-        console.log(error);
+      error: () => {
         this.flagIsMyTournament.set(false);
       }
     });

@@ -13,3 +13,11 @@
 @media(max-width:899px){.editor-layout.editing .events-panel{order:-1;}}
 .live-score{padding:16px;margin-bottom:16px;}
 .save-summary{margin:16px 0 8px;display:grid;gap:4px;}.save-summary .save-status{margin:0;}.save-status.pending{color:var(--ink);font-weight:700;}.summary-line{font-size:1.3rem;color:var(--muted);overflow-wrap:anywhere;}
+
+/* Retest 24/10 (~1024px): los tres numeros no se pisan con el boton; solo layout. */
+.entry-form{min-width:0;}
+.entry-form .stat-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin:8px 0 12px;min-width:0;}
+.entry-form .stat-inputs label{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.entry-form .stat-inputs input{width:100%;min-width:0;box-sizing:border-box;}
+.entry-form .mvp-checkbox{display:flex;align-items:center;gap:8px;margin:4px 0 12px;}
+.entry-form button[type=submit]{display:block;position:static;width:100%;max-width:100%;white-space:normal;box-sizing:border-box;}

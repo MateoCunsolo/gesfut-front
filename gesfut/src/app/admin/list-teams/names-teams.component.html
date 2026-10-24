@@ -40,6 +40,9 @@
       }
     </div>
 
+    @if (teamsGlobalesInputFilter.length === 0) {
+    <div class="info"><p class="team-name">No hay equipos con ese nombre.</p></div>
+    } @else {
     <div class="info">
 
       <p class="team-name mobile" [ngClass]="{shirtPrimaryColorEqual: (colorSelected == '#2a6a49')}">
@@ -75,6 +78,7 @@
       </div>
       }
     </div>
+    }
   </div>
   }@else {
   <p [ngClass]="{ noPointer: thereAreNotTeams }">Todavía no creaste equipos. Para armar un torneo necesitás al menos 2.</p>

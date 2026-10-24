@@ -223,7 +223,22 @@ export class ListMatchDaysComponent implements OnInit {
     return this.pendingCloseKind === 'torneo' ? 'Final cerrada' : this.pendingCloseKind === 'playoffs' ? 'Instancia de playoffs cerrada' : 'Fecha cerrada';
   }
 
+  /** Retest 24/10: antes de armar el dialogo se piden los datos frescos de la fecha (sin cache): despues de
+   *  "Corregir resultado" o "Reabrir fecha" el estado en memoria podia no tener el MVP nuevo ni el estado real. */
   closeMatchDay(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
+    if (this.closing || this.refreshingForClose) return;
+    const code = this.tournament?.code;
+    if (!code) { this.closeMatchDayWithData(status, closeKind); return; }
+    const round = this.selectedMatchDay;
+    this.refreshingForClose = true;
+    this.tournamentService.getTournamentFull(code, true).subscribe({
+      next: () => { this.refreshingForClose = false; this.selectedMatchDay = round; this.bindingSelect = round; this.closeMatchDayWithData(status, closeKind); },
+      error: (e: HttpErrorResponse) => { this.refreshingForClose = false; this.alertService.errorAlert(httpErrorMessage(e, 'No pudimos actualizar la fecha. Prob\u00e1 de nuevo.')); }
+    });
+  }
+  private refreshingForClose = false;
+
+  private closeMatchDayWithData(status: boolean, closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
     if (this.closing) return;
     this.pendingCloseKind = closeKind;
 
@@ -291,6 +306,8 @@ export class ListMatchDaysComponent implements OnInit {
           this.closing = false;
           this.alertService.successAlert(this.closeSuccessText(status));
           this.matchDayStatus = false;
+          // Estado real (Finalizada / MVP) sin esperar a recargar la pagina.
+          if (this.tournament?.code) this.tournamentService.getTournamentFull(this.tournament.code, true).subscribe({ error: () => {} });
         },
         error: (errorResponse: HttpErrorResponse) => {
           this.closing = false;

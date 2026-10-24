@@ -1,3 +1,4 @@
+import { setLastTournament } from '../../core/utils/last-tournament';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -77,6 +78,8 @@ export class AdminTournamentPageComponent  {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(({short, full}) => {
       this.dashboardService.setNameTournament(full.name);
+      // Retest 24/10: se guarda al ABRIR el torneo por cualquier camino (lista, Retomar, link, recarga), no solo desde la lista.
+      setLastTournament(this.code, full.name);
       this.dashboardService.setHaveParticipants(short.haveParticipants);
       this.dashboardService.setActiveTournamentComponent(short.haveParticipants ? 'recap' : 'dashboard');
       this.isLoading = false;
