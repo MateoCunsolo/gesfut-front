@@ -329,11 +329,12 @@ export class AlertService {
   }
 
   
-  updateNumberInputAlert(title: string): Promise<number | null> {
+  updateNumberInputAlert(title: string, placeholder: string = 'Ingres\u00e1 un n\u00famero', currentValue: string = ''): Promise<number | null> {
     return Swal.fire({
       titleText: title,
       input: 'number',
-      inputPlaceholder: 'Ingresa un número...',
+      inputValue: currentValue,
+      inputPlaceholder: placeholder,
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
@@ -344,10 +345,10 @@ export class AlertService {
       },
       inputValidator: (value) => {
         if (!value) {
-          return '¡El campo no puede estar vacío!';
+          return 'Complet\u00e1 el n\u00famero.';
         }
         if (Number(value) < 1) {
-          return '¡El valor debe ser mayor a 0!';
+          return 'Tiene que ser 1 o m\u00e1s.';
         }
 
         return undefined;

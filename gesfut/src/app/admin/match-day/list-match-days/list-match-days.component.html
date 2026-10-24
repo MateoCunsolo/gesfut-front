@@ -2,6 +2,7 @@
   class="oculto"
   [ngClass]="{ show: showPicker }"
   [matchId]="selectedMatchId"
+  [initialDateTime]="isForAllMatches ? null : selectedMatchDateTime"
   [isForAllMatches]="isForAllMatches"
   [matchDayId]="tournament.matchDays[selectedMatchDay].idMatchDay"
   (cancelPicker)="cancelPicker($event)"

@@ -108,7 +108,7 @@ export class OnboardingGuideComponent {
         const steps: Step[] = [
           { id: 'teams', title: 'Cargá al menos 2 equipos', help: realTeams ? 'Tenés ' + realTeams + (realTeams === 1 ? ' equipo.' : ' equipos.') : 'Podés crearlos uno por uno o importarlos desde un Excel.', done: realTeams >= 2 },
           { id: 'tournament', title: 'Creá tu torneo', help: 'Solo necesitás el nombre.', done: (list ?? []).length > 0 },
-          { id: 'fixture', title: 'Generá el calendario', help: 'Elegí los equipos del torneo y se arman las fechas.', done: withFixture },
+          { id: 'fixture', title: 'Generá el calendario', help: 'Elegí los equipos del torneo y se arman las fechas. Al terminar la fase regular pod\u00e9s generar playoffs o tocar \u00abFinalizar torneo\u00bb.', done: withFixture },
         ];
         this.steps.set(steps);
         this.visible.set(steps.some(s => !s.done));

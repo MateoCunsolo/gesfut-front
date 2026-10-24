@@ -368,6 +368,11 @@ export class ListMatchDaysComponent implements OnInit {
   }
 
 
+  /** D: el dialogo de horario arranca con la fecha actual del partido. */
+  get selectedMatchDateTime(): string | null {
+    return this.tournament?.matchDays?.[this.selectedMatchDay]?.matches?.find((match) => match.id === this.selectedMatchId)?.dateTime ?? null;
+  }
+
   editDate(id: number) {
     this.showPicker = true;
     this.selectedMatchId = id;
@@ -375,12 +380,15 @@ export class ListMatchDaysComponent implements OnInit {
 
   async editDescription(id: number) {
     ///TODO: Implementar la edición de la descripción
-    let description = await this.alertService.updateNumberInputAlert("Ingrese la nueva descripción");
+    // D: es el numero de cancha; se precarga el actual si ya habia uno.
+    const current = this.tournament.matchDays[this.selectedMatchDay].matches.find((match) => match.id === id)?.description ?? '';
+    const currentNumber = (String(current).match(/\d+/) ?? [''])[0];
+    let description = await this.alertService.updateNumberInputAlert('N\u00famero de cancha', 'Ej.: 3', currentNumber);
     if (description != null) {
       let descripciónString = description.toString();
       this.matchDaysService.updateDescriptionMatch(descripciónString, id).subscribe({
         next: () => {
-          this.alertService.successAlert("Descripción actualizada.");
+          this.alertService.successAlert('Cancha actualizada.');
 
           let matchFound = this.tournament.matchDays[this.selectedMatchDay].matches.find(
             (match) => match.id === id

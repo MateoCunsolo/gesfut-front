@@ -166,6 +166,15 @@ export class TimepickerDatepickerIntegrationExample {
   plusDays: number = 7;
   @Input() isToInitTournament: boolean = false;
   @Input() matchId: number = 0;
+  /** D: precarga la fecha/hora actual del partido (si es futura; una pasada no se podria confirmar). */
+  @Input() set initialDateTime(value: string | null) {
+    if (!value) return;
+    const d = new Date(value);
+    if (isNaN(d.getTime()) || d.getTime() < Date.now()) return;
+    this.dateValue = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const t = new Date(); t.setHours(d.getHours(), d.getMinutes(), 0, 0);
+    this.timeValue = t;
+  }
   @Input() matchDayId: number = 0;
   @Input() isForAllMatches: boolean = false;
   @Output() cancelPicker = new EventEmitter<Boolean>();
