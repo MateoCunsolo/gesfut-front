@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { NgIf } from '@angular/common';
 import { OnboardingGuideComponent } from '../onboarding-guide/onboarding-guide.component';
+import { OwnedNameGate } from '../../core/utils/owned-name';
 
 @Component({
     selector: 'app-dashboard',
@@ -39,18 +40,20 @@ export class DashboardComponent {
   isMyTournament(code: string) {
     // Lote 24/10 (d): el nombre se pide EN PARALELO con la verificacion de propiedad (antes era encadenado);
     // solo se muestra cuando el servidor confirma que el torneo es del usuario.
-    this.tournamentService.getTournamentShort(code).subscribe({ next: (t) => this.lastTournamentName.set(t?.name ?? ''), error: () => {} });
+    // Review 24/10 (privacidad): el nombre solo se publica cuando la propiedad esta confirmada.
+    const gate = new OwnedNameGate((n) => this.lastTournamentName.set(n));
+    this.tournamentService.getTournamentShort(code).subscribe({ next: (t) => gate.name(t?.name), error: () => {} });
     this.tournamentService.isMyTournament(code).subscribe({
       next: (response) => {
+        gate.ownership(!!response);
         if (response) {
           this.flagIsMyTournament.set(true);
         }else{
-          this.lastTournamentName.set('');
           this.forgetLastTournament();
         }
       },
       // Error de red/servidor: no se muestra, pero tampoco se borra (se reintenta la proxima vez).
-      error: () => this.flagIsMyTournament.set(false)
+      error: () => { gate.ownership(false); this.flagIsMyTournament.set(false); }
     });
   }
 

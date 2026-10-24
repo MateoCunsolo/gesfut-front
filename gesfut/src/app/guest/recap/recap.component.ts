@@ -12,7 +12,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { PublicPageComponent } from '../../pages/public-page/public-page.component';
 import { ChampionsComponent } from '../../shared/champions/champions.component';
-import { showPreparingState } from '../../core/utils/recap-state';
+import { recapEmptyState } from '../../core/utils/recap-state';
 
 @Component({
   selector: 'app-recap',
@@ -32,7 +32,8 @@ export class RecapComponent {
   isPreviousDayAvailable: boolean = false;
   /** Lote 24/10 (a): hasta tener la respuesta de la ultima fecha no se muestra el estado vacio. */
   lastDayLoaded = false;
-  showPreparing(): boolean { return !this.lastMatchDay && showPreparingState(this.lastDayLoaded, this.tournamentService.currentTournament.value, this.tournamentCode); }
+  lastDayFailed = false;
+  emptyState() { return recapEmptyState(this.lastDayLoaded, this.lastDayFailed, this.tournamentService.currentTournament.value, this.tournamentCode); }
   constructor(
     private route: ActivatedRoute,
     private matchDaysService: MatchDaysService,
@@ -44,6 +45,7 @@ export class RecapComponent {
       if (code) {
         this.tournamentCode = code;
         this.lastDayLoaded = false;
+        this.lastDayFailed = false;
         this.loadLastMatchDay(code);
       }
     });
@@ -81,7 +83,7 @@ export class RecapComponent {
         this.verifyNextMatchDay();
         this.orderForDateMatchDay();
       },
-      error: () => { if (code === this.tournamentCode) this.lastDayLoaded = true; },
+      error: () => { if (code === this.tournamentCode) { this.lastDayLoaded = true; this.lastDayFailed = true; } },
     });
   }
 

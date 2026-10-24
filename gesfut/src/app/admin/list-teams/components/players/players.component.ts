@@ -68,7 +68,8 @@ export class PlayersComponent implements OnChanges {
     if (teamChanged) this.resetTeamData();
     if (this.isGlobalTeam) {
       if (teamChanged || changes['isGlobalTeam']) {
-        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else if (!teamChanged) { this.alertService.errorAlert('No se pudo identificar el equipo. Volv\u00e9 a elegirlo en la lista.'); }
+        if (this.idTeam) { this.getPlayersGlobal(this.idTeam); } else { this.loadingPlayers = false; }
+        if (!this.idTeam && !teamChanged) { this.alertService.errorAlert('No se pudo identificar el equipo. Volv\u00e9 a elegirlo en la lista.'); }
       }
     } else if ((changes['participantId'] || changes['isGlobalTeam']) && this.participantId) {
       this.getPlayersParticipants(this.participantId);

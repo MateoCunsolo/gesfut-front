@@ -81,7 +81,14 @@ export class NamesTournamentsComponent implements OnChanges {
         }
       },
       // Review 24/10: si falla la peticion vigente, el spinner no queda girando.
-      error: () => { if (seq === this.loadSeq && id === this.id) this.spinner = false; },
+      // Review 24/10: si falla, se pasa a los jugadores globales del equipo (asi "Cargando" no queda pegado).
+      error: () => {
+        if (seq !== this.loadSeq || id !== this.id) return;
+        this.spinner = false;
+        this.therAreNotParticipants = true;
+        this.globalsPlayer.emit(id);
+        this.onlyGlobalTeams.emit(true);
+      },
     });
   }
 

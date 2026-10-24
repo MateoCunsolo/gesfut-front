@@ -15,5 +15,9 @@
       }
       @if(forecast && !lastMatchDay.isFinished) {<app-weather-card [day]="forecast" />}
     </aside></div>
-  } @else if (showPreparing()) { <div class="empty-state"><h3>El torneo se está preparando</h3><p>Cuando se programe la primera fecha, vas a encontrar los partidos acá.</p></div> }
+  } @else { @switch (emptyState()) {
+    @case ('preparing') { <div class="empty-state"><h3>El torneo se está preparando</h3><p>Cuando se programe la primera fecha, vas a encontrar los partidos acá.</p></div> }
+    @case ('finished') { <div class="empty-state"><h3>Torneo finalizado</h3><p>No hay fechas para mostrar.</p></div> }
+    @case ('error') { <div class="empty-state" role="alert"><h3>No se pudo cargar la última fecha</h3><p>Probá recargar la página.</p></div> }
+  } }
 </section>

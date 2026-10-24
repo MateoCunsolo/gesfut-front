@@ -1,9 +1,10 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { getLastTournament, setLastTournament, forgetLastTournament, rememberIfMine, sessionSnapshot } from '../src/app/core/utils/last-tournament';
 import { emptyParticipant, INITIAL_PARTICIPANT } from '../src/app/core/services/tournament/initial-tournament';
-import { showPreparingState } from '../src/app/core/utils/recap-state';
+import { showPreparingState, recapEmptyState } from '../src/app/core/utils/recap-state';
+import { OwnedNameGate } from '../src/app/core/utils/owned-name';
 import { reconcileSelection, sameTeamName, matchesSearch } from '../src/app/core/utils/team-selection';
 import { mvpCandidates } from '../src/app/core/utils/mvp';
 import { httpErrorMessage } from '../src/app/core/utils/http-error';
@@ -242,7 +243,7 @@ test('vista publica: "se esta preparando" nunca con torneo finalizado/campeon ni
   assert.equal(showPreparingState(true, { ...t, championOfPlayoffsId: 7 }, 'ABC'), false);
   assert.equal(showPreparingState(true, t, 'ABC'), true, 'torneo nuevo sin fechas: si');
   const html = src('guest/recap/recap.component.html');
-  assert.match(html, /@else if \(showPreparing\(\)\) \{ <div class="empty-state"><h3>El torneo/);
+  assert.match(html, /@case \('preparing'\) \{ <div class="empty-state"><h3>El torneo/);
   assert.doesNotMatch(html, /\} @else \{ <div class="empty-state"><h3>El torneo/);
 });
 
@@ -279,7 +280,7 @@ test('review: baja marca al equipo original, spinner sin quedar girando, import 
   const pt = src('admin/list-team-tournaments/players-tournament/players-tournament.component.ts');
   assert.match(pt, /const target = this\.teamParticipant;[\s\S]{0,250}remove\(target\.idTeam, target\.name\)[\s\S]{0,80}if \(action\) target\.isActive = false;/);
   assert.doesNotMatch(pt, /this\.teamParticipant\.isActive = false/);
-  assert.match(src('admin/list-teams/components/names-tournaments/names-tournaments.component.ts'), /error: \(\) => \{ if \(seq === this\.loadSeq && id === this\.id\) this\.spinner = false; \}/);
+  
   assert.equal((src('admin/list-team-tournaments/list-teams-tournaments.component.ts').match(/core\/utils\/team-selection/g) ?? []).length, 1);
 });
 
@@ -314,4 +315,42 @@ test('Mis equipos: sin fila con numero 0 sin nombre y "Cargando" mientras carga'
   assert.match(h, /@if \(player\.isActive && \(player\.playerName \|\| player\.playerLastName\)\)/);
   assert.match(h, /@if \(player\.status && \(player\.playerName \|\| player\.playerLastName\)\)/);
   assert.equal((h.match(/@if \(loadingPlayers\) \{ <tr><td colspan="7" class="no-line" role="status">Cargando\u2026<\/td><\/tr> \} @else if \(!hasPlayers/g) ?? []).length, 2);
+});
+
+test('Retomar: nombre de torneo ajeno nunca se publica (privacidad)', () => {
+  let shown = 'x';
+  let g = new OwnedNameGate(n => shown = n);
+  g.ownership(false); g.name('Ajeno'); assert.equal(shown, '', 'propiedad false y nombre despues');
+  shown = 'x'; g = new OwnedNameGate(n => shown = n);
+  g.name('Ajeno'); assert.equal(shown, 'x', 'antes de confirmar no se publica'); g.ownership(false); assert.equal(shown, '');
+  shown = ''; g = new OwnedNameGate(n => shown = n);
+  g.name('Mio'); assert.equal(shown, ''); g.ownership(true); assert.equal(shown, 'Mio', 'nombre antes de la confirmacion');
+  shown = ''; g = new OwnedNameGate(n => shown = n);
+  g.ownership(true); g.name('Mio'); assert.equal(shown, 'Mio');
+  const d = src('admin/dashboard/dashboard.component.ts');
+  assert.doesNotMatch(d, /getTournamentShort\(code\)\.subscribe\(\{ next: \(t\) => this\.lastTournamentName\.set/);
+  assert.match(src('admin/dashboard/dashboard.component.html'), /@if\(flagIsMyTournament\(\)\)\{[\s\S]*lastTournamentName\(\)/);
+});
+
+test('vista publica: estados sin ultima fecha', () => {
+  const t = { code: 'ABC', isFinished: false, championOfLeagueId: null, championOfPlayoffsId: null };
+  assert.equal(recapEmptyState(false, false, t, 'ABC'), 'loading');
+  assert.equal(recapEmptyState(true, false, t, 'ABC'), 'preparing');
+  assert.equal(recapEmptyState(true, false, { ...t, isFinished: true }, 'ABC'), 'finished');
+  assert.equal(recapEmptyState(true, true, { ...t, championOfLeagueId: 1 }, 'abc'), 'finished');
+  assert.equal(recapEmptyState(true, true, t, 'ABC'), 'error');
+  const html = src('guest/recap/recap.component.html');
+  for (const c of ['finished', 'error']) assert.match(html, new RegExp("@case \\('" + c + "'\\)"));
+});
+
+test('Mis equipos: "Cargando" no queda pegado (idTeam vacio o falla de torneos)', () => {
+  const p = src('admin/list-teams/components/players/players.component.ts');
+  assert.match(p, /if \(this\.idTeam\) \{ this\.getPlayersGlobal\(this\.idTeam\); \} else \{ this\.loadingPlayers = false; \}/);
+  const nt = src('admin/list-teams/components/names-tournaments/names-tournaments.component.ts');
+  assert.match(nt, /error: \(\) => \{\s*if \(seq !== this\.loadSeq \|\| id !== this\.id\) return;\s*this\.spinner = false;[\s\S]{0,120}this\.onlyGlobalTeams\.emit\(true\);/);
+});
+
+test('sin BOM en archivos nuevos/tocados hoy', () => {
+  for (const p of ['core/utils/recap-state.ts', 'core/utils/owned-name.ts']) assert.notEqual(src(p).charCodeAt(0), 0xFEFF, p);
+  assert.notEqual(readFileSync(new URL(import.meta.url), 'utf8').charCodeAt(0), 0xFEFF);
 });
