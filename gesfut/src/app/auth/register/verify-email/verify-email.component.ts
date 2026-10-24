@@ -29,7 +29,7 @@ import { AuthService } from '../../../core/services/manager/auth.service';
             @else { <p class="intro">El enlace venció, ya se usó o está incompleto. Ingresá tu correo y te mandamos uno nuevo.</p> }
           </div>
           @if (resentTo) {
-            <p class="intro" role="status">Te enviamos un nuevo enlace a <strong>{{ resentTo }}</strong>. Revisá también spam o correo no deseado.</p>
+            <p class="intro" role="status">Si <strong>{{ resentTo }}</strong> tiene una cuenta sin verificar, te mandamos un enlace nuevo. Revisá también spam o correo no deseado.</p>
             <div class="secondary-actions">
               <button type="button" class="link" (click)="resentTo = ''">Enviar a otro correo</button>
               <button type="button" class="link" (click)="toLogin()">Ir a ingresar</button>
@@ -100,7 +100,7 @@ export class VerifyEmailComponent {
       next: () => { this.sending = false; this.resentTo = email; },
       error: (error) => {
         this.sending = false;
-        this.resendError = error?.status === 0 ? 'No pudimos conectar con el servidor. Probá de nuevo.' : (error?.error?.error || 'No pudimos reenviar el enlace.');
+        this.resendError = error?.status === 429 ? 'Probaste muchas veces. Esper\u00e1 un rato e intent\u00e1 de nuevo.' : error?.status === 0 ? 'No pudimos conectar con el servidor. Probá de nuevo.' : (error?.error?.error || 'No pudimos reenviar el enlace.');
       },
     });
   }
