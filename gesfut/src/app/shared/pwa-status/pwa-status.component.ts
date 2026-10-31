@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { PwaService } from '../../core/services/pwa.service';
+import { dismissPwaHint, isPwaHintDismissed } from './pwa-hint';
 
 @Component({
   selector: 'app-pwa-status',
@@ -14,10 +15,10 @@ import { PwaService } from '../../core/services/pwa.service';
     } @else if (pwa.serverUnavailable()) {
       <div class="connection-notice" role="status">No se pudo conectar con el servidor. Para consultar datos actuales o guardar cambios, necesitás conexión.</div>
     }
-    @if (pwa.installAvailable() || pwa.iosInstallHelp() || pwa.updateAvailable() || pwa.reloadRequired() || pwa.message()) {
+    @if (pwa.installAvailable() || showIosHint() || pwa.updateAvailable() || pwa.reloadRequired() || pwa.message()) {
       <aside class="pwa-actions" aria-label="Instalación y actualizaciones de Gesfut">
         @if (pwa.installAvailable()) { <button type="button" (click)="pwa.install()" [disabled]="pwa.installing()">Instalar Gesfut</button> }
-        @if (pwa.iosInstallHelp()) { <p>Para instalar Gesfut en iPhone o iPad: abrí Compartir y elegí «Agregar a pantalla de inicio».</p> }
+        @if (showIosHint()) { <p>Para instalar Gesfut en iPhone o iPad: abrí Compartir y elegí «Agregar a pantalla de inicio».</p> <button type="button" aria-label="Cerrar aviso" (click)="closeIosHint()">&times;</button> }
         @if (pwa.updateAvailable() || pwa.reloadRequired()) {
           <p>Hay una actualización. Guardá tus cambios antes de recargar.</p>
           <button type="button" (click)="pwa.update()">Actualizar Gesfut</button>
@@ -35,4 +36,9 @@ import { PwaService } from '../../core/services/pwa.service';
     button:disabled { opacity: .6; cursor: default; }
   `
 })
-export class PwaStatusComponent { readonly pwa = inject(PwaService); }
+export class PwaStatusComponent {
+  readonly pwa = inject(PwaService);
+  protected readonly iosHintDismissed = signal(isPwaHintDismissed());
+  protected showIosHint(): boolean { return this.pwa.iosInstallHelp() && !this.iosHintDismissed(); }
+  protected closeIosHint(): void { dismissPwaHint(); this.iosHintDismissed.set(true); }
+}
