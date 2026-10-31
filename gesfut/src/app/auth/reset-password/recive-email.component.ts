@@ -1,3 +1,4 @@
+import { resetRequestErrorText } from './reset-token';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -97,11 +98,11 @@ export class ReciveEmailComponent {
       next: () => { this.sending = false; this.sentTo = email; },
       error: (err) => {
         this.sending = false;
-        this.sendError = err?.status === 503
+        this.sendError = resetRequestErrorText(err?.status) || (err?.status === 503
           ? 'No pudimos enviar el correo en este momento. Probá de nuevo en unos minutos.'
           : err?.status === 0
           ? 'No pudimos conectar con el servidor. Probá de nuevo en un momento.'
-          : (err?.error?.error || 'No pudimos enviar el enlace. Revisá el correo e intentá de nuevo.');
+          : (err?.error?.error || 'No pudimos enviar el enlace. Revisá el correo e intentá de nuevo.'));
       },
     });
   }

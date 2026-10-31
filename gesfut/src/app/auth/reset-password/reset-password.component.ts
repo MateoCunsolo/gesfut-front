@@ -10,6 +10,8 @@ import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
+import { changePasswordErrorText, clearUrlFragment, readResetFragment } from './reset-token';
 
 @Component({
   selector: 'app-reset-password2',
@@ -134,7 +136,8 @@ export class ResetPasswordComponent {
     private dashboardService: DashboardService,
     private alertService: AlertService,
     private router: Router,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private meta: Meta
   ) {
     this.resetPassForm = this.fb.group({
       password1: ['', [Validators.required, Validators.minLength(8)]],
@@ -144,10 +147,18 @@ export class ResetPasswordComponent {
   }
 
   ngOnInit() {
-    this.activateRoute.params.subscribe((params) => {
-      if (params['token']) {
-        this.validateToken(params['token']);
-      } else if (sessionStorage.getItem('token')) {
+    // Plan tokens 31-10 #3: token del fragmento #t=, solo en memoria; se borra de la URL apenas se lee.
+    // No hay chequeo previo del token: el back lo valida al guardar (404 = invalido o usado).
+    const fragmentToken = typeof location !== 'undefined' ? readResetFragment(location.hash) : '';
+    if (fragmentToken) {
+      clearUrlFragment(location, history);
+      this.meta.updateTag({ name: 'referrer', content: 'no-referrer' });
+      this.token = fragmentToken;
+      this.linkState = 'form';
+      return;
+    }
+    this.activateRoute.params.subscribe(() => {
+      if (sessionStorage.getItem('token')) {
         this.isFromSession = true;
         this.resetPassForm.controls['oldPassword'].setValidators([Validators.required]);
         this.resetPassForm.controls['oldPassword'].updateValueAndValidity();
@@ -212,10 +223,13 @@ export class ResetPasswordComponent {
   changePasswordWithToken() {
     this.saving = true;
     this.authService.resetPasswordSendNewPassword(this.resetPassForm.value.password1, this.token).subscribe({
-      next: () => { this.saving = false; this.linkState = 'done'; },
+      next: () => { this.saving = false; this.token = ''; this.linkState = 'done'; },
       error: (error) => {
         this.saving = false;
-        if (error?.status && error.status < 500 && error.status !== 400) { this.linkState = 'invalid'; return; }
+        const text = changePasswordErrorText(error?.status);
+        if (text === 'invalid') { this.token = ''; this.linkState = 'invalid'; return; }
+        if (text) { this.submitError = text; return; }
+        if (error?.status && error.status < 500) { this.token = ''; this.linkState = 'invalid'; return; }
         this.submitError = error?.status === 0 ? 'No pudimos conectar con el servidor. Probá de nuevo.' : (error?.error?.error || 'No pudimos guardar la contraseña.');
       },
     });

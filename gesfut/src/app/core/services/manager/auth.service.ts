@@ -71,11 +71,13 @@ export class AuthService {
   }
 
   resetPasswordSendEmail(email: string): Observable<void> {
-    return this.http.post<void>(`${this.url}/reset-password/${email}`, {}); 
+    // Plan tokens 31-10 #3: el email va en el body JSON, nunca en la URL.
+    return this.http.post<void>(`${this.url}/reset-password`, { email });
   }
 
   resetPasswordSendNewPassword(password: string, token: string): Observable<void> {
-    return this.http.post<void>(`${this.url}/change-password/${token}`, password);
+    // Plan tokens 31-10 #3: token y contrasena en el body JSON (el token ya no va en la ruta).
+    return this.http.post<void>(`${this.url}/change-password`, { token, password });
   }   
 
   changePasswordWithOldPassword(oldPassword: string, newPassword: string): Observable<void> {
