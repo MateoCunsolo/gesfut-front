@@ -89,7 +89,8 @@ export class PublicPageComponent {
     this.loadError = false;
     this.loadSubscription?.unsubscribe();
     this.loadSubscription = defer(() => this.tournamentService.getTournamentFull(this.code, forceRefresh)).pipe(
-      retryTransient()
+      retryTransient(),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (response: TournamentResponseFull) => {
         this.currentTournament.next(response);
