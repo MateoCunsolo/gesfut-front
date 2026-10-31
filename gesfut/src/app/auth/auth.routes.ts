@@ -31,6 +31,8 @@ export const AUTH_ROUTES: Routes = [
     path: 'reset-password',
     component: ReciveEmailComponent
   },
+  // Links viejos con el token en la ruta: se descarta el token y se va a pedir un enlace nuevo.
+  { path: 'reset-password/:token', redirectTo: 'reset-password', pathMatch: 'full' },
   {
     path: 'verify-email/:token',
     component: VerifyEmailComponent

@@ -189,6 +189,12 @@ export class ResetPasswordComponent {
     });
   }
 
+  /** Plan tokens 31-10 #3: al salir de la pantalla se quita la meta referrer y el token deja de estar en memoria. */
+  ngOnDestroy() {
+    this.meta.removeTag("name='referrer'");
+    this.token = '';
+  }
+
   retryCheck() {
     this.validateToken(this.pendingToken);
   }

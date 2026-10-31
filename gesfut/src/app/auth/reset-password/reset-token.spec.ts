@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
 import { AuthService } from '../../core/services/manager/auth.service';
 import { changePasswordErrorText, CHANGE_BAD_REQUEST, clearUrlFragment, readResetFragment, RESET_TOO_MANY, resetRequestErrorText } from './reset-token';
-import { hasResetFragment } from '../auth.routes';
+import { AUTH_ROUTES, hasResetFragment } from '../auth.routes';
+import { ResetPasswordComponent } from './reset-password.component';
 
 describe('reset de contrasena con #t= (plan tokens 31-10 #3)', () => {
   const tok = 'AbC_dEf-0123456789xyzXYZ';
@@ -63,5 +65,23 @@ describe('reset de contrasena con #t= (plan tokens 31-10 #3)', () => {
     expect(r2.request.url).not.toContain(tok);
     r2.flush(null);
     ctrl.verify();
+  });
+
+  it('la ruta vieja reset-password/:token redirige a reset-password sin el token', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(AUTH_ROUTES), provideHttpClient(), provideHttpClientTesting()] });
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/reset-password/' + tok);
+    expect(router.url).toBe('/reset-password');
+  });
+
+  it('ngOnDestroy quita la meta referrer y vacia el token', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()] });
+    const meta = TestBed.inject(Meta);
+    const cmp = TestBed.createComponent(ResetPasswordComponent).componentInstance as unknown as { token: string; ngOnDestroy(): void };
+    meta.updateTag({ name: 'referrer', content: 'no-referrer' });
+    cmp.token = tok;
+    cmp.ngOnDestroy();
+    expect(cmp.token).toBe('');
+    expect(meta.getTag("name='referrer'")).toBeNull();
   });
 });
