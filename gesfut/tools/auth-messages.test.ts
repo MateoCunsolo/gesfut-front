@@ -27,7 +27,8 @@ test('aviso registered=1 en el login', () => {
   assert.equal(isRegisteredNotice(''), false);
   assert.equal(isRegisteredNotice('?registered=0'), false);
   const html = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
-  assert.match(html, /@if \(registeredNotice\)[^]*Te enviamos un mail para verificar tu cuenta\. Verificalo y después iniciá sesión\./);
+  // Verificacion por mail apagada en el backend: el aviso sale de REGISTERED_NOTICE (ver registro-sin-mail.test.ts).
+  assert.match(html, /@if \(registeredNotice\)[^]*\{\{ registeredNoticeText \}\}/);
   const reg = readFileSync(new URL('../src/app/auth/register/register.component.ts', import.meta.url), 'utf8');
   assert.match(reg, /navigateByUrl\('\/auth\/login\?registered=1'\)/);
 });
@@ -62,7 +63,7 @@ test('bloque B: reenviar mail neutral, cooldown 60 s y 429 con voseo', () => {
   assert.equal(RESEND_TOO_MANY, 'Probaste muchas veces. Esperá un rato e intentá de nuevo.');
   const ts = readFileSync(new URL('../src/app/auth/login/login.component.ts', import.meta.url), 'utf8');
   assert.match(ts, /startResendCooldown\(60\)/); assert.match(ts, /status === 429 \? RESEND_TOO_MANY/);
-  assert.match(ts, /protected showResend = this\.registeredNotice/); assert.match(ts, /this\.showResend = true/);
+  assert.match(ts, /protected showResend: boolean = this\.registeredNotice/); assert.match(ts, /this\.showResend = true/);
   const html = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
   assert.match(html, /@if \(showResend\)[^]*\[disabled\]="resendCooldown > 0"/);
 });

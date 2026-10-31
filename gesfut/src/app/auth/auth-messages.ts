@@ -28,3 +28,15 @@ export function resendMessage(body: any): string {
 export function isRegisteredNotice(search: string): boolean {
   return new URLSearchParams(search).get('registered') === '1';
 }
+
+// TODO(Mateo): volver al texto de verificación por mail cuando se reactive gesfut.mail.verificacion.enabled en el backend
+// Para reactivar: MAIL_VERIFICATION_ENABLED = true y volver a estos textos (van en comentario para que no queden en el bundle):
+//   REGISTERED_ALERT  = 'Cuenta creada. Te enviamos un mail para verificarla.'
+//   REGISTERED_NOTICE = 'Te enviamos un mail para verificar tu cuenta. Verificalo y despu\u00e9s inici\u00e1 sesi\u00f3n.'
+export const MAIL_VERIFICATION_ENABLED = false;
+/** Alerta al terminar el registro. */
+export const REGISTERED_ALERT = 'Cuenta creada. Ya pod\u00e9s iniciar sesi\u00f3n.';
+/** Aviso en el login con ?registered=1. */
+export const REGISTERED_NOTICE = 'Cuenta creada. Ya pod\u00e9s iniciar sesi\u00f3n con tu mail y contrase\u00f1a.';
+/** Mostrar 'Reenviar mail' justo despues de registrarse (solo si se manda mail). */
+export const SHOW_RESEND_AFTER_REGISTER: boolean = MAIL_VERIFICATION_ENABLED;

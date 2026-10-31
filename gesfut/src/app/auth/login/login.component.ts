@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
-import { isRegisteredNotice, resendMessage, RESEND_TOO_MANY } from '../auth-messages';
+import { isRegisteredNotice, resendMessage, RESEND_TOO_MANY, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER } from '../auth-messages';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
@@ -27,7 +27,8 @@ export class LoginComponent {
   /** Despues de crear la cuenta: recordar verificar el mail antes de entrar. */
   protected registeredNotice = typeof location !== 'undefined' && isRegisteredNotice(location.search);
   /** Reenviar mail de verificacion: visible tras crear cuenta o si el login dice "Email no verificado". */
-  protected showResend = this.registeredNotice;
+  protected showResend: boolean = this.registeredNotice && SHOW_RESEND_AFTER_REGISTER;
+  protected readonly registeredNoticeText = REGISTERED_NOTICE;
   protected resendCooldown = 0;
   private resendTimer: ReturnType<typeof setInterval> | null = null;
   protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';

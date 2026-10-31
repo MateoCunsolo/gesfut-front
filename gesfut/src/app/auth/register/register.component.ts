@@ -1,3 +1,4 @@
+import { REGISTERED_ALERT } from '../auth-messages';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -82,7 +83,7 @@ export class RegisterComponent {
     this.authService.register(credentials).subscribe({
       next: (response) => {
         // Loop 5: el registro ya no devuelve token (hay que verificar el email antes de entrar).
-        this.alertService.successAlert('Cuenta creada. Te enviamos un mail para verificarla.');
+        this.alertService.successAlert(REGISTERED_ALERT);
         this.route.navigateByUrl('/auth/login?registered=1');
       },
       error: (err: HttpErrorResponse) => {
