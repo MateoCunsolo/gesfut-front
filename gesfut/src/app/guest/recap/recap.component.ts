@@ -12,7 +12,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
 import { PublicPageComponent } from '../../pages/public-page/public-page.component';
 import { ChampionsComponent } from '../../shared/champions/champions.component';
-import { recapEmptyState } from '../../core/utils/recap-state';
+import { lastPlayedFailed, recapEmptyState } from '../../core/utils/recap-state';
 
 @Component({
   selector: 'app-recap',
@@ -94,7 +94,7 @@ export class RecapComponent {
         this.verifyNextMatchDay();
         this.orderForDateMatchDay();
       },
-      error: () => { if (code === this.tournamentCode) { this.lastDayLoaded = true; this.lastDayFailed = true; } },
+      error: (error: unknown) => { if (code === this.tournamentCode) { this.lastDayLoaded = true; this.lastDayFailed = lastPlayedFailed(error); } },
     });
   }
 

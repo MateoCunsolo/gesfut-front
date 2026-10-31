@@ -13,3 +13,7 @@ export function recapEmptyState(lastDayLoaded: boolean, failed: boolean, tournam
 export function showPreparingState(lastDayLoaded: boolean, tournament: RecapTournamentInfo | null | undefined, code: string | null | undefined): boolean {
   return recapEmptyState(lastDayLoaded, false, tournament, code) === 'preparing';
 }
+/** Retest 31/10: un torneo en curso sin fechas responde 404 en lastPlayed; eso no es error, es "sin ultima fecha". */
+export function lastPlayedFailed(error: unknown): boolean {
+  return !(typeof error === 'object' && error !== null && (error as { status?: unknown }).status === 404);
+}
