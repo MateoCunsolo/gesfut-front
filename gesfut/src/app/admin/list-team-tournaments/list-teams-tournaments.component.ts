@@ -39,6 +39,7 @@ export class ListTeamsTournamentsComponent {
   protected lastClicked: number = 0;
   protected bindingSelect: number = 0;
   protected colorSelected: string = '';
+  protected selectionLost = false;
   constructor() { }
 
   ngOnInit() {
@@ -46,16 +47,21 @@ export class ListTeamsTournamentsComponent {
       next: (response) => {
         this.tournament = response;
         this.participants = response.participants;
-        this.particpantsFilter = response.participants;
-
-        if (this.participants.length > 0) {
-          // Retest 19:40: al refrescar el torneo se conserva el MISMO equipo (por id), no el de la misma posicion.
-          const keepId = this.teamParticipant?.idParticipant;
-          this.teamParticipant = this.participants.find(p => keepId && p.idParticipant === keepId) || this.participants[this.lastClicked] || this.participants[0];
-          this.bindingSelect = this.teamParticipant.idParticipant;
-          this.nameClicked = this.teamParticipant.name;
-          this.getTeamColor(this.teamParticipant.idTeam);
+        this.particpantsFilter = this.participants.filter(team => matchesSearch(team.name, this.inputText));
+        const keepId = this.teamParticipant?.idParticipant;
+        const retained = this.participants.find(p => keepId && p.idParticipant === keepId);
+        if (keepId && !retained) this.selectionLost = true;
+        const next = retained || (!this.selectionLost ? this.particpantsFilter[this.lastClicked] || this.particpantsFilter[0] : undefined);
+        if (next && this.particpantsFilter.some(p => p.idParticipant === next.idParticipant)) {
+          this.selectParticipant(next);
+        } else {
+          this.teamParticipant = emptyParticipant();
+          this.bindingSelect = 0;
+          this.nameClicked = '';
+          this.colorSelected = '';
+          this.indexSelectedAfter = -1;
         }
+
       },
       error: (error) => {
       }
@@ -64,11 +70,9 @@ export class ListTeamsTournamentsComponent {
     this.tournamentService.getLastTeamClicked().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.lastClicked = response;
-        if (this.participants.length > 0) {
-          this.teamParticipant = this.participants[this.lastClicked] || this.participants[0];
-          this.bindingSelect = this.teamParticipant.idParticipant;
-          this.nameClicked = this.teamParticipant.name;
-          this.getTeamColor(this.teamParticipant.idTeam);
+        if (this.participants.length > 0 && !this.selectionLost) {
+          const next = this.particpantsFilter.find(p => p.idParticipant === this.teamParticipant.idParticipant) || this.particpantsFilter[this.lastClicked] || this.particpantsFilter[0];
+          if (next) this.selectParticipant(next);
         }
       },
       error: (error) => {
@@ -81,7 +85,7 @@ export class ListTeamsTournamentsComponent {
     this.particpantsFilter = this.participants.filter(team => matchesSearch(team.name, this.inputText));
     // Retest 24/10: el detalle siempre es de un equipo visible (o ninguno), igual que en Mis equipos.
     const next = reconcileSelection(this.particpantsFilter.map(p => ({ id: p.idParticipant })), this.teamParticipant?.idParticipant);
-    if (next && next !== this.teamParticipant?.idParticipant) this.showParticipants(next);
+    if (!this.selectionLost && next && next !== this.teamParticipant?.idParticipant) this.showParticipants(next);
     this.updateSelectedIndex();
   }
 
@@ -98,25 +102,30 @@ export class ListTeamsTournamentsComponent {
     }
   }
 
+  private selectParticipant(participant: ParticipantResponse) {
+    this.teamParticipant = participant;
+    this.nameClicked = participant.name;
+    this.bindingSelect = participant.idParticipant;
+    this.colorSelected = participant.color || '';
+    this.updateSelectedIndex();
+    if (!participant.color && this.sessionService.isAuth()) this.getTeamColor(participant.idTeam);
+  }
+
   showParticipants(idParticipant: number) {
-    const participant = this.participants.find(p => p.idParticipant === idParticipant);
+    const participant = this.particpantsFilter.find(p => p.idParticipant === idParticipant);
     if (participant) {
-      this.nameClicked = participant.name;
-      this.teamParticipant = participant;
+      this.selectionLost = false;
+      this.selectParticipant(participant);
       this.tournamentService.setLastTeamClicked(this.participants.indexOf(participant));
-      this.updateSelectedIndex();
-      this.bindingSelect = idParticipant;
-      // Revisión crítica #14: el color viene en el participante (la vista pública no puede pedir /teams/{id}).
-      if (participant.color) this.colorSelected = participant.color;
-      else if (this.sessionService.isAuth()) this.getTeamColor(participant.idTeam);
     }
   }
 
+
   // Loop 3/4: el color sale del cache de TeamService (una sola request, se invalida al editar el equipo).
   getTeamColor(idTeam: number) {
-    this.teamService.getTeamColor(idTeam).subscribe({
+    this.teamService.getTeamColor(idTeam).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (color) => {
-        this.colorSelected = color;
+        if (this.teamParticipant.idTeam === idTeam) this.colorSelected = color;
       },
       error: (error) => {
       }
