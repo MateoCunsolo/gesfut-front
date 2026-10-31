@@ -3,8 +3,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthResponse } from '../../models/authResponse';
 import { Router } from '@angular/router';
 import {  map } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { environment } from '../../../../enviroments/environment';
+/** Plan tokens 31-10 #6: marca /validate-token para que authSessionInterceptor no la vuelva a procesar. */
+export const SKIP_SESSION_CHECK = new HttpContextToken<boolean>(() => false);
+
 @Injectable({
   providedIn: 'root'
 })
@@ -124,7 +127,8 @@ getItems(response:boolean) {
   /** Sesión vencida o rechazada por el servidor: limpia y envía al login sin recargar la app. */
   expireSession(): void {
     this.removeStoredSession();
-    this.router.navigate(['/auth/login']);
+    // Plan tokens 31-10 #6: con ?expired=1 el login muestra el aviso de sesion vencida.
+    this.router.navigate(['/auth/login'], { queryParams: { expired: '1' } });
   }
 
   private removeStoredSession(): void {
@@ -173,7 +177,8 @@ getItems(response:boolean) {
   validateToken(token:string): Observable<boolean> {
     // Loop 4: el token va en el header, nunca en la URL.
     return this.http.post<boolean>(`${this.url}/validate-token`, null, {
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      context: new HttpContext().set(SKIP_SESSION_CHECK, true)
     });
   }
 

@@ -40,6 +40,8 @@ export class LoginComponent {
     private alertService: AlertService,
     private router: Router
   ) {
+    // Plan tokens 31-10 #6: si el interceptor cerro la sesion, mostrar el aviso aunque la URL todavia no tenga ?expired=1.
+    if (this.sessionService.sessionExpired) this.expiredNotice = true;
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
