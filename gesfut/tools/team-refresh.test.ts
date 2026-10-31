@@ -8,6 +8,7 @@ import {TournamentService} from '../src/app/core/services/tournament/tournament.
 import {TeamService} from '../src/app/core/services/tournament/team.service';
 import {DashboardService} from '../src/app/core/services/dashboard.service';
 import {SessionService} from '../src/app/core/services/manager/session.service';
+import {indexInShownList} from '../src/app/core/utils/team-selection';
 import {INITIAL_TOURNAMENT,emptyParticipant} from '../src/app/core/services/tournament/initial-tournament';
 function fixture(){
  const a={...emptyParticipant(),idParticipant:11,idTeam:1,name:'Alpha',color:'green'};
@@ -34,4 +35,9 @@ test('vaciar la lista limpia el detalle y volver a llenarla exige elegir tras un
 
 test('un índice recordado no selecciona otro equipo después de desaparecer el anterior',()=>{
  const x=fixture();try{x.c.showParticipants(22);x.refresh([x.a]);x.clicked.next(0);assert.equal(x.c.teamParticipant.idParticipant,0);x.c.searchTeams({target:{value:'Alpha'}});assert.equal(x.c.teamParticipant.idParticipant,0);x.c.showParticipants(11);assert.equal(x.c.teamParticipant.name,'Alpha');}finally{x.injector.destroy();}
+});
+
+test('el indice recordado es el de la lista filtrada (no el de la lista completa)',()=>{
+ assert.equal(indexInShownList([{idParticipant:22}],22),0);assert.equal(indexInShownList([{idParticipant:11},{idParticipant:22}],33),-1);
+ const x=fixture();try{x.c.searchTeams({target:{value:'Beta'}});x.c.showParticipants(22);assert.equal(x.clicked.value,0);assert.equal(x.c.particpantsFilter[x.clicked.value].idParticipant,22);}finally{x.injector.destroy();}
 });

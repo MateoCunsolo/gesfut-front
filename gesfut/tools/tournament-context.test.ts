@@ -17,7 +17,8 @@ function fixture() {
   setHaveParticipants:(value:boolean)=>participants.next(value),
   setActiveTournamentComponent:(value:string)=>active.next(value)};
  const service={getTournamentShort(code:string){const call={code,short:new Subject<any>(),full:new Subject<any>()};calls.push(call);return call.short;},
-  getTournamentFull(){return calls[calls.length-1].full;}};
+  getTournamentFull(){return calls[calls.length-1].full;},
+  isMyTournament(){return new Subject<boolean>();}};
  const injector=createEnvironmentInjector([],null as any);
  const component=runInInjectionContext(injector,()=>new AdminTournamentPageComponent(dashboard as any,service as any,{paramMap:route} as any));
  component.ngOnInit();
@@ -32,7 +33,7 @@ test('cambiar de torneo cancela las peticiones anteriores y no restaura su nombr
  const f=fixture();try{f.route.next(convertToParamMap({code:'b'}));assert.equal(f.calls[0].full.observers.length,0);f.resolve(1,'Torneo B');f.resolve(0,'Torneo A');assert.equal(f.names.at(-1),'Torneo B');assert.equal(f.component.code,'b');}finally{f.injector.destroy();}
 });
 test('un error permite reintentar y un torneo sin equipos abre preparación',()=>{
- const f=fixture();try{f.calls[0].short.error(new Error('sin conexión'));assert.equal(f.component.loadError,true);assert.equal(f.component.isLoading,false);f.component.retryLoad();assert.equal(f.component.loadError,false);f.resolve(1,'Nuevo',false);assert.equal(f.component.activeComponent,'dashboard');assert.equal(f.component.flag,false);}finally{f.injector.destroy();}
+ const f=fixture();try{f.calls[0].short.error(new Error('sin conexión'));assert.equal(f.component.loadError,true);assert.equal(f.component.isLoading,false);assert.equal(f.names.at(-1),'Torneo');f.component.retryLoad();assert.equal(f.component.loadError,false);f.resolve(1,'Nuevo',false);assert.equal(f.component.activeComponent,'dashboard');assert.equal(f.component.flag,false);}finally{f.injector.destroy();}
 });
 test('salir de la página libera suscripciones y respuestas pendientes',()=>{
  const f=fixture();f.injector.destroy();assert.equal(f.route.observers.length,0);assert.equal(f.active.observers.length,0);assert.equal(f.calls[0].short.observers.length,0);assert.equal(f.calls[0].full.observers.length,0);

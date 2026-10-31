@@ -72,6 +72,7 @@ export class AdminTournamentPageComponent  {
       })).pipe(retryTransient(), catchError((error: unknown) => {
         this.loadError = true;
         this.loadErrorKind = loadErrorKind(error);
+        this.dashboardService.setNameTournament('Torneo'); // sin quedar en "Cargando torneo..." si da 404 o error
         this.isLoading = false;
         return EMPTY;
       }))),

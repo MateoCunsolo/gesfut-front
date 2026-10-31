@@ -12,6 +12,11 @@ export function sameTeamName(shown: string | null | undefined, actual: string | 
   return n(shown) === n(actual);
 }
 
+/** Posicion del equipo (por id) dentro de la lista que se muestra (filtrada); -1 si no esta. */
+export function indexInShownList(shown: ReadonlyArray<{ idParticipant: number }>, idParticipant: number): number {
+  return shown.findIndex(p => p.idParticipant === idParticipant);
+}
+
 /** Busqueda de equipos: sin distinguir mayusculas ni espacios de los extremos. */
 export function matchesSearch(name: string | null | undefined, query: string | null | undefined): boolean {
   return String(name ?? '').toLowerCase().includes(String(query ?? '').trim().toLowerCase());

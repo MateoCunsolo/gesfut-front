@@ -23,14 +23,14 @@ export class LoginComponent {
   redActive = false;
   protected tryLogin = false;
   protected isLoading = false;
-  /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
-  /** Despues de crear la cuenta: recordar verificar el mail antes de entrar. */
+  /** Tras crear la cuenta: aviso "Cuenta creada" (sin mail de verificacion mientras SHOW_RESEND_AFTER_REGISTER sea false). */
   protected registeredNotice = typeof location !== 'undefined' && isRegisteredNotice(location.search);
   /** Reenviar mail de verificacion: visible tras crear cuenta o si el login dice "Email no verificado". */
   protected showResend: boolean = this.registeredNotice && SHOW_RESEND_AFTER_REGISTER;
   protected readonly registeredNoticeText = REGISTERED_NOTICE;
   protected resendCooldown = 0;
   private resendTimer: ReturnType<typeof setInterval> | null = null;
+  /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
   protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';
   constructor(
     private fb: FormBuilder,

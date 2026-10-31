@@ -1,4 +1,4 @@
-﻿// Regresiones de la auditoria 22/10. Ejecutar: node tools/test-auditoria-22-10.mjs
+// Regresiones de la auditoria 22/10. Ejecutar: node tools/test-auditoria-22-10.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';

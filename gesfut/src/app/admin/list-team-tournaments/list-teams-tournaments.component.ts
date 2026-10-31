@@ -1,4 +1,4 @@
-import { matchesSearch, reconcileSelection } from '../../core/utils/team-selection';
+import { indexInShownList, matchesSearch, reconcileSelection } from '../../core/utils/team-selection';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, inject, DestroyRef } from '@angular/core';
 import { NgClass } from '@angular/common';
@@ -116,7 +116,7 @@ export class ListTeamsTournamentsComponent {
     if (participant) {
       this.selectionLost = false;
       this.selectParticipant(participant);
-      this.tournamentService.setLastTeamClicked(this.participants.indexOf(participant));
+      this.tournamentService.setLastTeamClicked(indexInShownList(this.particpantsFilter, participant.idParticipant));
     }
   }
 

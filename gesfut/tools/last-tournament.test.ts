@@ -356,7 +356,7 @@ test('sin BOM en src/ y tools/ (recursivo)', () => {
     if (n === 'node_modules' || n.startsWith('.')) return [];
     const u = new URL(n, dir); return statSync(u).isDirectory() ? walk(new URL(n + '/', dir)) : [u.href];
   });
-  const files = [...walk(new URL('src/', root)), ...walk(new URL('tools/', root))].filter(f => /\.(ts|html|scss|css|json|js)$/.test(f));
+  const files = [...walk(new URL('src/', root)), ...walk(new URL('tools/', root))].filter(f => /\.(ts|html|scss|css|json|js|mjs)$/.test(f));
   assert.ok(files.length > 50);
   const bom = files.filter(f => { const b = readFileSync(new URL(f)); return b[0] === 0xEF && b[1] === 0xBB && b[2] === 0xBF; });
   assert.deepEqual(bom, []);

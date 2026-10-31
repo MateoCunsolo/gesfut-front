@@ -1,4 +1,3 @@
-import { REGISTERED_ALERT } from '../auth-messages';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -14,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { AlertService } from '../../core/services/alert.service';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { EmailVerificationService } from '../../core/services/manager/emailVerification.service';
+import { REGISTERED_ALERT } from '../auth-messages';
 
 @Component({
     selector: 'app-register',

@@ -1,4 +1,4 @@
-﻿// Genera src/styles/fa-subset.css con solo los iconos de Font Awesome que usa la app (auditoria 22/10, #15).
+// Genera src/styles/fa-subset.css con solo los iconos de Font Awesome que usa la app (auditoria 22/10, #15).
 // Ejecutar despues de agregar un icono nuevo: node tools/build-fa-subset.mjs
 import fs from 'node:fs'; import path from 'node:path';
 const root=path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/(\w:)/,'$1')),'..');
