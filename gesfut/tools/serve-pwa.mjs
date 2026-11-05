@@ -8,6 +8,21 @@ import { createGzip } from 'node:zlib';
 const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist/gesfut/browser');
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };
 
+const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+const CLIENT_IP_HEADERS = new Set(['cf-connecting-ip', 'x-forwarded-for']);
+
+/** Tema 6 (5/11): solo cloudflared (loopback) puede mandar la IP del cliente. Desde otra IP se borran CF-Connecting-IP y
+ *  X-Forwarded-For que haya puesto el cliente y CF-Connecting-IP pasa a ser la IP real del socket (sin ::ffff: si es IPv4).
+ *  remoteAddress desconocido: se borran y no se inventa ninguna IP. Nunca muta la entrada. */
+export function sanitizeForwardHeaders(headers, remoteAddress) {
+  const addr = typeof remoteAddress === 'string' ? remoteAddress.trim().toLowerCase() : '';
+  if (addr && LOOPBACK.has(addr)) return { ...headers };
+  const out = {};
+  for (const [k, v] of Object.entries(headers ?? {})) if (!CLIENT_IP_HEADERS.has(k.toLowerCase())) out[k] = v;
+  if (addr) out['cf-connecting-ip'] = addr.startsWith('::ffff:') && addr.includes('.') ? addr.substring(7) : addr;
+  return out;
+}
+
 export function createPwaServer({ root = defaultRoot, apiTarget = 'http://127.0.0.1:8080' } = {}) {
   return http.createServer(async (request, response) => {
     let url;
@@ -15,7 +30,7 @@ export function createPwaServer({ root = defaultRoot, apiTarget = 'http://127.0.
     if (url.pathname === '/api' || url.pathname.startsWith('/api/')) {
       const target = new URL(apiTarget);
       const upstream = http.request({ hostname: target.hostname, port: target.port || 80, path: url.pathname + url.search, method: request.method,
-        headers: { ...request.headers, host: target.host } }, incoming => {
+        headers: { ...sanitizeForwardHeaders(request.headers, request.socket.remoteAddress), host: target.host } }, incoming => {
         response.writeHead(incoming.statusCode ?? 502, { ...incoming.headers, 'cache-control': 'no-store' });
         incoming.pipe(response);
       });
