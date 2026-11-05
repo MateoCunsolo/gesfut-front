@@ -9,7 +9,8 @@ const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };
 
 const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
-const CLIENT_IP_HEADERS = new Set(['cf-connecting-ip', 'x-forwarded-for']);
+// Tema 6b: tambien las demas cabeceras de IP/host/proto de reenvio que un cliente podria falsificar.
+const CLIENT_IP_HEADERS = new Set(['cf-connecting-ip', 'x-forwarded-for', 'x-real-ip', 'forwarded', 'true-client-ip', 'x-forwarded-host', 'x-forwarded-proto']);
 
 /** Tema 6 (5/11): solo cloudflared (loopback) puede mandar la IP del cliente. Desde otra IP se borran CF-Connecting-IP y
  *  X-Forwarded-For que haya puesto el cliente y CF-Connecting-IP pasa a ser la IP real del socket (sin ::ffff: si es IPv4).
