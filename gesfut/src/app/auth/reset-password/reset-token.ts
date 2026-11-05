@@ -11,6 +11,16 @@ export function readResetFragment(fragment: string | null | undefined): string {
   return TOKEN_RE.test(raw) ? raw : '';
 }
 
+/** Punto 4 (5/11): true si la URL es el link de reset con un #t= valido (/auth/reset-password#t=...).
+ *  Con ese link se muestra el formulario aunque haya una sesion abierta. */
+export function isResetLinkUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  const i = url.indexOf('#');
+  if (i < 0) return false;
+  const path = url.substring(0, i).split('?')[0].replace(/\/+$/, '');
+  return path === '/auth/reset-password' && !!readResetFragment(url.substring(i + 1));
+}
+
 /** Saca el fragmento de la URL actual sin recargar ni agregar una entrada al historial. */
 export function clearUrlFragment(loc: Pick<Location, 'pathname' | 'search' | 'hash'>, hist: Pick<History, 'replaceState' | 'state'>): void {
   if (!loc.hash) return;

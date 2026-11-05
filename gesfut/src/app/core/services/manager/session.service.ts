@@ -106,6 +106,15 @@ getItems(response:boolean) {
       this.router.navigate(['/login']);
   }
 
+  /** Punto 4 (5/11): tras guardar una contrasena nueva con el link de reset, se cierra la sesion local sin recargar.
+   *  El back ya invalido todas las sesiones (passwordChangedAt); no es una sesion vencida, asi que no muestra ese aviso. */
+  endLocalSessionAfterPasswordReset(): void {
+    ['email', 'token', 'sessionExp', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
+    this.sessionExpired = false;
+    this.currentUserLoginOn.next(false);
+    this.currentUserData.next({ name: '', lastName: '', token: '', role: '' });
+  }
+
   get userData(): Observable<AuthResponse> {
     return this.currentUserData.asObservable();
   }

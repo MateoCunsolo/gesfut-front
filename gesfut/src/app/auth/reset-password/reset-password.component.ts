@@ -229,7 +229,13 @@ export class ResetPasswordComponent {
   changePasswordWithToken() {
     this.saving = true;
     this.authService.resetPasswordSendNewPassword(this.resetPassForm.value.password1, this.token).subscribe({
-      next: () => { this.saving = false; this.token = ''; this.linkState = 'done'; },
+      next: () => {
+        // Punto 4 (5/11): el back cerro todas las sesiones; se limpia la sesion local y se va al login.
+        this.saving = false; this.token = ''; this.linkState = 'done';
+        this.sessionService.endLocalSessionAfterPasswordReset();
+        this.alertService.infoAlert('Contrase\u00f1a guardada', 'Ingres\u00e1 con tu nueva contrase\u00f1a.');
+        this.router.navigate(['auth/login']);
+      },
       error: (error) => {
         this.saving = false;
         const text = changePasswordErrorText(error?.status);
