@@ -18,6 +18,9 @@ export const routes: Routes = [
         path: 'admin', loadChildren: () => import('./admin/admin.routes').then(m => m.ADMIN_ROUTES),
         canActivate: [adminAuthGuard]
     },
+    // Tema 7: paginas legales publicas (sin guard), antes de ':code' para que no se tomen como codigo de torneo.
+    { path: 'terminos', loadComponent: () => import('./pages/legal-page/legal-page.component').then(m => m.LegalPageComponent), data: { title: 'T\u00e9rminos y Condiciones' } },
+    { path: 'privacidad', loadComponent: () => import('./pages/legal-page/legal-page.component').then(m => m.LegalPageComponent), data: { title: 'Pol\u00edtica de Privacidad' } },
     {
       path: ':code', loadComponent: () => import('./pages/public-page/public-page.component').then(m => m.PublicPageComponent)
     }

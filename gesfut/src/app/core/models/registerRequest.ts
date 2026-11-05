@@ -4,5 +4,7 @@ export interface RegisterRequest {
     password: string;
     name:     string;
     lastName: string;
+    /** Tema 7: aceptacion de Terminos y Condiciones y Politica de Privacidad (el back la exige en true). */
+    acceptedTerms: boolean;
 }
 

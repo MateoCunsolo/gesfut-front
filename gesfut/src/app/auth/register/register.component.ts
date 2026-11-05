@@ -66,11 +66,13 @@ export class RegisterComponent {
       ],
       email: ['', [Validators.required, this.emailValidator.bind(this)]], // <-- Cambio aquí
       password: ['', [Validators.required, Validators.minLength(8)]],
+      // Tema 7: aceptar Terminos y Privacidad es obligatorio para crear la cuenta.
+      acceptedTerms: [false, Validators.requiredTrue],
     });
   }
 
   async onSubmit() {
-    const credentials: RegisterRequest = this.registerForm.value;
+    const credentials: RegisterRequest = { ...this.registerForm.value, acceptedTerms: true };
     
     this.submitted = true;
     if (this.registerForm.invalid) {
@@ -94,6 +96,11 @@ export class RegisterComponent {
     });
   }
   
+
+  /** Tema 7: sin tildar no se puede enviar (ni con el boton ni con Enter). */
+  get termsAccepted(): boolean {
+    return this.registerForm.controls['acceptedTerms'].value === true;
+  }
 
   validate(field: string, error: string): void {
     return (

@@ -53,10 +53,18 @@
         }
       </div>
 
+      <div class="terms-field">
+        <input id="acceptedTerms" type="checkbox" formControlName="acceptedTerms" [attr.aria-invalid]="showError('acceptedTerms')" aria-describedby="acceptedTerms-error" />
+        <label for="acceptedTerms">Acepto los <a href="/terminos" target="_blank" rel="noopener noreferrer">T&eacute;rminos y Condiciones</a> y la <a href="/privacidad" target="_blank" rel="noopener noreferrer">Pol&iacute;tica de Privacidad</a></label>
+      </div>
+      <div class="error-message" id="acceptedTerms-error" aria-live="polite">
+        @if (showError('acceptedTerms')) { <p class="error">Para crear la cuenta ten&eacute;s que aceptar los T&eacute;rminos y Condiciones y la Pol&iacute;tica de Privacidad.</p> }
+      </div>
+
       @if (isLoading) {
         <app-spinner></app-spinner>
       } @else {
-        <button class="base-button" type="submit">Crear cuenta</button>
+        <button class="base-button" type="submit" [disabled]="!termsAccepted">Crear cuenta</button>
       }
       <div class="secondary-actions">
         <button type="button" class="link" (click)="toLogin()">¿Ya tenés cuenta? Ingresar</button>
