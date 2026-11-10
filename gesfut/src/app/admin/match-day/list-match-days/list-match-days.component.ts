@@ -1,4 +1,5 @@
 import { mvpCandidates } from '../../../core/utils/mvp';
+import { closeDateStatus, CloseDateMatch } from '../../../core/utils/close-date-status';
 import { addTeamMode, AddTeamMode } from '../../../core/utils/add-team';
 import { AdminService } from '../../../core/services/manager/admin.service';
 import { canFinish } from '../../../core/utils/tournament-finish';
@@ -216,6 +217,29 @@ export class ListMatchDaysComponent implements OnInit {
         // Reabrir no pasa por el dialogo de MVP (antes mostraba "Ningun partido tiene MVP" con datos viejos).
         if (result.isConfirmed) this.sendClose(false, '');
       });
+  }
+
+  
+  closeDateStatusForCurrent() {
+    const day = this.tournament?.matchDays?.[this.selectedMatchDay];
+    return closeDateStatus({ isFinished: !!day?.isFinished, numberOfMatchDay: day?.numberOfMatchDay ?? this.selectedMatchDay, matches: day?.matches as CloseDateMatch[] });
+  }
+  closeDateStatusText(): string { return this.closeDateStatusForCurrent().text; }
+  canCloseCurrentDay(): boolean { return this.closeDateStatusForCurrent().canClose; }
+  explainCloseDate() {
+    const status = this.closeDateStatusForCurrent();
+    this.alertService.errorAlert(status.text);
+    const id = status.firstPending?.id;
+    if (id == null) return;
+    const el = document.getElementById('fixture-match-' + id);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const btn = el?.querySelector('button.base-button') as HTMLElement | null;
+    btn?.focus();
+  }
+  onCloseDateClick(closeKind: 'fecha' | 'playoffs' | 'torneo' = 'fecha') {
+    if (this.busy) return;
+    if (!this.canCloseCurrentDay()) { this.explainCloseDate(); return; }
+    this.closeMatchDay(true, closeKind);
   }
 
   roundLabel = roundLabel;
