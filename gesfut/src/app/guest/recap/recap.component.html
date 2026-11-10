@@ -10,7 +10,7 @@
     </div>
     <aside class="recap-aside">
       @if(lastMatchDay.mvpPlayer) { <div class="spotlight"><span class="eyebrow">Jugador de la fecha</span><h3>{{lastMatchDay.mvpPlayer}}</h3><i class="fa-solid fa-star" aria-hidden="true"></i></div> }
-      @if(topScorers.length) { <h3 class="aside-title">Goleadores de la fecha</h3><ol class="scorer-list">@for(scorer of topScorers;track scorer.playerName){<li><span>{{scorer.playerName}}</span><strong>{{scorer.goals}} <span class="sr-only">goles</span></strong></li>}</ol>
+      @if(topScorers.length) { <h3 class="aside-title">Goleadores de la fecha</h3><ol class="scorer-list">@for(scorer of topScorers;track scorer.playerId){<li><span>{{scorer.playerName}}@if(scorer.showTeam){ ({{scorer.teamName}})}</span><strong>{{scorer.goals}} <span class="sr-only">goles</span></strong></li>}</ol>
         @if(previousSliceTopScores.length > 10){<button type="button" class="button-secondary" (click)="viewMoreTopScores()">{{topScorers.length === 10 ? 'Ver todos' : 'Ver menos'}}</button>}
       }
       @if(forecast && !lastMatchDay.isFinished) {<app-weather-card [day]="forecast" />}

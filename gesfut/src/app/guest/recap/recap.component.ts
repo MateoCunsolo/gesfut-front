@@ -13,6 +13,7 @@ import { TournamentService } from '../../core/services/tournament/tournament.ser
 import { PublicPageComponent } from '../../pages/public-page/public-page.component';
 import { ChampionsComponent } from '../../shared/champions/champions.component';
 import { lastPlayedFailed, recapEmptyState } from '../../core/utils/recap-state';
+import { aggregateMatchDayScorers, MatchDayScorer } from '../../core/utils/match-day-scorers';
 
 @Component({
   selector: 'app-recap',
@@ -25,8 +26,8 @@ export class RecapComponent {
   private destroyRef = inject(DestroyRef);
   tournamentCode!: string;
   lastMatchDay!: MatchDayResponse;
-  topScorers: { playerName: string; goals: number }[] = [];
-  previousSliceTopScores: { playerName: string; goals: number }[] = [];
+  topScorers: MatchDayScorer[] = [];
+  previousSliceTopScores: MatchDayScorer[] = [];
   forecast: any;
   loadingWeather: boolean = false;
   isPreviousDayAvailable: boolean = false;
@@ -100,29 +101,10 @@ export class RecapComponent {
 
   loadTopScorers() {
     this.previousSliceTopScores = [];
-    const playerGoals: { [key: string]: number } = {};
-    this.lastMatchDay.matches.forEach((match) => {
-      match.events.forEach((event) => {
-        if (event.type === 'GOAL') {
-          if (playerGoals[event.playerName]) {
-            playerGoals[event.playerName] += event.quantity;
-          } else {
-            playerGoals[event.playerName] = event.quantity;
-          }
-        }
-      });
-    });
-
-    this.topScorers = Object.keys(playerGoals).map((playerName) => ({
-      playerName,
-      goals: playerGoals[playerName],
-    }));
-
-    this.topScorers.sort((a, b) => b.goals - a.goals);
+    this.topScorers = aggregateMatchDayScorers(this.lastMatchDay?.matches);
     if (this.topScorers.length > 10) {
       this.previousSliceTopScores = [...this.topScorers];
       this.topScorers = this.topScorers.slice(0, 10);
-      
     }
   }
 
