@@ -105,7 +105,8 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
       >}
       
 
-      <button class="base-button" (click)="dateFunction()">Confirmar horario</button>
+      <div class="timepicker-gap" aria-hidden="true"></div>
+      <button class="base-button confirm-time" (click)="dateFunction()">Confirmar horario</button>
     </section>
   `,
   styles: [
@@ -119,6 +120,9 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         flex-direction: column;
         gap:12px;
       }
+      .timepicker-gap { min-height: min(240px, 42vh); }
+      .confirm-time { position: sticky; bottom: 0; z-index: 2; padding-top: 8px; background: var(--surface); }
+      
 
       .toRight {
         display: flex;
