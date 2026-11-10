@@ -81,8 +81,8 @@ button: any;
 
   addPlayer() {
     const playerForm = this.fb.group({
-      name: ['', Validators.required],
-      lastName: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
       number: ['', Validators.required],
       isCaptain: [false],
       isGoalKeeper: [false],
@@ -266,8 +266,8 @@ button: any;
         this.players.clear();
         team.players.forEach((player: any) => {
           const playerForm = this.fb.group({
-            name: [player.name, Validators.required],
-            lastName: [player.lastName, Validators.required],
+            name: [player.name, [Validators.required, Validators.minLength(2)]],
+            lastName: [player.lastName, [Validators.required, Validators.minLength(2)]],
             number: [player.number, Validators.required],
             isCaptain: [player.isCaptain],
             isGoalKeeper: [player.isGoalKeeper],
