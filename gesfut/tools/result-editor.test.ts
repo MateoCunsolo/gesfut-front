@@ -107,3 +107,33 @@ test('recargar avisa solo si hay cambios o un guardado en curso',()=>{
   x.component.beforeUnload(event);assert.equal(prevented,2);
  }finally{x.injector.destroy();}
 });
+
+import {GOAL_MAX, goalQuantityError} from '../src/app/core/utils/goal-quantity';
+import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+test('goles: tope 0-99 y mensaje visible si es negativo', () => {
+  assert.equal(goalQuantityError(0), '');
+  assert.equal(goalQuantityError(99), '');
+  assert.match(goalQuantityError(-1), /negativo/);
+  assert.match(goalQuantityError(100), /0 a 99/);
+  const x=fixture();
+  try{
+    x.choose();
+    x.component.statisticsForm.get('goals')!.setValue(-1);
+    assert.equal(x.component.statisticsForm.invalid, true);
+    assert.match(x.component.goalsError(), /negativo/);
+    x.component.statisticsForm.get('goals')!.setValue(100);
+    assert.equal(x.component.statisticsForm.invalid, true);
+    assert.match(x.component.goalsError(), /0 a 99/);
+    x.component.statisticsForm.get('goals')!.setValue(2);
+    assert.equal(x.component.goalsError(), '');
+    x.component.events=[{id:1,team:'Local',name:'Uno',goals:GOAL_MAX,yellowCard:0,redCard:0,mvp:false}];
+    x.component.currentMatch.homeGoals=GOAL_MAX;
+    x.component.addGoals(1);
+    assert.equal(x.component.events[0].goals, GOAL_MAX);
+    assert.equal(x.component.currentMatch.homeGoals, GOAL_MAX);
+  }finally{x.injector.destroy();}
+  const html=readFileSync(fileURLToPath(new URL('../src/app/admin/match-day/load-result/load-result.component.html',import.meta.url)).replace(/^\/([A-Za-z]:)/,'$1'),'utf8');
+  assert.match(html, /@if\(goalsError\(\)\)/);
+  assert.match(html, /max="99"/);
+});

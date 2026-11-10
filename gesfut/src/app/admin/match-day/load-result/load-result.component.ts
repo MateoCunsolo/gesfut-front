@@ -12,6 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { GOAL_MAX, goalQuantityError } from '../../../core/utils/goal-quantity';
 import { MatchDaysService } from '../../../core/services/tournament/match-days.service';
 import { INITIAL_DETAILED_MATCH } from '../../../core/services/tournament/initial-tournament';
 import { MatchDetailedResponse } from '../../../core/models/matchDetailedRequest';
@@ -82,7 +83,7 @@ export class LoadResultComponent {
       name: ['', Validators.required],
       shirt: [0],
       team: ['', Validators.required],
-      goals: [0, [Validators.required, Validators.min(0)]],
+      goals: [0, [Validators.required, Validators.min(0), Validators.max(GOAL_MAX)]],
       yellowCard: [
         0,
         [Validators.required, Validators.min(0), Validators.max(2)],
@@ -96,7 +97,7 @@ export class LoadResultComponent {
       name: ['', Validators.required],
       shirt: [0],
       team: ['', Validators.required],
-      goals: [0, [Validators.required, Validators.min(0)]],
+      goals: [0, [Validators.required, Validators.min(0), Validators.max(GOAL_MAX)]],
       yellowCard: [
         0,
         [Validators.required, Validators.min(0), Validators.max(2)],
@@ -479,17 +480,27 @@ export class LoadResultComponent {
 
   toGroupStaticsForPlayer(event: any) {
     const index = this.events.findIndex((e) => e.id === event.id);
+    const nextGoals = this.events[index].goals + (event.goals || 0);
+    if (nextGoals > GOAL_MAX) {
+      this.alertService.errorAlert('Los goles van de 0 a 99.');
+      return;
+    }
     this.events[index].goals += event.goals;
     this.events[index].yellowCard += event.yellowCard;
     this.events[index].redCard += event.redCard;
     this.events[index].mvp = this.events[index].mvp || event.mvp;
   }
 
+  goalsError(): string {
+    const value = this.statisticsForm.get('goals')?.value;
+    if (value === 0 || (value !== 0 && !goalQuantityError(value))) return '';
+    return goalQuantityError(value);
+  }
+
   addGoals(id: number) {
     const event = this.events.find((e) => e.id === id);
-    if (event) {
-      event.goals++;
-    }
+    if (!event || event.goals >= GOAL_MAX) return;
+    event.goals++;
     if (this.currentMatch.homeTeam.name === event.team) {
       this.currentMatch.homeGoals += 1;
     } else {
