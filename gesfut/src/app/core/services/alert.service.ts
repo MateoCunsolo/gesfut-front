@@ -260,7 +260,7 @@ export class AlertService {
   /** Revisión crítica #6: fecha y hora de la ronda de playoffs. Devuelve null si se cancela. */
   playoffScheduleAlert(roundName: string): Promise<{ startDate: string; minutesPerMatch: number } | null> {
     return Swal.fire({
-      title: `Programar ${roundName}`,
+      titleText: `Programar ${roundName}`,
       html: `
         <label class="swal2-input-label" for="po-date">Fecha del primer partido (dd/mm/aaaa)</label>
         <input id="po-date" type="text" inputmode="numeric" placeholder="dd/mm/aaaa" autocomplete="off" class="swal2-input">
