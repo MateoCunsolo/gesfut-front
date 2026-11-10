@@ -202,11 +202,15 @@ export class ListMatchDaysComponent implements OnInit {
       this.alertService.infoAlertTop('No se puede reabrir: ya hay playoffs generados después de esta fecha.');
       return;
     }
+    const day = this.tournament?.matchDays?.[this.selectedMatchDay];
+    const title = day && !day.isPlayOff
+      ? `¿Reabrir la fecha ${day.numberOfMatchDay + 1}?`
+      : '¿Reabrir la fecha?';
     this.alertService
       .confirmAlert(
-        '¿Estás seguro?',
-        'Reabrir la fecha te permitirá modificar los resultados.',
-        'Confirmar'
+        title,
+        'Al reabrir, el MVP de la fecha se conserva; si cambiás resultados, revisalo',
+        'Reabrir'
       )
       .then((result) => {
         // Reabrir no pasa por el dialogo de MVP (antes mostraba "Ningun partido tiene MVP" con datos viejos).

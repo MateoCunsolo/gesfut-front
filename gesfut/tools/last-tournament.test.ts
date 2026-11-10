@@ -140,6 +140,9 @@ test('abrir el link de admin de otro organizador (o un archivado) no pisa mi Ret
 test('reabrir fecha: sin dialogo de MVP y botones bloqueados hasta refrescar', () => {
   const list = src('admin/match-day/list-match-days/list-match-days.component.ts');
   assert.match(list, /if \(result\.isConfirmed\) this\.sendClose\(false, ''\)/);
+  assert.match(list, /Al reabrir, el MVP de la fecha se conserva; si cambiás resultados, revisalo/);
+  assert.match(list, /'Reabrir'/);
+
   assert.match(list, /getTournamentFull\(this\.tournament\.code, true\)\.subscribe\(\{\s*next: \(\) => \{[^}]*this\.closing = false/);
   const html = src('admin/match-day/list-match-days/list-match-days.component.html');
   assert.ok(!html.includes('[disabled]="closing"') && (html.match(/\[disabled\]="busy"/g) ?? []).length >= 5);
