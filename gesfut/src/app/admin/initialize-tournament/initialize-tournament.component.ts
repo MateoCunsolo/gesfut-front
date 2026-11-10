@@ -1,5 +1,7 @@
 import { httpErrorMessage } from '../../core/utils/http-error';
 import { naturalCompare } from '../../core/utils/natural-sort';
+import { normalizeEmail } from '../../core/utils/last-tournament';
+import { applySetupTeamSelection, clearSetupTeamSelection, missingSelectionMessage, readSetupTeamSelection, setupRequirementText, writeSetupTeamSelection } from '../../core/utils/setup-team-selection';
 import { Component } from '@angular/core';
 import { TeamRequest } from '../../core/models/teamRequest';
 import { NavbarComponent } from "../navbar/navbar.component";
@@ -23,6 +25,7 @@ export class InitializeTournamentComponent {
   teams: TeamResponse[] = [];
   teamsTournament: TeamResponse[] = [];
   teamsFilters: TeamResponse[] = [];
+  private teamsAll: TeamResponse[] = [];
   code: string = '';
   searchTerm: string = '';
   date: string = '';
@@ -73,9 +76,12 @@ export class InitializeTournamentComponent {
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
         if (param.get('code')) {
-          this.code = param.get('code')!;
+          const next = param.get('code')!;
+          if (this.code && next !== this.code) this.teamsTournament = [];
+          this.code = next;
           // Loop 2: el nombre sale del torneo de la URL, no del último torneo clickeado.
           this.tournamentService.getTournamentShort(this.code).subscribe({ next: (t) => { if (t?.name) this.name = t.name; } });
+          this.tryRestoreSelection();
         }
       }
     });
@@ -87,9 +93,10 @@ export class InitializeTournamentComponent {
           name: team.name.toUpperCase()
         })).sort((a, b) => naturalCompare(a.name, b.name));
         this.teams = this.teams.filter(team => team.status === true);
+        this.teamsAll = [...this.teams];
         this.teamsFilters = [...this.teams];
         this.getTeamRecentlyCreated();
-        this.restoreSelection();
+        this.tryRestoreSelection();
         this.filterTeamsTournament();
       },
       error: (err) => {
@@ -108,6 +115,7 @@ export class InitializeTournamentComponent {
             this.teamsTournament.push(team);
             this.teams = this.teams.filter(t => t.id !== team.id);
             this.teamsFilters = [...this.teams];
+            this.persistSelection();
           }
         }
       },
@@ -116,20 +124,28 @@ export class InitializeTournamentComponent {
     });
   }
 
-  /** Retest (c): la seleccion de equipos sobrevive a recargar o salir y volver (sessionStorage, por torneo). */
-  private selectionKey(): string { return 'initTeams:' + this.code; }
+  /** La selección se guarda en localStorage por usuario + torneo; sobrevive a F5. */
+  requirementText(): string { return setupRequirementText(this.teamsTournament.length); }
+  private currentEmail(): string { return (typeof sessionStorage === 'undefined' ? '' : sessionStorage.getItem('email')) ?? ''; }
   private persistSelection(): void {
-    if (!this.code) return;
-    try { sessionStorage.setItem(this.selectionKey(), JSON.stringify(this.teamsTournament.map(t => t.id))); } catch { /* sin storage */ }
+    writeSetupTeamSelection(typeof localStorage === 'undefined' ? null : localStorage, this.currentEmail(), this.code, this.teamsTournament);
   }
-  private restoreSelection(): void {
-    if (!this.code || this.teamsTournament.length) return;
-    let ids: number[] = [];
-    try { ids = JSON.parse(sessionStorage.getItem(this.selectionKey()) || '[]'); } catch { ids = []; }
-    if (!Array.isArray(ids) || !ids.length) return;
-    const picked = this.teams.filter(t => ids.includes(t.id));
-    if (!picked.length) return;
-    this.teamsTournament = picked;
+  private tryRestoreSelection(): void {
+    if (!this.code || !this.teamsAll.length || this.teamsTournament.length) return;
+    const saved = readSetupTeamSelection(
+      typeof localStorage === 'undefined' ? null : localStorage,
+      this.currentEmail(),
+      this.code,
+      typeof sessionStorage === 'undefined' ? null : sessionStorage,
+    );
+    if (!saved.length) return;
+    const { selected, missing } = applySetupTeamSelection(saved, this.teamsAll);
+    if (missing.length) {
+      this.alertService.infoAlert('Selección actualizada', missingSelectionMessage(missing));
+      writeSetupTeamSelection(typeof localStorage === 'undefined' ? null : localStorage, this.currentEmail(), this.code, selected);
+    }
+    if (!selected.length) return;
+    this.teamsTournament = selected;
     this.tournamentService.setTeamsToInitTournament(this.teamsTournament);
   }
 
@@ -193,6 +209,7 @@ export class InitializeTournamentComponent {
                     this.tournamentService.currentTournament.next(response);
                     this.dashboardService.setActiveTournamentComponent('recap');
                     this.dashboardService.setHaveParticipants(true);
+                    clearSetupTeamSelection(typeof localStorage === 'undefined' ? null : localStorage, this.currentEmail(), this.code, typeof sessionStorage === 'undefined' ? null : sessionStorage);
                     this.alertService.successAlert('Torneo inicializado correctamente');
                   }
                 });
