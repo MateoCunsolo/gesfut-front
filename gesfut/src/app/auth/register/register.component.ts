@@ -11,7 +11,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../core/services/alert.service';
-import { EmailVerificationService } from '../../core/services/manager/emailVerification.service';
 import {
   NETWORK_ERROR,
   REGISTERED_ALERT,
@@ -34,7 +33,6 @@ import {
 })
 export class RegisterComponent {
   private alertService = inject(AlertService);
-  private emailVerificationService = inject(EmailVerificationService);
   error: String = '';
   registerForm: FormGroup;
   protected isLoading = false;
