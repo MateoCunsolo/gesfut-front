@@ -1,52 +1,50 @@
 <section>
   <div class="form">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <h1 class="title">Ingresar a Gesfut</h1>
     @if (registeredNotice) { <p class="form-hint" role="status">{{ registeredNoticeText }}</p> }
     @if (showResend) { <p class="form-hint" role="status">¿No te llegó el mail? Escribí tu mail y te lo reenviamos. <button type="button" class="text-action" [disabled]="resendCooldown > 0" (click)="sendVerification()" [attr.aria-label]="resendCooldown > 0 ? 'Reenviar mail disponible en ' + resendCooldown + ' segundos' : 'Reenviar mail de verificación'">{{ resendCooldown > 0 ? 'Reenviar mail (' + resendCooldown + ' s)' : 'Reenviar mail' }}</button></p> }
-    @if (expiredNotice) { <p class="form-hint" role="status">Tu sesión venció. Ingresá de nuevo para seguir.</p> }
-      <div class="error-message">
-        <!-- @if (error) {
-          <p class="error">{{ error }}</p>
-        } REMPLAZADO POR ALERT SERVICE-->
+    @if (expiredNotice) { <p class="form-hint" role="status">{{ SESSION_EXPIRED }}</p> }
+      <div class="form-alert-slot">
+        @if (error) {
+          <div class="form-alert" id="login-form-alert" role="alert">
+            <p class="error">{{ error }}</p>
+            @if (error === LOGIN_BAD_CREDENTIALS) {
+              <button type="button" class="link" (click)="toForgotPassword()">Olvidé mi contraseña</button>
+            }
+          </div>
+        }
       </div>
 
       <label class="field-label" for="email">Correo electrónico</label>
       <div class="form-group input-icon">
-        <input id="email" type="email" autocomplete="username" inputmode="email" formControlName="email" placeholder="nombre@correo.com" />
+        <input id="email" type="email" autocomplete="username" inputmode="email" formControlName="email" placeholder="nombre@correo.com" [attr.aria-invalid]="showError('email')" aria-describedby="login-email-error" />
         <i class="fas fa-envelope"></i>
       </div>
-      <div class="error-message">
-        @if(loginForm.controls['email'].getError('required') && loginForm.controls['email'].touched) {
-          <p class="error">El correo electrónico es requerido</p>
+      <div class="error-message field-error-slot" id="login-email-error" aria-live="polite">
+        @if (showError('email') && loginForm.controls['email'].getError('required')) {
+          <p class="error">{{ LOGIN_EMAIL_REQUIRED }}</p>
         }
-        @if(loginForm.controls['email'].getError('email') && loginForm.controls['email'].touched) {
-          <p class="error">Ingrese un correo electrónico válido</p>
+        @else if (showError('email') && loginForm.controls['email'].getError('email')) {
+          <p class="error">{{ LOGIN_EMAIL_INVALID }}</p>
         }
       </div>
 
       <label class="field-label" for="password">Contraseña</label>
       <div class="form-group input-icon password-field">
-        <input id="password" [type]="showPassword ? 'text' : 'password'" autocomplete="current-password" formControlName="password" placeholder="Tu contraseña" />
+        <input id="password" [type]="showPassword ? 'text' : 'password'" autocomplete="current-password" formControlName="password" placeholder="Tu contraseña" [attr.aria-invalid]="showError('password')" aria-describedby="login-password-error" />
         <i class="fas fa-lock"></i>
         <button type="button" class="toggle-password" (click)="showPassword = !showPassword" [attr.aria-pressed]="showPassword" aria-controls="password">{{ showPassword ? 'Ocultar' : 'Mostrar' }}</button>
       </div>
 
-      <div class="error-message">
-        @if(loginForm.controls['password'].getError('required') && loginForm.controls['password'].touched) {
-          <p class="error">La contraseña es requerida</p>
-        }
-        @if(loginForm.controls['password'].getError('minlength') && loginForm.controls['password'].touched) {
-          <p class="error">La contraseña debe tener al menos 6 caracteres</p>
+      <div class="error-message field-error-slot" id="login-password-error" aria-live="polite">
+        @if (showError('password') && loginForm.controls['password'].getError('required')) {
+          <p class="error">{{ LOGIN_PASSWORD_REQUIRED }}</p>
         }
       </div>
 
-      @if (isLoading) {
-        <app-spinner></app-spinner>
-      } @else {
-        <button class="base-button" type="submit">Ingresar</button>
-      }
-      
+      <button class="base-button" type="submit" [disabled]="isLoading">{{ isLoading ? 'Ingresando…' : 'Ingresar' }}</button>
+
       <div class="secondary-actions">
         <button type="button" class="link" (click)="toForgotPassword()">Olvidé mi contraseña</button>
         <button type="button" class="link" (click)="toRegister()">Crear una cuenta</button>

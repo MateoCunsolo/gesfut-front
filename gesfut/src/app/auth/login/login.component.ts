@@ -5,12 +5,11 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
-import { isRegisteredNotice, resendMessage, RESEND_TOO_MANY, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER } from '../auth-messages';
-import { SpinnerComponent } from '../../shared/spinner/spinner.component';
+import { isRegisteredNotice, resendMessage, RESEND_TOO_MANY, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER, LOGIN_BAD_CREDENTIALS, LOGIN_EMAIL_INVALID, LOGIN_EMAIL_REQUIRED, LOGIN_PASSWORD_REQUIRED, NETWORK_ERROR, SERVER_ERROR, SESSION_EXPIRED, TOO_MANY_ATTEMPTS } from '../auth-messages';
 
 @Component({
     selector: 'app-login',
-    imports: [RouterModule, ReactiveFormsModule, SpinnerComponent],
+    imports: [RouterModule, ReactiveFormsModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
@@ -32,6 +31,12 @@ export class LoginComponent {
   private resendTimer: ReturnType<typeof setInterval> | null = null;
   /** Recorrido 22/10: aviso cuando se llega por sesión vencida. */
   protected expiredNotice = typeof location !== 'undefined' && new URLSearchParams(location.search).get('expired') === '1';
+  private submitted = false;
+  readonly LOGIN_BAD_CREDENTIALS = LOGIN_BAD_CREDENTIALS;
+  readonly LOGIN_EMAIL_INVALID = LOGIN_EMAIL_INVALID;
+  readonly LOGIN_EMAIL_REQUIRED = LOGIN_EMAIL_REQUIRED;
+  readonly LOGIN_PASSWORD_REQUIRED = LOGIN_PASSWORD_REQUIRED;
+  readonly SESSION_EXPIRED = SESSION_EXPIRED;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -48,31 +53,53 @@ export class LoginComponent {
     });
   }
 
+  showError(field: string): boolean {
+    const c = this.loginForm.controls[field];
+    return !!c && c.invalid && (c.touched || this.submitted);
+  }
+
   onSubmit() {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.authService.login(this.loginForm.value).subscribe(
-        (response) => {
-          this.sessionService.setUserSession(response);
-          this.dashboardService.setActiveDashboardAdminComponent('dashboard');
-          this.router.navigate(['/admin']);
-        },
-        (error) => {
-          const fallback = error?.status === 401 || error?.status === 403 ? 'Mail o contraseña incorrectos.' : 'No pudimos iniciar sesión. Probá de nuevo.';
-          this.error = this.authService.errorMessage(error, fallback);
-          this.alertService.errorAlert(this.error);
-          if (typeof error?.error?.error === 'string' && error.error.error.startsWith('Email no verificado')) {
-            this.showResend = true;
-          }
-          this.redActive = true;
-          this.tryLogin = true;
-          this.isLoading = false;
-        }
-      );
-    }else{
-      // this.error = 'Campos inválidos';
-      this.alertService.errorAlert('Formulario inválido');
+    this.submitted = true;
+    this.error = '';
+    this.loginForm.markAllAsTouched();
+    if (!this.loginForm.valid) {
+      const first = this.showError('email') ? 'email' : (this.showError('password') ? 'password' : '');
+      if (first) document.getElementById(first)?.focus();
+      return;
     }
+    if (this.isLoading) return;
+    this.isLoading = true;
+    this.authService.login(this.loginForm.value).subscribe(
+      (response) => {
+        this.sessionService.setUserSession(response);
+        this.dashboardService.setActiveDashboardAdminComponent('dashboard');
+        this.router.navigate(['/admin']);
+      },
+      (error) => {
+        if (!error || error.status === 0) {
+          this.error = NETWORK_ERROR;
+        } else if (error.status >= 500) {
+          this.error = SERVER_ERROR;
+        } else if (error.status === 429) {
+          this.error = TOO_MANY_ATTEMPTS;
+        } else if (error.status === 401 || error.status === 403) {
+          const raw = typeof error?.error?.error === 'string' ? error.error.error : '';
+          if (raw.startsWith('Email no verificado')) {
+            this.error = this.authService.errorMessage(error, LOGIN_BAD_CREDENTIALS);
+            this.showResend = true;
+          } else {
+            this.error = LOGIN_BAD_CREDENTIALS;
+            this.loginForm.get('password')?.setValue('');
+            setTimeout(() => document.getElementById('password')?.focus(), 0);
+          }
+        } else {
+          this.error = this.authService.errorMessage(error, 'No pudimos iniciar sesión. Probá de nuevo.');
+        }
+        this.redActive = true;
+        this.tryLogin = true;
+        this.isLoading = false;
+      }
+    );
   }
 
   sendVerification() {
@@ -105,9 +132,9 @@ export class LoginComponent {
   }
 
   resendEmail() {
-    this.alertService.confirmAlert("Verificacion de correo", "Deseas recibir nuevamente el correo de verificación?", 'Reenviar').then((result) => {
+    this.alertService.confirmAlert("Verificacion de correo", "Deseas recibir nuevamente el correo de verificaci\u00f3n?", 'Reenviar').then((result) => {
       if (result.isConfirmed) {
-        this.alertService.loadingAlert('Reenviando correo de verificación...');
+        this.alertService.loadingAlert('Reenviando correo de verificaci\u00f3n...');
         this.authService.resendEmail(this.loginForm.value.email).subscribe(
           (response) => {
             this.alertService.successAlert('Correo reenviado');
@@ -117,9 +144,7 @@ export class LoginComponent {
           }
         );
       }
-    }); 
+    });
   }
 
 }
-
-

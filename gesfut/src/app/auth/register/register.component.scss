@@ -2,3 +2,9 @@ section{display:flex;justify-content:center;align-items:flex-start;width:100%;mi
 .intro,.field-help{font-size:1.4rem;color:var(--muted);margin:0;}.field-help{margin-top:-6px;}
 /* Tema 7: aceptacion de Terminos y Privacidad (solo variables existentes). */
 .terms-field{display:flex;align-items:flex-start;gap:var(--space-sm);font-size:1.4rem;color:var(--ink);}.terms-field input{width:20px;height:20px;margin-top:2px;flex:0 0 auto;accent-color:var(--primary-color);}.terms-field a{color:var(--primary-color);text-decoration:underline;}.base-button:disabled{opacity:.6;cursor:not-allowed;}
+
+.terms-field label{flex:1 1 auto;min-width:0;overflow-wrap:normal;hyphens:none;}
+.terms-field a{white-space:nowrap;}
+.form-alert{width:100%;}
+.form-alert .link{margin-top:4px;}
+.error-actions{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:4px;}

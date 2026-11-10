@@ -6,8 +6,8 @@ import { MAIL_VERIFICATION_ENABLED, REGISTERED_ALERT, REGISTERED_NOTICE, SHOW_RE
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
 test('verificacion por mail apagada: textos sin prometer mail', () => {
   assert.equal(MAIL_VERIFICATION_ENABLED, false);
-  assert.equal(REGISTERED_ALERT, 'Cuenta creada. Ya pod\u00e9s iniciar sesi\u00f3n.');
-  assert.match(REGISTERED_NOTICE, /Ya pod\u00e9s iniciar sesi\u00f3n/);
+  assert.equal(REGISTERED_ALERT, '\u00a1Listo! Tu cuenta est\u00e1 creada. Ya pod\u00e9s armar tu torneo.');
+  assert.match(REGISTERED_NOTICE, /Ya pod\u00e9s armar tu torneo/);
   for (const t of [REGISTERED_ALERT, REGISTERED_NOTICE]) assert.doesNotMatch(t, /enviamos|verific/i);
   assert.equal(SHOW_RESEND_AFTER_REGISTER, false);
 });

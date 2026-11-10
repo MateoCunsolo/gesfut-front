@@ -1,8 +1,29 @@
 /** Mensajes de error de auth en es-AR, sin dependencias de Angular (se testean con node). */
+
+export const NETWORK_ERROR = 'No pudimos conectarnos. Revis\u00e1 tu internet y prob\u00e1 de nuevo.';
+export const SERVER_ERROR = 'Tuvimos un problema de nuestro lado. Prob\u00e1 de nuevo en unos minutos.';
+export const TOO_MANY_ATTEMPTS = 'Hiciste muchos intentos seguidos. Esper\u00e1 un minuto y prob\u00e1 de nuevo.';
+export const SESSION_EXPIRED = 'Tu sesi\u00f3n venci\u00f3. Volv\u00e9 a ingresar para seguir.';
+
+export const LOGIN_BAD_CREDENTIALS = 'El correo o la contrase\u00f1a no coinciden. Revisalos y prob\u00e1 de nuevo.';
+export const LOGIN_EMAIL_REQUIRED = 'Ingres\u00e1 tu correo.';
+export const LOGIN_PASSWORD_REQUIRED = 'Ingres\u00e1 tu contrase\u00f1a.';
+export const LOGIN_EMAIL_INVALID = 'Revis\u00e1 el correo: parece que falta algo.';
+
+export const SIGNUP_EMAIL_TAKEN = 'Ya hay una cuenta con este correo. Prob\u00e1 ingresar o recuperar tu contrase\u00f1a.';
+export const SIGNUP_EMAIL_INVALID = 'Revis\u00e1 el correo: parece que falta algo (por ejemplo, nombre@mail.com).';
+export const SIGNUP_PASSWORD_SHORT = 'Us\u00e1 al menos 8 caracteres.';
+export const SIGNUP_TERMS = 'Para crear la cuenta ten\u00e9s que aceptar los t\u00e9rminos y la pol\u00edtica de privacidad.';
+export const SIGNUP_NAME_REQUIRED = 'Ingres\u00e1 tu nombre.';
+export const SIGNUP_LAST_NAME_REQUIRED = 'Ingres\u00e1 tu apellido.';
+export const SIGNUP_GENERIC_CONFLICT = 'No pudimos crear la cuenta porque alg\u00fan dato ya est\u00e1 en uso. Revis\u00e1 los datos o prob\u00e1 con otro correo.';
+export const SIGNUP_SUCCESS = '\u00a1Listo! Tu cuenta est\u00e1 creada. Ya pod\u00e9s armar tu torneo.';
+
 export function authErrorMessage(error: any, fallback: string): string {
-  if (!error || error.status === 0) return 'No pudimos conectar con el servidor. Probá de nuevo en un rato.';
+  if (!error || error.status === 0) return NETWORK_ERROR;
   // 5xx: nunca mostrar el texto interno del backend.
-  if (error.status >= 500) return 'Tuvimos un problema en el servidor. Probá de nuevo en un rato.';
+  if (error.status >= 500) return SERVER_ERROR;
+  if (error.status === 429) return TOO_MANY_ATTEMPTS;
   const body = error.error;
   let msg = '';
   if (body && typeof body === 'object') {
@@ -29,14 +50,14 @@ export function isRegisteredNotice(search: string): boolean {
   return new URLSearchParams(search).get('registered') === '1';
 }
 
-// TODO(Mateo): volver al texto de verificación por mail cuando se reactive gesfut.mail.verificacion.enabled en el backend
+// TODO(Mateo): volver al texto de verificaci\u00f3n por mail cuando se reactive gesfut.mail.verificacion.enabled en el backend
 // Para reactivar: MAIL_VERIFICATION_ENABLED = true y volver a estos textos (van en comentario para que no queden en el bundle):
 //   REGISTERED_ALERT  = 'Cuenta creada. Te enviamos un mail para verificarla.'
 //   REGISTERED_NOTICE = 'Te enviamos un mail para verificar tu cuenta. Verificalo y despu\u00e9s inici\u00e1 sesi\u00f3n.'
 export const MAIL_VERIFICATION_ENABLED = false;
 /** Alerta al terminar el registro. */
-export const REGISTERED_ALERT = 'Cuenta creada. Ya pod\u00e9s iniciar sesi\u00f3n.';
+export const REGISTERED_ALERT = SIGNUP_SUCCESS;
 /** Aviso en el login con ?registered=1. */
-export const REGISTERED_NOTICE = 'Cuenta creada. Ya pod\u00e9s iniciar sesi\u00f3n con tu mail y contrase\u00f1a.';
+export const REGISTERED_NOTICE = SIGNUP_SUCCESS;
 /** Mostrar 'Reenviar mail' justo despues de registrarse (solo si se manda mail). */
 export const SHOW_RESEND_AFTER_REGISTER: boolean = MAIL_VERIFICATION_ENABLED;

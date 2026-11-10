@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { authErrorMessage, isRegisteredNotice, resendMessage, RESEND_NEUTRAL, RESEND_TOO_MANY } from '../src/app/auth/auth-messages';
+import { authErrorMessage, isRegisteredNotice, resendMessage, RESEND_NEUTRAL, RESEND_TOO_MANY, NETWORK_ERROR, SERVER_ERROR, LOGIN_BAD_CREDENTIALS, SIGNUP_EMAIL_TAKEN, SIGNUP_SUCCESS, SESSION_EXPIRED } from '../src/app/auth/auth-messages';
 
 const fb = 'FALLBACK';
 test('usa el mensaje del backend en 4xx', () => {
@@ -15,11 +15,11 @@ test('fallback si no hay mensaje util', () => {
 });
 test('5xx nunca muestra el texto del backend', () => {
   const m = authErrorMessage({ status: 500, error: { error: 'NullPointerException en X' } }, fb);
-  assert.match(m, /problema en el servidor/); assert.doesNotMatch(m, /NullPointer/);
+  assert.equal(m, SERVER_ERROR); assert.doesNotMatch(m, /NullPointer/);
 });
 test('sin conexion', () => {
-  assert.match(authErrorMessage({ status: 0 }, fb), /No pudimos conectar/);
-  assert.match(authErrorMessage(undefined, fb), /No pudimos conectar/);
+  assert.equal(authErrorMessage({ status: 0 }, fb), NETWORK_ERROR);
+  assert.equal(authErrorMessage(undefined, fb), NETWORK_ERROR);
 });
 test('aviso registered=1 en el login', () => {
   assert.equal(isRegisteredNotice('?registered=1'), true);
@@ -66,4 +66,25 @@ test('bloque B: reenviar mail neutral, cooldown 60 s y 429 con voseo', () => {
   assert.match(ts, /protected showResend: boolean = this\.registeredNotice/); assert.match(ts, /this\.showResend = true/);
   const html = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
   assert.match(html, /@if \(showResend\)[^]*\[disabled\]="resendCooldown > 0"/);
+});
+
+test('textos de login y alta segun la spec', () => {
+  assert.equal(LOGIN_BAD_CREDENTIALS, 'El correo o la contrase\u00f1a no coinciden. Revisalos y prob\u00e1 de nuevo.');
+  assert.equal(SIGNUP_EMAIL_TAKEN.startsWith('Ya hay una cuenta con este correo.'), true);
+  assert.equal(SIGNUP_SUCCESS, '\u00a1Listo! Tu cuenta est\u00e1 creada. Ya pod\u00e9s armar tu torneo.');
+  assert.equal(SESSION_EXPIRED, 'Tu sesi\u00f3n venci\u00f3. Volv\u00e9 a ingresar para seguir.');
+  const login = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
+  const loginTs = readFileSync(new URL('../src/app/auth/login/login.component.ts', import.meta.url), 'utf8');
+  const regHtml = readFileSync(new URL('../src/app/auth/register/register.component.html', import.meta.url), 'utf8');
+  const regTs = readFileSync(new URL('../src/app/auth/register/register.component.ts', import.meta.url), 'utf8');
+  assert.match(login, /form-alert-slot/);
+  assert.match(login, /LOGIN_PASSWORD_REQUIRED/);
+  assert.match(login, /LOGIN_BAD_CREDENTIALS/);
+  assert.match(loginTs, /markAllAsTouched/);
+  assert.match(login, /Ingresando/);
+  assert.match(regHtml, /fieldServerError\['email'\]/);
+  assert.match(regHtml, /Creando cuenta/);
+  assert.match(regHtml, /showPasswordHelp\(\)/);
+  assert.match(regTs, /markAllAsTouched/);
+  assert.match(regTs, /SIGNUP_EMAIL_TAKEN/);
 });
