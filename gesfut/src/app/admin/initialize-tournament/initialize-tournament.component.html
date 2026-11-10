@@ -37,7 +37,7 @@
     }
   </section>
   <footer class="setup-summary">
-    <div role="status"><strong>{{teamsTournament.length}} {{teamsTournament.length===1 ? 'equipo seleccionado' : 'equipos seleccionados'}}</strong><span id="setup-requirement">{{teamsTournament.length<2 ? 'Faltan ' + (2-teamsTournament.length) + ' para el mínimo de 2.' : (teamsTournament.length===3 ? 'Listo. Con 3 equipos, cada fecha uno queda libre.' : 'Listo para revisar y generar el calendario.')}}</span></div>
+    <div role="status"><strong>{{teamsTournament.length}} {{teamsTournament.length===1 ? 'equipo seleccionado' : 'equipos seleccionados'}}</strong><span id="setup-requirement">{{teamsTournament.length<2 ? (teamsTournament.length===0 ? 'Necesitás al menos 2 equipos para empezar.' : 'Falta 1 equipo para el mínimo de 2.') : (teamsTournament.length===3 ? 'Listo. Con 3 equipos, cada fecha uno queda libre.' : 'Listo para revisar y generar el calendario.')}}</span></div>
     <button type="button" class="base-button" [disabled]="teamsTournament.length<2" aria-describedby="setup-requirement" (click)="initTournament()">Revisar y generar</button>
   </footer>
 </section>
