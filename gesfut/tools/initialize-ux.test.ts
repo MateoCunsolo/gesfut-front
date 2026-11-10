@@ -20,12 +20,19 @@ test('quitar programación limpia también el estado compartido',()=>{
  x.component.cancelDate();assert.deepEqual(x.date(),{date:'',days:0,minutes:0});assert.equal(x.component.date,'');
 });
 
-import {applySetupTeamSelection, clearSetupTeamSelection, missingSelectionMessage, readSetupTeamSelection, setupRequirementText, setupTeamSelectionKey, writeSetupTeamSelection} from '../src/app/core/utils/setup-team-selection';
+import {applySetupTeamSelection, clearAllSetupTeamSelections, clearSetupTeamSelection, missingSelectionMessage, readSetupTeamSelection, setupRequirementText, setupTeamSelectionKey, writeSetupTeamSelection} from '../src/app/core/utils/setup-team-selection';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-function mem(): {store: Record<string,string>; api: {getItem(k:string):string|null; setItem(k:string,v:string):void; removeItem(k:string):void}} {
+function mem(): {store: Record<string,string>; api: {getItem(k:string):string|null; setItem(k:string,v:string):void; removeItem(k:string):void; length:number; key(i:number):string|null}} {
   const store: Record<string,string> = {};
-  return {store, api: {getItem: k => store[k] ?? null, setItem: (k,v) => { store[k] = v; }, removeItem: k => { delete store[k]; }}};
+  const api = {
+    getItem: (k: string) => store[k] ?? null,
+    setItem: (k: string, v: string) => { store[k] = v; },
+    removeItem: (k: string) => { delete store[k]; },
+    get length() { return Object.keys(store).length; },
+    key: (i: number) => Object.keys(store)[i] ?? null,
+  };
+  return {store, api};
 }
 test('seleccion de equipos: clave por usuario y torneo, restore valida disponibles y limpia', () => {
   assert.equal(setupTeamSelectionKey('Ana@X.com', 'tor-1'), 'gesfut:setupTeams:ana@x.com:tor-1');
@@ -71,4 +78,20 @@ test('initialize-tournament persiste en localStorage por usuario+torneo y limpia
   assert.match(ts, /localStorage/);
   assert.equal(ts.includes("sessionStorage.setItem(this.selectionKey()"), false);
   assert.match(html, /requirementText\(\)/);
+});
+
+test('logout y sesion vencida limpian las claves gesfut:setupTeams:', () => {
+  const local = mem();
+  writeSetupTeamSelection(local.api, 'ana@x.com', 'tor-1', [{id:1,name:'QA Diez'}]);
+  writeSetupTeamSelection(local.api, 'beto@x.com', 'tor-2', [{id:2,name:'QA Once'}]);
+  local.api.setItem('lastTournament:ana@x.com', 'code-ana');
+  local.api.setItem('otrosDatos', 'sigue');
+  clearAllSetupTeamSelections(local.api);
+  assert.equal(local.store['gesfut:setupTeams:ana@x.com:tor-1'], undefined);
+  assert.equal(local.store['gesfut:setupTeams:beto@x.com:tor-2'], undefined);
+  assert.equal(local.store['lastTournament:ana@x.com'], 'code-ana', 'no borra el Retomar');
+  assert.equal(local.store['otrosDatos'], 'sigue');
+  const session = readFileSync(new URL('../src/app/core/services/manager/session.service.ts', import.meta.url), 'utf8');
+  assert.match(session, /clearUserSession\(\): void \{[\s\S]*clearAllSetupTeamSelections/);
+  assert.match(session, /expireSession\(\): void \{[\s\S]*clearAllSetupTeamSelections/);
 });

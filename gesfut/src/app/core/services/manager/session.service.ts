@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import {  map } from 'rxjs';
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { environment } from '../../../../enviroments/environment';
+import { clearAllSetupTeamSelections } from '../../utils/setup-team-selection';
 /** Plan tokens 31-10 #6: marca /validate-token para que authSessionInterceptor no la vuelva a procesar. */
 export const SKIP_SESSION_CHECK = new HttpContextToken<boolean>(() => false);
 
@@ -89,6 +90,7 @@ getItems(response:boolean) {
 
   clearUserSession(): void {
       // Decision 24/10: el "Retomar" queda guardado por email (no se borra en el logout); otro email no lo ve.
+      try { clearAllSetupTeamSelections(typeof localStorage !== 'undefined' ? localStorage : null); } catch { /* sin storage */ }
       sessionStorage.removeItem('email');
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('sessionExp');
@@ -135,6 +137,7 @@ getItems(response:boolean) {
 
   /** Sesión vencida o rechazada por el servidor: limpia y envía al login sin recargar la app. */
   expireSession(): void {
+    try { clearAllSetupTeamSelections(typeof localStorage !== 'undefined' ? localStorage : null); } catch { /* sin storage */ }
     this.removeStoredSession();
     // Plan tokens 31-10 #6: con ?expired=1 el login muestra el aviso de sesion vencida.
     this.router.navigate(['/auth/login'], { queryParams: { expired: '1' } });

@@ -84,6 +84,20 @@ export function clearSetupTeamSelection(
   try { if (session && code) session.removeItem(legacySessionPrefix + code); } catch { /* ignorar */ }
 }
 
+
+/** Borra todas las selecciones persistidas (todas las cuentas y torneos) al cerrar sesion. */
+export function clearAllSetupTeamSelections(local: (Store & { length?: number; key?: (index: number) => string | null }) | null): void {
+  if (!local || typeof local.key !== 'function' || typeof local.length !== 'number') return;
+  const keys: string[] = [];
+  for (let i = 0; i < local.length; i++) {
+    const k = local.key(i);
+    if (k && k.startsWith(PREFIX)) keys.push(k);
+  }
+  for (const k of keys) {
+    try { local.removeItem(k); } catch { /* ignorar */ }
+  }
+}
+
 export function applySetupTeamSelection<T extends { id: number; name?: string }>(
   saved: StoredSetupTeam[],
   available: T[],
