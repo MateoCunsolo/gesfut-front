@@ -1,4 +1,4 @@
-import { parseDmyTime } from '../utils/date-input';
+import { parseDmyTime, playoffScheduleError } from '../utils/date-input';
 import { Injectable } from '@angular/core';
 import type { SweetAlertOptions, SweetAlertResult } from 'sweetalert2';
 // Auditoria 22/10 (#15): sweetalert2 se carga recien al primer aviso, fuera del bundle inicial. Misma API y mismos estilos.
@@ -278,9 +278,8 @@ export class AlertService {
       preConfirm: () => {
         const startDate = parseDmyTime((document.getElementById('po-date') as HTMLInputElement).value, (document.getElementById('po-time') as HTMLInputElement).value);
         const minutes = Number((document.getElementById('po-minutes') as HTMLInputElement).value);
-        if (!startDate) { Swal.showValidationMessage('Escrib\u00ed la fecha como dd/mm/aaaa y la hora como hh:mm.'); return false; }
-        if (new Date(startDate).getTime() < Date.now()) { Swal.showValidationMessage('Elegí una fecha y hora futura.'); return false; }
-        if (!Number.isFinite(minutes) || minutes < 0 || minutes > 600) { Swal.showValidationMessage('Los minutos deben estar entre 0 y 600.'); return false; }
+        const error = playoffScheduleError(startDate, minutes);
+        if (error || !startDate) { Swal.showValidationMessage(error ?? 'Escrib\u00ed la fecha como dd/mm/aaaa y la hora como hh:mm.'); return false; }
         return { startDate, minutesPerMatch: minutes };
       }
     }).then(r => r.isConfirmed ? r.value : null);
