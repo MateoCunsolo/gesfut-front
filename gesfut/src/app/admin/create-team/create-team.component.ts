@@ -88,7 +88,15 @@ button: any;
       isGoalKeeper: [false],
       dni: ['', Validators.pattern(/^\s*\d{1,2}\.?\d{3}\.?\d{3}\s*$/)]
     });
-    this.players.push(playerForm);  
+    this.players.push(playerForm);
+    const index = this.players.length - 1;
+    setTimeout(() => document.getElementById('playerName-' + index)?.focus(), 0);
+  }
+
+  onPlayerEnter(event: Event, index: number) {
+    event.preventDefault();
+    if (index === this.players.length - 1) this.addPlayer();
+    else document.getElementById('playerName-' + (index + 1))?.focus();
   }
 
   removePlayer(index: number) {

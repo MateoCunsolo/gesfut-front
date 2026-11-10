@@ -13,7 +13,7 @@
       <div class="field">
       <label class="field-label" for="teamName">Nombre del equipo</label>
       <div class="form-group input-icon input-large">
-        <input id="teamName" type="text" formControlName="name" placeholder="Ej.: Los Pumas" />
+        <input id="teamName" type="text" formControlName="name" placeholder="Ej.: Los Pumas" autofocus />
         <i class="fa-solid fa-shield"></i>
       </div>
       </div>
@@ -53,35 +53,35 @@
           <div class="field">
           <label class="field-label" [for]="'playerName-' + i">Nombre</label>
           <div class="form-group input-icon">
-            <input id="playerName-{{ i }}" type="text" formControlName="name" placeholder="Nombre" />
+            <input id="playerName-{{ i }}" type="text" formControlName="name" placeholder="Nombre" (keydown.enter)="onPlayerEnter($event, i)" />
             <i class="fas fa-user"></i>
           </div>
           </div>
           <div class="field">
           <label class="field-label" [for]="'playerLastName-' + i">Apellido</label>
           <div class="form-group input-icon">
-            <input id="playerLastName-{{ i }}" type="text" formControlName="lastName" placeholder="Apellido" />
+            <input id="playerLastName-{{ i }}" type="text" formControlName="lastName" placeholder="Apellido" (keydown.enter)="onPlayerEnter($event, i)" />
             <i class="fas fa-user"></i>
           </div>
           </div>
           <div class="field">
           <label class="field-label" [for]="'playerNumber-' + i">Dorsal</label>
           <div class="form-group input-icon">
-            <input id="playerNumber-{{ i }}" type="number" inputmode="numeric" min="0" formControlName="number" placeholder="Dorsal" />
+            <input id="playerNumber-{{ i }}" type="number" inputmode="numeric" min="0" formControlName="number" placeholder="Dorsal" (keydown.enter)="onPlayerEnter($event, i)" />
             <i class="fa-solid fa-hashtag"></i>
           </div>
           </div>
           <div class="field">
           <label class="field-label" [for]="'playerDni-' + i">DNI (opcional)</label>
           <div class="form-group input-icon">
-            <input id="playerDni-{{ i }}" type="text" inputmode="numeric" maxlength="12" formControlName="dni" placeholder="Ej: 30123456" />
+            <input id="playerDni-{{ i }}" type="text" inputmode="numeric" maxlength="12" formControlName="dni" placeholder="Ej: 30123456" (keydown.enter)="onPlayerEnter($event, i)" />
             <i class="fa-regular fa-id-card"></i>
           </div>
           </div>
           <div class="mini-group">
             <div class="check-group">
-              <div class="form-group"><label class="player-role-choice"><input type="checkbox" formControlName="isCaptain" /><span>Capitán</span></label></div>
-              <div class="form-group"><label class="player-role-choice"><input type="checkbox" formControlName="isGoalKeeper" /><span>Arquero</span></label></div>
+              <div class="form-group"><label class="player-role-choice"><span class="player-role-hit"><input type="checkbox" formControlName="isCaptain" /></span><span>Capitán</span></label></div>
+              <div class="form-group"><label class="player-role-choice"><span class="player-role-hit"><input type="checkbox" formControlName="isGoalKeeper" /></span><span>Arquero</span></label></div>
             </div>
           </div>
         </div>

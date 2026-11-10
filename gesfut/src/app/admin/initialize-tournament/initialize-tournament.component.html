@@ -14,7 +14,7 @@
       @for(item of teams;track item.id){<li><span>{{item.name}}</span><button type="button" class="text-action" [attr.aria-label]="'Agregar ' + item.name" (click)="addTeam(item)">Agregar</button></li>}
       @empty{<li class="empty-copy">{{searchTerm ? 'No hay equipos con ese nombre.' : (teamsTournament.length===0 ? 'Todavía no tenés equipos. Creá al menos 2 con “Crear equipo nuevo”.' : 'Ya agregaste todos tus equipos.')}}</li>}
       </ul>
-      <button type="button" class="back-button" (click)="addNewTeamToTournament()">Crear equipo nuevo</button>
+      <button type="button" class="back-button create-new-team" (click)="addNewTeamToTournament()">Crear equipo nuevo</button>
     </section>
     <section aria-labelledby="selected-heading">
       <div class="section-heading"><h3 id="selected-heading">Equipos seleccionados</h3><span>{{teamsTournament.length}}</span></div>
