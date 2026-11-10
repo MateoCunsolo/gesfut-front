@@ -71,7 +71,7 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
         }@else {
         <mat-label>Elegir fecha</mat-label>
         }
-        <input matInput [matDatepicker]="datepicker" [(ngModel)]="dateValue" [min]="minDate" />
+        <input matInput [matDatepicker]="datepicker" [(ngModel)]="dateValue" />
         <mat-datepicker #datepicker />
         <mat-datepicker-toggle [for]="datepicker" matSuffix />
       </mat-form-field>
@@ -153,7 +153,6 @@ export class TimepickerDatepickerIntegrationExample {
   private matchDayServices = inject(MatchDaysService);
   private alertService = inject(AlertService);
   /** Recorrido 22/10: fecha y hora en modelos separados (elegir el día ya no pisa la hora con 00:00). */
-  minDate: Date = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
   dateValue: Date | null = new Date();
   timeValue: Date | null = (() => { const d = new Date(); d.setHours(20, 0, 0, 0); return d; })();
   get value(): Date | null {
@@ -166,11 +165,11 @@ export class TimepickerDatepickerIntegrationExample {
   plusDays: number = 7;
   @Input() isToInitTournament: boolean = false;
   @Input() matchId: number = 0;
-  /** D: precarga la fecha/hora actual del partido (si es futura; una pasada no se podria confirmar). */
+  /** D: precarga la fecha/hora actual del partido (futura o pasada: desde 10/11 se puede reprogramar a cualquier fecha). */
   @Input() set initialDateTime(value: string | null) {
     if (!value) return;
     const d = new Date(value);
-    if (isNaN(d.getTime()) || d.getTime() < Date.now()) return;
+    if (isNaN(d.getTime())) return;
     this.dateValue = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const t = new Date(); t.setHours(d.getHours(), d.getMinutes(), 0, 0);
     this.timeValue = t;
@@ -208,16 +207,8 @@ export class TimepickerDatepickerIntegrationExample {
   }
 
   dateFunction() {
+    // 10/11: se aceptan fechas y horas pasadas (carga historica); las reglas de orden las valida el back.
     const chosen = this.value;
-    if (chosen && (this.isToInitTournament || this.isForAllMatches) && chosen.getTime() < this.minDate.getTime()) {
-      this.alertService.errorAlert('Elegí una fecha de hoy en adelante.');
-      return;
-    }
-    // Plan 22/10 #5: un partido suelto solo con fecha y hora futura.
-    if (chosen && !this.isToInitTournament && !this.isForAllMatches && chosen.getTime() < Date.now()) {
-      this.alertService.errorAlert('Elegí una fecha y hora futura para el partido.');
-      return;
-    }
     if (chosen) {
       let localDateTime = this.converDateToISO(chosen);
       if (this.isForAllMatches && this.plusMinutes) {
