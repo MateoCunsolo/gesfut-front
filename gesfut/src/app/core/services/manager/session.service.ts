@@ -6,7 +6,7 @@ import {  map } from 'rxjs';
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { environment } from '../../../../enviroments/environment';
 import { clearAllSetupTeamSelections } from '../../utils/setup-team-selection';
-import { sessionAccountFingerprint, writeSessionAccount } from '../../utils/session-account';
+import { sessionAccountHash, writeSessionAccount, clearSessionAccountOnExpire } from '../../utils/session-account';
 /** Plan tokens 31-10 #6: marca /validate-token para que authSessionInterceptor no la vuelva a procesar. */
 export const SKIP_SESSION_CHECK = new HttpContextToken<boolean>(() => false);
 
@@ -86,11 +86,10 @@ getItems(response:boolean) {
       sessionStorage.setItem('lastName', response.lastName);
       sessionStorage.setItem('role', response.role);
       try {
-        writeSessionAccount(typeof localStorage !== 'undefined' ? localStorage : null, sessionAccountFingerprint({
-          email: sessionStorage.getItem('email'),
-          name: response.name,
-          lastName: response.lastName,
-        }));
+        const storage = typeof localStorage !== 'undefined' ? localStorage : null;
+        void sessionAccountHash(sessionStorage.getItem('email')).then((hash) => {
+          writeSessionAccount(storage, hash);
+        });
       } catch { /* sin storage */ }
       this.currentUserData.next(response);
       this.currentUserLoginOn.next(true);
@@ -155,6 +154,7 @@ getItems(response:boolean) {
 
   private removeStoredSession(): void {
     if (sessionStorage.getItem('token')) this.sessionExpired = true;
+    try { clearSessionAccountOnExpire(typeof localStorage !== 'undefined' ? localStorage : null, sessionStorage); } catch { /* sin storage */ }
     ['token', 'sessionExp', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
     this.currentUserLoginOn.next(false);
     this.currentUserData.next({ name: '', lastName: '', token: '', role: '' });
