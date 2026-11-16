@@ -47,3 +47,23 @@ test('rechaza acceso fuera de la carpeta pública', async () => {
     assert.equal(status,400);
   } finally {await close(server);}
 });
+
+test('cabeceras de seguridad en navegacion, assets, 404 y 405', async () => {
+  const server=createPwaServer(); const base=await listen(server);
+  try {
+    const expectSec = (response) => {
+      assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+      assert.equal(response.headers.get('x-frame-options'), 'DENY');
+      assert.equal(response.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
+      assert.match(response.headers.get('permissions-policy') ?? '', /camera=\(\)/);
+      assert.equal(response.headers.get('strict-transport-security'), 'max-age=300; includeSubDomains');
+      assert.equal(response.headers.get('cross-origin-opener-policy'), 'same-origin');
+      assert.match(response.headers.get('content-security-policy-report-only') ?? '', /frame-ancestors 'none'/);
+      assert.equal(response.headers.get('content-security-policy'), null);
+    };
+    const nav=await fetch(base+'/admin'); assert.equal(nav.status,200); expectSec(nav);
+    const manifest=await fetch(base+'/manifest.webmanifest'); assert.equal(manifest.status,200); expectSec(manifest);
+    const missing=await fetch(base+'/missing-chunk.js'); assert.equal(missing.status,404); expectSec(missing);
+    const method=await fetch(base+'/admin',{method:'POST'}); assert.equal(method.status,405); expectSec(method);
+  } finally {await close(server);}
+});

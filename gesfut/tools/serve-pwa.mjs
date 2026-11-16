@@ -12,6 +12,23 @@ const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
 // Tema 6b: tambien las demas cabeceras de IP/host/proto de reenvio que un cliente podria falsificar.
 const CLIENT_IP_HEADERS = new Set(['cf-connecting-ip', 'x-forwarded-for', 'x-real-ip', 'forwarded', 'true-client-ip', 'x-forwarded-host', 'x-forwarded-proto']);
 
+/** Cabeceras de seguridad del informe 10/11. CSP primero en Report-Only. HSTS QA max-age=300. connect-src 'self' alcanza con el proxy /api. */
+export const PWA_CSP_REPORT_ONLY = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
+
+export function pwaSecurityHeaders(extra = {}) {
+  return {
+    'x-content-type-options': 'nosniff',
+    'x-frame-options': 'DENY',
+    'referrer-policy': 'strict-origin-when-cross-origin',
+    'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+    'strict-transport-security': 'max-age=300; includeSubDomains',
+    'cross-origin-opener-policy': 'same-origin',
+    'content-security-policy-report-only': PWA_CSP_REPORT_ONLY,
+    ...extra,
+  };
+}
+
+
 /** Tema 6 (5/11): solo cloudflared (loopback) puede mandar la IP del cliente. Desde otra IP se borran CF-Connecting-IP y
  *  X-Forwarded-For que haya puesto el cliente y CF-Connecting-IP pasa a ser la IP real del socket (sin ::ffff: si es IPv4).
  *  remoteAddress desconocido: se borran y no se inventa ninguna IP. Nunca muta la entrada. */
@@ -27,7 +44,7 @@ export function sanitizeForwardHeaders(headers, remoteAddress) {
 export function createPwaServer({ root = defaultRoot, apiTarget = 'http://127.0.0.1:8080' } = {}) {
   return http.createServer(async (request, response) => {
     let url;
-    try { url = new URL(request.url, 'http://localhost'); } catch { response.writeHead(400).end(); return; }
+    try { url = new URL(request.url, 'http://localhost'); } catch { response.writeHead(400, pwaSecurityHeaders()).end(); return; }
     if (url.pathname === '/api' || url.pathname.startsWith('/api/')) {
       const target = new URL(apiTarget);
       const upstream = http.request({ hostname: target.hostname, port: target.port || 80, path: url.pathname + url.search, method: request.method,
@@ -44,28 +61,28 @@ export function createPwaServer({ root = defaultRoot, apiTarget = 'http://127.0.
       request.pipe(upstream);
       return;
     }
-    if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405, { allow: 'GET, HEAD' }).end(); return; }
+    if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405, pwaSecurityHeaders({ allow: 'GET, HEAD' })).end(); return; }
     let decoded;
-    try { decoded = decodeURIComponent(url.pathname); } catch { response.writeHead(400).end(); return; }
-    if (decoded.includes('\0') || decoded.includes('\\') || decoded.split('/').includes('..')) { response.writeHead(400).end(); return; }
+    try { decoded = decodeURIComponent(url.pathname); } catch { response.writeHead(400, pwaSecurityHeaders()).end(); return; }
+    if (decoded.includes('\0') || decoded.includes('\\') || decoded.split('/').includes('..')) { response.writeHead(400, pwaSecurityHeaders()).end(); return; }
     let file = path.resolve(root, '.' + decoded);
     const relative = path.relative(root, file);
-    if (relative.startsWith('..') || path.isAbsolute(relative)) { response.writeHead(403).end(); return; }
+    if (relative.startsWith('..') || path.isAbsolute(relative)) { response.writeHead(403, pwaSecurityHeaders()).end(); return; }
     let info = await stat(file).catch(() => null);
     if (!info?.isFile()) {
       // Solo rutas de navegación reciben index.html. Los assets ausentes son 404.
       // Loop 5: los links de mail llevan un JWT con puntos (/auth/verify-email/aaa.bbb.ccc): una navegacion (Accept text/html) siempre recibe la app.
       const isNavigation = (request.headers.accept ?? '').includes('text/html');
-      if (path.extname(decoded) && !isNavigation) { response.writeHead(404).end(); return; }
+      if (path.extname(decoded) && !isNavigation) { response.writeHead(404, pwaSecurityHeaders()).end(); return; }
       file = path.join(root, 'index.html');
       info = await stat(file).catch(() => null);
-      if (!info?.isFile()) { response.writeHead(503).end('Primero ejecutá npm run build.'); return; }
+      if (!info?.isFile()) { response.writeHead(503, pwaSecurityHeaders({ 'content-type': 'text/plain; charset=utf-8' })).end('Primero ejecutá npm run build.'); return; }
     }
     // Loop 7: gzip para texto (3G: ~1.3 MB -> ~0.4 MB) y cache larga para assets con hash en el nombre.
     const ext = path.extname(file);
     const gzip = /\.(js|css|html|json|webmanifest|svg)$/.test(ext) && /\bgzip\b/.test(request.headers['accept-encoding'] ?? '') && info.size > 1024;
     const hashed = /-[A-Z0-9]{8}\.(js|css)$/.test(path.basename(file));
-    const headers = { 'content-type': mime[ext] ?? 'application/octet-stream', 'cache-control': hashed ? 'public, max-age=31536000, immutable' : 'no-cache', 'x-content-type-options': 'nosniff', vary: 'Accept-Encoding' };
+    const headers = pwaSecurityHeaders({ 'content-type': mime[ext] ?? 'application/octet-stream', 'cache-control': hashed ? 'public, max-age=31536000, immutable' : 'no-cache', vary: 'Accept-Encoding' });
     if (gzip) headers['content-encoding'] = 'gzip'; else headers['content-length'] = info.size;
     response.writeHead(200, headers);
     if (request.method === 'HEAD') { response.end(); return; }
