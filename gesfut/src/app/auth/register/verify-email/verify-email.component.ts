@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/manager/auth.service';
+import { resendTooManyMessage, retryAfterFromError } from '../../auth-messages';
 
 /** 12 Verificar correo: mismo contenedor que el login; el motivo del error solo se muestra si lo informa el servidor. */
 @Component({
@@ -100,7 +101,7 @@ export class VerifyEmailComponent {
       next: () => { this.sending = false; this.resentTo = email; },
       error: (error) => {
         this.sending = false;
-        this.resendError = error?.status === 429 ? 'Probaste muchas veces. Esper\u00e1 un rato e intent\u00e1 de nuevo.' : error?.status === 0 ? 'No pudimos conectar con el servidor. Probá de nuevo.' : (error?.error?.error || 'No pudimos reenviar el enlace.');
+        this.resendError = error?.status === 429 ? resendTooManyMessage(retryAfterFromError(error)) : error?.status === 0 ? 'No pudimos conectar con el servidor. Probá de nuevo.' : (error?.error?.error || 'No pudimos reenviar el enlace.');
       },
     });
   }

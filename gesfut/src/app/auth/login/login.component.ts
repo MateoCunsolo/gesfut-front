@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/manager/auth.service';
 import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
-import { isRegisteredNotice, resendMessage, RESEND_TOO_MANY, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER, LOGIN_BAD_CREDENTIALS, LOGIN_EMAIL_INVALID, LOGIN_EMAIL_REQUIRED, LOGIN_PASSWORD_REQUIRED, NETWORK_ERROR, SERVER_ERROR, SESSION_EXPIRED, TOO_MANY_ATTEMPTS } from '../auth-messages';
+import { isRegisteredNotice, resendMessage, resendTooManyMessage, retryAfterFromError, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER, LOGIN_BAD_CREDENTIALS, LOGIN_EMAIL_INVALID, LOGIN_EMAIL_REQUIRED, LOGIN_PASSWORD_REQUIRED, NETWORK_ERROR, SERVER_ERROR, SESSION_EXPIRED, TOO_MANY_ATTEMPTS } from '../auth-messages';
 
 @Component({
     selector: 'app-login',
@@ -109,7 +109,7 @@ export class LoginComponent {
     this.startResendCooldown(60);
     this.authService.resendEmail(email).subscribe({
       next: (r: any) => this.alertService.successAlert(resendMessage(r)),
-      error: (err) => this.alertService.errorAlert(err?.status === 429 ? RESEND_TOO_MANY : this.authService.errorMessage(err, 'No pudimos reenviar el mail. Prob\u00e1 de nuevo en un rato.'))
+      error: (err) => this.alertService.errorAlert(err?.status === 429 ? resendTooManyMessage(retryAfterFromError(err)) : this.authService.errorMessage(err, 'No pudimos reenviar el mail. Prob\u00e1 de nuevo en un rato.'))
     });
   }
 

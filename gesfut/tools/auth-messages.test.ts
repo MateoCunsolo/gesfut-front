@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { authErrorMessage, isRegisteredNotice, resendMessage, RESEND_NEUTRAL, RESEND_TOO_MANY, NETWORK_ERROR, SERVER_ERROR, LOGIN_BAD_CREDENTIALS, SIGNUP_EMAIL_TAKEN, SIGNUP_SUCCESS, SESSION_EXPIRED } from '../src/app/auth/auth-messages';
+import { authErrorMessage, isRegisteredNotice, resendMessage, resendTooManyMessage, retryAfterMinutes, retryAfterFromError, RESEND_NEUTRAL, RESEND_TOO_MANY, NETWORK_ERROR, SERVER_ERROR, LOGIN_BAD_CREDENTIALS, SIGNUP_EMAIL_TAKEN, SIGNUP_SUCCESS, SESSION_EXPIRED } from '../src/app/auth/auth-messages';
 
 const fb = 'FALLBACK';
 test('usa el mensaje del backend en 4xx', () => {
@@ -60,12 +60,23 @@ test('bloque A: fecha elegida se mantiene, playoffs accesibles, refresco tras ba
 test('bloque B: reenviar mail neutral, cooldown 60 s y 429 con voseo', () => {
   assert.equal(resendMessage({ message: 'Si el mail existe y falta verificarlo, te lo mandamos.' }), 'Si el mail existe y falta verificarlo, te lo mandamos.');
   assert.equal(resendMessage(null), RESEND_NEUTRAL);
-  assert.equal(RESEND_TOO_MANY, 'Probaste muchas veces. Esperá un rato e intentá de nuevo.');
+  assert.equal(RESEND_TOO_MANY, 'Pediste demasiados reenvíos. Probá de nuevo más tarde.');
+  assert.equal(resendTooManyMessage(null), RESEND_TOO_MANY);
+  assert.equal(resendTooManyMessage(''), RESEND_TOO_MANY);
+  assert.equal(resendTooManyMessage('3600'), 'Pediste demasiados reenvíos. Probá de nuevo en 60 minutos.');
+  assert.equal(resendTooManyMessage(60), 'Pediste demasiados reenvíos. Probá de nuevo en 1 minuto.');
+  assert.equal(resendTooManyMessage(30), 'Pediste demasiados reenvíos. Probá de nuevo en 1 minuto.');
+  assert.equal(retryAfterMinutes('3600'), 60);
+  assert.equal(retryAfterMinutes('no-un-numero'), null);
+  assert.equal(retryAfterFromError({ headers: { get: (n: string) => n.toLowerCase() === 'retry-after' ? '3600' : null } }), '3600');
+  assert.equal(retryAfterFromError({}), null);
   const ts = readFileSync(new URL('../src/app/auth/login/login.component.ts', import.meta.url), 'utf8');
-  assert.match(ts, /startResendCooldown\(60\)/); assert.match(ts, /status === 429 \? RESEND_TOO_MANY/);
+  assert.match(ts, /startResendCooldown\(60\)/); assert.match(ts, /status === 429 \? resendTooManyMessage\(retryAfterFromError\(err\)\)/);
   assert.match(ts, /protected showResend: boolean = this\.registeredNotice/); assert.match(ts, /this\.showResend = true/);
   const html = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
   assert.match(html, /@if \(showResend\)[^]*\[disabled\]="resendCooldown > 0"/);
+  const ve = readFileSync(new URL('../src/app/auth/register/verify-email/verify-email.component.ts', import.meta.url), 'utf8');
+  assert.match(ve, /resendTooManyMessage\(retryAfterFromError\(error\)\)/);
 });
 
 test('textos de login y alta segun la spec', () => {

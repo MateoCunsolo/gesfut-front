@@ -39,7 +39,34 @@ export function authErrorMessage(error: any, fallback: string): string {
 }
 
 export const RESEND_NEUTRAL = 'Si el mail existe y falta verificarlo, te lo mandamos. Revis\u00e1 tu casilla (y spam).';
-export const RESEND_TOO_MANY = 'Probaste muchas veces. Esper\u00e1 un rato e intent\u00e1 de nuevo.';
+export const RESEND_TOO_MANY = 'Pediste demasiados reenv\u00edos. Prob\u00e1 de nuevo m\u00e1s tarde.';
+/** 429 de resend-verification: usa Retry-After (segundos o fecha HTTP) y pasa a minutos; si no hay header, el texto sin minutos. */
+export function retryAfterMinutes(retryAfter?: string | number | null): number | null {
+  if (retryAfter == null || retryAfter === '') return null;
+  const raw = String(retryAfter).trim();
+  if (/^\d+$/.test(raw)) {
+    const seconds = Number(raw);
+    if (!Number.isFinite(seconds) || seconds <= 0) return null;
+    return Math.max(1, Math.ceil(seconds / 60));
+  }
+  const ms = Date.parse(raw);
+  if (!Number.isFinite(ms)) return null;
+  const seconds = Math.ceil((ms - Date.now()) / 1000);
+  if (seconds <= 0) return null;
+  return Math.max(1, Math.ceil(seconds / 60));
+}
+export function resendTooManyMessage(retryAfter?: string | number | null): string {
+  const minutes = retryAfterMinutes(retryAfter);
+  if (minutes == null) return RESEND_TOO_MANY;
+  const unidad = minutes === 1 ? 'minuto' : 'minutos';
+  return 'Pediste demasiados reenv\u00edos. Prob\u00e1 de nuevo en ' + minutes + ' ' + unidad + '.';
+}
+export function retryAfterFromError(error: any): string | null {
+  const headers = error && error.headers;
+  if (!headers || typeof headers.get !== 'function') return null;
+  const value = headers.get('Retry-After') ?? headers.get('retry-after');
+  return value == null || value === '' ? null : String(value);
+}
 /** Mensaje neutral del reenvio: el del servidor si vino, si no el mismo texto fijo. */
 export function resendMessage(body: any): string {
   return body && typeof body.message === 'string' && body.message.trim() ? body.message : RESEND_NEUTRAL;
