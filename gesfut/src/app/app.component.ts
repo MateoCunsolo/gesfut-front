@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./shared/header/header.component";
 import { PwaStatusComponent } from './shared/pwa-status/pwa-status.component';
 import { FooterComponent } from "./shared/footer/footer.component";
-import { parseSessionAccount, readSessionAccount, sessionAccountChanged, sessionAccountFingerprint } from './core/utils/session-account';
+import { clearStaleUiIdentity, readSessionAccount, sessionAccountChanged, sessionAccountHash } from './core/utils/session-account';
 
 @Component({
     selector: 'app-root',
@@ -43,25 +43,19 @@ export class AppComponent {
   private checkAccountSwitch(): void {
     if (this.accountSwitchNotice) return;
     try {
-      const ui = sessionAccountFingerprint({
-        email: sessionStorage.getItem('email'),
-        name: sessionStorage.getItem('name'),
-        lastName: sessionStorage.getItem('lastName'),
-      });
       const shared = readSessionAccount(typeof localStorage !== 'undefined' ? localStorage : null);
-      if (sessionAccountChanged(ui, shared)) this.accountSwitchNotice = true;
+      void sessionAccountHash(sessionStorage.getItem('email')).then((ui) => {
+        if (this.accountSwitchNotice) return;
+        if (sessionAccountChanged(ui, shared)) this.accountSwitchNotice = true;
+      });
     } catch { /* sin storage */ }
   }
 
   reloadAfterAccountSwitch(): void {
     try {
-      const shared = readSessionAccount(typeof localStorage !== 'undefined' ? localStorage : null);
-      const parsed = parseSessionAccount(shared);
-      if (parsed) {
-        if (parsed.email) sessionStorage.setItem('email', parsed.email);
-        sessionStorage.setItem('name', parsed.name ?? '');
-        sessionStorage.setItem('lastName', parsed.lastName ?? '');
-      }
+      // La huella solo guarda el hash del email: no se puede reconstruir el role.
+      // Se quita el role (y el resto de la identidad) viejo de esta pestana y se recarga.
+      clearStaleUiIdentity(typeof sessionStorage !== 'undefined' ? sessionStorage : null);
     } catch { /* sin storage */ }
     window.location.reload();
   }
