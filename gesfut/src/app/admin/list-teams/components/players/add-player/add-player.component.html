@@ -76,11 +76,11 @@
     <!-- Campo Dorsal -->
     <div class="field"><label class="field-label" for="addPlayerNumber">Dorsal</label>
     <div class="form-group input-icon">
-      <input id="addPlayerNumber" type="number" inputmode="numeric" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
+      <input id="addPlayerNumber" type="number" inputmode="numeric" min="0" max="99" step="1" formControlName="number" placeholder="Dorsal" [ngClass]="{ disabled: disbalechecks }" />
       <i class="fa-solid fa-hashtag"></i>
       @if (playerForm.get('number')?.invalid &&
       playerForm.get('number')?.touched) {
-      <small>Ingresa un dorsal válido (1-99).</small>
+      <small>El dorsal debe estar entre 0 y 99.</small>
       }
     </div></div>
 
@@ -129,9 +129,9 @@
     <div class="flex-buttons grid-6">
  
       @if (changeText) {
-      <button type="submit" class="base-button add">Reactivar jugador</button>
+      <button type="submit" class="base-button add" [disabled]="playerForm.invalid">Reactivar jugador</button>
       }@else {
-      <button type="submit" class="base-button add">Agregar jugador</button>
+      <button type="submit" class="base-button add" [disabled]="playerForm.invalid">Agregar jugador</button>
       }
     </div>
   </form>

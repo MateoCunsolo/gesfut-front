@@ -2,6 +2,7 @@ import { httpErrorMessage } from '../../../../../core/utils/http-error';
 import { normalizeDni } from '../../../../../core/utils/dni';
 import { Component, afterNextRender, ElementRef, ViewChild, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { shirtNumberError, shirtNumberValidator } from '../../../../../core/utils/shirt-number';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertService } from '../../../../../core/services/alert.service';
 import { TeamService } from '../../../../../core/services/tournament/team.service';
@@ -57,7 +58,7 @@ export class AddPlayerComponent implements OnChanges {
       teamId: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-      number: [null, [Validators.required, Validators.min(1), Validators.max(99)]],
+      number: [null, [shirtNumberValidator]],
       isCaptain: [false],
       isGoalKeeper: [false],
       dni: ['', Validators.pattern(/^\s*\d{1,2}\.?\d{3}\.?\d{3}\s*$/)],
@@ -197,7 +198,7 @@ export class AddPlayerComponent implements OnChanges {
     } else if (this.playerForm.get('lastName')?.invalid) {
       this.alertService.errorAlert('Falta ingresar el apellido.');
     } else if (this.playerForm.get('number')?.invalid) {
-      this.alertService.errorAlert('Falta ingresar el número de camiseta.');
+      this.alertService.errorAlert(shirtNumberError(this.playerForm.get('number')?.value));
     }
   }
 

@@ -67,7 +67,10 @@
           <div class="field">
           <label class="field-label" [for]="'playerNumber-' + i">Dorsal</label>
           <div class="form-group input-icon">
-            <input id="playerNumber-{{ i }}" type="number" inputmode="numeric" min="0" formControlName="number" placeholder="Dorsal" (keydown.enter)="onPlayerEnter($event, i)" />
+            <input id="playerNumber-{{ i }}" type="number" inputmode="numeric" min="0" max="99" step="1" formControlName="number" placeholder="Dorsal" (keydown.enter)="onPlayerEnter($event, i)" />
+            @if (player.get('number')?.invalid && player.get('number')?.touched) {
+              <small>El dorsal debe estar entre 0 y 99.</small>
+            }
             <i class="fa-solid fa-hashtag"></i>
           </div>
           </div>

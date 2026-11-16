@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SHIRT_RANGE_MESSAGE, shirtNumberValidator } from '../../core/utils/shirt-number';
 import { CommonModule } from '@angular/common';
 import { TeamService } from '../../core/services/tournament/team.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -83,7 +84,7 @@ button: any;
     const playerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-      number: ['', Validators.required],
+      number: ['', [shirtNumberValidator]],
       isCaptain: [false],
       isGoalKeeper: [false],
       dni: ['', Validators.pattern(/^\s*\d{1,2}\.?\d{3}\.?\d{3}\s*$/)]
@@ -268,7 +269,7 @@ button: any;
           const playerForm = this.fb.group({
             name: [player.name, [Validators.required, Validators.minLength(2)]],
             lastName: [player.lastName, [Validators.required, Validators.minLength(2)]],
-            number: [player.number, Validators.required],
+            number: [player.number, [shirtNumberValidator]],
             isCaptain: [player.isCaptain],
             isGoalKeeper: [player.isGoalKeeper],
             dni: [player.dni ?? '']
@@ -292,7 +293,8 @@ button: any;
       if (!String(v.name ?? '').trim() && !String(v.lastName ?? '').trim() && (v.number === null || v.number === undefined || v.number === '') && !String(v.dni ?? '').trim()) this.players.removeAt(i);
     }
     if (this.teamForm.invalid) {
-      this.alertService.errorAlert("Completá todos los campos.");
+      const badShirt = this.players.controls.some((c) => !!c.get('number')?.errors?.['shirtRange']);
+      this.alertService.errorAlert(badShirt ? SHIRT_RANGE_MESSAGE : "Completá todos los campos.");
       return;
     }
     const teamData = this.teamForm.value;
