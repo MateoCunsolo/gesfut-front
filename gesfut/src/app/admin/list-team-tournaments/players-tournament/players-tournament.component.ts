@@ -17,6 +17,7 @@ import {
 } from '../../../core/models/tournamentResponse';
 import { TournamentService } from '../../../core/services/tournament/tournament.service';
 import { AlertService } from '../../../core/services/alert.service';
+import { addPlayerForbiddenMessage } from '../../../core/utils/add-player-access';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { AuthService } from '../../../core/services/manager/auth.service';
 import { SessionService } from '../../../core/services/manager/session.service';
@@ -101,7 +102,10 @@ export class PlayersTournamentComponent implements OnChanges {
     if (!id) return;
     this.teamService.getTeam(id).subscribe({
       next: () => { this.flagAddPlayer = true; },
-      error: (err) => { if (err?.status === 403) return; }
+      error: (err) => {
+        const msg = addPlayerForbiddenMessage(err?.status);
+        if (msg) this.alertService.errorAlert(msg);
+      }
     });
   }
 
