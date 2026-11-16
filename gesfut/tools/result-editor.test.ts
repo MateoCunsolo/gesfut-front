@@ -108,23 +108,28 @@ test('recargar avisa solo si hay cambios o un guardado en curso',()=>{
  }finally{x.injector.destroy();}
 });
 
-import {GOAL_MAX, goalQuantityError} from '../src/app/core/utils/goal-quantity';
+import {GOAL_MAX, GOAL_QUANTITY_MESSAGE, goalQuantityError, hasPlayerDraftStats} from '../src/app/core/utils/goal-quantity';
+import {httpErrorMessage} from '../src/app/core/utils/http-error';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-test('goles: tope 0-99 y mensaje visible si es negativo', () => {
+test('goles: solo enteros de 0 a 99, con el mensaje unificado', () => {
   assert.equal(goalQuantityError(0), '');
   assert.equal(goalQuantityError(99), '');
-  assert.match(goalQuantityError(-1), /negativo/);
-  assert.match(goalQuantityError(100), /0 a 99/);
+  assert.equal(goalQuantityError(-1), GOAL_QUANTITY_MESSAGE);
+  assert.equal(goalQuantityError(100), GOAL_QUANTITY_MESSAGE);
+  assert.equal(goalQuantityError(2.5), GOAL_QUANTITY_MESSAGE);
+  assert.equal(goalQuantityError('3.5'), GOAL_QUANTITY_MESSAGE);
+  assert.equal(goalQuantityError('1e2'), GOAL_QUANTITY_MESSAGE);
+  assert.equal(goalQuantityError(''), GOAL_QUANTITY_MESSAGE);
   const x=fixture();
   try{
     x.choose();
     x.component.statisticsForm.get('goals')!.setValue(-1);
     assert.equal(x.component.statisticsForm.invalid, true);
-    assert.match(x.component.goalsError(), /negativo/);
+    assert.equal(x.component.goalsError(), GOAL_QUANTITY_MESSAGE);
     x.component.statisticsForm.get('goals')!.setValue(100);
     assert.equal(x.component.statisticsForm.invalid, true);
-    assert.match(x.component.goalsError(), /0 a 99/);
+    assert.equal(x.component.goalsError(), GOAL_QUANTITY_MESSAGE);
     x.component.statisticsForm.get('goals')!.setValue(2);
     assert.equal(x.component.goalsError(), '');
     x.component.events=[{id:1,team:'Local',name:'Uno',goals:GOAL_MAX,yellowCard:0,redCard:0,mvp:false}];
@@ -136,4 +141,63 @@ test('goles: tope 0-99 y mensaje visible si es negativo', () => {
   const html=readFileSync(fileURLToPath(new URL('../src/app/admin/match-day/load-result/load-result.component.html',import.meta.url)).replace(/^\/([A-Za-z]:)/,'$1'),'utf8');
   assert.match(html, /@if\(goalsError\(\)\)/);
   assert.match(html, /max="99"/);
+  assert.match(html, /canAddPlayerStats/);
+});
+
+test('2.5 no se agrega al marcador y muestra el mensaje; el 0 solo no habilita Agregar', () => {
+  const x=fixture();
+  try{
+    x.choose();
+    x.component.statisticsForm.get('goals')!.setValue(2.5);
+    assert.equal(x.component.canAddPlayerStats, false);
+    assert.equal(x.component.goalsError(), GOAL_QUANTITY_MESSAGE);
+    x.component.loadStatistics();
+    assert.equal(x.component.currentMatch.homeGoals, 0);
+    assert.equal(x.component.events.length, 0);
+    assert.equal(x.errors[0], GOAL_QUANTITY_MESSAGE);
+    x.errors.length=0;
+    x.component.statisticsForm.get('goals')!.setValue(0);
+    x.component.statisticsForm.get('yellowCard')!.setValue(0);
+    x.component.statisticsForm.get('redCard')!.setValue(0);
+    x.component.statisticsForm.get('mvp')!.setValue(false);
+    assert.equal(hasPlayerDraftStats(0,0,0,false), false);
+    assert.equal(x.component.canAddPlayerStats, false);
+    x.component.loadStatistics();
+    assert.equal(x.component.events.length, 0);
+    assert.match(x.errors[0] || '', /estad/i);
+    x.errors.length=0;
+    x.component.statisticsForm.get('yellowCard')!.setValue(1);
+    assert.equal(x.component.canAddPlayerStats, true);
+    x.component.loadStatistics();
+    assert.equal(x.component.events.length, 1);
+    assert.equal(x.component.events[0].goals, 0);
+    assert.equal(x.component.currentMatch.homeGoals, 0);
+    assert.equal(x.errors.length, 0);
+  }finally{x.injector.destroy();}
+});
+
+test('la vista previa con equipos homonimos suma por id, no por nombre', () => {
+  const x=fixture();
+  try{
+    x.match.homeTeam.name='River';
+    x.match.awayTeam.name='River';
+    x.match.homeTeam.idParticipant=10;
+    x.match.awayTeam.idParticipant=20;
+    const awayPlayer={...x.match.awayTeam.playerParticipants[0],id:22,playerName:'Jugador',playerLastName:'Dos',isActive:true,isSuspended:false};
+    x.match.awayTeam.playerParticipants=[awayPlayer];
+    x.component.currentMatch=x.match;
+    x.component.statisticsForm.get('team')!.setValue(x.match.awayTeam);
+    x.component.statisticsForm.get('name')!.setValue(awayPlayer);
+    x.component.statisticsForm.get('goals')!.setValue(2);
+    x.component.loadStatistics();
+    assert.equal(x.component.currentMatch.homeGoals, 0);
+    assert.equal(x.component.currentMatch.awayGoals, 2);
+    assert.equal(x.component.events[0].teamId, 20);
+  }finally{x.injector.destroy();}
+});
+
+test('un 400 del back al guardar muestra el mensaje del servidor', () => {
+  assert.equal(httpErrorMessage({status:400,error:JSON.stringify({error:GOAL_QUANTITY_MESSAGE})},'fallback'), GOAL_QUANTITY_MESSAGE);
+  assert.equal(httpErrorMessage({status:400,error:{error:'Mensaje 400 del back.'}},'fallback'), 'Mensaje 400 del back.');
+  assert.equal(httpErrorMessage({status:400,error:'Texto plano del back'},'fallback'), 'Texto plano del back');
 });

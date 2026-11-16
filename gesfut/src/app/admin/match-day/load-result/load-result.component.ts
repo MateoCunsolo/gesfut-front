@@ -12,7 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { GOAL_MAX, goalQuantityError } from '../../../core/utils/goal-quantity';
+import { GOAL_MAX, goalQuantityError, goalQuantityValidator, hasPlayerDraftStats, parseGoalQuantity } from '../../../core/utils/goal-quantity';
 import { MatchDaysService } from '../../../core/services/tournament/match-days.service';
 import { INITIAL_DETAILED_MATCH } from '../../../core/services/tournament/initial-tournament';
 import { MatchDetailedResponse } from '../../../core/models/matchDetailedRequest';
@@ -85,7 +85,7 @@ export class LoadResultComponent {
       name: ['', Validators.required],
       shirt: [0],
       team: ['', Validators.required],
-      goals: [0, [Validators.required, Validators.min(0), Validators.max(GOAL_MAX)]],
+      goals: [0, [Validators.required, goalQuantityValidator]],
       yellowCard: [
         0,
         [Validators.required, Validators.min(0), Validators.max(2)],
@@ -99,7 +99,7 @@ export class LoadResultComponent {
       name: ['', Validators.required],
       shirt: [0],
       team: ['', Validators.required],
-      goals: [0, [Validators.required, Validators.min(0), Validators.max(GOAL_MAX)]],
+      goals: [0, [Validators.required, goalQuantityValidator]],
       yellowCard: [
         0,
         [Validators.required, Validators.min(0), Validators.max(2)],
@@ -202,22 +202,23 @@ export class LoadResultComponent {
   }
 
   loadStatistics() {
+    const qtyErr = goalQuantityError(this.statisticsForm.get('goals')?.value);
+    if (qtyErr) {
+      this.alertService.errorAlert(qtyErr);
+      return;
+    }
+    if (!this.canAddPlayerStats) {
+      this.alertService.errorAlert('Debes cargar al menos una estadística del jugador.');
+      return;
+    }
     if (this.statisticsForm.valid) {
-      //si no cargo ninguna estadistica retornar error:
-      if (
-        this.statisticsForm.get('goals')?.value === 0 &&
-        this.statisticsForm.get('yellowCard')?.value === 0 &&
-        this.statisticsForm.get('redCard')?.value === 0 &&
-        this.statisticsForm.get('mvp')?.value === false
-      ) {
-        this.alertService.errorAlert('Debes cargar al menos una estadística del jugador.');
-        return;
-      }
-
       const selectedPlayer = this.statisticsForm.get('name')?.value;
+      const selectedTeam = this.statisticsForm.get('team')?.value;
       const newEvent = {
         ...this.statisticsForm.value,
-        team: this.statisticsForm.get('team')?.value.name,
+        goals: parseGoalQuantity(this.statisticsForm.get('goals')?.value) ?? 0,
+        team: selectedTeam?.name,
+        teamId: selectedTeam?.idParticipant,
         name: `${selectedPlayer?.playerName} ${selectedPlayer?.playerLastName}`,
         id: selectedPlayer?.id,
       };
@@ -228,11 +229,7 @@ export class LoadResultComponent {
         return;
       }
       if ((existing?.yellowCard || 0) + newEvent.yellowCard === 2) newEvent.redCard = existing?.redCard ? 0 : 1;
-      if (this.currentMatch.homeTeam.name === newEvent.team) {
-        this.currentMatch.homeGoals += newEvent.goals;
-      } else {
-        this.currentMatch.awayGoals += newEvent.goals;
-      }
+      this.adjustScore(newEvent, newEvent.goals);
       this.whoWins();
       if (this.events.some((event) => event.id === newEvent.id)) {
         this.toGroupStaticsForPlayer(newEvent);
@@ -324,11 +321,7 @@ export class LoadResultComponent {
     );
 
     if (result.isConfirmed) {
-      if (this.currentMatch.homeTeam.name === event.team) {
-        this.currentMatch.homeGoals -= event.goals;
-      } else {
-        this.currentMatch.awayGoals -= event.goals;
-      }
+      this.adjustScore(event, -event.goals);
       this.whoWins();
 
       this.events = this.events.filter((e) => e !== event);
@@ -390,6 +383,7 @@ export class LoadResultComponent {
         acumuletor[idPlayerParticipant] = {
           id: idPlayerParticipant,
           team: teamName,
+          teamId: this.teamIdForPlayer(idPlayerParticipant),
           name: playerName,
           goals: 0,
           yellowCard: 0,
@@ -497,21 +491,44 @@ export class LoadResultComponent {
     this.events[index].mvp = this.events[index].mvp || event.mvp;
   }
 
+  get canAddPlayerStats(): boolean {
+    const v = this.statisticsForm.getRawValue();
+    return this.statisticsForm.valid && hasPlayerDraftStats(v.goals, v.yellowCard, v.redCard, v.mvp);
+  }
+
   goalsError(): string {
-    const value = this.statisticsForm.get('goals')?.value;
-    if (value === 0 || (value !== 0 && !goalQuantityError(value))) return '';
-    return goalQuantityError(value);
+    return goalQuantityError(this.statisticsForm.get('goals')?.value);
+  }
+
+  /** Vista previa por id de equipo (equipos homonimos no deben sumar al local). */
+  private teamIdForPlayer(playerId: number | null | undefined): number | null {
+    if (playerId == null) return null;
+    if (this.currentMatch.homeTeam.playerParticipants.some((p) => p.id === playerId)) return this.currentMatch.homeTeam.idParticipant;
+    if (this.currentMatch.awayTeam.playerParticipants.some((p) => p.id === playerId)) return this.currentMatch.awayTeam.idParticipant;
+    return null;
+  }
+
+  private eventTeamId(event: { teamId?: number | null; id?: number }): number | null {
+    if (event.teamId != null) return event.teamId;
+    return this.teamIdForPlayer(event.id);
+  }
+
+  isHomeEvent(event: { teamId?: number | null; id?: number; team?: string }): boolean {
+    const id = this.eventTeamId(event);
+    if (id != null) return id === this.currentMatch.homeTeam.idParticipant;
+    return event.team === this.currentMatch.homeTeam.name;
+  }
+
+  private adjustScore(event: { teamId?: number | null; id?: number; team?: string }, delta: number): void {
+    if (this.isHomeEvent(event)) this.currentMatch.homeGoals += delta;
+    else this.currentMatch.awayGoals += delta;
   }
 
   addGoals(id: number) {
     const event = this.events.find((e) => e.id === id);
     if (!event || event.goals >= GOAL_MAX) return;
     event.goals++;
-    if (this.currentMatch.homeTeam.name === event.team) {
-      this.currentMatch.homeGoals += 1;
-    } else {
-      this.currentMatch.awayGoals += 1;
-    }
+    this.adjustScore(event, 1);
     this.whoWins();
   }
 
@@ -565,7 +582,7 @@ export class LoadResultComponent {
       return;
     }
 
-    if (this.currentMatch.homeTeam.name === event.team) {
+    if (this.isHomeEvent(event)) {
       if (this.currentMatch.homeGoals > 0) this.currentMatch.homeGoals -= 1;
     } else {
       if (this.currentMatch.awayGoals > 0) this.currentMatch.awayGoals -= 1;
