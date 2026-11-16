@@ -25,6 +25,7 @@ import { TimepickerDatepickerIntegrationExample } from "./timePicker/timePicker.
 import { EventRequest, MatchDateResponse } from '../../../core/models/matchRequest';
 import { FormsModule } from '@angular/forms';
 import { TeamResponse } from '../../../core/models/teamResponse';
+import { canLoadResultFromDateTime } from '../../../core/utils/can-load-result';
 
 @Component({
   selector: 'app-list-match-days',
@@ -454,6 +455,7 @@ export class ListMatchDaysComponent implements OnInit {
     this.tournament.matchDays[this.selectedMatchDay].matches.forEach((match, index) => {
       if (match.id !== 0) {
         match.dateTime = data[index].newDate;
+        match.canLoadResult = canLoadResultFromDateTime(data[index].newDate);
       }
     })
   }
@@ -473,6 +475,7 @@ export class ListMatchDaysComponent implements OnInit {
 
     if (matchFound) {
       matchFound.dateTime = date;
+      matchFound.canLoadResult = canLoadResultFromDateTime(date);
     } else {
       this.alertService.errorAlert('No se encontró el partido seleccionado');
     }
