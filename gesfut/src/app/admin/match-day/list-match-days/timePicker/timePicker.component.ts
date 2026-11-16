@@ -14,8 +14,22 @@ import { FormsModule } from '@angular/forms';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { provideNativeDateAdapter, MAT_DATE_LOCALE, DateAdapter, NativeDateAdapter } from '@angular/material/core';
+import { provideNativeDateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter, NativeDateAdapter } from '@angular/material/core';
 import { Injectable } from '@angular/core';
+
+/** Selector en 24 h (hourCycle h23). No se ocultan horas pasadas: hace falta programar partidos ya jugados. */
+const TIME_24H_FORMATS = {
+  parse: { dateInput: null, timeInput: null },
+  display: {
+    dateInput: { year: 'numeric', month: 'numeric', day: 'numeric' },
+    timeInput: { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' },
+    timeOptionLabel: { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' },
+    monthYearLabel: { year: 'numeric', month: 'short' },
+    dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+    monthYearA11yLabel: { year: 'numeric', month: 'long' },
+  },
+};
+
 
 /** Recorrido 22/10: aceptar fechas escritas a mano como dd/mm/aaaa. */
 @Injectable()
@@ -37,11 +51,14 @@ import { TournamentService } from '../../../../core/services/tournament/tourname
 import { MatchDaysService } from '../../../../core/services/tournament/match-days.service';
 import { AlertService } from '../../../../core/services/alert.service';
 import { MatchDateResponse } from '../../../../core/models/matchRequest';
+import { collectScheduleWarnings } from '../../../../core/utils/schedule-warnings';
+import { wallClockToArtInstant } from '../../../../core/utils/can-load-result';
+import { isByeMatch } from '../../../../core/utils/bye';
 
 /** @title Timepicker integration with datepicker */
 @Component({
   selector: 'app-time-picker',
-  providers: [provideNativeDateAdapter(), {provide: DateAdapter, useClass: EsDateAdapter}, {provide: MAT_DATE_LOCALE, useValue: 'es-AR'}],
+  providers: [provideNativeDateAdapter(), {provide: DateAdapter, useClass: EsDateAdapter}, {provide: MAT_DATE_LOCALE, useValue: 'es-AR'}, {provide: MAT_DATE_FORMATS, useValue: TIME_24H_FORMATS}],
   imports: [
     CdkTrapFocus,
     MatFormFieldModule,
@@ -94,13 +111,13 @@ import { MatchDateResponse } from '../../../../core/models/matchRequest';
 
       @if(isForAllMatches || isToInitTournament){
       <mat-form-field>
-        <mat-label>Duracion estimada del partido en minutos</mat-label>
+        <mat-label>Duraci\u00f3n estimada del partido en minutos</mat-label>
         <input matInput type="number" min="45" [(ngModel)]="plusMinutes"/> </mat-form-field
       >}
       
       @if(isToInitTournament){
         <mat-form-field>
-        <mat-label>Intervalo de dias entre jornadas</mat-label>
+        <mat-label>Intervalo de d\u00edas entre jornadas</mat-label>
         <input matInput type="number" min="1" aria-label="Intervalo de d\u00edas entre jornadas" [(ngModel)]="plusDays"/> </mat-form-field
       >}
       
@@ -156,6 +173,7 @@ export class TimepickerDatepickerIntegrationExample {
 
   private matchDayServices = inject(MatchDaysService);
   private alertService = inject(AlertService);
+  private tournamentService = inject(TournamentService);
   /** Recorrido 22/10: fecha y hora en modelos separados (elegir el día ya no pisa la hora con 00:00). */
   dateValue: Date | null = new Date();
   timeValue: Date | null = (() => { const d = new Date(); d.setHours(20, 0, 0, 0); return d; })();
@@ -210,10 +228,65 @@ export class TimepickerDatepickerIntegrationExample {
     return localISO;
   }
 
-  dateFunction() {
+  private tournamentMatches() {
+    const days = this.tournamentService.currentTournament.value?.matchDays ?? [];
+    return days.flatMap((day) => (day.matches ?? []).map((match) => ({
+      id: match.id,
+      dateTime: match.dateTime,
+      description: match.description,
+      isBye: isByeMatch(match) || !!match.isBye,
+    })));
+  }
+
+  private currentMatchDay() {
+    const days = this.tournamentService.currentTournament.value?.matchDays ?? [];
+    return days.find((day) => day.idMatchDay === this.matchDayId) ?? days.find((day) => (day.matches ?? []).some((m) => m.id === this.matchId));
+  }
+
+  private async confirmScheduleWarnings(chosen: Date): Promise<boolean> {
+    if (this.isToInitTournament) return true;
+    const day = this.currentMatchDay();
+    const days = this.tournamentService.currentTournament.value?.matchDays ?? [];
+    const allMatches = this.tournamentMatches();
+    const art = wallClockToArtInstant(chosen);
+    let ignoreIds: number[] = [];
+    let venue: string | null | undefined;
+    const extraChosen: { time: Date; venue?: string | null }[] = [];
+    if (this.isForAllMatches && day) {
+      ignoreIds = (day.matches ?? []).filter((m) => m.id && !isByeMatch(m)).map((m) => m.id);
+      let offset = 0;
+      for (const match of day.matches ?? []) {
+        if (!match.id || isByeMatch(match)) continue;
+        const t = new Date(art.getTime() + offset * 60 * 1000);
+        extraChosen.push({ time: t, venue: match.description });
+        offset += Number(this.plusMinutes) || 0;
+      }
+      // el primero se evalua tambien como chosen+venue del primer partido
+      const first = extraChosen[0];
+      venue = first?.venue;
+    } else {
+      ignoreIds = this.matchId ? [this.matchId] : [];
+      venue = day?.matches?.find((m) => m.id === this.matchId)?.description;
+    }
+    const messages = collectScheduleWarnings({
+      chosen: this.isForAllMatches ? (extraChosen[0]?.time ?? art) : art,
+      venue,
+      allMatches,
+      ignoreIds,
+      extraChosen: this.isForAllMatches ? extraChosen.slice(1) : [],
+      days,
+      currentNumberOfMatchDay: day?.numberOfMatchDay ?? 0,
+    });
+    if (!messages.length) return true;
+    const result = await this.alertService.confirmAlert('Atenci\u00f3n', messages.join('\n\n'), 'Continuar');
+    return !!result?.isConfirmed;
+  }
+
+  async dateFunction() {
     // 10/11: se aceptan fechas y horas pasadas (carga historica); las reglas de orden las valida el back.
     const chosen = this.value;
     if (chosen) {
+      if (!(await this.confirmScheduleWarnings(chosen))) return;
       let localDateTime = this.converDateToISO(chosen);
       if (this.isForAllMatches && this.plusMinutes) {
         this.infoAlertsAndContinue(localDateTime, this.matchDayId, this.plusMinutes);
@@ -228,7 +301,7 @@ export class TimepickerDatepickerIntegrationExample {
         this.cancelPickerFunction();
       }
     } else
-      this.alertService.errorAlert('Debe seleccionar una fecha y hora válida');
+      this.alertService.errorAlert('Debe seleccionar una fecha y hora v\u00e1lida');
   }
 
   updateOneMatchDate(date: string, idMatch: number) {

@@ -66,3 +66,8 @@ export function resultScheduleNotice(dateTime: string | null | undefined, now: D
   return "Todav\u00eda no se puede cargar el resultado: el partido est\u00e1 programado para el "
     + wall.date + " a las " + wall.time + " (hora de Argentina).";
 }
+
+/** Interpreta los componentes locales de un Date (el valor del timepicker) como hora de pared ART. */
+export function wallClockToArtInstant(value: Date): Date {
+  return new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), value.getHours() + 3, value.getMinutes(), 0, 0));
+}
