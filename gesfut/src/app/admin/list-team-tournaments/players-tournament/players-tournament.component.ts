@@ -22,6 +22,7 @@ import { AuthService } from '../../../core/services/manager/auth.service';
 import { SessionService } from '../../../core/services/manager/session.service';
 import { GuestService } from '../../../core/services/guest/guest.service';
 import { TeamRemovalService } from '../../../core/services/tournament/team-removal.service';
+import { TeamService } from '../../../core/services/tournament/team.service';
 
 @Component({
   selector: 'app-players-tournament',
@@ -41,6 +42,7 @@ export class PlayersTournamentComponent implements OnChanges {
   private guestService = inject(GuestService);
   private sessionService = inject(SessionService);
   private teamRemoval = inject(TeamRemovalService);
+  private teamService = inject(TeamService);
   private isFinishedTournament: boolean = false;
 
   @Input() teamParticipant: ParticipantResponse = emptyParticipant();
@@ -94,7 +96,13 @@ export class PlayersTournamentComponent implements OnChanges {
   }
 
   showFormAddPlayer() {
-    this.flagAddPlayer = !this.flagAddPlayer;
+    if (this.flagAddPlayer) { this.flagAddPlayer = false; return; }
+    const id = this.teamParticipant?.idTeam;
+    if (!id) return;
+    this.teamService.getTeam(id).subscribe({
+      next: () => { this.flagAddPlayer = true; },
+      error: (err) => { if (err?.status === 403) return; }
+    });
   }
 
   cancelAddPlayer() {

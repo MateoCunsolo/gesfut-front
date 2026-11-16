@@ -1,4 +1,10 @@
 <a class="skip-link" href="#main-content" (click)="skipToContent($event)">Saltar al contenido</a>
+@if (accountSwitchNotice) {
+  <div class="account-switch-notice" role="status">
+    <p>Iniciaste sesión con otra cuenta en otra pestaña.</p>
+    <button type="button" (click)="reloadAfterAccountSwitch()">Recargar</button>
+  </div>
+}
 <app-header></app-header>
 <app-pwa-status></app-pwa-status>
 <main class="app-content" id="main-content" tabindex="-1"><router-outlet/></main>

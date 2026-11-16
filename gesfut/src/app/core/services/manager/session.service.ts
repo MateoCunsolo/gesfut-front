@@ -6,6 +6,7 @@ import {  map } from 'rxjs';
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { environment } from '../../../../enviroments/environment';
 import { clearAllSetupTeamSelections } from '../../utils/setup-team-selection';
+import { sessionAccountFingerprint, writeSessionAccount } from '../../utils/session-account';
 /** Plan tokens 31-10 #6: marca /validate-token para que authSessionInterceptor no la vuelva a procesar. */
 export const SKIP_SESSION_CHECK = new HttpContextToken<boolean>(() => false);
 
@@ -84,6 +85,13 @@ getItems(response:boolean) {
       sessionStorage.setItem('name', response.name);
       sessionStorage.setItem('lastName', response.lastName);
       sessionStorage.setItem('role', response.role);
+      try {
+        writeSessionAccount(typeof localStorage !== 'undefined' ? localStorage : null, sessionAccountFingerprint({
+          email: sessionStorage.getItem('email'),
+          name: response.name,
+          lastName: response.lastName,
+        }));
+      } catch { /* sin storage */ }
       this.currentUserData.next(response);
       this.currentUserLoginOn.next(true);
   }
@@ -91,6 +99,7 @@ getItems(response:boolean) {
   clearUserSession(): void {
       // Decision 24/10: el "Retomar" queda guardado por email (no se borra en el logout); otro email no lo ve.
       try { clearAllSetupTeamSelections(typeof localStorage !== 'undefined' ? localStorage : null); } catch { /* sin storage */ }
+      try { writeSessionAccount(typeof localStorage !== 'undefined' ? localStorage : null, ''); } catch { /* sin storage */ }
       sessionStorage.removeItem('email');
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('sessionExp');
@@ -111,6 +120,7 @@ getItems(response:boolean) {
   /** Punto 4 (5/11): tras guardar una contrasena nueva con el link de reset, se cierra la sesion local sin recargar.
    *  El back ya invalido todas las sesiones (passwordChangedAt); no es una sesion vencida, asi que no muestra ese aviso. */
   endLocalSessionAfterPasswordReset(): void {
+    try { writeSessionAccount(typeof localStorage !== 'undefined' ? localStorage : null, ''); } catch { /* sin storage */ }
     ['email', 'token', 'sessionExp', 'name', 'lastName', 'role'].forEach(key => sessionStorage.removeItem(key));
     this.sessionExpired = false;
     this.currentUserLoginOn.next(false);

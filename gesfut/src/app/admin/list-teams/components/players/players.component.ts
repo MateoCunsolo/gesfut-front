@@ -226,7 +226,12 @@ export class PlayersComponent implements OnChanges {
 
 
   showFormAddPlayer() {
-    this.flagAddPlayer = true;
+    const id = this.currentTeamId();
+    if (!id) return;
+    this.teamService.getTeam(id).subscribe({
+      next: () => { this.flagAddPlayer = true; },
+      error: (err) => { if (err?.status === 403) return; }
+    });
   }
 
   cancelAddPlayerEvent() {

@@ -1,0 +1,19 @@
+
+.account-switch-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px;
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+.account-switch-notice p { margin: 0; max-width: 65ch; }
+.account-switch-notice button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 5px;
+  font: inherit;
+  cursor: pointer;
+}
