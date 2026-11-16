@@ -22,6 +22,9 @@ export const routes: Routes = [
     { path: 'terminos', loadComponent: () => import('./pages/legal-page/legal-page.component').then(m => m.LegalPageComponent), data: { title: 'T\u00e9rminos y Condiciones' } },
     { path: 'privacidad', loadComponent: () => import('./pages/legal-page/legal-page.component').then(m => m.LegalPageComponent), data: { title: 'Pol\u00edtica de Privacidad' } },
     {
+      path: ':code/:section', loadComponent: () => import('./pages/public-page/public-page.component').then(m => m.PublicPageComponent)
+    },
+    {
       path: ':code', loadComponent: () => import('./pages/public-page/public-page.component').then(m => m.PublicPageComponent)
     }
    

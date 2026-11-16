@@ -3,7 +3,8 @@ import { GuestService } from './../../core/services/guest/guest.service';
 import { TournamentNavComponent } from '../../shared/tournament-nav/tournament-nav.component';
 import { Component, HostListener, DestroyRef, inject } from '@angular/core';
 import { TournamentService } from '../../core/services/tournament/tournament.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { publicSectionComponent, publicTournamentCommands } from '../../core/utils/public-section';
 import { BehaviorSubject, Subscription, defer } from 'rxjs';
 import { LoadErrorKind, loadErrorKind, retryTransient } from '../../core/utils/load-retry';
 import { TournamentResponseFull } from '../../core/models/tournamentResponse';
@@ -55,7 +56,8 @@ export class PublicPageComponent {
     private tournamentService: TournamentService,
     private activedRoute: ActivatedRoute,
     private guestService: GuestService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private router: Router,
   ) {
     this.checkScreenSize();
   }
@@ -70,9 +72,13 @@ export class PublicPageComponent {
 
     this.activedRoute.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
       const code = paramMap.get('code');
-      if (code) {
+      const section = publicSectionComponent(paramMap.get('section'));
+      this.guestService.setActiveComponent(section);
+      if (code && code !== this.code) {
         this.code = code;
         this.loadTournament();
+      } else if (code) {
+        this.code = code;
       }
     });
 
@@ -119,6 +125,8 @@ export class PublicPageComponent {
   changeComponent(component: string) {
     this.guestService.setActiveComponent(component);
     this.menuOpen = false;
+    if (!this.code) return;
+    this.router.navigate(publicTournamentCommands(this.code, component));
   }
 
   toggleMenu() {

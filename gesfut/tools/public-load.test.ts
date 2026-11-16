@@ -11,11 +11,13 @@ function fixture(){
  const names=new BehaviorSubject('');const active=new BehaviorSubject('recap');
  const requests:Subject<any>[]=[];
  const service={getTournamentFull(){const request=new Subject<any>();requests.push(request);return request;}};
+ const guest={activeComponent$:active,setActiveComponent:(id:string)=>active.next(id),getActiveComponent:()=>active.value};
+ const router={navigate:()=>Promise.resolve(true)};
  const injector=createEnvironmentInjector([],null as any);
  const original=PublicPageComponent.prototype.checkScreenSize;
  PublicPageComponent.prototype.checkScreenSize=function(){};
  let component:PublicPageComponent;
- try{component=runInInjectionContext(injector,()=>new PublicPageComponent(service as any,{paramMap:params} as any,{activeComponent$:active} as any,{getNameTournament$:names,setNameTournament:(name:string)=>names.next(name)} as any));}
+ try{component=runInInjectionContext(injector,()=>new PublicPageComponent(service as any,{paramMap:params} as any,guest as any,{getNameTournament$:names,setNameTournament:(name:string)=>names.next(name)} as any,router as any));}
  finally{PublicPageComponent.prototype.checkScreenSize=original;}
  component!.ngOnInit();return {component:component!,params,names,requests,injector};
 }
@@ -27,4 +29,12 @@ test('salir cancela la petición y una respuesta tardía no publica nombre',()=>
 });
 test('cambiar de código cancela la petición anterior',()=>{
  const f=fixture();try{f.params.next(convertToParamMap({code:'b'}));assert.equal(f.requests[0].observers.length,0);f.requests[1].next({name:'Actual',isActive:true});assert.equal(f.component.tournamentName,'Actual');assert.equal(f.component.loadError,false);}finally{f.injector.destroy();}
+});
+test('el parametro de seccion tabla activa la clasificacion y recap queda en /codigo',()=>{
+ const f=fixture();try{
+  f.params.next(convertToParamMap({code:'a',section:'tabla'}));
+  assert.equal(f.component.currentActiveComponent,'leaderboard');
+  f.params.next(convertToParamMap({code:'a'}));
+  assert.equal(f.component.currentActiveComponent,'recap');
+ }finally{f.injector.destroy();}
 });
