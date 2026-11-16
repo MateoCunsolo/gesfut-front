@@ -1,4 +1,5 @@
 import { setLastTournament } from '../../core/utils/last-tournament';
+import { archivedTournamentNavigation } from '../../core/utils/public-section';
 import { TOURNAMENT_NAME_FORBIDDEN_MESSAGE, tournamentNameHasForbiddenChars } from '../../core/utils/tournament-name';
 import { httpErrorMessage } from '../../core/utils/http-error';
 import { Component, EventEmitter, Output } from '@angular/core';
@@ -156,7 +157,8 @@ export class ListTournamentsComponent {
   toTournament(code: string) {
     // Revisión crítica #13: un torneo archivado se ve en su página pública (solo lectura).
     if (this.tournaments.find(tournament => tournament.code === code)!.isActive === false) {
-      this.route.navigate(['/', code], { replaceUrl: true });
+      const nav = archivedTournamentNavigation(code);
+      this.route.navigate(nav.commands, nav.extras);
       return;
     }
     this.tournamentService.currentTournament.next(INITIAL_TOURNAMENT);

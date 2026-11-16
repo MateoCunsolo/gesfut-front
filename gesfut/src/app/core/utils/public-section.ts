@@ -28,3 +28,8 @@ export function publicTournamentCommands(code: string, component: string): strin
   if (!slug) return ['/', code];
   return ['/', code, slug];
 }
+
+/** Abrir un torneo archivado desde la lista: push normal (sin replaceUrl) para que Atras vuelva a la lista. */
+export function archivedTournamentNavigation(code: string): { commands: string[]; extras: { replaceUrl?: boolean } } {
+  return { commands: ['/', code], extras: {} };
+}
