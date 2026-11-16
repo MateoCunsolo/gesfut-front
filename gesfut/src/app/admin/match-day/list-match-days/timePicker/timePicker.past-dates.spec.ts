@@ -6,7 +6,9 @@ import { MatDatepickerInput } from '@angular/material/datepicker';
 import { MatTimepickerInput } from '@angular/material/timepicker';
 import { of } from 'rxjs';
 import { TimepickerDatepickerIntegrationExample } from './timePicker.component';
+import { BehaviorSubject } from 'rxjs';
 import { MatchDaysService } from '../../../../core/services/tournament/match-days.service';
+import { TournamentService } from '../../../../core/services/tournament/tournament.service';
 import { AlertService } from '../../../../core/services/alert.service';
 import { MatchDateResponse } from '../../../../core/models/matchRequest';
 
@@ -46,6 +48,7 @@ describe('app-time-picker acepta fechas y horas pasadas', () => {
         provideNoopAnimations(),
         { provide: MatchDaysService, useValue: matchDays },
         { provide: AlertService, useValue: alerts },
+        { provide: TournamentService, useValue: { currentTournament: new BehaviorSubject(null) } },
       ],
     }).compileComponents();
   });

@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TimepickerDatepickerIntegrationExample } from './timePicker.component';
+import { BehaviorSubject } from 'rxjs';
 import { MatchDaysService } from '../../../../core/services/tournament/match-days.service';
+import { TournamentService } from '../../../../core/services/tournament/tournament.service';
 import { AlertService } from '../../../../core/services/alert.service';
 import { MatchDateResponse } from '../../../../core/models/matchRequest';
 
@@ -25,45 +27,46 @@ describe('TimepickerDatepickerIntegrationExample: programar con fecha pasada', (
       providers: [
         { provide: MatchDaysService, useValue: matchDays },
         { provide: AlertService, useValue: alerts },
+        { provide: TournamentService, useValue: { currentTournament: new BehaviorSubject(null) } },
       ],
     });
     component = TestBed.runInInjectionContext(() => new TimepickerDatepickerIntegrationExample());
     matchDays.updateDateMatch.and.returnValue(of({ newDate: 'TEST' } as MatchDateResponse));
   });
 
-  it('envía al back una fecha de ayer', () => {
+  it('envía al back una fecha de ayer', async () => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     yesterday.setSeconds(0, 0); // el componente arma la fecha sin segundos
     component.matchId = 7;
     setValue(component, yesterday);
 
-    component.dateFunction();
+    await component.dateFunction();
 
     expect(alerts.errorAlert).not.toHaveBeenCalled();
     expect(matchDays.updateDateMatch).toHaveBeenCalledOnceWith(component.converDateToISO(yesterday), 7);
   });
 
-  it('envía al back hoy a una hora que ya pasó', () => {
+  it('envía al back hoy a una hora que ya pasó', async () => {
     const earlierToday = new Date(Date.now() - 60 * 60 * 1000);
     earlierToday.setSeconds(0, 0);
     component.matchId = 8;
     setValue(component, earlierToday);
 
-    component.dateFunction();
+    await component.dateFunction();
 
     expect(alerts.errorAlert).not.toHaveBeenCalled();
     expect(matchDays.updateDateMatch).toHaveBeenCalledOnceWith(component.converDateToISO(earlierToday), 8);
   });
 
-  it('al inicializar un torneo emite una fecha de inicio pasada', () => {
+  it('al inicializar un torneo emite una fecha de inicio pasada', async () => {
     const past = new Date(2020, 0, 1, 10, 0);
     const emitted: string[] = [];
     component.isToInitTournament = true;
     setValue(component, past);
     component.sendDate.subscribe(value => emitted.push(value));
 
-    component.dateFunction();
+    await component.dateFunction();
 
     expect(emitted).toEqual([component.converDateToISO(past)]);
     expect(alerts.errorAlert).not.toHaveBeenCalled();
