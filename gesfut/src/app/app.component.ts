@@ -1,9 +1,13 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterOutlet } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { HeaderComponent } from "./shared/header/header.component";
 import { PwaStatusComponent } from './shared/pwa-status/pwa-status.component';
 import { FooterComponent } from "./shared/footer/footer.component";
-import { clearStaleUiIdentity, readSessionAccount, sessionAccountChanged, sessionAccountHash } from './core/utils/session-account';
+import { AlertService } from './core/services/alert.service';
+import { SessionService } from './core/services/manager/session.service';
+import { applyAccountSwitchReload, ME_NETWORK_MESSAGE, readSessionAccount, sessionAccountChanged, sessionAccountHash } from './core/utils/session-account';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +19,9 @@ export class AppComponent {
   title = 'gesfut-front';
   /** Aviso no bloqueante si otra pestaña inicio sesion con otra cuenta. No recarga solo. */
   accountSwitchNotice = false;
+  private reloadBusy = false;
+  private readonly sessionService = inject(SessionService);
+  private readonly alertService = inject(AlertService);
 
   /** Plan 22/10 #10: "Saltar al contenido" mueve el foco al contenido sin tocar la URL ni el router. */
   skipToContent(event: Event): void {
@@ -47,16 +54,50 @@ export class AppComponent {
       void sessionAccountHash(sessionStorage.getItem('email')).then((ui) => {
         if (this.accountSwitchNotice) return;
         if (sessionAccountChanged(ui, shared)) this.accountSwitchNotice = true;
-      });
+      }).catch(() => { /* sin hash */ });
     } catch { /* sin storage */ }
   }
 
   reloadAfterAccountSwitch(): void {
-    try {
-      // La huella solo guarda el hash del email: no se puede reconstruir el role.
-      // Se quita el role (y el resto de la identidad) viejo de esta pestana y se recarga.
-      clearStaleUiIdentity(typeof sessionStorage !== 'undefined' ? sessionStorage : null);
-    } catch { /* sin storage */ }
-    window.location.reload();
+    if (this.reloadBusy) return;
+    this.reloadBusy = true;
+    const session = typeof sessionStorage !== 'undefined' ? sessionStorage : null;
+    const local = typeof localStorage !== 'undefined' ? localStorage : null;
+    if (!session || !local) {
+      this.reloadBusy = false;
+      this.alertService.errorAlert(ME_NETWORK_MESSAGE);
+      return;
+    }
+    void applyAccountSwitchReload({
+      fetchMe: async () => {
+        try {
+          const body = await firstValueFrom(this.sessionService.getCurrentUser());
+          return { status: 200, body };
+        } catch (err) {
+          if (err instanceof HttpErrorResponse) {
+            return { status: err.status || 0, body: null };
+          }
+          throw err;
+        }
+      },
+      session,
+      local,
+    }).then((outcome) => {
+      if (outcome === 'updated') {
+        this.accountSwitchNotice = false;
+        // Identidad y role ya estan en sessionStorage: recargar no rebota en /admin.
+        window.location.reload();
+        return;
+      }
+      if (outcome === 'unauthorized') {
+        this.sessionService.expireSession();
+        return;
+      }
+      this.reloadBusy = false;
+      this.alertService.errorAlert(ME_NETWORK_MESSAGE);
+    }).catch(() => {
+      this.reloadBusy = false;
+      this.alertService.errorAlert(ME_NETWORK_MESSAGE);
+    });
   }
 }

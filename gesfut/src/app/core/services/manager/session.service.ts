@@ -6,7 +6,7 @@ import {  map } from 'rxjs';
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { environment } from '../../../../enviroments/environment';
 import { clearAllSetupTeamSelections } from '../../utils/setup-team-selection';
-import { sessionAccountHash, writeSessionAccount, clearSessionAccountOnExpire } from '../../utils/session-account';
+import { sessionAccountHash, writeSessionAccount, clearSessionAccountOnExpire, type SessionMe } from '../../utils/session-account';
 /** Plan tokens 31-10 #6: marca /validate-token para que authSessionInterceptor no la vuelva a procesar. */
 export const SKIP_SESSION_CHECK = new HttpContextToken<boolean>(() => false);
 
@@ -89,7 +89,7 @@ getItems(response:boolean) {
         const storage = typeof localStorage !== 'undefined' ? localStorage : null;
         void sessionAccountHash(sessionStorage.getItem('email')).then((hash) => {
           writeSessionAccount(storage, hash);
-        });
+        }).catch(() => { /* sin hash */ });
       } catch { /* sin storage */ }
       this.currentUserData.next(response);
       this.currentUserLoginOn.next(true);
@@ -193,6 +193,13 @@ getItems(response:boolean) {
     return new Promise(resolve => {
       this.http.post(`${this.url}/logout`, null, { headers: { Authorization: `Bearer ${token}` } })
         .subscribe({ next: () => resolve(), error: () => resolve() });
+    });
+  }
+
+  /** Identidad actual de la cookie. Solo email, name, lastName y role. */
+  getCurrentUser(): Observable<SessionMe> {
+    return this.http.get<SessionMe>(`${this.url}/me`, {
+      context: new HttpContext().set(SKIP_SESSION_CHECK, true)
     });
   }
 
