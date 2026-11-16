@@ -30,6 +30,9 @@
       <small>El nombre debe tener menos de 50 caracteres.</small>
       }
 
+      @if ((createTournamentForm.get('name')?.touched || createTournamentForm.get('name')?.dirty) && createTournamentForm.get('name')?.hasError('forbiddenChars')) {
+      <small>El nombre no puede contener los caracteres &lt; o &gt;.</small>
+      }
       @if ((createTournamentForm.get('name')?.touched || createTournamentForm.get('name')?.dirty) && createTournamentForm.get('name')?.hasError('pattern')) {
       <small>Usá letras, números y espacios.</small>
       }

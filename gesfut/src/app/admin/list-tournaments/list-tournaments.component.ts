@@ -1,4 +1,5 @@
 import { setLastTournament } from '../../core/utils/last-tournament';
+import { TOURNAMENT_NAME_FORBIDDEN_MESSAGE, tournamentNameHasForbiddenChars } from '../../core/utils/tournament-name';
 import { httpErrorMessage } from '../../core/utils/http-error';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -118,6 +119,8 @@ export class ListTournamentsComponent {
         this.alertService.errorAlert('El nombre introducido es igual al actual');
       } else if (name.length > 50 || name.length < 3) {
         this.alertService.errorAlert('El nombre debe tener entre 3 y 50 caracteres');
+      } else if (tournamentNameHasForbiddenChars(name)) {
+        this.alertService.errorAlert(TOURNAMENT_NAME_FORBIDDEN_MESSAGE);
       } else {
 
         let flag = false;

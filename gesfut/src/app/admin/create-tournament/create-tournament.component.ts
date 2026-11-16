@@ -1,6 +1,7 @@
 import { setLastTournament } from '../../core/utils/last-tournament';
 import { ChangeDetectorRef, Component} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { TOURNAMENT_NAME_FORBIDDEN_MESSAGE, tournamentNameHasForbiddenChars } from '../../core/utils/tournament-name';
 import { ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -37,7 +38,8 @@ export class CreateTournamentComponent {
         Validators.required, 
         Validators.minLength(3), 
         Validators.maxLength(50),
-        Validators.pattern(/^\S(?:.*\S)?$/)
+        Validators.pattern(/^\S(?:.*\S)?$/),
+        (c: AbstractControl) => tournamentNameHasForbiddenChars(c.value) ? { forbiddenChars: true } : null
       ]],
     });
     
@@ -79,6 +81,8 @@ export class CreateTournamentComponent {
         this.alertService.errorAlert('El nombre del torneo debe tener al menos 3 caracteres');
       } else if (this.createTournamentForm.get('name')?.errors?.['maxlength']) {
         this.alertService.errorAlert('El nombre del torneo no puede tener más de 50 caracteres');
+      } else if (this.createTournamentForm.get('name')?.errors?.['forbiddenChars']) {
+        this.alertService.errorAlert(TOURNAMENT_NAME_FORBIDDEN_MESSAGE);
       } else if (this.createTournamentForm.get('name')?.errors?.['pattern']) {
         this.alertService.errorAlert('El nombre del torneo no puede contener espacios al inicio o al final');
       }
