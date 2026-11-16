@@ -45,3 +45,24 @@ export function sameKickoff(a: string | null | undefined, b: Date | string | nul
   const db = b instanceof Date ? b : parseMatchDateTime(b);
   return !!(da && db && da.getTime() === db.getTime());
 }
+
+export function formatArtWallClock(dateTime: string | null | undefined): { date: string; time: string } | null {
+  const kickoff = parseMatchDateTime(dateTime);
+  if (!kickoff) return null;
+  const art = new Date(kickoff.getTime() - 3 * 60 * 60 * 1000);
+  const dd = String(art.getUTCDate()).padStart(2, "0");
+  const mm = String(art.getUTCMonth() + 1).padStart(2, "0");
+  const yyyy = String(art.getUTCFullYear());
+  const hh = String(art.getUTCHours()).padStart(2, "0");
+  const min = String(art.getUTCMinutes()).padStart(2, "0");
+  return { date: dd + "/" + mm + "/" + yyyy, time: hh + ":" + min };
+}
+
+/** Aviso (no bloquea el form) si el partido todavia no llego a su hora. Mismo texto que el back. */
+export function resultScheduleNotice(dateTime: string | null | undefined, now: Date = new Date()): string | null {
+  if (canLoadResultFromDateTime(dateTime, now)) return null;
+  const wall = formatArtWallClock(dateTime);
+  if (!wall) return null;
+  return "Todav\u00eda no se puede cargar el resultado: el partido est\u00e1 programado para el "
+    + wall.date + " a las " + wall.time + " (hora de Argentina).";
+}

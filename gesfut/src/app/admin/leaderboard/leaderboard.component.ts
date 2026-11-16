@@ -22,6 +22,7 @@ export class LeaderboardComponent {
   topScorers: TopScorerResponse[] = [];
   topYellowCards: TopYellowCardResponse[] = [];
   topRedCards: TopRedCardsResponse[] = [];
+  statsLoaded = false;
   expandedTeam = 0;
   idChampionOfPlayoffs: number = 0;
   idChampionOfTournament: number = 0;
@@ -47,6 +48,7 @@ export class LeaderboardComponent {
   loadStatistics() {
     const code = this.tournament.code;
     this.statsSubscription?.unsubscribe();
+    this.statsLoaded = false;
     this.statsSubscription = forkJoin({
       scorers: this.leaderboardService.getTopScorers(code),
       yellow: this.leaderboardService.getYellowCard(code),
@@ -56,7 +58,9 @@ export class LeaderboardComponent {
         this.topScorers = scorers.filter((topScorer: TopScorerResponse) => topScorer.goals > 0);
         this.topYellowCards = yellow.filter((topYellow: TopYellowCardResponse) => topYellow.yellowCards > 0);
         this.topRedCards = red.filter((topRed: TopRedCardsResponse) => topRed.redCards > 0);
-      }
+        this.statsLoaded = true;
+      },
+      error: () => { this.statsLoaded = true; }
     });
   }
 

@@ -10,9 +10,10 @@
       <label for="setup-search">Buscar equipo</label>
       <div class="search-row"><input id="setup-search" type="search" [(ngModel)]="searchTerm" (ngModelChange)="filterTeams()" placeholder="Nombre del equipo"><button type="button" class="back-button" [disabled]="!searchTerm" (click)="resetFilters()">Limpiar</button></div>
       <button type="button" class="text-action" [disabled]="teams.length===0" (click)="addAllTeams()">{{searchTerm ? 'Agregar resultados de búsqueda' : 'Agregar todos los disponibles'}}</button>
-      <ul class="team-list">
-      @for(item of teams;track item.id){<li><span>{{item.name}}</span><button type="button" class="text-action" [attr.aria-label]="'Agregar ' + item.name" (click)="addTeam(item)">Agregar</button></li>}
-      @empty{<li class="empty-copy">{{searchTerm ? 'No hay equipos con ese nombre.' : (teamsTournament.length===0 ? 'Todavía no tenés equipos. Creá al menos 2 con “Crear equipo nuevo”.' : 'Ya agregaste todos tus equipos.')}}</li>}
+            <ul class="team-list">
+      @if(teamsLoading){<li class="empty-copy" role="status">Cargando equipos...</li>}
+      @else {@for(item of teams;track item.id){<li><span>{{item.name}}</span><button type="button" class="text-action" [attr.aria-label]="'Agregar ' + item.name" (click)="addTeam(item)">Agregar</button></li>}
+      @empty{<li class="empty-copy">{{searchTerm ? 'No hay equipos con ese nombre.' : (teamsTournament.length===0 ? 'Todavía no tenés equipos. Creá al menos 2 con “Crear equipo nuevo”.' : 'Ya agregaste todos tus equipos.')}}</li>}}
       </ul>
       <button type="button" class="back-button create-new-team" (click)="addNewTeamToTournament()">Crear equipo nuevo</button>
     </section>

@@ -22,6 +22,7 @@ import {
   PlayerParticipantResponse,
 } from '../../../core/models/tournamentResponse';
 import { AlertService } from '../../../core/services/alert.service';
+import { resultScheduleNotice } from '../../../core/utils/can-load-result';
 
 @Component({
   selector: 'app-load-result',
@@ -51,6 +52,7 @@ export class LoadResultComponent {
   statisticsForm: FormGroup;
   isEditMatch: boolean = false;
   entryOpen = true;
+  scheduleNotice: string | null = null;
   editStatsModal: boolean = false;
   editStatsForm: FormGroup;
   playerNameSelect: string = '';
@@ -158,6 +160,10 @@ export class LoadResultComponent {
         this.disableMvpIfNeeded();
         this.whoWins();
         this.entryOpen = !this.isEditMatch || this.events.length === 0;
+        const listed = this.roundTournament.currentTournament.value?.matchDays
+          ?.flatMap(day => day.matches ?? [])
+          .find(m => m.id === match.id);
+        this.scheduleNotice = resultScheduleNotice(listed?.dateTime);
       },
     });
   }

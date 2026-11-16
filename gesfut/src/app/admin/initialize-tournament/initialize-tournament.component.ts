@@ -23,6 +23,7 @@ import { TimepickerDatepickerIntegrationExample } from "../match-day/list-match-
 })
 export class InitializeTournamentComponent {
   teams: TeamResponse[] = [];
+  teamsLoading = true;
   teamsTournament: TeamResponse[] = [];
   teamsFilters: TeamResponse[] = [];
   private teamsAll: TeamResponse[] = [];
@@ -98,8 +99,10 @@ export class InitializeTournamentComponent {
         this.getTeamRecentlyCreated();
         this.tryRestoreSelection();
         this.filterTeamsTournament();
+        this.teamsLoading = false;
       },
       error: (err) => {
+        this.teamsLoading = false;
       },
       complete: () => {
       }

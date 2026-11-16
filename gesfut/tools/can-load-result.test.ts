@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { canLoadResultFromDateTime, parseMatchDateTime, normalizeVenue } from '../src/app/core/utils/can-load-result';
+import { canLoadResultFromDateTime, parseMatchDateTime, normalizeVenue, resultScheduleNotice } from '../src/app/core/utils/can-load-result';
 import { readFileSync } from 'node:fs';
 
 test('sin horario se puede cargar', () => {
@@ -43,4 +43,16 @@ test('list-match-days actualiza canLoadResult al guardar la hora', () => {
   const ts = readFileSync(new URL('../src/app/admin/match-day/list-match-days/list-match-days.component.ts', import.meta.url), 'utf8');
   assert.match(ts, /matchFound\.canLoadResult = canLoadResultFromDateTime\(date\)/);
   assert.match(ts, /match\.canLoadResult = canLoadResultFromDateTime\(data\[index\]\.newDate\)/);
+});
+
+test('aviso al abrir el form usa el mismo texto que el back', () => {
+  const stamp = 'dom 15 de nov 2026 | 20:00 hs';
+  const before = new Date('2026-11-15T22:59:00.000Z');
+  const at = new Date('2026-11-15T23:00:00.000Z');
+  assert.equal(
+    resultScheduleNotice(stamp, before),
+    'Todav\u00eda no se puede cargar el resultado: el partido est\u00e1 programado para el 15/11/2026 a las 20:00 (hora de Argentina).'
+  );
+  assert.equal(resultScheduleNotice(stamp, at), null);
+  assert.equal(resultScheduleNotice(null, before), null);
 });
