@@ -56,12 +56,12 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
-    location ~* ^/(ngsw-worker|safety-worker|worker-basic).*\.js$ {
+    location ~* "^/(ngsw-worker|safety-worker|worker-basic).*\.js$" {
         include /etc/nginx/snippets/security-headers.conf;
         add_header Cache-Control "no-cache" always;
     }
 
-    location ~* -[A-Za-z0-9]{8,}\.(js|mjs|css|woff2?|ttf|png|jpe?g|webp|svg|ico)$ {
+    location ~* "-[A-Za-z0-9]{8,}\.(js|mjs|css|woff2?|ttf|png|jpe?g|webp|svg|ico)$" {
         include /etc/nginx/snippets/security-headers.conf;
         add_header Cache-Control "public, max-age=31536000, immutable" always;
         try_files $uri =404;
