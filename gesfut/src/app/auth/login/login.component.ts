@@ -22,7 +22,7 @@ export class LoginComponent {
   redActive = false;
   protected tryLogin = false;
   protected isLoading = false;
-  /** Tras crear la cuenta: aviso "Cuenta creada" (sin mail de verificacion mientras SHOW_RESEND_AFTER_REGISTER sea false). */
+  /** Tras crear la cuenta: aviso de mail de verificacion si SHOW_RESEND_AFTER_REGISTER. */
   protected registeredNotice = typeof location !== 'undefined' && isRegisteredNotice(location.search);
   /** Reenviar mail de verificacion: visible tras crear cuenta o si el login dice "Email no verificado". */
   protected showResend: boolean = this.registeredNotice && SHOW_RESEND_AFTER_REGISTER;
@@ -82,15 +82,18 @@ export class LoginComponent {
           this.error = SERVER_ERROR;
         } else if (error.status === 429) {
           this.error = TOO_MANY_ATTEMPTS;
-        } else if (error.status === 401 || error.status === 403) {
+        } else if (error.status === 400 || error.status === 401 || error.status === 403) {
           const raw = typeof error?.error?.error === 'string' ? error.error.error : '';
+          // El back responde 400 (IllegalStateException) si el mail no esta verificado.
           if (raw.startsWith('Email no verificado')) {
             this.error = this.authService.errorMessage(error, LOGIN_BAD_CREDENTIALS);
             this.showResend = true;
-          } else {
+          } else if (error.status === 401 || error.status === 403) {
             this.error = LOGIN_BAD_CREDENTIALS;
             this.loginForm.get('password')?.setValue('');
             setTimeout(() => document.getElementById('password')?.focus(), 0);
+          } else {
+            this.error = this.authService.errorMessage(error, 'No pudimos iniciar sesión. Probá de nuevo.');
           }
         } else {
           this.error = this.authService.errorMessage(error, 'No pudimos iniciar sesión. Probá de nuevo.');

@@ -4,12 +4,12 @@ import { readFileSync } from 'node:fs';
 import { MAIL_VERIFICATION_ENABLED, REGISTERED_ALERT, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER } from '../src/app/auth/auth-messages';
 
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
-test('verificacion por mail apagada: textos sin prometer mail', () => {
-  assert.equal(MAIL_VERIFICATION_ENABLED, false);
-  assert.equal(REGISTERED_ALERT, '\u00a1Listo! Tu cuenta est\u00e1 creada. Ya pod\u00e9s armar tu torneo.');
-  assert.match(REGISTERED_NOTICE, /Ya pod\u00e9s armar tu torneo/);
-  for (const t of [REGISTERED_ALERT, REGISTERED_NOTICE]) assert.doesNotMatch(t, /enviamos|verific/i);
-  assert.equal(SHOW_RESEND_AFTER_REGISTER, false);
+test('verificacion por mail activa: textos y reenvio visibles', () => {
+  assert.equal(MAIL_VERIFICATION_ENABLED, true);
+  assert.equal(REGISTERED_ALERT, 'Cuenta creada. Te enviamos un mail para verificarla.');
+  assert.match(REGISTERED_NOTICE, /Te enviamos un mail para verificar tu cuenta/);
+  for (const t of [REGISTERED_ALERT, REGISTERED_NOTICE]) assert.match(t, /verific/i);
+  assert.equal(SHOW_RESEND_AFTER_REGISTER, true);
 });
 test('componentes usan las constantes, sin texto viejo', () => {
   const reg = read('../src/app/auth/register/register.component.ts');
