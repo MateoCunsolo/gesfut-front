@@ -1,4 +1,4 @@
 # Se sourcea antes de 20-envsubst-on-templates.sh.
-# Ancla el filtro a BACKEND_URL para que envsubst no toque $host, $uri, etc.
+# Ancla el filtro a BACKEND_URL y REAL_IP_FROM para que envsubst no toque $host, $uri, etc.
 # No va como ENV en el Dockerfile: BuildKit se come el $ final.
-export NGINX_ENVSUBST_FILTER='^BACKEND_URL$'
+export NGINX_ENVSUBST_FILTER='^(BACKEND_URL|REAL_IP_FROM)$'
