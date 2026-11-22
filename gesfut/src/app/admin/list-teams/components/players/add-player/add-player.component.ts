@@ -68,6 +68,7 @@ export class AddPlayerComponent implements OnChanges {
   
   async callPlayerGlobals() {
     try {
+      if (!this.teamIdGlobal) return;
 
       const teamResponse = await this.teamService.getTeam(this.teamIdGlobal).toPromise();
       if (!teamResponse || teamResponse.players.length === 0) {
@@ -310,6 +311,7 @@ export class AddPlayerComponent implements OnChanges {
   }
 
   addPlayerToGlobal(newPlayer: PlayerRequest) {
+    if (!this.teamIdGlobal) return;
     this.teamService.addPlayerToTeam(this.teamIdGlobal, newPlayer).subscribe({
       next: (response) => {
         this.alertService.successAlert('Jugador agregado');
