@@ -56,6 +56,17 @@ export class AuthService {
     );
   }
 
+  /** Login/registro con Google: el back verifica el ID token y responde la misma cookie y el mismo body que /login. */
+  loginWithGoogle(credential: string, email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.url}/google`, { credential }).pipe(
+      tap((response: AuthResponse) => {
+        // Igual que login(): el email solo separa datos locales por cuenta; nunca se guarda el token.
+        try { sessionStorage.setItem('email', email); } catch { /* sin storage */ }
+        this.sessionService.setUserSession(response);
+      })
+    );
+  }
+
   register(credentials: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.url}/signup`, credentials).pipe(
       map((response) => {

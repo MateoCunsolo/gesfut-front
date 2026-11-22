@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../core/services/alert.service';
+import { GoogleSignInComponent } from '../google-sign-in/google-sign-in.component';
 import {
   NETWORK_ERROR,
   REGISTERED_ALERT,
@@ -27,7 +28,7 @@ import {
 
 @Component({
     selector: 'app-register',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, GoogleSignInComponent],
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss'
 })

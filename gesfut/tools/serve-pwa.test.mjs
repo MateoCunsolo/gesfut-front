@@ -57,7 +57,7 @@ test('cabeceras de seguridad en navegacion, assets, 404 y 405', async () => {
       assert.equal(response.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
       assert.match(response.headers.get('permissions-policy') ?? '', /camera=\(\)/);
       assert.equal(response.headers.get('strict-transport-security'), 'max-age=300; includeSubDomains');
-      assert.equal(response.headers.get('cross-origin-opener-policy'), 'same-origin');
+      assert.equal(response.headers.get('cross-origin-opener-policy'), 'same-origin-allow-popups');
       assert.match(response.headers.get('content-security-policy-report-only') ?? '', /frame-ancestors 'none'/);
       assert.equal(response.headers.get('content-security-policy'), null);
     };

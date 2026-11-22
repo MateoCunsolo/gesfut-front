@@ -6,10 +6,11 @@ import { SessionService } from '../../core/services/manager/session.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AlertService } from '../../core/services/alert.service';
 import { isRegisteredNotice, resendMessage, resendTooManyMessage, retryAfterFromError, REGISTERED_NOTICE, SHOW_RESEND_AFTER_REGISTER, LOGIN_BAD_CREDENTIALS, LOGIN_EMAIL_INVALID, LOGIN_EMAIL_REQUIRED, LOGIN_PASSWORD_REQUIRED, NETWORK_ERROR, SERVER_ERROR, SESSION_EXPIRED, TOO_MANY_ATTEMPTS } from '../auth-messages';
+import { GoogleSignInComponent } from '../google-sign-in/google-sign-in.component';
 
 @Component({
     selector: 'app-login',
-    imports: [RouterModule, ReactiveFormsModule],
+    imports: [RouterModule, ReactiveFormsModule, GoogleSignInComponent],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })

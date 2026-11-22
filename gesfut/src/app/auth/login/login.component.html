@@ -44,6 +44,7 @@
       </div>
 
       <button class="base-button" type="submit" [disabled]="isLoading">{{ isLoading ? 'Ingresando…' : 'Ingresar' }}</button>
+      <app-google-sign-in></app-google-sign-in>
 
       <div class="secondary-actions">
         <button type="button" class="link" (click)="toForgotPassword()">Olvidé mi contraseña</button>

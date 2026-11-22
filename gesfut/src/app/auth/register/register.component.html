@@ -80,6 +80,7 @@
       </div>
 
       <button class="base-button" type="submit" [disabled]="isLoading || !termsAccepted">{{ isLoading ? 'Creando cuenta…' : 'Crear cuenta' }}</button>
+      <app-google-sign-in [signup]="true"></app-google-sign-in>
       <div class="secondary-actions">
         <button type="button" class="link" (click)="toLogin()">¿Ya tenés cuenta? Ingresar</button>
       </div>

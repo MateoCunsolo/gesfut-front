@@ -13,7 +13,7 @@ const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
 const CLIENT_IP_HEADERS = new Set(['cf-connecting-ip', 'x-forwarded-for', 'x-real-ip', 'forwarded', 'true-client-ip', 'x-forwarded-host', 'x-forwarded-proto']);
 
 /** Cabeceras de seguridad del informe 10/11. CSP primero en Report-Only. HSTS QA max-age=300. connect-src 'self' alcanza con el proxy /api. */
-export const PWA_CSP_REPORT_ONLY = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
+export const PWA_CSP_REPORT_ONLY = "default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 
 export function pwaSecurityHeaders(extra = {}) {
   return {
@@ -22,7 +22,7 @@ export function pwaSecurityHeaders(extra = {}) {
     'referrer-policy': 'strict-origin-when-cross-origin',
     'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
     'strict-transport-security': 'max-age=300; includeSubDomains',
-    'cross-origin-opener-policy': 'same-origin',
+    'cross-origin-opener-policy': 'same-origin-allow-popups', // login con Google (GIS, popup)
     'content-security-policy-report-only': PWA_CSP_REPORT_ONLY,
     ...extra,
   };
