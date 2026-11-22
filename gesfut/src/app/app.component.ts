@@ -93,11 +93,11 @@ export class AppComponent {
         this.sessionService.expireSession();
         return;
       }
-      this.reloadBusy = false;
       this.alertService.errorAlert(ME_NETWORK_MESSAGE);
     }).catch(() => {
-      this.reloadBusy = false;
       this.alertService.errorAlert(ME_NETWORK_MESSAGE);
+    }).finally(() => {
+      this.reloadBusy = false;
     });
   }
 }
