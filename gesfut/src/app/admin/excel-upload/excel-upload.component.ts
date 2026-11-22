@@ -20,7 +20,7 @@ export class ExcelUploadComponent {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([
       ['NOMBRE', 'APELLIDO', 'DORSAL', 'CAPITAN', 'ARQUERO', 'EQUIPO', 'COLOR_CAMISETA'],
-      ['MATEO', 'CUNSOLO', 8, 'TRUE', 'FALSE', 'UTN MDP', 'AZUL'],
+      ['EQUIPO', 'GESFUT', 8, 'TRUE', 'FALSE', 'UTN MDP', 'AZUL'],
       ['RONALDO', 'NAZZARIO', 9, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
       ['LIONEL', 'MESSI', 30, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
       ['CRISTIANO', 'RONALDO', 7, 'FALSE', 'FALSE', 'UTN MDP', 'AZUL'],
