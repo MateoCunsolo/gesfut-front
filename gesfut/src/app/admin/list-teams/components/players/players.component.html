@@ -95,7 +95,7 @@
   @if (flagAddPlayer) {
   <app-add-player
   [destinationName]="globalView() ? participantGlobalStats.name : participantTeam.name + (nameTournament ? ' · ' + nameTournament : '')"
-  [teamIdGlobal]="returnIfIsGlobalOrNot()"
+  [teamIdGlobal]="currentTeamId() || 0"
   [teamIdParticipant]="areThereParticipanForThisTeam()"
   (addPlayerToTeam)="addPlayerToTeam($event)"
   [codeTournament]="code" 

@@ -172,7 +172,11 @@ export class PlayersComponent implements OnChanges {
 
   /** Editar jugador: datos del plantel; el historial queda en el mismo jugador. */
   editPlayer(player: any) {
-    const teamId = this.isGlobalTeam ? this.participantGlobalStats.idTeam : this.participantTeam.idTeam;
+    const teamId = this.currentTeamId();
+    if (!teamId) {
+      this.alertService.errorAlert('No se pudo identificar el equipo. Volvé a elegirlo en la lista.');
+      return;
+    }
     this.teamService.getTeam(teamId).subscribe({
       next: async (team: any) => {
         const current = (team?.players ?? []).find((p: any) => p.id === player.playerId);
@@ -268,7 +272,7 @@ export class PlayersComponent implements OnChanges {
     this.teamService.getTeam(idTeam).subscribe({ next: (t) => { if (idTeam !== this.idTeam) return; if (t) { this.teamEnabled = t.status !== false; this.teamName = t.name; } }, error: () => {} });
   }
 
-  private currentTeamId(): number | null {
+  protected currentTeamId(): number | null {
     return this.idTeam || this.returnIfIsGlobalOrNot() || null;
   }
 
