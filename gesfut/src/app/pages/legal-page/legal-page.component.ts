@@ -20,7 +20,7 @@ import { ActivatedRoute } from '@angular/router';
           <li>Estos términos pueden cambiar. Si seguís usando la app, aceptás la versión vigente.</li>
         </ul>
         <p>Todos los derechos sobre Gesfut, su marca y su contenido están reservados.</p>
-        <p>Contacto: <a href="mailto:contacto@gesfut.site">contacto@gesfut.site</a></p>
+        <p>Contacto: <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a></p>
       </article>
     </section>
   `,
@@ -36,4 +36,6 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LegalPageComponent {
   readonly title: string = inject(ActivatedRoute).snapshot.data['title'] ?? '';
+  /** El @ del mail se interpola: en el template Angular lo lee como bloque. */
+  readonly contactEmail = 'contacto@gesfut.site';
 }
