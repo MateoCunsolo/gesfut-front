@@ -1,0 +1,14 @@
+# Contexto del build: no copiar dependencias, dist ni el repo git.
+.git
+.github
+**/.git
+gesfut/node_modules
+gesfut/dist
+gesfut/.angular
+**/node_modules
+**/dist
+**/.angular
+**/.env
+gesfut/.vscode
+**/.DS_Store
+**/Thumbs.db

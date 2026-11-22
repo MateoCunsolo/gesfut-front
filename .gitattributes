@@ -1,0 +1,6 @@
+# Docker y nginx en LF: en Linux un CRLF rompe plantillas o el shebang.
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+*.conf text eol=lf
+*.template text eol=lf
+nginx/** text eol=lf
