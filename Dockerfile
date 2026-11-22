@@ -11,8 +11,8 @@ RUN npm run build -- --configuration production
 FROM nginx:stable-alpine
 # Default razonable: nombre interno del servicio back en Easypanel. Sobreescribir en runtime si el servicio se llama distinto.
 ENV BACKEND_URL=http://gesfut-back:8080
-# Solo sustituir BACKEND_URL para no tocar variables de nginx ($host, $uri, etc.).
-ENV NGINX_ENVSUBST_FILTER=^BACKEND_URL$$
+# El filtro ^BACKEND_URL$ se exporta en 15-gesfut-envsubst-filter.envsh (BuildKit se come un $ de un ENV).
+COPY nginx/15-gesfut-envsubst-filter.envsh /docker-entrypoint.d/15-gesfut-envsubst-filter.envsh
 COPY nginx/security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /src/dist/gesfut/browser /usr/share/nginx/html
