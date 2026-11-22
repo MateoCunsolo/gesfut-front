@@ -27,7 +27,7 @@ test('aviso registered=1 en el login', () => {
   assert.equal(isRegisteredNotice(''), false);
   assert.equal(isRegisteredNotice('?registered=0'), false);
   const html = readFileSync(new URL('../src/app/auth/login/login.component.html', import.meta.url), 'utf8');
-  // Verificacion por mail apagada en el backend: el aviso sale de REGISTERED_NOTICE (ver registro-sin-mail.test.ts).
+  // Verificacion por mail activa: el aviso sale de REGISTERED_NOTICE (ver registro-con-mail.test.ts).
   assert.match(html, /@if \(registeredNotice\)[^]*\{\{ registeredNoticeText \}\}/);
   const reg = readFileSync(new URL('../src/app/auth/register/register.component.ts', import.meta.url), 'utf8');
   assert.match(reg, /navigateByUrl\('\/auth\/login\?registered=1'\)/);
